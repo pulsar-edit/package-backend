@@ -83,14 +83,20 @@ async function getThemes(req, res) {
 
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  const totalPages = await database.getTotalPackageEstimate();
+  const pagination = await database.simpleSearchCount(
+    '',
+    params.page,
+    params.direction,
+    params.sort,
+    true
+  );
 
-  if (!totalPages.ok) {
+  if (!pagination.ok) {
     logger.generic(
       3,
-      `getThemes-getTotalPackageEstimate Not OK: ${totalPages.content}`
+      `getThemes-simpleSearchCount Not OK: ${JSON.stringify(pagination.content)}`
     );
-    await common.handleError(req, res, totalPages);
+    await common.handleError(req, res, pagination, 1002);
     return;
   }
 
@@ -98,12 +104,14 @@ async function getThemes(req, res) {
     "Link",
     `<${server_url}/api/themes?page=${params.page}&sort=${params.sort}&order=${
       params.direction
-    }>; rel="self", <${server_url}/api/themes?page=${totalPages.content}&sort=${
+    }>; rel="self", <${server_url}/api/themes?page=${pagination.content.pages}&sort=${
       params.sort
     }&order=${params.direction}>; rel="last", <${server_url}/api/themes?page=${
       params.page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`
   );
+
+  res.append('Query-Total', pagination.content.total);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -164,11 +172,22 @@ async function getThemesSearch(req, res) {
     packArray = [newPacks];
   }
 
-  const totalPackageEstimate = await database.getTotalPackageEstimate();
+  const pagination = await database.simpleSearchCount(
+    params.query,
+    params.page,
+    params.direction,
+    params.sort,
+    true
+  );
 
-  const totalPages = !totalPackageEstimate.ok
-    ? 1
-    : totalPackageEstimate.content;
+  if (!pagination.ok) {
+    logger.generic(
+      3,
+      `getThemesSearch-simpleSearchCount Not OK: ${JSON.stringify(pagination.content)}`
+    );
+    await common.handleError(req, res, pagination, 1002);
+    return;
+  }
 
   const safeQuery = encodeURIComponent(
     params.query.replace(/[<>"':;\\/]+/g, "")
@@ -181,13 +200,15 @@ async function getThemesSearch(req, res) {
     }&order=${
       params.direction
     }>; rel="self", <${server_url}/api/themes?q=${safeQuery}&page=${
-      totalPages.content
+      pagination.content.pages
     }&sort=${params.sort}&order=${
       params.direction
     }>; rel="last", <${server_url}/api/themes/search?q=${safeQuery}&page=${
       params.page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`
   );
+
+  res.append('Query-Total', pagination.content.total);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

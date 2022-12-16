@@ -933,6 +933,8 @@ async function getTotalPackageEstimate() {
   try {
     sqlStorage ??= setupSQL();
 
+    let limit = paginated_amount;
+
     const command = await sqlStorage`
       SELECT reltuples AS estimate FROM pg_class WHERE relname = 'packages';
     `;
@@ -945,7 +947,10 @@ async function getTotalPackageEstimate() {
       };
     }
 
-    return { ok: true, content: command[0].estimate };
+    let total = command[0].estimate;
+    let pages = Math.ceil(total / limit);
+
+    return { ok: true, content: {total, pages}};
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }

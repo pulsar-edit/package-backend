@@ -60,14 +60,14 @@ async function getPackages(req, res) {
   // The endpoint using this function needs an array.
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  const totalPages = await database.getTotalPackageEstimate();
+  const pagination = await database.getTotalPackageEstimate();
 
-  if (!totalPages.ok) {
+  if (!pagination.ok) {
     logger.generic(
       3,
-      `getPackages-getTotalPackageEstimate Not OK: ${totalPages.content}`
+      `getPackages-getTotalPackageEstimate Not OK: ${JSON.stringify(pagination.content)}`
     );
-    await common.handleError(req, res, totalPages, 1002);
+    await common.handleError(req, res, pagination, 1002);
     return;
   }
 
@@ -78,13 +78,15 @@ async function getPackages(req, res) {
     }&order=${
       params.direction
     }>; rel="self", <${server_url}/api/packages?page=${
-      totalPages.content
+      pagination.content.pages
     }&sort=${params.sort}&order=${
       params.direction
     }>; rel="last", <${server_url}/api/packages?page=${params.page + 1}&sort=${
       params.sort
     }&order=${params.direction}>; rel="next"`
   );
+
+  res.append('Query-Total', pagination.content.total);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -299,6 +301,15 @@ async function getPackagesSearch(req, res) {
     params.direction,
     params.sort
   )
+
+  if (!pagination.ok) {
+    logger.generic(
+      3,
+      `getPackagesSearch-simpleSearchCount Not OK: ${JSON.stringify(pagination.content)}`
+    );
+    await common.handleError(req, res, pagination, 1002);
+    return;
+  }
 
   if (!packs.ok) {
     if (packs.short == "Not Found") {

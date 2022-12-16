@@ -89,7 +89,7 @@ describe("getTotalPackageEstimate", () => {
   });
   test.failing("Should return an expected-ish value", async () => {
     const obj = await database.getTotalPackageEstimate();
-    expect(obj.content).toBeGreaterThan(0);
+    expect(obj.content.total).toBeGreaterThan(0);
     // This test is currently failing, seems in our dev environment that
     // the estimate returns 0 no matter what.
   });
