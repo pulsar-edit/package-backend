@@ -20,7 +20,7 @@ function page(req) {
   }
 
   // ensure it's a proper number
-  return prov.match(/^\d+$/) !== null ? prov : def;
+  return prov.match(/^\d+$/) !== null ? parseInt(prov) : def;
 }
 
 /**

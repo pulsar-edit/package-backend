@@ -1285,6 +1285,45 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
 
 /**
  * @async
+ * @function simpleSearchCount
+ * @description The current Fuzzy-Finder implementation of search count. Ideally eventually
+ * will use a more advanced search method.
+ * @returns {object} A server status object.
+ */
+async function simpleSearchCount(term, page, dir, sort, themes = false) {
+  try {
+    sqlStorage ??= setupSQL();
+
+    let limit = paginated_amount;
+
+    // We obtain the lowercase version of term since names should be in
+    // lowercase format (see atom-backend issue #86).
+    const lcterm = term.toLowerCase();
+
+    const command = await sqlStorage`
+      SELECT COUNT(name)
+      FROM packages AS p INNER JOIN versions AS v ON (p.pointer = v.package) AND (v.status = 'latest')
+      WHERE pointer IN (
+        SELECT pointer
+        FROM names
+        ${sqlStorage`WHERE name LIKE ${"%" + lcterm + "%"}`}
+      )
+      ${themes === true ? sqlStorage`AND package_type = 'theme'` : sqlStorage``}
+    `;
+
+    let total = parseInt(command[0]?.count || '0');
+    let pages = Math.ceil(total / limit);
+
+    return command.count !== 0
+      ? { ok: true, content: {total, pages} }
+      : { ok: false, content: 0, short: "Not Found" };
+  } catch (err) {
+    return { ok: false, content: err, short: "Server Error" };
+  }
+}
+
+/**
+ * @async
  * @function getUserCollectionById
  * @description Returns an array of Users and their associated data via the ids.
  * @param {array} ids - The IDs of users to collect the data of.
@@ -1409,6 +1448,7 @@ module.exports = {
   updatePackageDecrementStarByName,
   getFeaturedThemes,
   simpleSearch,
+  simpleSearchCount,
   updateStars,
   updateDeleteStar,
   insertNewUser,

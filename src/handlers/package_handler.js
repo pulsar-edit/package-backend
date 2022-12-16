@@ -293,6 +293,13 @@ async function getPackagesSearch(req, res) {
     params.sort
   );
 
+  const pagination = await database.simpleSearchCount(
+    params.query,
+    params.page,
+    params.direction,
+    params.sort
+  )
+
   if (!packs.ok) {
     if (packs.short == "Not Found") {
       logger.generic(
@@ -332,10 +339,6 @@ async function getPackagesSearch(req, res) {
     packArray = [newPacks];
   }
 
-  const totalPageEstimate = await database.getTotalPackageEstimate();
-
-  const totalPages = !totalPageEstimate.ok ? 1 : totalPageEstimate.content;
-
   const safeQuery = encodeURIComponent(
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
@@ -347,13 +350,15 @@ async function getPackagesSearch(req, res) {
     }&sort=${params.sort}&order=${
       params.direction
     }>; rel="self", <${server_url}/api/packages?q=${safeQuery}&page=${
-      totalPages.content
+      pagination.content.pages
     }&sort=${params.sort}&order=${
       params.direction
     }>; rel="last", <${server_url}/api/packages/search?q=${safeQuery}&page=${
       params.page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`
   );
+
+  res.append('Query-Total', pagination.content.total);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
