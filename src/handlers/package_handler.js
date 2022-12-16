@@ -71,20 +71,19 @@ async function getPackages(req, res) {
     return;
   }
 
-  res.append(
-    "Link",
-    `<${server_url}/api/packages?page=${params.page}&sort=${
-      params.sort
-    }&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/packages?page=${
-      pagination.content.pages
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="last", <${server_url}/api/packages?page=${params.page + 1}&sort=${
-      params.sort
-    }&order=${params.direction}>; rel="next"`
-  );
+  let link = `<${server_url}/api/packages?page=${params.page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/packages?page=${pagination.content.pages}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
+
+  if (params.page !== pagination.content.pages) {
+    link += `, <${server_url}/api/packages?page=${
+      params.page + 1
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
+  }
+
+  res.append("Link", link);
 
   res.append('Query-Total', pagination.content.total);
 
@@ -354,20 +353,19 @@ async function getPackagesSearch(req, res) {
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  res.append(
-    "Link",
-    `<${server_url}/api/packages/search?q=${safeQuery}&page=${
-      params.page
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/packages?q=${safeQuery}&page=${
-      pagination.content.pages
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="last", <${server_url}/api/packages/search?q=${safeQuery}&page=${
+  let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${params.page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${pagination.content.pages}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
+
+  if (params.page !== pagination.content.pages) {
+    link += `, <${server_url}/api/packages/search?q=${safeQuery}&page=${
       params.page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`
-  );
+  }
+
+  res.append("Link", link);
 
   res.append('Query-Total', pagination.content.total);
 

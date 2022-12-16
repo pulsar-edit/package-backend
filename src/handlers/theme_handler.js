@@ -100,16 +100,19 @@ async function getThemes(req, res) {
     return;
   }
 
-  res.append(
-    "Link",
-    `<${server_url}/api/themes?page=${params.page}&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/themes?page=${pagination.content.pages}&sort=${
-      params.sort
-    }&order=${params.direction}>; rel="last", <${server_url}/api/themes?page=${
+  let link = `<${server_url}/api/themes?page=${params.page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/themes?page=${pagination.content.pages}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
+
+  if (params.page !== pagination.content.pages) {
+    link += `, <${server_url}/api/themes?page=${
       params.page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`
-  );
+  }
+
+  res.append("Link", link);
 
   res.append('Query-Total', pagination.content.total);
 
@@ -193,20 +196,19 @@ async function getThemesSearch(req, res) {
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  res.append(
-    "Link",
-    `<${server_url}/api/themes/search?q=${safeQuery}&page=${params.page}&sort=${
-      params.sort
-    }&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/themes?q=${safeQuery}&page=${
-      pagination.content.pages
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="last", <${server_url}/api/themes/search?q=${safeQuery}&page=${
+  let link = `<${server_url}/api/themes/search?q=${safeQuery}&page=${params.page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/themes/search?q=${safeQuery}&page=${pagination.content.pages}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
+
+  if (params.page !== pagination.content.pages) {
+    link += `, <${server_url}/api/themes/search?q=${safeQuery}&page=${
       params.page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`
-  );
+  }
+
+  res.append("Link", link);
 
   res.append('Query-Total', pagination.content.total);
 
