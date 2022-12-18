@@ -72,6 +72,14 @@ app.get("/", genericLimit, (req, res) => {
     .json({ message: `Server is up and running Version ${server_version}` });
 });
 
+app.options("/", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -82,6 +90,14 @@ app.get("/", genericLimit, (req, res) => {
  */
 app.get("/api/login", authLimit, async (req, res) => {
   await oauth_handler.getLogin(req, res);
+});
+
+app.options("/api/login", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
 });
 
 /**
@@ -96,6 +112,14 @@ app.get("/api/oauth", authLimit, async (req, res) => {
   await oauth_handler.getOauth(req, res);
 });
 
+app.options("/api/oauth", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -106,6 +130,14 @@ app.get("/api/oauth", authLimit, async (req, res) => {
  */
 app.get("/api/pat", authLimit, async (req, res) => {
   await oauth_handler.getPat(req, res);
+});
+
+app.options("/api/pat", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
 });
 
 /**
@@ -215,6 +247,14 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
   }
 });
 
+app.options("/api/:packType", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "POST, GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -245,6 +285,14 @@ app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
       next();
       break;
   }
+});
+
+app.options("/api/:packType/featured", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
 });
 
 /**
@@ -306,6 +354,14 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
       next();
       break;
   }
+});
+
+app.options("/api/:packType/search", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
 });
 
 /**
@@ -405,6 +461,14 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
   }
 });
 
+app.options("/api/:packType/:packageName", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "DELETE, GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -498,6 +562,14 @@ app.delete(
   }
 );
 
+app.options("/api/:packType/:packageName/star", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "DELETE, POST",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -536,6 +608,14 @@ app.get(
     }
   }
 );
+
+app.options("/api/:packType/:packageName/stargazers", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
 
 /**
  * @web
@@ -597,6 +677,14 @@ app.post(
   }
 );
 
+app.options("/api/:packType/:packageName/versions", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "POST",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -633,53 +721,6 @@ app.get(
       case "packages":
       case "themes":
         await package_handler.getPackagesVersion(req, res);
-        break;
-      default:
-        next();
-        break;
-    }
-  }
-);
-
-// Previously undocumented endpoint discovered during developement.
-// Seems this endpoint allows for download of packages. Further testing is required.
-// Confirmed that this is a GET only endpoint.
-/**
- * @web
- * @ignore
- * @path /api/packages/:packageName/versions/:versionName/tarball
- * @method GET
- * @auth false
- * @desc Previously undocumented endpoint. Seems to allow for installation of a package. This is not currently implemented.
- * @param
- *   @name packType
- *   @location path
- *   @Ptype string
- *   @required true
- *   @Pdesc The Package Type you want to request.
- *   @valid packages, themes
- * @param
- *   @location path
- *   @name packageName
- *   @required true
- *   @Pdesc The package we want to download.
- * @param
- *   @location path
- *   @name versionName
- *   @required true
- *   @Pdesc The package version we want to download.
- * @response
- *   @status 200
- *   @Rdesc The tarball data for the user to then be able to install.
- */
-app.get(
-  "/api/:packType/:packageName/versions/:versionName/tarball",
-  genericLimit,
-  async (req, res, next) => {
-    switch (req.params.packType) {
-      case "packages":
-      case "themes":
-        await package_handler.getPackagesVersionTarball(req, res);
         break;
       default:
         next();
@@ -737,6 +778,66 @@ app.delete(
   }
 );
 
+app.options("/api/:packType/:packageName/versions/:versionName", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET, DELETE",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
+/**
+ * @web
+ * @ignore
+ * @path /api/packages/:packageName/versions/:versionName/tarball
+ * @method GET
+ * @auth false
+ * @desc Previously undocumented endpoint. Seems to allow for installation of a package. This is not currently implemented.
+ * @param
+ *   @name packType
+ *   @location path
+ *   @Ptype string
+ *   @required true
+ *   @Pdesc The Package Type you want to request.
+ *   @valid packages, themes
+ * @param
+ *   @location path
+ *   @name packageName
+ *   @required true
+ *   @Pdesc The package we want to download.
+ * @param
+ *   @location path
+ *   @name versionName
+ *   @required true
+ *   @Pdesc The package version we want to download.
+ * @response
+ *   @status 200
+ *   @Rdesc The tarball data for the user to then be able to install.
+ */
+app.get(
+  "/api/:packType/:packageName/versions/:versionName/tarball",
+  genericLimit,
+  async (req, res, next) => {
+    switch (req.params.packType) {
+      case "packages":
+      case "themes":
+        await package_handler.getPackagesVersionTarball(req, res);
+        break;
+      default:
+        next();
+        break;
+    }
+  }
+);
+
+app.options("/api/:packType/:packageName/versions/:versionName/tarball", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -786,6 +887,14 @@ app.post(
   }
 );
 
+app.options("/api/:packType/:packageName/versions/:versionName/events/uninstall", genericLimit, async (req, res) => {
+  res.header({
+    //"Allow": "POST",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -807,6 +916,14 @@ app.post(
  */
 app.get("/api/users/:login/stars", genericLimit, async (req, res) => {
   await user_handler.getLoginStars(req, res);
+});
+
+app.options("/api/users/:login/stars", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
 });
 
 /**
@@ -842,14 +959,14 @@ app.get("/api/users", authLimit, async (req, res) => {
 });
 
 app.options("/api/users", async (req, res) => {
-  res.header("Access-Control-Allow-Methods", "GET");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, Access-Control-Allow-Credentials"
-  );
-  res.header("Access-Control-Allow-Origin", "https://web.pulsar-edit.dev");
-  res.header("Access-Control-Allow-Credentials", true);
-  res.send(200);
+  res.header({
+    "Allow": "GET",
+    "Access-Control-Allow-Methods": "GET",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Credentials",
+    "Access-Control-Allow-Origin": "https://web.pulsar-edit.dev",
+    "Access-Control-Allow-Credentials": true
+  });
+  res.sendStatus(204);
 });
 
 /**
@@ -874,6 +991,14 @@ app.get("/api/users/:login", genericLimit, async (req, res) => {
   await user_handler.getUser(req, res);
 });
 
+app.options("/api/users/:login", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -896,6 +1021,14 @@ app.get("/api/stars", authLimit, async (req, res) => {
   await star_handler.getStars(req, res);
 });
 
+app.options("/api/stars", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
+});
+
 /**
  * @web
  * @ignore
@@ -909,6 +1042,14 @@ app.get("/api/stars", authLimit, async (req, res) => {
  */
 app.get("/api/updates", genericLimit, async (req, res) => {
   await update_handler.getUpdates(req, res);
+});
+
+app.options("/api/updates", genericLimit, async (req, res) => {
+  res.header({
+    "Allow": "GET",
+    "X-Content-Type-Options": "nosniff"
+  });
+  res.sendStatus(204);
 });
 
 app.use((req, res) => {
