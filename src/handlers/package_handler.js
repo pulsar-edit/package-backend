@@ -80,7 +80,7 @@ async function getPackages(req, res) {
   if (params.page !== pagination.content.pages) {
     link += `, <${server_url}/api/packages?page=${
       params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
@@ -362,7 +362,7 @@ async function getPackagesSearch(req, res) {
   if (params.page !== pagination.content.pages) {
     link += `, <${server_url}/api/packages/search?q=${safeQuery}&page=${
       params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);

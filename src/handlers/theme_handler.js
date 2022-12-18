@@ -109,7 +109,7 @@ async function getThemes(req, res) {
   if (params.page !== pagination.content.pages) {
     link += `, <${server_url}/api/themes?page=${
       params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
@@ -205,7 +205,7 @@ async function getThemesSearch(req, res) {
   if (params.page !== pagination.content.pages) {
     link += `, <${server_url}/api/themes/search?q=${safeQuery}&page=${
       params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
