@@ -1164,7 +1164,7 @@ describe("Ensure Options Method Returns as Expected", () => {
     rateLimitHeaderCheck(res);
   });
   test("/api/users/:login/stars", async () => {
-    const res = await request(app).options("/api/confused-Techie/stars");
+    const res = await request(app).options("/api/users/confused-Techie/stars");
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET");
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
@@ -1174,6 +1174,10 @@ describe("Ensure Options Method Returns as Expected", () => {
     const res = await request(app).options("/api/users");
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET");
+    expect(res.headers["access-control-allow-methods"]).toEqual("GET");
+    expect(res.headers["access-control-allow-headers"]).toEqual("Content-Type, Authorization, Access-Control-Allow-Credentials");
+    expect(res.headers["access-control-allow-origin"]).toEqual("https://web.pulsar-edit.dev");
+    expect(res.headers["access-control-allow-credentials"]).toEqual("true");
     console.log(res.headers);
     // Needs the rest of the CORS Options
     rateLimitHeaderCheck(res);

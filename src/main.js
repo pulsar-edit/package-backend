@@ -247,12 +247,20 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
   }
 });
 
-app.options("/api/:packType", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "POST, GET",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "POST, GET",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -287,12 +295,20 @@ app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
   }
 });
 
-app.options("/api/:packType/featured", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "GET",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/featured", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "GET",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -356,12 +372,20 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
   }
 });
 
-app.options("/api/:packType/search", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "GET",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/search", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "GET",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -461,12 +485,20 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
   }
 });
 
-app.options("/api/:packType/:packageName", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "DELETE, GET",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "DELETE, GET",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -562,12 +594,20 @@ app.delete(
   }
 );
 
-app.options("/api/:packType/:packageName/star", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "DELETE, POST",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName/star", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "DELETE, POST",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -609,12 +649,20 @@ app.get(
   }
 );
 
-app.options("/api/:packType/:packageName/stargazers", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "GET",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName/stargazers", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "GET",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -677,12 +725,20 @@ app.post(
   }
 );
 
-app.options("/api/:packType/:packageName/versions", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "POST",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName/versions", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "POST",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -778,12 +834,20 @@ app.delete(
   }
 );
 
-app.options("/api/:packType/:packageName/versions/:versionName", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "GET, DELETE",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName/versions/:versionName", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "GET, DELETE",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -830,12 +894,20 @@ app.get(
   }
 );
 
-app.options("/api/:packType/:packageName/versions/:versionName/tarball", genericLimit, async (req, res) => {
-  res.header({
-    "Allow": "GET",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName/versions/:versionName/tarball", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "GET",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
@@ -887,12 +959,20 @@ app.post(
   }
 );
 
-app.options("/api/:packType/:packageName/versions/:versionName/events/uninstall", genericLimit, async (req, res) => {
-  res.header({
-    //"Allow": "POST",
-    "X-Content-Type-Options": "nosniff"
-  });
-  res.sendStatus(204);
+app.options("/api/:packType/:packageName/versions/:versionName/events/uninstall", genericLimit, async (req, res, next) => {
+  switch (req.params.packType) {
+    case "packages":
+    case "themes":
+      res.header({
+        "Allow": "POST",
+        "X-Content-Type-Options": "nosniff"
+      });
+      res.sendStatus(204);
+      break;
+    default:
+      next();
+      break;
+  }
 });
 
 /**
