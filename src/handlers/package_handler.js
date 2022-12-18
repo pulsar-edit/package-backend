@@ -299,7 +299,7 @@ async function getPackagesSearch(req, res) {
     params.page,
     params.direction,
     params.sort
-  )
+  );
 
   if (!pagination.ok) {
     logger.generic(
