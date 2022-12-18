@@ -1178,8 +1178,6 @@ describe("Ensure Options Method Returns as Expected", () => {
     expect(res.headers["access-control-allow-headers"]).toEqual("Content-Type, Authorization, Access-Control-Allow-Credentials");
     expect(res.headers["access-control-allow-origin"]).toEqual("https://web.pulsar-edit.dev");
     expect(res.headers["access-control-allow-credentials"]).toEqual("true");
-    console.log(res.headers);
-    // Needs the rest of the CORS Options
     rateLimitHeaderCheck(res);
   });
   test("/api/users/:login", async () => {
