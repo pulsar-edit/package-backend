@@ -160,7 +160,7 @@ with and retreive data from the cloud hosted database instance.
     * [~setupSQL()](#module_database..setupSQL) ⇒ <code>object</code>
     * [~shutdownSQL()](#module_database..shutdownSQL)
     * [~insertNewPackage(pack)](#module_database..insertNewPackage) ⇒ <code>object</code>
-    * [~insertNewPackageVersion(packJSON)](#module_database..insertNewPackageVersion) ⇒ <code>object</code>
+    * [~insertNewPackageVersion(packJSON, oldName)](#module_database..insertNewPackageVersion) ⇒ <code>object</code>
     * [~insertNewPackageName(newName, oldName)](#module_database..insertNewPackageName) ⇒ <code>object</code>
     * [~insertNewUser(user)](#module_database..insertNewUser) ⇒ <code>object</code>
     * [~getPackageByName(name, user)](#module_database..getPackageByName) ⇒ <code>object</code>
@@ -168,8 +168,7 @@ with and retreive data from the cloud hosted database instance.
     * [~getPackageVersionByNameAndVersion(name, version)](#module_database..getPackageVersionByNameAndVersion) ⇒ <code>object</code>
     * [~getPackageCollectionByName(packArray)](#module_database..getPackageCollectionByName) ⇒ <code>object</code>
     * [~getPackageCollectionByID(packArray)](#module_database..getPackageCollectionByID) ⇒ <code>object</code>
-    * [~updatePackageIncrementStarByName(name)](#module_database..updatePackageIncrementStarByName) ⇒ <code>object</code>
-    * [~updatePackageDecrementStarByName(name)](#module_database..updatePackageDecrementStarByName) ⇒ <code>object</code>
+    * [~updatePackageStargazers(name, pointer)](#module_database..updatePackageStargazers) ⇒ <code>object</code>
     * [~updatePackageIncrementDownloadByName(name)](#module_database..updatePackageIncrementDownloadByName) ⇒ <code>object</code>
     * [~updatePackageDecrementDownloadByName(name)](#module_database..updatePackageDecrementDownloadByName) ⇒ <code>object</code>
     * [~removePackageByName(name)](#module_database..removePackageByName) ⇒ <code>object</code>
@@ -180,8 +179,8 @@ with and retreive data from the cloud hosted database instance.
     * [~getUserByName(username)](#module_database..getUserByName) ⇒ <code>object</code>
     * [~getUserByNodeID(id)](#module_database..getUserByNodeID) ⇒ <code>object</code>
     * [~getUserByID(id)](#module_database..getUserByID) ⇒ <code>object</code>
-    * [~updateStars(user, pack)](#module_database..updateStars) ⇒ <code>object</code>
-    * [~updateDeleteStar(user, pack)](#module_database..updateDeleteStar) ⇒ <code>object</code>
+    * [~updateIncrementStar(user, pack)](#module_database..updateIncrementStar) ⇒ <code>object</code>
+    * [~updateDecrementStar(user, pack)](#module_database..updateDecrementStar) ⇒ <code>object</code>
     * [~getStarredPointersByUserID(userid)](#module_database..getStarredPointersByUserID) ⇒ <code>object</code>
     * [~getStarringUsersByPointer(pointer)](#module_database..getStarringUsersByPointer) ⇒ <code>object</code>
     * [~simpleSearch()](#module_database..simpleSearch) ⇒ <code>object</code>
@@ -218,7 +217,7 @@ Insert a new package inside the DB taking a `Server Object Full` as argument.
 
 <a name="module_database..insertNewPackageVersion"></a>
 
-### database~insertNewPackageVersion(packJSON) ⇒ <code>object</code>
+### database~insertNewPackageVersion(packJSON, oldName) ⇒ <code>object</code>
 Adds a new package version to the db.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -227,6 +226,7 @@ Adds a new package version to the db.
 | Param | Type | Description |
 | --- | --- | --- |
 | packJSON | <code>object</code> | A full `package.json` file for the wanted version. |
+| oldName | <code>string</code> \| <code>null</code> | If provided, the old name to be replaced for the renaming of the package. |
 
 <a name="module_database..insertNewPackageName"></a>
 
@@ -236,6 +236,12 @@ This essentially renames an existing package.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - A server status object.  
+**Todo**
+
+- [ ] This function has been left only for testing purpose since it has been integrated
+inside insertNewPackageVersion, so it should be removed when we can test the rename process
+directly on the endpoint.
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -321,22 +327,10 @@ Takes a package pointer array, and returns an array of the package objects.
 | --- | --- | --- |
 | packArray | <code>Array.&lt;int&gt;</code> | An array of package id. |
 
-<a name="module_database..updatePackageIncrementStarByName"></a>
+<a name="module_database..updatePackageStargazers"></a>
 
-### database~updatePackageIncrementStarByName(name) ⇒ <code>object</code>
-Uses the package name to increment it's stargazers count by one.
-
-**Kind**: inner method of [<code>database</code>](#module_database)  
-**Returns**: <code>object</code> - The effected server status object.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| name | <code>string</code> | The package name. |
-
-<a name="module_database..updatePackageDecrementStarByName"></a>
-
-### database~updatePackageDecrementStarByName(name) ⇒ <code>object</code>
-Uses the package name to decrement it's stargazers count by one.
+### database~updatePackageStargazers(name, pointer) ⇒ <code>object</code>
+Uses the package name (or pointer if provided) to update its stargazers count.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - The effected server status object.  
@@ -344,6 +338,7 @@ Uses the package name to decrement it's stargazers count by one.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | The package name. |
+| pointer | <code>string</code> | The package id (if given, the search by name is skipped). |
 
 <a name="module_database..updatePackageIncrementDownloadByName"></a>
 
@@ -457,9 +452,9 @@ Get user details providing their ID.
 | --- | --- | --- |
 | id | <code>int</code> | User ID |
 
-<a name="module_database..updateStars"></a>
+<a name="module_database..updateIncrementStar"></a>
 
-### database~updateStars(user, pack) ⇒ <code>object</code>
+### database~updateIncrementStar(user, pack) ⇒ <code>object</code>
 Register the star given by a user to a package.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -470,9 +465,9 @@ Register the star given by a user to a package.
 | user | <code>int</code> | A User Object that should star the package. |
 | pack | <code>string</code> | Package name that get the new star. |
 
-<a name="module_database..updateDeleteStar"></a>
+<a name="module_database..updateDecrementStar"></a>
 
-### database~updateDeleteStar(user, pack) ⇒ <code>object</code>
+### database~updateDecrementStar(user, pack) ⇒ <code>object</code>
 Register the removal of the star on a package by a user.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -487,6 +482,7 @@ Register the removal of the star on a package by a user.
 
 ### database~getStarredPointersByUserID(userid) ⇒ <code>object</code>
 Get all packages which the user gave the star.
+The result of this function should not be returned to the user because it contains pointers UUID.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - A server status object.  
@@ -863,7 +859,7 @@ engine(): Returns false if not defined, to allow a fast way to determine if resu
 
 
 * [query](#module_query)
-    * [~page(req)](#module_query..page) ⇒ <code>string</code>
+    * [~page(req)](#module_query..page) ⇒ <code>number</code>
     * [~sort(req, [def])](#module_query..sort) ⇒ <code>string</code>
     * [~dir(req)](#module_query..dir) ⇒ <code>string</code>
     * [~query(req)](#module_query..query) ⇒ <code>string</code>
@@ -878,11 +874,11 @@ engine(): Returns false if not defined, to allow a fast way to determine if resu
 
 <a name="module_query..page"></a>
 
-### query~page(req) ⇒ <code>string</code>
+### query~page(req) ⇒ <code>number</code>
 Parser of the Page query parameter. Defaulting to 1.
 
 **Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Returns the valid page provided in the query parameter or 1, as the default.  
+**Returns**: <code>number</code> - Returns the valid page provided in the query parameter or 1, as the default.  
 
 | Param | Type | Description |
 | --- | --- | --- |

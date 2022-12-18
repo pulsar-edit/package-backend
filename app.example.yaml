@@ -48,3 +48,5 @@ env_variables:
   # Determines how Logs are written. Currently supports the following options:
   # stdout - Writes the console
   LOG_FORMAT: "stdout"
+  # This is the secret code used for our StateStore until we have a better solution.
+  STATE_STORE_CODE: "123"

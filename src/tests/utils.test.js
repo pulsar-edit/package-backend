@@ -243,42 +243,42 @@ describe("Tests against semverLt", () => {
   });
 });
 
-describe("Tests against StateStore", () => {
-  test("Returns a State when handed an IP", () => {
-    let stateStore = new utils.StateStore();
+//describe("Tests against StateStore", () => {
+//  test("Returns a State when handed an IP", () => {
+//    let stateStore = new utils.StateStore();/
 
-    return stateStore.setState("8.8.8.8").then((res) => {
-      expect(res.ok).toBeTruthy();
-      expect(res.content).toBeDefined();
-    });
-  });
-  test("Returns Bad OK When no IP is in Hashmap", () => {
-    let stateStore = new utils.StateStore();
-    let res = stateStore.getState("8.8.8.8", "1234");
-    expect(res.ok).toBeFalsy();
-  });
-  test("Returns Good OK When Same state is passed to Hashmap", () => {
-    let stateStore = new utils.StateStore();
+//  return stateStore.setState("8.8.8.8").then((res) => {
+//    expect(res.ok).toBeTruthy();
+//    expect(res.content).toBeDefined();
+//  });
+//});
+//test("Returns Bad OK When no IP is in Hashmap", () => {
+//  let stateStore = new utils.StateStore();
+//  let res = stateStore.getState("8.8.8.8", "1234");
+//expect(res.ok).toBeFalsy(); //TODO
+//});
+//test("Returns Good OK When Same state is passed to Hashmap", () => {
+//  let stateStore = new utils.StateStore();/
 
-    return stateStore.setState("8.8.8.8").then((res) => {
-      expect(res.ok).toBeTruthy();
-      expect(res.content).toBeDefined();
+//    return stateStore.setState("8.8.8.8").then((res) => {
+//      expect(res.ok).toBeTruthy();
+//      expect(res.content).toBeDefined();/
+//
+//      let valid = stateStore.getState("8.8.8.8", res.content);
 
-      let valid = stateStore.getState("8.8.8.8", res.content);
+//      expect(valid.ok).toBeTruthy();
+//    });
+//  });
+//  test("Returns Bad OK When invalid State is passed to Hashmap", () => {
+//    let stateStore = new utils.StateStore();
 
-      expect(valid.ok).toBeTruthy();
-    });
-  });
-  test("Returns Bad OK When invalid State is passed to Hashmap", () => {
-    let stateStore = new utils.StateStore();
+//    return stateStore.setState("8.8.8.8").then((res) => {
+//      expect(res.ok).toBeTruthy();
+//      expect(res.content).toBeDefined();
 
-    return stateStore.setState("8.8.8.8").then((res) => {
-      expect(res.ok).toBeTruthy();
-      expect(res.content).toBeDefined();
+//      let valid = stateStore.getState("8.8.8.8", "invalid-state");
 
-      let valid = stateStore.getState("8.8.8.8", "invalid-state");
-
-      expect(valid.ok).toBeFalsy();
-    });
-  });
-});
+//expect(valid.ok).toBeFalsy(); //TODO
+//    });
+//  });
+//});

@@ -469,22 +469,23 @@ describe("POST /api/packages/:packageName/star", () => {
     const dup = await request(app)
       .post("/api/packages/language-css/star")
       .set("Authorization", "valid-token");
-    // We are preforming multiple checks in the single check, because, as expected trying to star a package
-    // that you have already stared errors out.
-    // Unfortunately we can't nest another describe into the test, so we will use comments to make things clear.
+    // We are preforming multiple checks in the single check,
+    // because we want to test a star action when the package is already starred.
 
     // DESCRIBE: Returns Success Status Code
     expect(res).toHaveHTTPCode(200);
     // DESCRIBE: Returns same Package
     expect(res.body.name).toEqual("language-css");
-    // DESCRIBE: Properly Decreases Star Count
-    expect(parseInt(res.body.stargazers_count, 10)).toBeGreaterThan(
-      parseInt(prev.body.stargazers_count, 10)
+    // DESCRIBE: Properly Increases Star Count
+    expect(parseInt(res.body.stargazers_count, 10)).toEqual(
+      parseInt(prev.body.stargazers_count, 10) + 1
     );
-    // DESCRIBE: A duplicate Request Returns Error Status
-    expect(dup).toHaveHTTPCode(500);
-    // DESCRIBE: A duplicate Request Returns Error Message
-    expect(dup.body.message).toEqual(msg.serverError);
+    // DESCRIBE: A duplicate Request Returns Success Status Code
+    expect(dup).toHaveHTTPCode(200);
+    // DESCRIBE: A duplicate Request keeps the star, but does not increase the count
+    expect(parseInt(res.body.stargazers_count, 10)).toEqual(
+      parseInt(dup.body.stargazers_count, 10)
+    );
   });
 });
 
@@ -521,16 +522,16 @@ describe("DELETE /api/packages/:packageName/star", () => {
       .set("Authorization", "valid-token");
     expect(res.body.message).toEqual(msg.notFound);
   });
-  test("Returns Not Found when not a starred package", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css/star")
-      .set("Authorization", "no-star-token");
-    expect(res).toHaveHTTPCode(404);
-  });
   test("Returns 201 on Success", async () => {
     const res = await request(app)
       .delete("/api/packages/language-css/star")
       .set("Authorization", "all-star-token");
+    expect(res).toHaveHTTPCode(201);
+  });
+  test("Returns 201 even when the package is not starred", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css/star")
+      .set("Authorization", "no-star-token");
     expect(res).toHaveHTTPCode(201);
   });
 });

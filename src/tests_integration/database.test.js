@@ -278,36 +278,6 @@ describe("Package Lifecycle Tests", () => {
     expect(downPackReUndo.content.name).toEqual(NEW_NAME);
     expect(downPackReUndo.content.downloads).toEqual("0");
 
-    // === Can we star our package?
-    const starPack = await database.updatePackageIncrementStarByName(NEW_NAME);
-    expect(starPack.ok).toBeTruthy();
-    expect(starPack.content.name).toEqual(NEW_NAME);
-    expect(starPack.content.stargazers_count).toEqual("1");
-
-    // === Can we unstar our package?
-    const starPackUndo = await database.updatePackageDecrementStarByName(
-      NEW_NAME
-    );
-    expect(starPackUndo.ok).toBeTruthy();
-    expect(starPackUndo.content.name).toEqual(NEW_NAME);
-    expect(starPackUndo.content.stargazers_count).toEqual("0");
-
-    // === Can we get the stars of our package below zero?
-    const starPackReUndo = await database.updatePackageDecrementStarByName(
-      NEW_NAME
-    );
-    expect(starPackReUndo.ok).toBeTruthy();
-    expect(starPackReUndo.content.name).toEqual(NEW_NAME);
-    expect(starPackReUndo.content.stargazers_count).toEqual("0");
-
-    // === Can we star by the old name?
-    const starPackOld = await database.updatePackageIncrementStarByName(
-      pack.createPack.name
-    );
-    expect(starPackOld.ok).toBeTruthy();
-    expect(starPackOld.content.name).toEqual(NEW_NAME);
-    expect(starPackOld.content.stargazers_count).toEqual("1");
-
     // === Can we download by old name?
     const downPackOld = await database.updatePackageIncrementDownloadByName(
       pack.createPack.name
@@ -462,13 +432,20 @@ describe("Package Lifecycle Tests", () => {
     expect(getFakeStars.content.length).toEqual(0);
 
     // === Can we star a package with our User?
-    const starPack = await database.updateStars(
+    const starPack = await database.updateIncrementStar(
       getUserID.content,
       "language-css"
     );
     expect(starPack.ok).toBeTruthy();
-    expect(starPack.content.startsWith("Successfully Stared ")).toBeTruthy();
-    expect(starPack.content.endsWith(` with ${USER_ID}`)).toBeTruthy();
+    expect(starPack.content).toEqual("Package Successfully Starred");
+
+    // === Can we add a new star to the same package with our User?
+    const reStarPack = await database.updateIncrementStar(
+      getUserID.content,
+      "language-css"
+    );
+    expect(reStarPack.ok).toBeTruthy();
+    expect(reStarPack.content).toEqual("Package Already Starred");
 
     // === Does our user now have valid stars?
     const getStars = await database.getStarredPointersByUserID(USER_ID);
@@ -476,13 +453,25 @@ describe("Package Lifecycle Tests", () => {
     expect(getStars.content.length).toEqual(1);
 
     // === Can we remove our star?
-    const remStar = await database.updateDeleteStar(
+    const remStar = await database.updateDecrementStar(
       getUserID.content,
       "language-css"
     );
     expect(remStar.ok).toBeTruthy();
-    expect(remStar.content.startsWith("Successfully Unstarred ")).toBeTruthy();
-    expect(remStar.content.endsWith(` with ${USER_ID}`)).toBeTruthy();
+    expect(remStar.content).toEqual("Package Successfully Unstarred");
+
+    // === What happens if the User try to remove a star from un unstarred package?
+    const reRemStar = await database.updateDecrementStar(
+      getUserID.content,
+      "language-css"
+    );
+    expect(reRemStar.ok).toBeTruthy();
+    expect(reRemStar.content).toEqual("The Star is Already Missing");
+
+    // === Does our user now have valid stars?
+    const getNoStars = await database.getStarredPointersByUserID(USER_ID);
+    expect(getNoStars.ok).toBeTruthy();
+    expect(getNoStars.content.length).toEqual(0);
 
     // === Can we remove our User?
     // TODO: Currently there is no way to delete a user account.

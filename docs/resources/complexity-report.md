@@ -1,10 +1,10 @@
-# Complexity report, 12/16/2022
+# Complexity report, 12/18/2022
 
 * Mean per-function logical LOC: 17.153846153846153
 * Mean per-function parameter count: 0.36538461538461536
 * Mean per-function cyclomatic complexity: 1.5769230769230769
-* Mean per-function Halstead effort: 5118.06282754091
-* Mean per-module maintainability index: 64.53863313132871
+* Mean per-function Halstead effort: 5043.95238437846
+* Mean per-module maintainability index: 64.54258539120397
 * First-order density: 0.591715976331361%
 * Change cost: 8.284023668639055%
 * Core size: 100%
@@ -206,7 +206,7 @@
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 1.282051282051282%
-* Maintainability index: 37.635938926624725
+* Maintainability index: 37.68731830500316
 * Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/src/tests_integration/fixtures/git.createPackage_returns/valid_multi_version.js

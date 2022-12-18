@@ -23,7 +23,7 @@ Otherwise to login and create an account with your GitHub PAT token, you'll firs
 
 Once you have your PAT token created, you'll need to pass that along to Pulsar during the sign on process.
 
-You can do this manually, but it's recommended to use it on the [Pulsar Sign Up Screen](#).
+You can do this manually, but it's recommended to use it on the [Pulsar Sign Up Screen](https://web.pulsar-edit.dev/login).
 
 But if you'd like to do it manually, you need to navigate to the following URL [`/api/pat`](https://api.pulsar-edit.dev/api/pat) while modifying the following credentials.
 

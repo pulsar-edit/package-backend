@@ -3,9 +3,9 @@ const query = require("../query.js");
 // Page Testing
 
 const page_cases = [
-  [{ query: { page: "3" } }, "3"],
+  [{ query: { page: "3" } }, 3],
   [{ query: {} }, 1],
-  [{ query: { page: "2" } }, "2"],
+  [{ query: { page: "2" } }, 2],
   [{ query: { page: "JustText" } }, 1],
   [{ query: { page: undefined } }, 1],
 ];

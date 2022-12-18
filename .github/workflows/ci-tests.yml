@@ -33,6 +33,7 @@ env:
   # This helps some modules know they are in a test environment
   NODE_ENV: "test"
   PULSAR_STATUS: "dev"
+  STATE_STORE_CODE: "123"
 
 jobs:
   tests:

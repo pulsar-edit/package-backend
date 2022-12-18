@@ -9,18 +9,24 @@
  * @function page
  * @desc Parser of the Page query parameter. Defaulting to 1.
  * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @returns {string} Returns the valid page provided in the query parameter or 1, as the default.
+ * @returns {number} Returns the valid page provided in the query parameter or 1, as the default.
  */
 function page(req) {
   const def = 1;
   const prov = req.query.page;
 
-  if (prov === undefined) {
-    return def;
-  }
+  switch (typeof prov) {
+    case "string": {
+      const n = parseInt(prov, 10);
+      return isNaN(prov) ? def : n;
+    }
 
-  // ensure it's a proper number
-  return prov.match(/^\d+$/) !== null ? parseInt(prov) : def;
+    case "number":
+      return isNaN(prov) ? def : prov;
+
+    default:
+      return def;
+  }
 }
 
 /**
@@ -150,7 +156,7 @@ function repo(req) {
  * @returns {string} Returns a valid 'tag' query parameter. Or '' if invalid.
  */
 function tag(req) {
-  return req.query.tag ?? "";
+  return typeof req.query.tag !== "string" ? "" : req.query.tag;
 }
 
 /**

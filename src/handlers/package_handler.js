@@ -474,32 +474,13 @@ async function postPackagesStar(req, res) {
     return;
   }
 
-  const exists = await database.getPackageByName(params.packageName, true);
-
-  if (!exists.ok) {
-    // The package we are trying to star doesn't exist, resolve with a 404.
-    await common.handleError(
-      req,
-      res,
-      { ok: false, short: "Not Found", content: exists.content },
-      1012
-    );
-    return;
-  }
-
-  const star = await database.updateStars(user.content, params.packageName);
-
-  if (!star.ok) {
-    await common.handleError(req, res, user, 1009);
-    return;
-  }
-
-  const updatePack = await database.updatePackageIncrementStarByName(
+  const star = await database.updateIncrementStar(
+    user.content,
     params.packageName
   );
 
-  if (!updatePack.ok) {
-    await common.handleError(req, res, updatePack, 1010);
+  if (!star.ok) {
+    await common.handleError(req, res, star, 1009);
     return;
   }
 
@@ -539,22 +520,13 @@ async function deletePackagesStar(req, res) {
     return;
   }
 
-  const unstar = await database.updateDeleteStar(
+  const unstar = await database.updateDecrementStar(
     user.content,
     params.packageName
   );
 
   if (!unstar.ok) {
     await common.handleError(req, res, unstar);
-    return;
-  }
-
-  const updatePack = await database.updatePackageDecrementStarByName(
-    params.packageName
-  );
-
-  if (!updatePack.ok) {
-    await common.handleError(req, res, updatePack);
     return;
   }
 
@@ -621,6 +593,16 @@ async function postPackagesVersion(req, res) {
     packageName: query.packageName(req),
   };
 
+  /* Check tag validity
+  if (params.tag === "") {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Bad Repo",
+      content: "The tag parameter is not correctly specified",
+    });
+    return;
+  }*/
+
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
   // match a previously published package.
@@ -685,7 +667,8 @@ async function postPackagesVersion(req, res) {
   // Now the only thing left to do, is add this new version with the name from the package.
   // And check again if the name is incorrect, since it'll need a new entry onto the names.
 
-  if (packJSON.name !== params.packageName && params.rename) {
+  const rename = packJSON.name !== params.packageName && params.rename;
+  if (rename) {
     // Before allowing the rename of a package, ensure the new name isn't banned.
 
     const isBanned = await utils.isPackageNameBanned(packJSON.name);
@@ -701,22 +684,14 @@ async function postPackagesVersion(req, res) {
       // TODO ^^^ Replace with specific error once more are supported.
       return;
     }
-
-    // The flow for renaming the existing package.
-    const newName = await database.insertNewPackageName(
-      packJSON.name,
-      params.packageName
-    );
-
-    if (!newName.ok) {
-      await common.handleError(req, res, newName);
-      return;
-    }
   }
 
   // Now add the new Version key.
 
-  const addVer = await database.insertNewPackageVersion(packJSON);
+  const addVer = await database.insertNewPackageVersion(
+    packJSON,
+    rename ? params.packageName : null
+  );
 
   if (!addVer.ok) {
     await common.handleError(req, res, addVer);

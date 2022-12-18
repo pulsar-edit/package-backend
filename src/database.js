@@ -85,8 +85,8 @@ async function insertNewPackage(pack) {
         metadata: pack.metadata,
       };
       const packageType =
-        pack.metadata.themes !== null &&
-        (pack.metadata.themes == "themes" || pack.metadata.themes == "ui")
+        typeof pack.metadata.themes === "string" &&
+        pack.metadata.themes.match(/^(?:themes|ui)$/i) !== null
           ? "theme"
           : "package";
 
@@ -130,15 +130,9 @@ async function insertNewPackage(pack) {
         // therefore set it as NONE if undefined.
         const license = pv[ver].license ?? "NONE";
 
-        // Save version object into meta, but strip engines and license properties
-        // since we save them into specific separate columns.
-        let meta = pv[ver];
-        delete meta.engines;
-        delete meta.license;
-
         command = await sqlTrans`
         INSERT INTO versions (package, status, semver, license, engine, meta)
-        VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${meta})
+        VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
         RETURNING id;
       `;
 
@@ -164,15 +158,24 @@ async function insertNewPackage(pack) {
  * @function insertNewPackageVersion
  * @desc Adds a new package version to the db.
  * @param {object} packJSON - A full `package.json` file for the wanted version.
+ * @param {string|null} oldName - If provided, the old name to be replaced for the renaming of the package.
  * @returns {object} A server status object.
  */
-async function insertNewPackageVersion(packJSON) {
+async function insertNewPackageVersion(packJSON, oldName = null) {
   sqlStorage ??= setupSQL();
 
   // We are expected to receive a standard `package.json` file.
+  // Note that, if oldName is provided, here we can be sure oldName !== packJSON.name
+  // because the comparison has been already done in postPackagesVersion()
   return await sqlStorage
     .begin(async (sqlTrans) => {
-      const packID = await getPackageByNameSimple(packJSON.name);
+      const rename = typeof oldName === "string";
+
+      // On renaming, search the package pointer using the oldName,
+      // otherwise use the name in the package object directly.
+      let packName = rename ? oldName : packJSON.name;
+
+      const packID = await getPackageByNameSimple(packName);
 
       if (!packID.ok) {
         return packID;
@@ -180,7 +183,46 @@ async function insertNewPackageVersion(packJSON) {
 
       const pointer = packID.content.pointer;
 
-      // First we need to check if the current latest version is lower than the new one
+      if (rename) {
+        // The flow for renaming the package.
+        // Before inserting the new name, we try to update it into the `packages` table
+        // since we want that column to contain the current name.
+        try {
+          const updateNewName = await sqlTrans`
+          UPDATE packages
+          SET name = ${packJSON.name}
+          WHERE pointer = ${pointer}
+          RETURNING *;
+          `;
+
+          if (updateNewName.count === 0) {
+            throw `Unable to update the package name.`;
+          }
+        } catch (e) {
+          throw `Unable to update the package name. ${packJSON.name} is already used by another package.`;
+        }
+
+        // Now we can finally insert the new name inside the `names` table.
+        try {
+          const newInsertedName = await sqlTrans`
+          INSERT INTO names
+          (name, pointer) VALUES
+          (${packJSON.name}, ${pointer})
+          RETURNING *;
+          `;
+
+          if (newInsertedName.count === 0) {
+            throw `Unable to add the new name: ${packJSON.name}`;
+          }
+        } catch (e) {
+          throw `Unable to add the new name: ${packJSON.name} is already used.`;
+        }
+
+        // After renaming, we can use packJSON.name as the package name.
+        packName = packJSON.name;
+      }
+
+      // Here we need to check if the current latest version is lower than the new one
       // which we want to publish.
       const latestVersion = await sqlTrans`
         SELECT *
@@ -189,7 +231,7 @@ async function insertNewPackageVersion(packJSON) {
       `;
 
       if (latestVersion.count === 0) {
-        throw `There is no current latest version for ${packJSON.name}. The package is broken.`;
+        throw `There is no current latest version for ${packName}. The package is broken.`;
       }
 
       const higherSemver = utils.semverGt(
@@ -209,10 +251,22 @@ async function insertNewPackageVersion(packJSON) {
       `;
 
       if (updateLastVer.count === 0) {
-        throw `Unable to modify last published version ${packJSON.name}`;
+        throw `Unable to modify last published version ${packName}`;
       }
 
-      // We can insert the new latest version
+      // Then update the package object in the related column of packages table.
+      const updatePackageData = await sqlTrans`
+        UPDATE packages
+        SET data = ${packJSON}
+        WHERE pointer = ${pointer}
+        RETURNING *;
+      `;
+
+      if (updatePackageData.count === 0) {
+        throw `Unable to update the full package object of the new version ${packName}`;
+      }
+
+      // We can finally insert the new latest version.
       const license = packJSON.license ?? "NONE";
       const engine = packJSON.engines ?? { atom: "*" };
 
@@ -224,23 +278,23 @@ async function insertNewPackageVersion(packJSON) {
         `;
 
         if (addVer.count === 0) {
-          throw `Unable to create a new version for ${packJSON.name}`;
+          throw `Unable to create a new version for ${packName}`;
         }
       } catch (e) {
         // This occurs when the (package, semver) unique constraint is violated.
-        throw `Not allowed to publish a version previously deleted for ${packJSON.name}`;
+        throw `Not allowed to publish a version previously deleted for ${packName}`;
       }
 
       return {
         ok: true,
-        content: `Successfully added new version: ${packJSON.name}@${packJSON.version}`,
+        content: `Successfully added new version: ${packName}@${packJSON.version}`,
       };
     })
     .catch((err) => {
       const msg =
         typeof err === "string"
           ? err
-          : `A generic error occured while inserting the new package version ${packJSON.name}`;
+          : `A generic error occured while inserting the new package version ${packName}`;
 
       return { ok: false, content: msg, short: "Server Error" };
     });
@@ -254,6 +308,9 @@ async function insertNewPackageVersion(packJSON) {
  * @param {string} newName - The new name to create in the DB.
  * @param {string} oldName - The original name of which to use the pointer of.
  * @returns {object} A server status object.
+ * @todo This function has been left only for testing purpose since it has been integrated
+ * inside insertNewPackageVersion, so it should be removed when we can test the rename process
+ * directly on the endpoint.
  */
 async function insertNewPackageName(newName, oldName) {
   sqlStorage ??= setupSQL();
@@ -529,62 +586,43 @@ async function getPackageCollectionByID(packArray) {
 
 /**
  * @async
- * @function updatePackageIncrementStarByName
- * @description Uses the package name to increment it's stargazers count by one.
+ * @function updatePackageStargazers
+ * @description Uses the package name (or pointer if provided) to update its stargazers count.
  * @param {string} name - The package name.
+ * @param {string} pointer - The package id (if given, the search by name is skipped).
  * @returns {object} The effected server status object.
  */
-async function updatePackageIncrementStarByName(name) {
+async function updatePackageStargazers(name, pointer = null) {
   try {
     sqlStorage ??= setupSQL();
 
-    const command = await sqlStorage`
+    if (pointer == null) {
+      const packID = await getPackageByNameSimple(name);
+
+      if (!packID.ok) {
+        return packID;
+      }
+
+      pointer = packID.content.pointer;
+    }
+
+    const countStars = await sqlStorage`
+      SELECT COUNT(*) AS stars
+      FROM stars
+      WHERE package = ${pointer};
+    `;
+
+    const starCount = countStars.count !== 0 ? countStars[0].stars : 0;
+
+    const updateStar = await sqlStorage`
       UPDATE packages
-      SET stargazers_count = stargazers_count + 1
-      WHERE pointer IN (
-        SELECT pointer
-        FROM names
-        WHERE name = ${name}
-      )
+      SET stargazers_count = ${starCount}
+      WHERE pointer = ${pointer}
       RETURNING name, downloads, (stargazers_count + original_stargazers) AS stargazers_count, data;
     `;
 
-    return command.count !== 0
-      ? { ok: true, content: command[0] }
-      : {
-          ok: false,
-          content: "Unable to Update Package Stargazers",
-          short: "Server Error",
-        };
-  } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
-  }
-}
-
-/**
- * @async
- * @function updatePackageDecrementStarByName
- * @description Uses the package name to decrement it's stargazers count by one.
- * @param {string} name - The package name.
- * @returns {object} The effected server status object.
- */
-async function updatePackageDecrementStarByName(name) {
-  try {
-    sqlStorage ??= setupSQL();
-
-    const command = await sqlStorage`
-      UPDATE packages
-      SET stargazers_count = GREATEST(stargazers_count - 1, 0)
-      WHERE pointer IN (
-        SELECT pointer
-        FROM names
-        WHERE name = ${name}
-      )
-      RETURNING name, downloads, (stargazers_count + original_stargazers) AS stargazers_count, data;
-    `;
-
-    return command.count !== 0
-      ? { ok: true, content: command[0] }
+    return updateStar.count !== 0
+      ? { ok: true, content: updateStar[0] }
       : {
           ok: false,
           content: "Unable to Update Package Stargazers",
@@ -872,6 +910,22 @@ async function removePackageVersion(packName, semVer) {
         };
       }
 
+      // Let's save the meta data object of the new latest version so
+      // we can update it inside the packages table since we use the
+      // packages.data column to report the full object of the lastest version.
+      const latestDataObject = commandLatest[0].meta;
+
+      const updatePackageData = await sqlTrans`
+        UPDATE packages
+        SET data = ${latestDataObject}
+        WHERE pointer = ${pointer}
+        RETURNING *;
+      `;
+
+      if (updatePackageData.count === 0) {
+        throw `Unable to update the full package object of the new version ${latestSemver}`;
+      }
+
       return {
         ok: true,
         content: `Removed ${semVer} of ${packName} and ${latestSemver} is the new latest version.`,
@@ -1058,13 +1112,13 @@ async function getUserByID(id) {
 
 /**
  * @async
- * @function updateStars
+ * @function updateIncrementStar
  * @description Register the star given by a user to a package.
  * @param {int} user - A User Object that should star the package.
  * @param {string} pack - Package name that get the new star.
  * @returns {object} A server status object.
  */
-async function updateStars(user, pack) {
+async function updateIncrementStar(user, pack) {
   try {
     sqlStorage ??= setupSQL();
 
@@ -1080,25 +1134,46 @@ async function updateStars(user, pack) {
 
     const pointer = packID.content.pointer;
 
-    const commandStar = await sqlStorage`
-      INSERT INTO stars
-      (package, userid) VALUES
-      (${pointer}, ${user.id})
-      RETURNING *;
-    `;
+    try {
+      const commandStar = await sqlStorage`
+        INSERT INTO stars
+        (package, userid) VALUES
+        (${pointer}, ${user.id})
+        RETURNING *;
+      `;
 
-    // Now we expect to get our data right back, and can check the
-    // validity to know if this happened successfully or not.
-    return pointer == commandStar[0].package && user.id == commandStar[0].userid
-      ? {
-          ok: true,
-          content: `Successfully Stared ${pointer} with ${user.id}`,
-        }
-      : {
+      // Now we expect to get our data right back, and can check the
+      // validity to know if this happened successfully or not.
+      if (
+        pointer != commandStar[0].package ||
+        user.id != commandStar[0].userid
+      ) {
+        return {
           ok: false,
-          content: `Failed to Star ${pointer} with ${user.id}`,
+          content: `Failed to Star the Package`,
           short: "Server Error",
         };
+      }
+
+      // Now update the stargazers count into the packages table
+      const updatePack = await updatePackageStargazers(pack, pointer);
+
+      if (!updatePack.ok) {
+        return updatePack;
+      }
+
+      return {
+        ok: true,
+        content: `Package Successfully Starred`,
+      };
+    } catch (e) {
+      // Catch the primary key violation on (package, userid),
+      // Sinche the package is already starred by the user, we return ok.
+      return {
+        ok: true,
+        content: `Package Already Starred`,
+      };
+    }
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
@@ -1106,13 +1181,13 @@ async function updateStars(user, pack) {
 
 /**
  * @async
- * @function updateDeleteStar
+ * @function updateDecrementStar
  * @description Register the removal of the star on a package by a user.
  * @param {int} user - User Object who remove the star.
  * @param {string} pack - Package name that get the star removed.
  * @returns {object} A server status object.
  */
-async function updateDeleteStar(user, pack) {
+async function updateDecrementStar(user, pack) {
   try {
     sqlStorage ??= setupSQL();
 
@@ -1135,43 +1210,38 @@ async function updateDeleteStar(user, pack) {
     `;
 
     if (commandUnstar.length === 0) {
-      // The command failed, let see if its because the data doesn't exist.
-
-      const doesExist = await sqlStorage`
-        SELECT EXISTS (
-          SELECT 1 FROM stars
-          WHERE (package = ${pointer}) AND (userid = ${user.id})
-        );
-      `;
-
-      if (doesExist[0].exists) {
-        // Exists is true, so it failed for some other reason
-        return {
-          ok: false,
-          content: `Failed to Unstar ${pack} with ${user.username}`,
-          short: "Server Error",
-        };
-      }
-
+      // We know user and package exist both, so the fail is because
+      // the star was already missing,
+      // The user expects its star is not given, so we return ok.
       return {
-        ok: false,
-        content: `Failed to Unstar ${pack} with ${user.username} Because it doesn't exist.`,
-        short: "Not Found",
+        ok: true,
+        content: "The Star is Already Missing",
       };
     }
 
-    // if the return matches our input we know it was successful
-    return user.id == commandUnstar[0].userid &&
-      pointer == commandUnstar[0].package
-      ? {
-          ok: true,
-          content: `Successfully Unstarred ${pointer} with ${user.id}`,
-        }
-      : {
-          ok: false,
-          content: `Failed to Unstar ${pointer} with ${user.id}`,
-          short: "Server Error",
-        };
+    // If the return does not match our input, it failed.
+    if (
+      user.id != commandUnstar[0].userid ||
+      pointer != commandUnstar[0].package
+    ) {
+      return {
+        ok: false,
+        content: "Failed to Unstar the Package",
+        short: "Server Error",
+      };
+    }
+
+    // Now update the stargazers count into the packages table
+    const updatePack = await updatePackageStargazers(pack, pointer);
+
+    if (!updatePack.ok) {
+      return updatePack;
+    }
+
+    return {
+      ok: true,
+      content: "Package Successfully Unstarred",
+    };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
@@ -1181,6 +1251,7 @@ async function updateDeleteStar(user, pack) {
  * @async
  * @function getStarredPointersByUserID
  * @description Get all packages which the user gave the star.
+ * The result of this function should not be returned to the user because it contains pointers UUID.
  * @param {int} userid - ID of the user.
  * @returns {object} A server status object.
  */
@@ -1194,14 +1265,13 @@ async function getStarredPointersByUserID(userid) {
       );
     `;
 
-    let packArray = command[0].array;
-
-    if (command.count === 0) {
-      // It is likely safe to assume that if nothing matches the userid,
-      // then the user hasn't given any star. So instead of server error
-      // here we will non-traditionally return an empty array.
-      packArray = [];
-    }
+    // It is likely safe to assume that if nothing matches the userid,
+    // then the user hasn't given any star. So instead of server error
+    // here we will non-traditionally return an empty array.
+    const packArray =
+      command.count !== 0 && Array.isArray(command[0].array)
+        ? command[0].array
+        : [];
 
     return { ok: true, content: packArray };
   } catch (err) {
@@ -1449,13 +1519,12 @@ module.exports = {
   getPackageVersionByNameAndVersion,
   updatePackageIncrementDownloadByName,
   updatePackageDecrementDownloadByName,
-  updatePackageIncrementStarByName,
-  updatePackageDecrementStarByName,
+  updatePackageStargazers,
   getFeaturedThemes,
   simpleSearch,
   simpleSearchCount,
-  updateStars,
-  updateDeleteStar,
+  updateIncrementStar,
+  updateDecrementStar,
   insertNewUser,
   insertNewPackageName,
   insertNewPackageVersion,

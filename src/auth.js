@@ -89,10 +89,10 @@ async function verifyAuth(token) {
       }
     }
 
-    let prov_node_id = user_data.body.node_id;
+    const prov_node_id = user_data.body.node_id;
 
     // Now we want to see if we are able to locate this user's node_id in our db.
-    let db_user = await database.getUserByNodeID(prov_node_id);
+    const db_user = await database.getUserByNodeID(prov_node_id);
 
     if (!db_user.ok) {
       return db_user;
@@ -101,7 +101,7 @@ async function verifyAuth(token) {
     // Now we have a valid user from the database, that we can confirm is fully authenticated.
     // We will go ahead and return an "Auth User Object" to let the rest of the system use
 
-    let auth_user_object = {
+    const auth_user_object = {
       token: token,
       id: db_user.content.id,
       node_id: prov_node_id,
