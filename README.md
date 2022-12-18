@@ -1,7 +1,7 @@
 # Pulsar Backend / Atom Backend
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/2a0877b7d4254cc098fb0da600056643)](https://www.codacy.com/gh/pulsar-edit/package-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pulsar-edit/package-backend&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/confused-Techie/atom-backend/branch/main/graph/badge.svg?token=LZ33F9DSH4)](https://codecov.io/gh/confused-Techie/atom-backend)
+[![codecov](https://codecov.io/gh/pulsar-edit/package-backend/branch/main/graph/badge.svg?token=LZ33F9DSH4)](https://codecov.io/gh/pulsar-edit/package-backend)
 
 [![CI - Standards](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml)
 [![CI - Tests](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml)
