@@ -643,7 +643,7 @@ async function postPackagesVersion(req, res) {
   // Else we will continue, and trust the name provided from the package as being accurate.
   // And now we can ensure the user actually owns this repo, with our updated name.
 
-  const gitowner = await git.ownership(user.content, packJSON.name);
+  const gitowner = await git.ownership(user.content, packExists.metadata.repository.replace("https://github.com/", ""));
 
   if (!gitowner.ok) {
     await common.handleError(req, res, gitowner);
