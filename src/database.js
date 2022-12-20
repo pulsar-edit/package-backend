@@ -1320,14 +1320,11 @@ async function getStarringUsersByPointer(pointer) {
  * @function simpleSearch
  * @description The current Fuzzy-Finder implementation of search. Ideally eventually
  * will use a more advanced search method.
- * @returns {object} A server status object.
+ * @returns {object} A server status object containing the search status object.
  */
 async function simpleSearch(term, page, dir, sort, themes = false) {
   try {
     sqlStorage ??= setupSQL();
-
-    let limit = paginated_amount;
-    let offset = page > 1 ? (page - 1) * limit : 0;
 
     // We obtain the lowercase version of term since names should be in
     // lowercase format (see atom-backend issue #86).
@@ -1345,53 +1342,28 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       ORDER BY ${
         sort === "relevance" ? sqlStorage`downloads` : sqlStorage`${sort}`
       }
-      ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
-      LIMIT ${limit}
-      OFFSET ${offset};
+      ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`};
     `;
 
-    return command.count !== 0
-      ? { ok: true, content: command }
-      : { ok: false, content: `No packages found.`, short: "Not Found" };
-  } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
-  }
-}
+    const resultCount = command.count;
+    if (resultCount === 0) {
+      return { ok: false, content: `No packages found.`, short: "Not Found" };
+    }
 
-/**
- * @async
- * @function simpleSearchCount
- * @description The current Fuzzy-Finder implementation of search count. Ideally eventually
- * will use a more advanced search method.
- * @returns {object} A server status object.
- */
-async function simpleSearchCount(term, page, dir, sort, themes = false) {
-  try {
-    sqlStorage ??= setupSQL();
+    const quotient = Math.trunc(resultCount / paginated_amount);
+    const remainder = resultCount % paginated_amount;
+    const totalPages = quotient + (remainder > 0 ? 1 : 0);
 
-    let limit = paginated_amount;
-
-    // We obtain the lowercase version of term since names should be in
-    // lowercase format (see atom-backend issue #86).
-    const lcterm = term.toLowerCase();
-
-    const command = await sqlStorage`
-      SELECT COUNT(name)
-      FROM packages AS p INNER JOIN versions AS v ON (p.pointer = v.package) AND (v.status = 'latest')
-      WHERE pointer IN (
-        SELECT pointer
-        FROM names
-        ${sqlStorage`WHERE name LIKE ${"%" + lcterm + "%"}`}
-      )
-      ${themes === true ? sqlStorage`AND package_type = 'theme'` : sqlStorage``}
-    `;
-
-    let total = parseInt(command[0]?.count || '0');
-    let pages = Math.ceil(total / limit);
-
-    return command.count !== 0
-      ? { ok: true, content: {total, pages} }
-      : { ok: false, content: 0, short: "Not Found" };
+    // search status object to return
+    // { page: Number, total: Number, result: Array };
+    return {
+      ok: true,
+      content: {
+        page: (page < totalPages) ? page : totalPages,
+        total: totalPages,
+        result: command.slice((page - 1) * paginated_amount, page * paginated_amount)
+      }
+    };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
@@ -1440,16 +1412,13 @@ async function getUserCollectionById(ids) {
  * @param {string} dir - String flag for asc/desc order.
  * @param {string} method - The column name the results have to be sorted by.
  * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
- * @returns {object} A server status object.
+ * @returns {object} A server status object containing the search status object.
  */
 async function getSortedPackages(page, dir, method, themes = false) {
   // Here will be a monolithic function for returning sortable packages arrays.
   // We must keep in mind that all the endpoint handler knows is the
   // page, sort method, and direction. We must figure out the rest here.
   // only knowing we have a valid sort method provided.
-
-  let limit = paginated_amount;
-  let offset = page > 1 ? (page - 1) * limit : 0;
 
   try {
     sqlStorage ??= setupSQL();
@@ -1488,12 +1457,25 @@ async function getSortedPackages(page, dir, method, themes = false) {
       }
       ORDER BY ${orderType} ${
       dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
-    }
-      LIMIT ${limit}
-      OFFSET ${offset};
+    };
     `;
 
-    return { ok: true, content: command };
+    const resultCount = command.count;
+
+    const quotient = Math.trunc(resultCount / paginated_amount);
+    const remainder = resultCount % paginated_amount;
+    const totalPages = quotient + (remainder > 0 ? 1 : 0);
+
+    // search status object to return
+    // { page: Number, total: Number, result: Array };
+    return {
+      ok: true,
+      content: {
+        page: (page < totalPages) ? page : totalPages,
+        total: totalPages,
+        result: command.slice((page - 1) * paginated_amount, page * paginated_amount)
+      }
+    };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
@@ -1522,7 +1504,6 @@ module.exports = {
   updatePackageStargazers,
   getFeaturedThemes,
   simpleSearch,
-  simpleSearchCount,
   updateIncrementStar,
   updateDecrementStar,
   insertNewUser,

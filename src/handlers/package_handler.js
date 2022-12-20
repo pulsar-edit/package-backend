@@ -38,54 +38,44 @@ async function getPackages(req, res) {
     direction: query.dir(req),
   };
 
-  const packages = await database.getSortedPackages(
+  const searchStatus = await database.getSortedPackages(
     params.page,
     params.direction,
     params.sort
   );
 
-  if (!packages.ok) {
+  if (!searchStatus.ok) {
     logger.generic(
       3,
-      `getPackages-getSortedPackages Not OK: ${packages.content}`
+      `getPackages-getSortedPackages Not OK: ${searchStatus.content}`
     );
-    await common.handleError(req, res, packages, 1001);
+    await common.handleError(req, res, searchStatus, 1001);
     return;
   }
 
+  const page = searchStatus.content.page;
+  const totPage = searchStatus.content.total;
   const packObjShort = await utils.constructPackageObjectShort(
-    packages.content
+    searchStatus.content.result
   );
 
   // The endpoint using this function needs an array.
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  const pagination = await database.getTotalPackageEstimate();
-
-  if (!pagination.ok) {
-    logger.generic(
-      3,
-      `getPackages-getTotalPackageEstimate Not OK: ${JSON.stringify(pagination.content)}`
-    );
-    await common.handleError(req, res, pagination, 1002);
-    return;
-  }
-
-  let link = `<${server_url}/api/packages?page=${params.page}&sort=${params.sort}&order=${
+  let link = `<${server_url}/api/packages?page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/packages?page=${pagination.content.pages}&sort=${
+  }>; rel="self", <${server_url}/api/packages?page=${page}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
-  if (params.page !== pagination.content.pages) {
+  if (page !== totPage) {
     link += `, <${server_url}/api/packages?page=${
-      params.page + 1
+      page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
-
-  res.append('Query-Total', pagination.content.total);
+  res.append("Query-Total", totPage);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -287,31 +277,15 @@ async function getPackagesSearch(req, res) {
   // side. This is only an effort to get this working quickly and should be changed later.
   // This also means for now, the default sorting method will be downloads, not relevance.
 
-  const packs = await database.simpleSearch(
+  const searchStatus = await database.simpleSearch(
     params.query,
     params.page,
     params.direction,
     params.sort
   );
 
-  const pagination = await database.simpleSearchCount(
-    params.query,
-    params.page,
-    params.direction,
-    params.sort
-  );
-
-  if (!pagination.ok) {
-    logger.generic(
-      3,
-      `getPackagesSearch-simpleSearchCount Not OK: ${JSON.stringify(pagination.content)}`
-    );
-    await common.handleError(req, res, pagination, 1002);
-    return;
-  }
-
-  if (!packs.ok) {
-    if (packs.short == "Not Found") {
+  if (!searchStatus.ok) {
+    if (searchStatus.short == "Not Found") {
       logger.generic(
         4,
         "getPackagesSearch-simpleSearch Responding with Empty Array for Not Found Status"
@@ -325,13 +299,15 @@ async function getPackagesSearch(req, res) {
     }
     logger.generic(
       3,
-      `getPackagesSearch-simpleSearch Not OK: ${packs.content}`
+      `getPackagesSearch-simpleSearch Not OK: ${searchStatus.content}`
     );
-    await common.handleError(req, res, packs, 1007);
+    await common.handleError(req, res, searchStatus, 1007);
     return;
   }
 
-  const newPacks = await utils.constructPackageObjectShort(packs.content);
+  const page = searchStatus.content.page;
+  const totPage = searchStatus.content.total;
+  const newPacks = await utils.constructPackageObjectShort(searchStatus.content.result);
   let packArray = null;
 
   if (Array.isArray(newPacks)) {
@@ -353,21 +329,20 @@ async function getPackagesSearch(req, res) {
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${params.page}&sort=${params.sort}&order=${
+  let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${pagination.content.pages}&sort=${
+  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
-  if (params.page !== pagination.content.pages) {
+  if (page !== totPage) {
     link += `, <${server_url}/api/packages/search?q=${safeQuery}&page=${
-      params.page + 1
+      page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
-
-  res.append('Query-Total', pagination.content.total);
+  res.append("Query-Total", totPage);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

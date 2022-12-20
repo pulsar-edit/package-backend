@@ -61,60 +61,44 @@ async function getThemes(req, res) {
     direction: query.dir(req),
   };
 
-  const packages = await database.getSortedPackages(
+  const searchStatus = await database.getSortedPackages(
     params.page,
     params.direction,
     params.sort,
     true
   );
 
-  if (!packages.ok) {
+  if (!searchStatus.ok) {
     logger.generic(
       3,
-      `getThemes-getSortedPackages Not OK: ${packages.content}`
+      `getThemes-getSortedPackages Not OK: ${searchStatus.content}`
     );
-    await common.handleError(req, res, packages);
+    await common.handleError(req, res, searchStatus);
     return;
   }
 
+  const page = searchStatus.content.page;
+  const totPage = searchStatus.content.total;
   const packObjShort = await utils.constructPackageObjectShort(
-    packages.content
+    searchStatus.content
   );
 
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  const pagination = await database.simpleSearchCount(
-    '',
-    params.page,
-    params.direction,
-    params.sort,
-    true
-  );
-
-  if (!pagination.ok) {
-    logger.generic(
-      3,
-      `getThemes-simpleSearchCount Not OK: ${JSON.stringify(pagination.content)}`
-    );
-    await common.handleError(req, res, pagination, 1002);
-    return;
-  }
-
-  let link = `<${server_url}/api/themes?page=${params.page}&sort=${params.sort}&order=${
+  let link = `<${server_url}/api/themes?page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/themes?page=${pagination.content.pages}&sort=${
+  }>; rel="self", <${server_url}/api/themes?page=${page}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
-  if (params.page !== pagination.content.pages) {
+  if (page !== totPage) {
     link += `, <${server_url}/api/themes?page=${
-      params.page + 1
+      page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
-
-  res.append('Query-Total', pagination.content.total);
+  res.append('Query-Total', totPage);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -137,7 +121,7 @@ async function getThemesSearch(req, res) {
     query: query.query(req),
   };
 
-  const packs = await database.simpleSearch(
+  const searchStatus = await database.simpleSearch(
     params.query,
     params.page,
     params.direction,
@@ -145,8 +129,8 @@ async function getThemesSearch(req, res) {
     true
   );
 
-  if (!packs.ok) {
-    if (packs.short == "Not Found") {
+  if (!searchStatus.ok) {
+    if (searchStatus.short == "Not Found") {
       logger.generic(
         4,
         "getThemesSearch-simpleSearch Responding with Empty Array for Not Found Status"
@@ -155,12 +139,14 @@ async function getThemesSearch(req, res) {
       logger.httpLog(req, res);
       return;
     }
-    logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${packs.content}`);
-    await common.handleError(req, res, packs);
+    logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${searchStatus.content}`);
+    await common.handleError(req, res, searchStatus);
     return;
   }
 
-  const newPacks = await utils.constructPackageObjectShort(packs.content);
+  const page = searchStatus.content.page;
+  const totPage = searchStatus.content.total;
+  const newPacks = await utils.constructPackageObjectShort(searchStatus.content.result);
   let packArray = null;
 
   if (Array.isArray(newPacks)) {
@@ -175,41 +161,23 @@ async function getThemesSearch(req, res) {
     packArray = [newPacks];
   }
 
-  const pagination = await database.simpleSearchCount(
-    params.query,
-    params.page,
-    params.direction,
-    params.sort,
-    true
-  );
-
-  if (!pagination.ok) {
-    logger.generic(
-      3,
-      `getThemesSearch-simpleSearchCount Not OK: ${JSON.stringify(pagination.content)}`
-    );
-    await common.handleError(req, res, pagination, 1002);
-    return;
-  }
-
   const safeQuery = encodeURIComponent(
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  let link = `<${server_url}/api/themes/search?q=${safeQuery}&page=${params.page}&sort=${params.sort}&order=${
+  let link = `<${server_url}/api/themes/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/themes/search?q=${safeQuery}&page=${pagination.content.pages}&sort=${
+  }>; rel="self", <${server_url}/api/themes/search?q=${safeQuery}&page=${page}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
-  if (params.page !== pagination.content.pages) {
+  if (page !== totPage) {
     link += `, <${server_url}/api/themes/search?q=${safeQuery}&page=${
-      params.page + 1
+      page + 1
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
-
   res.append('Query-Total', pagination.content.total);
 
   res.status(200).json(packArray);
