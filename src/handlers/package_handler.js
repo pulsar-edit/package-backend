@@ -110,7 +110,10 @@ async function postPackages(req, res) {
   };
 
   const user = await auth.verifyAuth(params.auth);
-  logger.generic(6, `${user.content.username} Attempting to Publish new package`);
+  logger.generic(
+    6,
+    `${user.content.username} Attempting to Publish new package`
+  );
   // Check authentication.
   if (!user.ok) {
     logger.generic(3, `postPackages-verifyAuth Not OK: ${user.content}`);
@@ -602,11 +605,17 @@ async function postPackagesVersion(req, res) {
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    logger.generic(6, "User Authentication Failed when attempting to publish package version!");
+    logger.generic(
+      6,
+      "User Authentication Failed when attempting to publish package version!"
+    );
     await common.handleError(req, res, user);
     return;
   }
-  logger.generic(6, `${user.content.username} Attempting to publish a new package version`);
+  logger.generic(
+    6,
+    `${user.content.username} Attempting to publish a new package version`
+  );
 
   // To support a rename, we need to check if they have permissions over this packages new name.
   // Which means we have to check if they have ownership AFTER we collect it's data.
@@ -614,7 +623,10 @@ async function postPackagesVersion(req, res) {
   const packExists = await database.getPackageByName(params.packageName, true);
 
   if (!packExists.ok) {
-    logger.generic(6, "Seems Package exists when trying to publish new version");
+    logger.generic(
+      6,
+      "Seems Package exists when trying to publish new version"
+    );
     await common.handleError(req, res, packExists);
     return;
   }
@@ -628,7 +640,10 @@ async function postPackagesVersion(req, res) {
   );
 
   if (packJSON === undefined) {
-    logger.generic(6, `Unable to get Package JSON from git with: ${user.content.username}/${packExists.name}`);
+    logger.generic(
+      6,
+      `Unable to get Package JSON from git with: ${user.content.username}/${packExists.name}`
+    );
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
@@ -638,7 +653,10 @@ async function postPackagesVersion(req, res) {
   }
 
   if (packJSON.name !== params.packageName && !params.rename) {
-    logger.generic(6, "Package JSON and Params Package Names don't match, with no rename flag");
+    logger.generic(
+      6,
+      "Package JSON and Params Package Names don't match, with no rename flag"
+    );
     // Only return error if the names don't match, and rename isn't enabled.
     await common.handleError(req, res, {
       ok: false,
