@@ -1129,35 +1129,45 @@ describe("Ensure Options Method Returns as Expected", () => {
     rateLimitHeaderCheck(res);
   });
   test("/api/:packType/:packageName/stargazers", async () => {
-    const res = await request(app).options("/api/packages/language-css/stargazers");
+    const res = await request(app).options(
+      "/api/packages/language-css/stargazers"
+    );
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET");
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
     rateLimitHeaderCheck(res);
   });
   test("/api/:packType/:packageName/versions", async () => {
-    const res = await request(app).options("/api/packages/language-css/versions");
+    const res = await request(app).options(
+      "/api/packages/language-css/versions"
+    );
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("POST");
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
     rateLimitHeaderCheck(res);
   });
   test("/api/:packType/:packageName/versions/:versionName", async () => {
-    const res = await request(app).options("/api/packages/langauge-css/versions/1.0.0");
+    const res = await request(app).options(
+      "/api/packages/langauge-css/versions/1.0.0"
+    );
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET, DELETE");
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
     rateLimitHeaderCheck(res);
   });
   test("/api/:packType/:packageName/versions/:versionName/tarball", async () => {
-    const res = await request(app).options("/api/packages/language-css/versions/1.0.0/tarball");
+    const res = await request(app).options(
+      "/api/packages/language-css/versions/1.0.0/tarball"
+    );
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET");
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
     rateLimitHeaderCheck(res);
   });
   test("/api/:packType/:packageName/versions/:versionName/events/uninstall", async () => {
-    const res = await request(app).options("/api/packages/language-css/versions/1.0.0/events/uninstall");
+    const res = await request(app).options(
+      "/api/packages/language-css/versions/1.0.0/events/uninstall"
+    );
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("POST");
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
@@ -1175,8 +1185,12 @@ describe("Ensure Options Method Returns as Expected", () => {
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET");
     expect(res.headers["access-control-allow-methods"]).toEqual("GET");
-    expect(res.headers["access-control-allow-headers"]).toEqual("Content-Type, Authorization, Access-Control-Allow-Credentials");
-    expect(res.headers["access-control-allow-origin"]).toEqual("https://web.pulsar-edit.dev");
+    expect(res.headers["access-control-allow-headers"]).toEqual(
+      "Content-Type, Authorization, Access-Control-Allow-Credentials"
+    );
+    expect(res.headers["access-control-allow-origin"]).toEqual(
+      "https://web.pulsar-edit.dev"
+    );
     expect(res.headers["access-control-allow-credentials"]).toEqual("true");
     rateLimitHeaderCheck(res);
   });

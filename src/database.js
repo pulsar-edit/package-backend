@@ -32,7 +32,7 @@ let sqlStorage; // SQL object, to interact with the DB.
  * @returns {object} PostgreSQL connection object.
  */
 function setupSQL() {
-  return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB != 'false'
+  return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB != "false"
     ? postgres({
         host: DB_HOST,
         username: DB_USER,

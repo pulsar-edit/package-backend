@@ -15,7 +15,7 @@ const dbTeardown = require("../node_modules/@databases/pg-test/jest/globalTeardo
 async function test() {
   await processArgs();
 
-  if (process.env.MOCK_DB != 'false') {
+  if (process.env.MOCK_DB != "false") {
     // We only Mock the Database if our argument flags permit.
     console.log("Setting up Database Mock");
 
@@ -44,7 +44,7 @@ async function test() {
   const database = require("./database.js");
   // We can only require these items after we have set our env variables
 
-  if (process.env.MOCK_DB != 'false') {
+  if (process.env.MOCK_DB != "false") {
     logger.generic(
       3,
       "Pulsar Server is in Development Mode with a Local Database!"
@@ -99,19 +99,19 @@ async function processArgs() {
   for (let i = 0; i < rawArgs.length; i++) {
     if (rawArgs[i] == "--gh") {
       console.log("Setting No Mock GitHub");
-      process.env.MOCK_GH = 'false';
+      process.env.MOCK_GH = "false";
     }
     if (rawArgs[i] == "--google") {
       console.log("Setting No Mock Google");
-      process.env.MOCK_GOOGLE = 'false';
+      process.env.MOCK_GOOGLE = "false";
     }
     if (rawArgs[i] == "--db") {
       console.log("Setting No Mock Database");
-      process.env.MOCK_DB = 'false';
+      process.env.MOCK_DB = "false";
     }
     if (rawArgs[i] == "--auth") {
       console.log("Setting No Mock Authentication");
-      process.env.MOCK_AUTH = 'false';
+      process.env.MOCK_AUTH = "false";
     }
   }
 

@@ -48,7 +48,11 @@ function setGHAPIURL(val) {
 async function ownership(user, repo, dev_override = false) {
   // user here is a full fledged user object. And repo is a text representation of the repository.
   // Since git auth is not setup, this will return positive.
-  if (process.env.PULSAR_STATUS == "dev" && !dev_override && process.env.MOCK_GH != 'false') {
+  if (
+    process.env.PULSAR_STATUS == "dev" &&
+    !dev_override &&
+    process.env.MOCK_GH != "false"
+  ) {
     console.log(
       `git.js.Ownership() Is returning Dev Only Permissions for ${logger.sanitizeLogs(
         user.username
@@ -413,7 +417,10 @@ async function doesUserHaveRepo(user, repo, page = 1) {
     return { ok: false, short: "No Access" };
   } catch (err) {
     // TODO: Remove once publish issues are determined
-    logger.generic(3, "doesUserHaveRepo Has failed check through caught error. Details Below:");
+    logger.generic(
+      3,
+      "doesUserHaveRepo Has failed check through caught error. Details Below:"
+    );
     console.log(err);
     if (err.status == 401) {
       return { ok: false, short: "No Auth" };
@@ -447,7 +454,10 @@ async function getRepoExistance(repo, user) {
     }
   } catch (err) {
     // TODO: Remove once publish issues are determined
-    logger.generic(3, "getRepoExistance Has failed check through caught error. Details below:");
+    logger.generic(
+      3,
+      "getRepoExistance Has failed check through caught error. Details below:"
+    );
     console.log(err);
     logger.generic(3, `Unable to check if repo exists. ${repo} - ${err}`);
     return false;
