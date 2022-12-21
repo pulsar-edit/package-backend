@@ -15,28 +15,37 @@ const package_handler = require("./handlers/package_handler.js");
 const common_handler = require("./handlers/common_handler.js");
 const oauth_handler = require("./handlers/oauth_handler.js");
 const server_version = require("../package.json").version;
+const logger = require("./logger.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
 
 // Define our Basic Rate Limiters
 const genericLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 0, // Limit each IP per window, 0 disables rate limit.
+  max: (process.env.PULSAR_STATUS == "dev") ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // Use default memory store
   message: "Too many requests, please try again later.", // Message once limit is reached.
   statusCode: 429, // HTTP Status Code once limit is reached.
+  handler: (request, response, next, options) => {
+    response.status(options.statusCode).json({ message: options.message });
+    logger.httpLog(request, response);
+  },
 });
 
 const authLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 0, // Limit each IP per window, 0 disables rate limit.
+  max: (process.env.PULSAR_STATUS == "dev") ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info on headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // use default memory store
   message: "Too many requests, please try again later.", // message once limit is reached
   statusCode: 429, // HTTP Status code once limit is reached.
+  handler: (request, response, next, options) => {
+    response.status(options.statusCode).json({ message: options.message });
+    logger.httpLog(request, response);
+  },
 });
 
 // ^^ Our two Rate Limiters ^^ these are essentially currently disabled.
