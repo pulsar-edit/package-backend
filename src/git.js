@@ -48,7 +48,7 @@ function setGHAPIURL(val) {
 async function ownership(user, repo, dev_override = false) {
   // user here is a full fledged user object. And repo is a text representation of the repository.
   // Since git auth is not setup, this will return positive.
-  if (process.env.PULSAR_STATUS == "dev" && !dev_override) {
+  if (process.env.PULSAR_STATUS == "dev" && !dev_override && process.env.MOCK_GH != 'false') {
     console.log(
       `git.js.Ownership() Is returning Dev Only Permissions for ${logger.sanitizeLogs(
         user.username
