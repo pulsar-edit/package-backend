@@ -412,6 +412,9 @@ async function doesUserHaveRepo(user, repo, page = 1) {
     // if there are no increasing pages, return no access
     return { ok: false, short: "No Access" };
   } catch (err) {
+    // TODO: Remove once publish issues are determined
+    logger.generic(3, "doesUserHaveRepo Has failed check through caught error. Details Below:");
+    console.log(err);
     if (err.status == 401) {
       return { ok: false, short: "No Auth" };
     }
@@ -443,6 +446,9 @@ async function getRepoExistance(repo, user) {
         return false;
     }
   } catch (err) {
+    // TODO: Remove once publish issues are determined
+    logger.generic(3, "getRepoExistance Has failed check through caught error. Details below:");
+    console.log(err);
     logger.generic(3, `Unable to check if repo exists. ${repo} - ${err}`);
     return false;
   }
