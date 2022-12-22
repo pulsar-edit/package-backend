@@ -87,7 +87,7 @@ async function getThemes(req, res) {
 
   let link = `<${server_url}/api/themes?page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/themes?page=${page}&sort=${
+  }>; rel="self", <${server_url}/api/themes?page=${totPage}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
@@ -167,7 +167,7 @@ async function getThemesSearch(req, res) {
   // now to get headers.
   let link = `<${server_url}/api/themes/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/themes/search?q=${safeQuery}&page=${page}&sort=${
+  }>; rel="self", <${server_url}/api/themes/search?q=${safeQuery}&page=${totPage}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
@@ -178,7 +178,7 @@ async function getThemesSearch(req, res) {
   }
 
   res.append("Link", link);
-  res.append('Query-Total', pagination.content.total);
+  res.append('Query-Total', searchStatus.content.total);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

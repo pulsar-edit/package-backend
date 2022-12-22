@@ -64,7 +64,7 @@ async function getPackages(req, res) {
 
   let link = `<${server_url}/api/packages?page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/packages?page=${page}&sort=${
+  }>; rel="self", <${server_url}/api/packages?page=${totPage}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 
@@ -331,7 +331,7 @@ async function getPackagesSearch(req, res) {
   // now to get headers.
   let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
     params.direction
-  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${
+  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${totPage}&sort=${
     params.sort
   }&order=${params.direction}>; rel="last"`;
 

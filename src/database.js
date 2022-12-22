@@ -981,13 +981,12 @@ async function getFeaturedThemes() {
  * @function getTotalPackageEstimate
  * @desc Returns an estimate of how many rows are included in the packages SQL table.
  * Used to aid in trunication and page generation of Link headers for large requests.
- * @returns {object} A server status object.
+ * @returns {object} A server status object returning the number of the packages
+ * along with the number of the pages calculated on the paginated_amount.
  */
 async function getTotalPackageEstimate() {
   try {
     sqlStorage ??= setupSQL();
-
-    let limit = paginated_amount;
 
     const command = await sqlStorage`
       SELECT reltuples AS estimate FROM pg_class WHERE relname = 'packages';
@@ -1001,10 +1000,18 @@ async function getTotalPackageEstimate() {
       };
     }
 
-    let total = command[0].estimate;
-    let pages = Math.ceil(total / limit);
+    const total = command[0].estimate;
+    const quotient = Math.trunc(total / paginated_amount);
+    const remainder = total % paginated_amount;
+    const pages = quotient + (remainder > 0 ? 1 : 0);
 
-    return { ok: true, content: {total, pages}};
+    return {
+      ok: true,
+      content: {
+        total: total,
+        pages: pages
+      }
+    };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
