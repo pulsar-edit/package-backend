@@ -1,10 +1,11 @@
 # Pulsar Backend / Atom Backend
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/d4ca4ded429c446fb28d0654c8c05d6d)](https://www.codacy.com/gh/confused-Techie/atom-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=confused-Techie/atom-backend&amp;utm_campaign=Badge_Grade)
-[![codecov](https://codecov.io/gh/confused-Techie/atom-backend/branch/main/graph/badge.svg?token=LZ33F9DSH4)](https://codecov.io/gh/confused-Techie/atom-backend)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2a0877b7d4254cc098fb0da600056643)](https://www.codacy.com/gh/pulsar-edit/package-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pulsar-edit/package-backend&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/pulsar-edit/package-backend/branch/main/graph/badge.svg?token=LZ33F9DSH4)](https://codecov.io/gh/pulsar-edit/package-backend)
+[![Project Board](https://img.shields.io/badge/Roadmap-GitHub%20Project%20Board-success)](https://github.com/orgs/pulsar-edit/projects/2/views/1)
 
-[![CI - Standards](https://github.com/confused-Techie/atom-backend/actions/workflows/ci-standards.yml/badge.svg)](https://github.com/confused-Techie/atom-backend/actions/workflows/ci-standards.yml)
-[![CI - Tests](https://github.com/confused-Techie/atom-backend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/confused-Techie/atom-backend/actions/workflows/ci-tests.yml)
+[![CI - Standards](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml)
+[![CI - Tests](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->

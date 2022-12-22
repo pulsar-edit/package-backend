@@ -79,6 +79,7 @@ Below are the available scripts:
   - Uses mocked responses for all functions in `./src/storage.js` to avoid having to contact Google Storage APIs.
   - Spins up a mock GitHub API Server to respond to requests from `git.js` (Only when running tests located in `./src/tests_integration/git.js`).
 * `start:dev`: This can be used for local development of the backend if you don't have access to the production database. This will spin up a local Database using Docker and will mock external requests for all other services such as GitHub and Google Storage.
+  - When using `start:dev` you have additional options available to limit what is mocked, available [below](#limitingwhatsmockedinthedevserver).
   - Sets `PULSAR_STATUS=dev`
   - Starts up the server using `./src/dev_server.js` instead of `./src/server.js`
   - Requires the ability to spin up a local Database that it will connect to, ignoring the values in your `app.yaml`
@@ -94,6 +95,21 @@ There are some additional scripts that you likely won't encounter or need during
 * `contributors:add`: Uses `all-contributors` to add a new contributor to the README.md
 * `test_search`: Uses the `./scripts/tools/search.js` to run the different search methods against a pre-set amount of data, and return the scores. It's important to note, that these search algorithms are no longer used within the backend in favour of natively supported Fuzzy Matching.
 * `migrations`: This is used by `@database/pg-migrations` to run the SQL scripts found in `./src/dev-runner/migrations/001-initial-migration.sql` to populate the local database when in use by certain scripts mentioned above.
+
+#### Limiting what's mocked in the dev server
+
+No additionally, when working locally if you need to test a feature where you have no option but to query the remote service (This is not recommended) you do have the option to enable some remote services as needed.
+
+Again setting any of the below values will contact remote services, meaning you must have the proper Configuration Values set to do so, and you become at risk of causing damage to external data, any deletions that occur here will cause permanent data loss to these services. Or may get you blocked by remote services if there is abuse.
+
+The following values can only ever be started when using `npm run start:dev` and will be ignored in all other instances.
+
+To use any of the following you need to ensure they are passed through the `npm run ...` script by using `npm run start:dev -- YOUR_ARG`
+
+* `--gh`: This will set the environment variable `MOCK_GH` to false, ensuring any requests made in the dev server actually reach out to GitHub ignoring all local development data and logic.
+* `--google`: This will set the environment variable `MOCK_GOOGLE` to false, ensuring any requests made in the dev server actually reach out to Google, ignoring all local development data and logic.
+* `--db`: This will set the environment variable `MOCK_DB` to false, ensuring any requests made in the dev server actually reach out to your DB instance, ignoring all local development data and logic.
+* `--auth`: This will set the environment variable `MOCK_AUTH` to false, ensuring any requests made in the dev server for authentication actually rely on the user within the database (dev or otherwise) and actually reach out to GitHub (dev or otherwise).
 
 ## Development with a Local Database
 

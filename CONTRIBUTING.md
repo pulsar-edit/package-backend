@@ -23,11 +23,9 @@ As known from the readme, this project will live in two places.
 
 Again the Atom Backend is only ever meant to reach feature parity with the original Atom.io Package Backend. Any improvements to how the backend behaves should go to the Pulsar Backend.
 
-So when wanting to contribute consider the following examples:
-  - You want to add a new query parameter to an endpoint - Add it to the Pulsar Backend, since it didn't original exist.
-  - You want to remove a query parameter that is no longer used - Add it to the Pulsar Backend, since it would be incompatible with the original Atom application.
-  - You've found a bug in how an endpoint behaves - Add it to the Atom Backend, since fixing this would ensure it behaves how Atom's did originally.
-  - You've found an originally undocumented endpoint from Atom and want to add it - Add it to the Atom Backend, since it should have been there from the start.
+Notice::
+
+The Atom Backend has no reached v1, so all future PR's should be directed to the [Pulsar Backend](https://github.com/pulsar-edit/package-backend).
 
 If at any time you are unsure where to direct your PR, please feel free to reach out via Issues, in the PR's themselves, or to the [Pulsar Discord](https://discord.gg/7aEbB9dGRT) in the #backend channel.
 
