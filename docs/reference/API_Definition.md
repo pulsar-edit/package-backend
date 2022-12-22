@@ -411,35 +411,6 @@ The `package.json` modified as explainged in the endpoint description.
 
 
 ---
-# **[GET]** /api/packages/:packageName/versions/:versionName/tarball
-Previously undocumented endpoint. Seems to allow for installation of a package. This is not currently implemented.
-
-Auth: `FALSE`
-Parameters:
----
-* packType _(required)_ `[string]` | Location: `path`  | Valid: `[packages, themes]`
-  - The Package Type you want to request.
-
-
----
-* packageName _(required)_  | Location: `path`  
-  - The package we want to download.
-
-
----
-* versionName _(required)_  | Location: `path`  
-  - The package version we want to download.
-
-
----
-Responses:
----
-**HTTP Status Code:** `200 OK`
-
-The tarball data for the user to then be able to install.
-
-
----
 # **[DELETE]** /api/packages/:packageName/versions/:versionName
 Deletes a package version. Note once a version is deleted, that same version should not be reused again.
 
@@ -471,6 +442,35 @@ Responses:
 **HTTP Status Code:** `204 No Content`
 
 Indicates a successful deletion.
+
+
+---
+# **[GET]** /api/packages/:packageName/versions/:versionName/tarball
+Previously undocumented endpoint. Seems to allow for installation of a package. This is not currently implemented.
+
+Auth: `FALSE`
+Parameters:
+---
+* packType _(required)_ `[string]` | Location: `path`  | Valid: `[packages, themes]`
+  - The Package Type you want to request.
+
+
+---
+* packageName _(required)_  | Location: `path`  
+  - The package we want to download.
+
+
+---
+* versionName _(required)_  | Location: `path`  
+  - The package version we want to download.
+
+
+---
+Responses:
+---
+**HTTP Status Code:** `200 OK`
+
+The tarball data for the user to then be able to install.
 
 
 ---
