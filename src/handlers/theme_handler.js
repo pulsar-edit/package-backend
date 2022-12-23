@@ -80,7 +80,7 @@ async function getThemes(req, res) {
   const page = searchStatus.content.page;
   const totPage = searchStatus.content.total;
   const packObjShort = await utils.constructPackageObjectShort(
-    searchStatus.content
+    searchStatus.content.result
   );
 
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
