@@ -142,6 +142,11 @@ describe("Get /api/packages", () => {
       expect(p.pointer == null).toBeTruthy();
     }
   });
+  test("Should respond with the expected headers", async () => {
+    const res = await request(app).get("/api/packages");
+    expect(res.headers["link"].length).toBeGreaterThan(0);
+    expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
+  });
   test("Should 404 on invalid Method", async () => {
     const res = await request(app).patch("/api/packages");
     expect(res).toHaveHTTPCode(404);
@@ -299,6 +304,11 @@ describe("GET /api/packages/search", () => {
       // Use type coercion to catch also undefined
       expect(p.pointer == null).toBeTruthy();
     }
+  });
+  test("Valid Search Returns Expected Headers", async () => {
+    const res = await request(app).get("/api/packages/search?q=language");
+    expect(res.headers["link"].length).toBeGreaterThan(0);
+    expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/packages/search?q=not-one-match");
@@ -860,6 +870,11 @@ describe("GET /api/themes", () => {
       expect(p.pointer == null).toBeTruthy();
     }
   });
+  test("Should respond with the expected headers", async () => {
+    const res = await request(app).get("/api/themes");
+    expect(res.headers["link"].length).toBeGreaterThan(0);
+    expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
+  });
   test("Should 404 on invalid Method", async () => {
     const res = await request(app).patch("/api/themes");
     expect(res).toHaveHTTPCode(404);
@@ -882,7 +897,7 @@ describe("GET /api/themes/search", () => {
       expect(p.pointer == null).toBeTruthy();
     }
   });
-  test("Valid Search Returns Valid Ddata", async () => {
+  test("Valid Search Returns Valid Data", async () => {
     const res = await request(app).get("/api/themes/search?q=syntax");
     for (const p of res.body) {
       expect(typeof p.name === "string").toBeTruthy();
@@ -890,6 +905,11 @@ describe("GET /api/themes/search", () => {
       expect(`${p.downloads}`.match(/^\d+$/) === null).toBeFalsy();
       expect(typeof p.releases.latest === "string").toBeTruthy();
     }
+  });
+  test("Valid Search Returns Expected Headers", async () => {
+    const res = await request(app).get("/api/themes/search?q=syntax");
+    expect(res.headers["link"].length).toBeGreaterThan(0);
+    expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/themes/search?q=not-one-match");
