@@ -38,25 +38,25 @@ async function getPackages(req, res) {
     direction: query.dir(req),
   };
 
-  const searchStatus = await database.getSortedPackages(
+  const packages = await database.getSortedPackages(
     params.page,
     params.direction,
     params.sort
   );
 
-  if (!searchStatus.ok) {
+  if (!packages.ok) {
     logger.generic(
       3,
-      `getPackages-getSortedPackages Not OK: ${searchStatus.content}`
+      `getPackages-getSortedPackages Not OK: ${packages.content}`
     );
-    await common.handleError(req, res, searchStatus, 1001);
+    await common.handleError(req, res, packages, 1001);
     return;
   }
 
-  const page = searchStatus.content.page;
-  const totPage = searchStatus.content.total;
+  const page = packages.pagination.page;
+  const totPage = packages.pagination.total;
   const packObjShort = await utils.constructPackageObjectShort(
-    searchStatus.content.result
+    packages.content
   );
 
   // The endpoint using this function needs an array.
@@ -75,7 +75,7 @@ async function getPackages(req, res) {
   }
 
   res.append("Link", link);
-  res.append("Query-Total", searchStatus.content.count);
+  res.append("Query-Total", packages.pagination.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -283,15 +283,15 @@ async function getPackagesSearch(req, res) {
   // side. This is only an effort to get this working quickly and should be changed later.
   // This also means for now, the default sorting method will be downloads, not relevance.
 
-  const searchStatus = await database.simpleSearch(
+  const packs = await database.simpleSearch(
     params.query,
     params.page,
     params.direction,
     params.sort
   );
 
-  if (!searchStatus.ok) {
-    if (searchStatus.short == "Not Found") {
+  if (!packs.ok) {
+    if (packs.short == "Not Found") {
       logger.generic(
         4,
         "getPackagesSearch-simpleSearch Responding with Empty Array for Not Found Status"
@@ -305,15 +305,18 @@ async function getPackagesSearch(req, res) {
     }
     logger.generic(
       3,
-      `getPackagesSearch-simpleSearch Not OK: ${searchStatus.content}`
+      `getPackagesSearch-simpleSearch Not OK: ${packs.content}`
     );
-    await common.handleError(req, res, searchStatus, 1007);
+    await common.handleError(req, res, packs, 1007);
     return;
   }
 
-  const page = searchStatus.content.page;
-  const totPage = searchStatus.content.total;
-  const newPacks = await utils.constructPackageObjectShort(searchStatus.content.result);
+  const page = packs.pagination.page;
+  const totPage = packs.pagination.total;
+  const newPacks = await utils.constructPackageObjectShort(
+    packs.content
+  );
+
   let packArray = null;
 
   if (Array.isArray(newPacks)) {
@@ -348,7 +351,7 @@ async function getPackagesSearch(req, res) {
   }
 
   res.append("Link", link);
-  res.append("Query-Total", searchStatus.content.count);
+  res.append("Query-Total", packs.pagination.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

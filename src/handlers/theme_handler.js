@@ -61,26 +61,26 @@ async function getThemes(req, res) {
     direction: query.dir(req),
   };
 
-  const searchStatus = await database.getSortedPackages(
+  const packages = await database.getSortedPackages(
     params.page,
     params.direction,
     params.sort,
     true
   );
 
-  if (!searchStatus.ok) {
+  if (!packages.ok) {
     logger.generic(
       3,
-      `getThemes-getSortedPackages Not OK: ${searchStatus.content}`
+      `getThemes-getSortedPackages Not OK: ${packages.content}`
     );
-    await common.handleError(req, res, searchStatus);
+    await common.handleError(req, res, packages);
     return;
   }
 
-  const page = searchStatus.content.page;
-  const totPage = searchStatus.content.total;
+  const page = packages.pagination.page;
+  const totPage = packages.pagination.total;
   const packObjShort = await utils.constructPackageObjectShort(
-    searchStatus.content.result
+    packages.content
   );
 
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
@@ -98,7 +98,7 @@ async function getThemes(req, res) {
   }
 
   res.append("Link", link);
-  res.append("Query-Total", searchStatus.content.count);
+  res.append("Query-Total", packages.pagination.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -121,7 +121,7 @@ async function getThemesSearch(req, res) {
     query: query.query(req),
   };
 
-  const searchStatus = await database.simpleSearch(
+  const packs = await database.simpleSearch(
     params.query,
     params.page,
     params.direction,
@@ -129,8 +129,8 @@ async function getThemesSearch(req, res) {
     true
   );
 
-  if (!searchStatus.ok) {
-    if (searchStatus.short == "Not Found") {
+  if (!packs.ok) {
+    if (packs.short == "Not Found") {
       logger.generic(
         4,
         "getThemesSearch-simpleSearch Responding with Empty Array for Not Found Status"
@@ -139,14 +139,17 @@ async function getThemesSearch(req, res) {
       logger.httpLog(req, res);
       return;
     }
-    logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${searchStatus.content}`);
-    await common.handleError(req, res, searchStatus);
+    logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${packs.content}`);
+    await common.handleError(req, res, packs);
     return;
   }
 
-  const page = searchStatus.content.page;
-  const totPage = searchStatus.content.total;
-  const newPacks = await utils.constructPackageObjectShort(searchStatus.content.result);
+  const page = packs.pagination.page;
+  const totPage = packs.pagination.total;
+  const newPacks = await utils.constructPackageObjectShort(
+    packs.content
+  );
+
   let packArray = null;
 
   if (Array.isArray(newPacks)) {
@@ -178,7 +181,7 @@ async function getThemesSearch(req, res) {
   }
 
   res.append("Link", link);
-  res.append("Query-Total", searchStatus.content.count);
+  res.append("Query-Total", packs.pagination.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

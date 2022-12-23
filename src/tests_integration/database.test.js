@@ -82,17 +82,6 @@ describe("getPackageByName", () => {
   });
 });
 
-describe("getTotalPackageEstimate", () => {
-  test("Should return a successful Server Status Object", async () => {
-    const obj = await database.getTotalPackageEstimate();
-    expect(obj.ok).toBeTruthy();
-  });
-  test.failing("Should return an expected-ish value", async () => {
-    const obj = await database.getTotalPackageEstimate();
-    expect(obj.content.total).toBeGreaterThan(0);
-  });
-});
-
 describe("Package Lifecycle Tests", () => {
   // Below are what we will call lifecycle tests.
   // That is tests that will test multiple actions against the same package,

@@ -553,7 +553,7 @@ async function getPackageCollectionByName(packArray) {
 
     return command.count !== 0
       ? { ok: true, content: command }
-      : { ok: false, content: `No packages found.`, short: "Not Found" };
+      : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
@@ -578,7 +578,7 @@ async function getPackageCollectionByID(packArray) {
 
     return command.count !== 0
       ? { ok: true, content: command }
-      : { ok: false, content: `No packages found.`, short: "Not Found" };
+      : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
   }
@@ -978,47 +978,6 @@ async function getFeaturedThemes() {
 
 /**
  * @async
- * @function getTotalPackageEstimate
- * @desc Returns an estimate of how many rows are included in the packages SQL table.
- * Used to aid in trunication and page generation of Link headers for large requests.
- * @returns {object} A server status object returning the number of the packages
- * along with the number of the pages calculated on the paginated_amount.
- */
-async function getTotalPackageEstimate() {
-  try {
-    sqlStorage ??= setupSQL();
-
-    const command = await sqlStorage`
-      SELECT reltuples AS estimate FROM pg_class WHERE relname = 'packages';
-    `;
-
-    if (command.count === 0) {
-      return {
-        ok: false,
-        content: `Unable to query total row count estimate.`,
-        short: "Server Error",
-      };
-    }
-
-    const total = command[0].estimate;
-    const quotient = Math.trunc(total / paginated_amount);
-    const remainder = total % paginated_amount;
-    const pages = quotient + (remainder > 0 ? 1 : 0);
-
-    return {
-      ok: true,
-      content: {
-        total: total,
-        pages: pages
-      }
-    };
-  } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
-  }
-}
-
-/**
- * @async
  * @function getUserByName
  * @description Get a users details providing their username.
  * @param {string} username - User name string.
@@ -1327,7 +1286,7 @@ async function getStarringUsersByPointer(pointer) {
  * @function simpleSearch
  * @description The current Fuzzy-Finder implementation of search. Ideally eventually
  * will use a more advanced search method.
- * @returns {object} A server status object containing the search status object.
+ * @returns {object} A server status object containing the results and the pagination object.
  */
 async function simpleSearch(term, page, dir, sort, themes = false) {
   try {
@@ -1337,8 +1296,12 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     // lowercase format (see atom-backend issue #86).
     const lcterm = term.toLowerCase();
 
+    const limit = paginated_amount;
+    const offset = page > 1 ? (page - 1) * limit : 0;
+
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
+      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
+        v.semver, COUNT(*) OVER() AS query_result_count
       FROM packages AS p INNER JOIN versions AS v ON (p.pointer = v.package) AND (v.status = 'latest')
       WHERE pointer IN (
         SELECT pointer
@@ -1349,27 +1312,27 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       ORDER BY ${
         sort === "relevance" ? sqlStorage`downloads` : sqlStorage`${sort}`
       }
-      ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`};
+      ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
+      LIMIT ${limit}
+      OFFSET ${offset};
     `;
 
-    const resultCount = command.count;
-    if (resultCount === 0) {
-      return { ok: false, content: `No packages found.`, short: "Not Found" };
+    if (command.count === 0) {
+      return { ok: false, content: "No packages found.", short: "Not Found" };
     }
 
+    const resultCount = command[0].query_result_count;
     const quotient = Math.trunc(resultCount / paginated_amount);
     const remainder = resultCount % paginated_amount;
     const totalPages = quotient + (remainder > 0 ? 1 : 0);
 
-    // search status object to return
-    // { page: Number, total: Number, result: Array };
     return {
       ok: true,
-      content: {
+      content: command,
+      pagination: {
         count: resultCount,
         page: (page < totalPages) ? page : totalPages,
-        total: totalPages,
-        result: command.slice((page - 1) * paginated_amount, page * paginated_amount)
+        total: totalPages
       }
     };
   } catch (err) {
@@ -1420,13 +1383,16 @@ async function getUserCollectionById(ids) {
  * @param {string} dir - String flag for asc/desc order.
  * @param {string} method - The column name the results have to be sorted by.
  * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
- * @returns {object} A server status object containing the search status object.
+ * @returns {object} A server status object containing the results and the pagination object.
  */
 async function getSortedPackages(page, dir, method, themes = false) {
   // Here will be a monolithic function for returning sortable packages arrays.
   // We must keep in mind that all the endpoint handler knows is the
   // page, sort method, and direction. We must figure out the rest here.
   // only knowing we have a valid sort method provided.
+
+  const limit = paginated_amount;
+  const offset = page > 1 ? (page - 1) * limit : 0;
 
   try {
     sqlStorage ??= setupSQL();
@@ -1456,7 +1422,8 @@ async function getSortedPackages(page, dir, method, themes = false) {
     }
 
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
+      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
+        v.semver, COUNT(*) OVER() AS query_result_count
       FROM packages AS p INNER JOIN versions AS v ON (p.pointer = v.package) AND (v.status = 'latest')
       ${
         themes === true
@@ -1464,25 +1431,24 @@ async function getSortedPackages(page, dir, method, themes = false) {
           : sqlStorage``
       }
       ORDER BY ${orderType} ${
-      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
-    };
+        dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
+      }
+      LIMIT ${limit}
+      OFFSET ${offset};
     `;
 
-    const resultCount = command.count;
-
+    const resultCount = command[0]?.query_result_count ?? 0;
     const quotient = Math.trunc(resultCount / paginated_amount);
     const remainder = resultCount % paginated_amount;
     const totalPages = quotient + (remainder > 0 ? 1 : 0);
 
-    // search status object to return
-    // { page: Number, total: Number, result: Array };
     return {
       ok: true,
-      content: {
+      content: command,
+      pagination: {
         count: resultCount,
         page: (page < totalPages) ? page : totalPages,
-        total: totalPages,
-        result: command.slice((page - 1) * paginated_amount, page * paginated_amount)
+        total: totalPages
       }
     };
   } catch (err) {
@@ -1499,7 +1465,6 @@ module.exports = {
   removePackageByName,
   removePackageVersion,
   getFeaturedPackages,
-  getTotalPackageEstimate,
   getSortedPackages,
   getUserByName,
   getUserByNodeID,
