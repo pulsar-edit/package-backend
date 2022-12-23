@@ -159,7 +159,7 @@ describe("Package Lifecycle Tests", () => {
     expect(
       getByNewName.content.updated >= getAfterPublish.content.updated
     ).toBeTruthy();
-    // For the above expect().getGreaterThan() doesn't support dates.
+    // For the above expect().toBeGreaterThan() doesn't support dates.
 
     // === Can we still get the package by it's old name?
     const getByOldName = await database.getPackageByName(pack.createPack.name);
