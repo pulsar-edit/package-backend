@@ -642,24 +642,24 @@ async function postPackagesVersion(req, res) {
   // As such does not return a Server Status Object. This may change later, but for now,
   // we will expect `undefined` to not be success.
   const packJSON = await git.getPackageJSON(
-    `${user.content.username}/${packExists.name}`,
+    `${user.content.username}/${packExists.content.name}`,
     user.content
   );
 
   if (packJSON === undefined) {
     logger.generic(
       6,
-      `Unable to get Package JSON from git with: ${user.content.username}/${packExists.name}`
+      `Unable to get Package JSON from git with: ${user.content.username}/${packExists.content.name}`
     );
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
-      content: `Failed to get Package: ${params.packageName}`,
+      content: `Failed to get Package: ${packExists.content.name}`,
     });
     return;
   }
 
-  if (packJSON.name !== params.packageName && !params.rename) {
+  if (packJSON.name !== packExists.content.name && !params.rename) {
     logger.generic(
       6,
       "Package JSON and Params Package Names don't match, with no rename flag"
@@ -687,7 +687,7 @@ async function postPackagesVersion(req, res) {
   // Now the only thing left to do, is add this new version with the name from the package.
   // And check again if the name is incorrect, since it'll need a new entry onto the names.
 
-  const rename = packJSON.name !== params.packageName && params.rename;
+  const rename = packJSON.name !== packExists.content.name && params.rename;
   if (rename) {
     // Before allowing the rename of a package, ensure the new name isn't banned.
 
@@ -710,7 +710,7 @@ async function postPackagesVersion(req, res) {
 
   const addVer = await database.insertNewPackageVersion(
     packJSON,
-    rename ? params.packageName : null
+    rename ? packExists.content.name : null
   );
 
   if (!addVer.ok) {
