@@ -75,7 +75,7 @@ async function getPackages(req, res) {
   }
 
   res.append("Link", link);
-  res.append("Query-Total", totPage);
+  res.append("Query-Total", searchStatus.content.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -348,7 +348,7 @@ async function getPackagesSearch(req, res) {
   }
 
   res.append("Link", link);
-  res.append("Query-Total", totPage);
+  res.append("Query-Total", searchStatus.content.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

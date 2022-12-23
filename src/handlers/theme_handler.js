@@ -98,7 +98,7 @@ async function getThemes(req, res) {
   }
 
   res.append("Link", link);
-  res.append('Query-Total', totPage);
+  res.append("Query-Total", searchStatus.content.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -178,7 +178,7 @@ async function getThemesSearch(req, res) {
   }
 
   res.append("Link", link);
-  res.append('Query-Total', searchStatus.content.total);
+  res.append("Query-Total", searchStatus.content.count);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

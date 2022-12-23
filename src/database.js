@@ -1366,6 +1366,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     return {
       ok: true,
       content: {
+        count: resultCount,
         page: (page < totalPages) ? page : totalPages,
         total: totalPages,
         result: command.slice((page - 1) * paginated_amount, page * paginated_amount)
@@ -1478,6 +1479,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
     return {
       ok: true,
       content: {
+        count: resultCount,
         page: (page < totalPages) ? page : totalPages,
         total: totalPages,
         result: command.slice((page - 1) * paginated_amount, page * paginated_amount)
