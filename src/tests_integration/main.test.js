@@ -76,9 +76,9 @@ expect.extend({
 });
 
 describe("Get /", () => {
-  test("Should Respond with Json Message of Server Running", async () => {
-    const res = await request(app).get("/");
-    expect(res.body.message).toEqual(
+  test("Should respond with an HTML document noting the server version", async () => {
+    const res = await request(app).get("/").expect('Content-Type', 'text/html; charset=utf-8');
+    expect(res.text).toEqual(
       expect.stringContaining("Server is up and running Version")
     );
   });
