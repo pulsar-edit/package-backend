@@ -1322,8 +1322,8 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     }
 
     const resultCount = command[0].query_result_count;
-    const quotient = Math.trunc(resultCount / paginated_amount);
-    const remainder = resultCount % paginated_amount;
+    const quotient = Math.trunc(resultCount / limit);
+    const remainder = resultCount % limit;
     const totalPages = quotient + (remainder > 0 ? 1 : 0);
 
     return {
@@ -1332,7 +1332,8 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       pagination: {
         count: resultCount,
         page: (page < totalPages) ? page : totalPages,
-        total: totalPages
+        total: totalPages,
+        limit
       }
     };
   } catch (err) {
@@ -1438,8 +1439,8 @@ async function getSortedPackages(page, dir, method, themes = false) {
     `;
 
     const resultCount = command[0]?.query_result_count ?? 0;
-    const quotient = Math.trunc(resultCount / paginated_amount);
-    const remainder = resultCount % paginated_amount;
+    const quotient = Math.trunc(resultCount / limit);
+    const remainder = resultCount % limit;
     const totalPages = quotient + (remainder > 0 ? 1 : 0);
 
     return {
@@ -1448,7 +1449,8 @@ async function getSortedPackages(page, dir, method, themes = false) {
       pagination: {
         count: resultCount,
         page: (page < totalPages) ? page : totalPages,
-        total: totalPages
+        total: totalPages,
+        limit
       }
     };
   } catch (err) {

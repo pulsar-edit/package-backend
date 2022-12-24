@@ -99,6 +99,7 @@ async function getThemes(req, res) {
 
   res.append("Link", link);
   res.append("Query-Total", packages.pagination.count);
+  res.append("Query-Limit", packages.pagination.limit);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -182,6 +183,7 @@ async function getThemesSearch(req, res) {
 
   res.append("Link", link);
   res.append("Query-Total", packs.pagination.count);
+  res.append("Query-Limit", packs.pagination.limit);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
