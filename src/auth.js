@@ -15,6 +15,7 @@ const logger = require("./logger.js");
  * @params {object} token - The token the user provided.
  */
 async function verifyAuth(token) {
+  console.log(`TMPLOG: verifyAuth - ${token.length}`);
   if (token === null || token === undefined) {
     logger.generic(
       5,

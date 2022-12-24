@@ -30,6 +30,8 @@ env:
   NODE_ENV: "test"
   PULSAR_STATUS: "dev"
   STATE_STORE_CODE: "123"
+  RATE_LIMIT_GENERIC: 0
+  RATE_LIMIT_AUTH: 0
 
 
 jobs:
