@@ -18,11 +18,13 @@ const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
+const { RATE_LIMIT_GENERIC, RATE_LIMIT_AUTH } =
+  require("./config.js").getConfig();
 
 // Define our Basic Rate Limiters
 const genericLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.PULSAR_STATUS == "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
+  max: process.env.PULSAR_STATUS == "dev" ? 0 : RATE_LIMIT_GENERIC, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // Use default memory store
@@ -36,7 +38,7 @@ const genericLimit = rateLimit({
 
 const authLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.PULSAR_STATUS == "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
+  max: process.env.PULSAR_STATUS == "dev" ? 0 : RATE_LIMIT_AUTH, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info on headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // use default memory store

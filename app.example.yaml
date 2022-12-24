@@ -50,3 +50,7 @@ env_variables:
   LOG_FORMAT: "stdout"
   # This is the secret code used for our StateStore until we have a better solution.
   STATE_STORE_CODE: "123"
+  # The rate limit for generic requests
+  RATE_LIMIT_GENERIC: 75
+  # The rate limit for authenticated requests
+  RATE_LIMIT_AUTH: 75
