@@ -146,6 +146,7 @@ describe("Get /api/packages", () => {
     const res = await request(app).get("/api/packages");
     expect(res.headers["link"].length).toBeGreaterThan(0);
     expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
+    expect(res.headers["query-limit"].match(/^\d+$/) === null).toBeFalsy();
   });
   test("Should 404 on invalid Method", async () => {
     const res = await request(app).patch("/api/packages");
@@ -309,6 +310,7 @@ describe("GET /api/packages/search", () => {
     const res = await request(app).get("/api/packages/search?q=language");
     expect(res.headers["link"].length).toBeGreaterThan(0);
     expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
+    expect(res.headers["query-limit"].match(/^\d+$/) === null).toBeFalsy();
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/packages/search?q=not-one-match");
@@ -874,6 +876,7 @@ describe("GET /api/themes", () => {
     const res = await request(app).get("/api/themes");
     expect(res.headers["link"].length).toBeGreaterThan(0);
     expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
+    expect(res.headers["query-limit"].match(/^\d+$/) === null).toBeFalsy();
   });
   test("Should 404 on invalid Method", async () => {
     const res = await request(app).patch("/api/themes");
@@ -910,6 +913,7 @@ describe("GET /api/themes/search", () => {
     const res = await request(app).get("/api/themes/search?q=syntax");
     expect(res.headers["link"].length).toBeGreaterThan(0);
     expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
+    expect(res.headers["query-limit"].match(/^\d+$/) === null).toBeFalsy();
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/themes/search?q=not-one-match");
