@@ -602,7 +602,11 @@ async function postPackagesVersion(req, res) {
   // And if they are, we expect that `auth` is true. Because otherwise it will fail.
   // That's the methodology, the logic here just needs to catch up.
 
-  let logString = `TMPLOG: Raw Auth Size: ${logger.sanitizeLogs(req.get("Authorization")?.length)} Parsed: ${logger.sanitizeLogs(params.auth !== "" ? params.auth.length : "0")}`;
+  let logString = `TMPLOG: Raw Auth Size: ${logger.sanitizeLogs(
+    req.get("Authorization")?.length
+  )} Parsed: ${logger.sanitizeLogs(
+    params.auth !== "" ? params.auth.length : "0"
+  )}`;
   logger.generic(6, logString);
 
   const user = await auth.verifyAuth(params.auth);
@@ -889,7 +893,10 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
-  const gitowner = await git.ownership(user.content, utils.getOwnerRepoFromURL(packageExists.content.data.repository.url));
+  const gitowner = await git.ownership(
+    user.content,
+    utils.getOwnerRepoFromURL(packageExists.content.data.repository.url)
+  );
 
   if (!gitowner.ok) {
     await common.handleError(req, res, gitowner);

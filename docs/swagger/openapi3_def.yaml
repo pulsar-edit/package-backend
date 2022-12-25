@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: '1.0.0'
+  version: "1.0.0"
   title: Pulsar
   description: Allows for the management, viewing, and downloading of packages and themes for use within the Pulsar editor (primarily)
 servers:
@@ -69,7 +69,7 @@ paths:
       description: Currently not implemented
       security:
         - GitHub:
-          - packages:publish
+            - packages:publish
       parameters:
         - name: repository
           in: query
@@ -161,7 +161,7 @@ paths:
       description: Deletes an entire package entry. Packages will be flagged for deletion for 30 days to allow time to restore if necessary
       security:
         - GitHub:
-          - packages:delete
+            - packages:delete
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
@@ -181,7 +181,7 @@ paths:
       description: Watch a package
       security:
         - GitHub:
-          - stars:write
+            - stars:write
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
@@ -200,7 +200,7 @@ paths:
       description: Stop watching a package
       security:
         - GitHub:
-          - stars:write
+            - stars:write
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
@@ -233,7 +233,7 @@ paths:
       description: Creates a new package version from a git tag. If rename is not "true" the name field within the package.json must match the existing package name
       security:
         - GitHub:
-          - versions:publish
+            - versions:publish
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - name: rename
@@ -283,7 +283,6 @@ paths:
                       dist:
                         type: string
 
-
         404:
           $ref: "#/components/responses/404"
         500:
@@ -293,7 +292,7 @@ paths:
       description: ""
       security:
         - GitHub:
-          - versions:delete
+            - versions:delete
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - $ref: "#/components/parameters/pathPackageVersion"
@@ -314,7 +313,7 @@ paths:
       description: Decrement the download count for the selected package and version
       security:
         - GitHub:
-          - packages:uninstall
+            - packages:uninstall
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - $ref: "#/components/parameters/pathPackageVersion"
@@ -354,7 +353,7 @@ paths:
       description: ""
       security:
         - GitHub:
-          - stars:read
+            - stars:read
       responses:
         200:
           description: ""
@@ -476,11 +475,11 @@ components:
           schema:
             $ref: "#/components/schemas/Error"
     501:
-          description: Feature is not implemented at this time
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+      description: Feature is not implemented at this time
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
   schemas:
     Error:
       type: object
