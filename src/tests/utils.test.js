@@ -243,6 +243,34 @@ describe("Tests against semverLt", () => {
   });
 });
 
+describe("Tests for getOwnerRepoFromURL", () => {
+  test("Returns Owner/repo for valid string", () => {
+    let string = "https://github.com/pulsar-edit/package-backend";
+    let res = utils.getOwnerRepoFromURL(string);
+    expect(res).toEqual("pulsar-edit/package-backend");
+  });
+  test("Returns owner/repo for valid string with ending .git", () => {
+    let string = "https://github.com/pulsar-edit/package-frontend.git";
+    let res = utils.getOwnerRepoFromURL(string);
+    expect(res).toEqual("pulsar-edit/package-frontend");
+  });
+  test("Returns empty string for invalid repo", () => {
+    let string = "https://github.com/pulsar-edit-I-Am-Not-Valid";
+    let res = utils.getOwnerRepoFromURL(string);
+    expect(res).toEqual("");
+  });
+  test("Returns owner/repo for another valid string", () => {
+    let string = "https://github.com/confused-Techie/atom-backend";
+    let res = utils.getOwnerRepoFromURL(string);
+    expect(res).toEqual("confused-Techie/atom-backend");
+  });
+  test("Returns owner/repo for valid string with special characters", () => {
+    let string = "https://github.com/confused-Techi_e/atom_-.backend";
+    let res = utils.getOwnerRepoFromURL(string);
+    expect(res).toEqual("confused-Techi_e/atom_-.backend");
+  });
+});
+
 //describe("Tests against StateStore", () => {
 //  test("Returns a State when handed an IP", () => {
 //    let stateStore = new utils.StateStore();/
