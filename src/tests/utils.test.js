@@ -243,31 +243,35 @@ describe("Tests against semverLt", () => {
   });
 });
 
-describe("Tests for getOwnerRepoFromURL", () => {
+describe("Tests for getOwnerRepoFromUrlString", () => {
   test("Returns Owner/repo for valid string", () => {
-    const string = "https://github.com/pulsar-edit/package-backend";
-    const res = utils.getOwnerRepoFromURL(string);
-    expect(res).toEqual("pulsar-edit/package-backend");
+    const repo = "pulsar-edit/package-backend";
+    const url = `https://github.com/${repo}.git`;
+    const res = utils.getOwnerRepoFromUrlString(url);
+    expect(res).toEqual(repo);
   });
-  test("Returns owner/repo for valid string with ending .git", () => {
-    const string = "https://github.com/pulsar-edit/package-frontend.git";
-    const res = utils.getOwnerRepoFromURL(string);
-    expect(res).toEqual("pulsar-edit/package-frontend");
+  test("Returns owner/repo for valid string even when final .git is missing", () => {
+    const repo = "pulsar-edit/package-frontend";
+    const url = `https://github.com/${repo}`;
+    const res = utils.getOwnerRepoFromUrlString(url);
+    expect(res).toEqual(repo);
   });
   test("Returns empty string for invalid repo", () => {
-    const string = "https://github.com/pulsar-edit-I-Am-Not-Valid";
-    const res = utils.getOwnerRepoFromURL(string);
+    const url = "https://github.com/pulsar-edit-I-Am-Not-Valid.git";
+    const res = utils.getOwnerRepoFromUrlString(url);
     expect(res).toEqual("");
   });
   test("Returns owner/repo for another valid string", () => {
-    const string = "https://github.com/confused-Techie/atom-backend";
-    const res = utils.getOwnerRepoFromURL(string);
-    expect(res).toEqual("confused-Techie/atom-backend");
+    const repo = "confused-Techie/atom-backend";
+    const url = `https://github.com/${repo}.git`;
+    const res = utils.getOwnerRepoFromUrlString(url);
+    expect(res).toEqual(repo);
   });
   test("Returns owner/repo for valid string with special characters", () => {
-    const string = "https://github.com/confused-Techi_e/atom_-.backend";
-    const res = utils.getOwnerRepoFromURL(string);
-    expect(res).toEqual("confused-Techi_e/atom_-.backend");
+    const repo = "confused-Techi_e/atom_-.backend";
+    const url = `https://github.com/${repo}.git`;
+    const res = utils.getOwnerRepoFromUrlString(url);
+    expect(res).toEqual(repo);
   });
 });
 

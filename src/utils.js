@@ -433,23 +433,32 @@ function semverLt(a1, a2) {
 }
 
 /**
- * @function getOwnerRepoFromURL
- * @desc A function to take the URL of a GitHub repo and return the `owner/repo`
+ * @function getOwnerRepoFromUrlString
+ * @desc A function that takes the URL string of a GitHub repo and return the `owner/repo`
  * string for the repo. Intended to be used from a packages entry `data.repository.url`
  * @param {string} url - The URL for the Repo.
- * @returns {string} The `owner/repo` string from the URL. Or an empty string of unable to parse.
+ * @returns {string} The `owner/repo` string from the URL. Or an empty string if unable to parse.
  */
-function getOwnerRepoFromURL(url) {
-  const reg =
-    /(?=(https:\/\/github\.com\/|git@github\.com:))\1(?=((?:[\w\-\.]+)\/(?:[\w\.\-]+)))\2/;
-
-  const res = url.match(reg);
-
-  if (res === null || res?.length < 3) {
-    logger.generic(3, `getOwnerRepoFromURL Unable to parse: ${url}`);
+function getOwnerRepoFromUrlString(url) {
+  if (typeof url !== "string") {
     return "";
   }
 
+  // Simplified version of the regex here: https://regex101.com/r/3OMBy2/3
+  // The following is the optimized version using the positive lookaheads, atomic groups and
+  // capturing groups to avoid backtracking: https://regex101.com/r/I5p3OT/2
+  const reg =
+    /(?=(https:\/\/(?:www\.)?github\.com\/|git@github\.com:))\1(?=((?:[\w\-\.]+)\/(?:[\w\-\.]+)))\2/;
+
+  const res = url.match(reg);
+
+  if (res === null || res?.length !== 3) {
+    logger.generic(3, `getOwnerRepoFromUrlString Unable to parse: ${url}`);
+    return "";
+  }
+
+  // Since backtracking is not allowed, the final ".git" is captured if present,
+  // so we remove it before return.
   return res[2].replace(/\.git$/, "");
 }
 
@@ -580,5 +589,5 @@ module.exports = {
   semverLt,
   semverEq,
   StateStore,
-  getOwnerRepoFromURL,
+  getOwnerRepoFromUrlString,
 };
