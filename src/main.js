@@ -58,6 +58,8 @@ app.set("trust proxy", true);
 // This is need for the Authentication features to proper maintain their StateStore
 // Hashmap. https://cloud.google.com/appengine/docs/flexible/nodejs/runtime#https_and_forwarding_proxies
 
+app.use('/swagger-ui', express.static('docs/swagger'))
+
 app.use((req, res, next) => {
   // This adds a start to the request, logging the exact time a request was received.
   req.start = Date.now();
@@ -78,7 +80,11 @@ app.get("/", genericLimit, (req, res) => {
   // as a way to check the version of the server. Not needed, but may become helpful.
   res
     .status(200)
-    .json({ message: `Server is up and running Version ${server_version}` });
+    .send(`
+      <p>Server is up and running Version ${server_version}</p><br>
+      <a href="/swagger-ui">Swagger UI</a><br>
+      <a href="https://github.com/pulsar-edit/package-backend/tree/main/docs" target="_blank">Documentation</a>
+    `);
 });
 
 app.options("/", genericLimit, async (req, res) => {
