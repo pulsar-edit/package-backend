@@ -6,20 +6,18 @@ info:
 servers:
   - url: https://api.pulsar-edit.dev
   - url: http://localhost:8080
-security:
-  - ApiKey: []
 paths:
   /:
     get:
-      summary: Server Status/Version
-      description: Returns a status message containing the server version
+      summary: Swagger Instance
+      description: Returns the current swagger instance definition
       responses:
         200:
           description: The server is running
           content:
-            application/json:
+            text/html:
               schema:
-                $ref: "#/components/schemas/Message"
+                type: string
         404:
           $ref: "#/components/responses/404"
           description: The server is not running or you have entered an improper query
@@ -70,12 +68,13 @@ paths:
       security:
         - GitHub:
             - packages:publish
+        - GitHubPAT: []
       parameters:
         - name: repository
           in: query
           schema:
             type: string
-          example: Spiker985/generic-lsp
+          example: x-terminal-reloaded
       responses:
         201:
           description: Successfully created package
@@ -162,6 +161,7 @@ paths:
       security:
         - GitHub:
             - packages:delete
+        - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
@@ -182,6 +182,7 @@ paths:
       security:
         - GitHub:
             - stars:write
+        - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
@@ -201,6 +202,7 @@ paths:
       security:
         - GitHub:
             - stars:write
+        - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
@@ -234,6 +236,7 @@ paths:
       security:
         - GitHub:
             - versions:publish
+        - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - name: rename
@@ -293,6 +296,7 @@ paths:
       security:
         - GitHub:
             - versions:delete
+        - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - $ref: "#/components/parameters/pathPackageVersion"
@@ -314,6 +318,7 @@ paths:
       security:
         - GitHub:
             - packages:uninstall
+        - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - $ref: "#/components/parameters/pathPackageVersion"
@@ -354,6 +359,7 @@ paths:
       security:
         - GitHub:
             - stars:read
+        - GitHubPAT: []
       responses:
         200:
           description: ""
@@ -604,18 +610,16 @@ components:
       items:
         $ref: "#/components/schemas/User"
   securitySchemes:
+    GitHubPAT:
+      name: Authorization
+      in: header
+      type: apiKey
     GitHub:
       type: oauth2
       flows:
-        implicit:
-          authorizationUrl: http://yourauthurl.com
-          refreshUrl: http://yourrefreshurl.com
+        authorizationCode:
+          tokenUrl: https://github.com/login/oauth/access_token
+          authorizationUrl: https://github.com/login/oauth/authorize
           scopes:
-            packages:read: Read packages in your account
-            packages:publish: Publish packages in your account
-            packages:delete: Delete packages in your account
-            packages:uninstall: Update uninstall counts in your account
-            versions:publish: Publish package versions in your account
-            versions:delete: Delete package versions in your account
-            stars:read: Read stars in your account
-            stars:write: Update stars in your account
+            public_repo: Allows access to read information regarding your public repos
+            read:org: Allows access to read information regarding any organizations you are a member of
