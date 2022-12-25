@@ -18,13 +18,11 @@ const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
-const { RATE_LIMIT_GENERIC, RATE_LIMIT_AUTH } =
-  require("./config.js").getConfig();
 
 // Define our Basic Rate Limiters
 const genericLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.PULSAR_STATUS == "dev" ? 0 : RATE_LIMIT_GENERIC, // Limit each IP per window, 0 disables rate limit.
+  max: process.env.PULSAR_STATUS == "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // Use default memory store
@@ -38,7 +36,7 @@ const genericLimit = rateLimit({
 
 const authLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.PULSAR_STATUS == "dev" ? 0 : RATE_LIMIT_AUTH, // Limit each IP per window, 0 disables rate limit.
+  max: process.env.PULSAR_STATUS == "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info on headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // use default memory store
@@ -60,6 +58,8 @@ app.set("trust proxy", true);
 // This is need for the Authentication features to proper maintain their StateStore
 // Hashmap. https://cloud.google.com/appengine/docs/flexible/nodejs/runtime#https_and_forwarding_proxies
 
+app.use('/swagger-ui', express.static('docs/swagger'));
+
 app.use((req, res, next) => {
   // This adds a start to the request, logging the exact time a request was received.
   req.start = Date.now();
@@ -80,7 +80,11 @@ app.get("/", genericLimit, (req, res) => {
   // as a way to check the version of the server. Not needed, but may become helpful.
   res
     .status(200)
-    .json({ message: `Server is up and running Version ${server_version}` });
+    .send(`
+      <p>Server is up and running Version ${server_version}</p><br>
+      <a href="/swagger-ui">Swagger UI</a><br>
+      <a href="https://github.com/pulsar-edit/package-backend/tree/main/docs" target="_blank">Documentation</a>
+    `);
 });
 
 app.options("/", genericLimit, async (req, res) => {

@@ -19,7 +19,11 @@ SECURITY.md
 app.example.yaml
 data/
 coverage/
-docs/
+docs/reference/
+docs/resources/
+docs/build.md
+docs/host_your_own.md
+docs/writingIntegrationTests.md
 scripts/
 coverage/
 .codacy.yaml

@@ -87,10 +87,6 @@ function getConfig() {
     LOG_FORMAT: process.env.LOG_FORMAT ?? data.env_variables.LOG_FORMAT,
     STATE_STORE_CODE:
       process.env.STATE_STORE_CODE ?? data.env_variables.STATE_STORE_CODE,
-    RATE_LIMIT_GENERIC:
-      process.env.RATE_LIMIT_GENERIC ?? data.env_variables.RATE_LIMIT_GENERIC,
-    RATE_LIMIT_AUTH:
-      process.env.RATE_LIMIT_AUTH ?? data.env_variables.RATE_LIMIT_AUTH,
   };
 }
 
