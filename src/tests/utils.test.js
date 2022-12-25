@@ -243,10 +243,35 @@ describe("Tests against semverLt", () => {
   });
 });
 
+describe("Tests for getOwnerRepoFromPackage", () => {
+  test("Returns Owner/repo for repository.url set into the package", () => {
+    const repo = "pulsar-edit/package-backend";
+    const url = `https://github.com/${repo}.git`;
+    const res = utils.getOwnerRepoFromPackage({
+      "repository": { "url": url }
+    });
+    expect(res).toEqual(repo);
+  });
+  test("Returns Owner/repo even when repository.url is not set into the package", () => {
+    const repo = "pulsar-edit/package-backend";
+    const url = `git@github.com:${repo}.git`;
+    const res = utils.getOwnerRepoFromPackage({
+      "metadata": { "repository": url }
+    });
+    expect(res).toEqual(repo);
+  });
+});
+
 describe("Tests for getOwnerRepoFromUrlString", () => {
   test("Returns Owner/repo for valid string", () => {
     const repo = "pulsar-edit/package-backend";
     const url = `https://github.com/${repo}.git`;
+    const res = utils.getOwnerRepoFromUrlString(url);
+    expect(res).toEqual(repo);
+  });
+  test("Returns Owner/repo for valid string in the 'git@' format", () => {
+    const repo = "pulsar-edit/package-backend";
+    const url = `git@github.com:${repo}.git`;
     const res = utils.getOwnerRepoFromUrlString(url);
     expect(res).toEqual(repo);
   });

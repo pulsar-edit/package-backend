@@ -433,6 +433,32 @@ function semverLt(a1, a2) {
 }
 
 /**
+ * @function getOwnerRepoFromPackage
+ * @desc A function that takes a package and tries to extract `owner/repo` string from it
+ * relying on getOwnerRepoFromUrlString util.
+ * @param {object} pack - The Github package.
+ * @returns {string} The `owner/repo` string from the URL. Or an empty string if unable to parse.
+ */
+function getOwnerRepoFromPackage(pack) {
+  // pack.repository.url should be enough, but in case GitHub in the future decides to change it,
+  // we use other properties to have chances to still extract the owner/repo string.
+  const props = [
+    pack?.repository?.url,
+    pack?.metadata?.repository,
+  ];
+
+  let repo = "";
+  for (const p of props) {
+    repo = getOwnerRepoFromUrlString(p);
+    if (repo !== "") {
+      break;
+    }
+  }
+
+  return repo;
+}
+
+/**
  * @function getOwnerRepoFromUrlString
  * @desc A function that takes the URL string of a GitHub repo and return the `owner/repo`
  * string for the repo. Intended to be used from a packages entry `data.repository.url`
@@ -589,5 +615,6 @@ module.exports = {
   semverLt,
   semverEq,
   StateStore,
+  getOwnerRepoFromPackage,
   getOwnerRepoFromUrlString,
 };

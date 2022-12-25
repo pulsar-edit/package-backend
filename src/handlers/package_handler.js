@@ -889,7 +889,7 @@ async function deletePackageVersion(req, res) {
 
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromUrlString(packageExists.content.data.repository.url)
+    utils.getOwnerRepoFromPackage(packageExists.content.data)
   );
 
   if (!gitowner.ok) {
