@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  version: "1.0.0"
+  version: "1.0.1"
   title: Pulsar
   description: Allows for the management, viewing, and downloading of packages and themes for use within the Pulsar editor (primarily)
 servers:
