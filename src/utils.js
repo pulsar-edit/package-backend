@@ -433,6 +433,26 @@ function semverLt(a1, a2) {
 }
 
 /**
+  * @function getOwnerRepoFromURL
+  * @desc A function to take the URL of a GitHub repo and return the `owner/repo`
+  * string for the repo. Intended to be used from a packages entry `data.repository.url`
+  * @param {string} url - The URL for the Repo.
+  * @returns {string} The `owner/repo` string from the URL. Or an empty string of unable to parse.
+  */
+function getOwnerRepoFromURL(url) {
+  const reg = /(?=(https:\/\/github\.com\/|git@github\.com:))\1(?=((?:[\w\-\.]+)\/(?:[\w\.\-]+)))\2/;
+
+  const res = url.match(reg);
+
+  if (res === null || res?.length < 3) {
+    logger.generic(3, `getOwnerRepoFromURL Unable to parse: ${url}`);
+   return "";
+  }
+
+  return res[2].replace(/\.git$/, "");
+}
+
+/**
  * @function semverEq
  * @desc Compares two sermver and return true if the first is equal to the second.
  * Expects to get the semver formatted as array of strings.
@@ -559,4 +579,5 @@ module.exports = {
   semverLt,
   semverEq,
   StateStore,
+  getOwnerRepoFromURL,
 };
