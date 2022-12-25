@@ -54,6 +54,24 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kyjus25",
+      "name": "Justin White",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6710794?v=4",
+      "profile": "http://justinwhite.info/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Spiker985",
+      "name": "Spiker985",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7829451?v=4",
+      "profile": "https://github.com/Spiker985",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
