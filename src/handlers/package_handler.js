@@ -596,6 +596,13 @@ async function postPackagesVersion(req, res) {
   // And if they are, we expect that `auth` is true. Because otherwise it will fail.
   // That's the methodology, the logic here just needs to catch up.
 
+  let logString = `TMPLOG: Raw Auth Size: ${logger.sanitizeLogs(
+    req.get("Authorization")?.length
+  )} Parsed: ${logger.sanitizeLogs(
+    params.auth !== "" ? params.auth.length : "0"
+  )}`;
+  logger.generic(6, logString);
+
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
@@ -854,18 +861,18 @@ async function deletePackageVersion(req, res) {
     versionName: query.engine(req.params.versionName),
   };
 
+  // Moving this forward to do the least computationally expensive task first.
+  // Check version validity
+  if (params.versionName === false) {
+    await common.notFound(req, res);
+    return;
+  }
+
   // Verify the user has local and remote permissions
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
     await common.handleError(req, res, user);
-    return;
-  }
-
-  const gitowner = await git.ownership(user.content, params.packageName);
-
-  if (!gitowner.ok) {
-    await common.handleError(req, res, gitowner);
     return;
   }
 
@@ -880,9 +887,13 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
-  // Check version validity
-  if (params.versionName === false) {
-    await common.notFound(req, res);
+  const gitowner = await git.ownership(
+    user.content,
+    utils.getOwnerRepoFromURL(packageExists.content.data.repository.url)
+  );
+
+  if (!gitowner.ok) {
+    await common.handleError(req, res, gitowner);
     return;
   }
 

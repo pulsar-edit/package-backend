@@ -1104,6 +1104,7 @@ A helper for any functions that are agnostic in handlers.
     * [~semverArray(semver)](#module_utils..semverArray) ⇒ <code>array</code> \| <code>null</code>
     * [~semverGt(a1, a2)](#module_utils..semverGt) ⇒ <code>boolean</code>
     * [~semverLt(a1, a2)](#module_utils..semverLt) ⇒ <code>boolean</code>
+    * [~getOwnerRepoFromURL(url)](#module_utils..getOwnerRepoFromURL) ⇒ <code>string</code>
     * [~semverEq(a1, a2)](#module_utils..semverEq) ⇒ <code>boolean</code>
     * [~getState(ip, state)](#module_utils..getState) ⇒ <code>object</code>
     * [~setState(ip)](#module_utils..setState) ⇒ <code>object</code>
@@ -1245,6 +1246,19 @@ Should be always executed after running semverArray.
 | --- | --- | --- |
 | a1 | <code>array</code> | First semver as array of strings. |
 | a2 | <code>array</code> | Second semver as array of strings. |
+
+<a name="module_utils..getOwnerRepoFromURL"></a>
+
+### utils~getOwnerRepoFromURL(url) ⇒ <code>string</code>
+A function to take the URL of a GitHub repo and return the `owner/repo`
+string for the repo. Intended to be used from a packages entry `data.repository.url`
+
+**Kind**: inner method of [<code>utils</code>](#module_utils)  
+**Returns**: <code>string</code> - The `owner/repo` string from the URL. Or an empty string of unable to parse.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| url | <code>string</code> | The URL for the Repo. |
 
 <a name="module_utils..semverEq"></a>
 
