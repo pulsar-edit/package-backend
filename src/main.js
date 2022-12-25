@@ -58,7 +58,7 @@ app.set("trust proxy", true);
 // This is need for the Authentication features to proper maintain their StateStore
 // Hashmap. https://cloud.google.com/appengine/docs/flexible/nodejs/runtime#https_and_forwarding_proxies
 
-app.use('/swagger-ui', express.static('docs/swagger'))
+app.use('/swagger-ui', express.static('docs/swagger'));
 
 app.use((req, res, next) => {
   // This adds a start to the request, logging the exact time a request was received.
