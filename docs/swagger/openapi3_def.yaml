@@ -67,7 +67,7 @@ paths:
       description: Currently not implemented
       security:
         - GitHub:
-            - packages:publish
+            - placeholder
         - GitHubPAT: []
       parameters:
         - name: repository
@@ -160,7 +160,7 @@ paths:
       description: Deletes an entire package entry. Packages will be flagged for deletion for 30 days to allow time to restore if necessary
       security:
         - GitHub:
-            - packages:delete
+            - placeholder
         - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
@@ -181,7 +181,7 @@ paths:
       description: Watch a package
       security:
         - GitHub:
-            - stars:write
+            - placeholder
         - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
@@ -201,7 +201,7 @@ paths:
       description: Stop watching a package
       security:
         - GitHub:
-            - stars:write
+            - placeholder
         - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
@@ -235,7 +235,7 @@ paths:
       description: Creates a new package version from a git tag. If rename is not "true" the name field within the package.json must match the existing package name
       security:
         - GitHub:
-            - versions:publish
+            - placeholder
         - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
@@ -295,7 +295,7 @@ paths:
       description: ""
       security:
         - GitHub:
-            - versions:delete
+            - placeholder
         - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
@@ -317,7 +317,7 @@ paths:
       description: Decrement the download count for the selected package and version
       security:
         - GitHub:
-            - packages:uninstall
+            - placeholder
         - GitHubPAT: []
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
@@ -358,7 +358,7 @@ paths:
       description: ""
       security:
         - GitHub:
-            - stars:read
+            - placeholder
         - GitHubPAT: []
       responses:
         200:
