@@ -40,6 +40,10 @@ function httpLog(req, res) {
 function sanitizeLogs(val) {
   // Removes New Line, Carriage Return, Tabs,
   // TODO: Should probably also defend against links within this.
+  if (typeof val === "number") {
+    // Don't try to preform string methods on number
+    return val;
+  }
   return val?.replace(/\n|\r/g, "")?.replace(/\t/g, "");
 }
 
