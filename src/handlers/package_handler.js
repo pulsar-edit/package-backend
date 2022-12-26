@@ -62,16 +62,12 @@ async function getPackages(req, res) {
   // The endpoint using this function needs an array.
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  let link = `<${server_url}/api/packages?page=${page}&sort=${params.sort}&order=${
-    params.direction
-  }>; rel="self", <${server_url}/api/packages?page=${totPage}&sort=${
-    params.sort
-  }&order=${params.direction}>; rel="last"`;
+  let link = `<${server_url}/api/packages?page=${page}&sort=${params.sort}&order=${params.direction}>; rel="self", <${server_url}/api/packages?page=${totPage}&sort=${params.sort}&order=${params.direction}>; rel="last"`;
 
   if (page !== totPage) {
-    link += `, <${server_url}/api/packages?page=${
-      page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
+    link += `, <${server_url}/api/packages?page=${page + 1}&sort=${
+      params.sort
+    }&order=${params.direction}>; rel="next"`;
   }
 
   res.append("Link", link);
@@ -314,9 +310,7 @@ async function getPackagesSearch(req, res) {
 
   const page = packs.pagination.page;
   const totPage = packs.pagination.total;
-  const newPacks = await utils.constructPackageObjectShort(
-    packs.content
-  );
+  const newPacks = await utils.constructPackageObjectShort(packs.content);
 
   let packArray = null;
 
@@ -339,11 +333,7 @@ async function getPackagesSearch(req, res) {
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
-    params.direction
-  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${totPage}&sort=${
-    params.sort
-  }&order=${params.direction}>; rel="last"`;
+  let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${params.direction}>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${totPage}&sort=${params.sort}&order=${params.direction}>; rel="last"`;
 
   if (page !== totPage) {
     link += `, <${server_url}/api/packages/search?q=${safeQuery}&page=${

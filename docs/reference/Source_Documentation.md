@@ -175,7 +175,6 @@ with and retreive data from the cloud hosted database instance.
     * [~removePackageVersion(packName, semVer)](#module_database..removePackageVersion) ⇒ <code>object</code>
     * [~getFeaturedPackages()](#module_database..getFeaturedPackages) ⇒ <code>object</code>
     * [~getFeaturedThemes()](#module_database..getFeaturedThemes) ⇒ <code>object</code>
-    * [~getTotalPackageEstimate()](#module_database..getTotalPackageEstimate) ⇒ <code>object</code>
     * [~getUserByName(username)](#module_database..getUserByName) ⇒ <code>object</code>
     * [~getUserByNodeID(id)](#module_database..getUserByNodeID) ⇒ <code>object</code>
     * [~getUserByID(id)](#module_database..getUserByID) ⇒ <code>object</code>
@@ -408,14 +407,6 @@ Then uses this.getPackageCollectionByName to retreive details of the package.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - A server status object.  
-<a name="module_database..getTotalPackageEstimate"></a>
-
-### database~getTotalPackageEstimate() ⇒ <code>object</code>
-Returns an estimate of how many rows are included in the packages SQL table.
-Used to aid in trunication and page generation of Link headers for large requests.
-
-**Kind**: inner method of [<code>database</code>](#module_database)  
-**Returns**: <code>object</code> - A server status object.  
 <a name="module_database..getUserByName"></a>
 
 ### database~getUserByName(username) ⇒ <code>object</code>
@@ -510,7 +501,7 @@ The current Fuzzy-Finder implementation of search. Ideally eventually
 will use a more advanced search method.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
-**Returns**: <code>object</code> - A server status object.  
+**Returns**: <code>object</code> - A server status object containing the results and the pagination object.  
 <a name="module_database..getUserCollectionById"></a>
 
 ### database~getUserCollectionById(ids) ⇒ <code>object</code>
@@ -532,7 +523,7 @@ and sorting, aiming to provide back the raw data, and allow later functions to
 then reconstruct the JSON as needed.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
-**Returns**: <code>object</code> - A server status object.  
+**Returns**: <code>object</code> - A server status object containing the results and the pagination object.  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |

@@ -1331,10 +1331,10 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       content: command,
       pagination: {
         count: resultCount,
-        page: (page < totalPages) ? page : totalPages,
+        page: page < totalPages ? page : totalPages,
         total: totalPages,
-        limit
-      }
+        limit,
+      },
     };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
@@ -1432,8 +1432,8 @@ async function getSortedPackages(page, dir, method, themes = false) {
           : sqlStorage``
       }
       ORDER BY ${orderType} ${
-        dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
-      }
+      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
+    }
       LIMIT ${limit}
       OFFSET ${offset};
     `;
@@ -1448,10 +1448,10 @@ async function getSortedPackages(page, dir, method, themes = false) {
       content: command,
       pagination: {
         count: resultCount,
-        page: (page < totalPages) ? page : totalPages,
+        page: page < totalPages ? page : totalPages,
         total: totalPages,
-        limit
-      }
+        limit,
+      },
     };
   } catch (err) {
     return { ok: false, content: err, short: "Server Error" };
