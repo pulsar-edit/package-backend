@@ -77,33 +77,29 @@ async function getThemes(req, res) {
     return;
   }
 
+  const page = packages.pagination.page;
+  const totPage = packages.pagination.total;
   const packObjShort = await utils.constructPackageObjectShort(
     packages.content
   );
 
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  const totalPages = await database.getTotalPackageEstimate();
+  let link = `<${server_url}/api/themes?page=${page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/themes?page=${totPage}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
 
-  if (!totalPages.ok) {
-    logger.generic(
-      3,
-      `getThemes-getTotalPackageEstimate Not OK: ${totalPages.content}`
-    );
-    await common.handleError(req, res, totalPages);
-    return;
+  if (page !== totPage) {
+    link += `, <${server_url}/api/themes?page=${
+      page + 1
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
-  res.append(
-    "Link",
-    `<${server_url}/api/themes?page=${params.page}&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/themes?page=${totalPages.content}&sort=${
-      params.sort
-    }&order=${params.direction}>; rel="last", <${server_url}/api/themes?page=${
-      params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
-  );
+  res.append("Link", link);
+  res.append("Query-Total", packages.pagination.count);
+  res.append("Query-Limit", packages.pagination.limit);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -149,7 +145,12 @@ async function getThemesSearch(req, res) {
     return;
   }
 
-  const newPacks = await utils.constructPackageObjectShort(packs.content);
+  const page = packs.pagination.page;
+  const totPage = packs.pagination.total;
+  const newPacks = await utils.constructPackageObjectShort(
+    packs.content
+  );
+
   let packArray = null;
 
   if (Array.isArray(newPacks)) {
@@ -164,30 +165,25 @@ async function getThemesSearch(req, res) {
     packArray = [newPacks];
   }
 
-  const totalPackageEstimate = await database.getTotalPackageEstimate();
-
-  const totalPages = !totalPackageEstimate.ok
-    ? 1
-    : totalPackageEstimate.content;
-
   const safeQuery = encodeURIComponent(
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  res.append(
-    "Link",
-    `<${server_url}/api/themes/search?q=${safeQuery}&page=${params.page}&sort=${
-      params.sort
-    }&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/themes?q=${safeQuery}&page=${
-      totalPages.content
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="last", <${server_url}/api/themes/search?q=${safeQuery}&page=${
-      params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
-  );
+  let link = `<${server_url}/api/themes/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/themes/search?q=${safeQuery}&page=${totPage}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
+
+  if (page !== totPage) {
+    link += `, <${server_url}/api/themes/search?q=${safeQuery}&page=${
+      page + 1
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
+  }
+
+  res.append("Link", link);
+  res.append("Query-Total", packs.pagination.count);
+  res.append("Query-Limit", packs.pagination.limit);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);

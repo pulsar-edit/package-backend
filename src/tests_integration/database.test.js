@@ -82,19 +82,6 @@ describe("getPackageByName", () => {
   });
 });
 
-describe("getTotalPackageEstimate", () => {
-  test("Should return a successful Server Status Object", async () => {
-    const obj = await database.getTotalPackageEstimate();
-    expect(obj.ok).toBeTruthy();
-  });
-  test.failing("Should return an expected-ish value", async () => {
-    const obj = await database.getTotalPackageEstimate();
-    expect(obj.content).toBeGreaterThan(0);
-    // This test is currently failing, seems in our dev environment that
-    // the estimate returns 0 no matter what.
-  });
-});
-
 describe("Package Lifecycle Tests", () => {
   // Below are what we will call lifecycle tests.
   // That is tests that will test multiple actions against the same package,
@@ -161,7 +148,7 @@ describe("Package Lifecycle Tests", () => {
     expect(
       getByNewName.content.updated >= getAfterPublish.content.updated
     ).toBeTruthy();
-    // For the above expect().getGreaterThan() doesn't support dates.
+    // For the above expect().toBeGreaterThan() doesn't support dates.
 
     // === Can we still get the package by it's old name?
     const getByOldName = await database.getPackageByName(pack.createPack.name);

@@ -53,6 +53,8 @@ async function getPackages(req, res) {
     return;
   }
 
+  const page = packages.pagination.page;
+  const totPage = packages.pagination.total;
   const packObjShort = await utils.constructPackageObjectShort(
     packages.content
   );
@@ -60,31 +62,21 @@ async function getPackages(req, res) {
   // The endpoint using this function needs an array.
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  const totalPages = await database.getTotalPackageEstimate();
+  let link = `<${server_url}/api/packages?page=${page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/packages?page=${totPage}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
 
-  if (!totalPages.ok) {
-    logger.generic(
-      3,
-      `getPackages-getTotalPackageEstimate Not OK: ${totalPages.content}`
-    );
-    await common.handleError(req, res, totalPages, 1002);
-    return;
+  if (page !== totPage) {
+    link += `, <${server_url}/api/packages?page=${
+      page + 1
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
-  res.append(
-    "Link",
-    `<${server_url}/api/packages?page=${params.page}&sort=${
-      params.sort
-    }&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/packages?page=${
-      totalPages.content
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="last", <${server_url}/api/packages?page=${params.page + 1}&sort=${
-      params.sort
-    }&order=${params.direction}>; rel="next"`
-  );
+  res.append("Link", link);
+  res.append("Query-Total", packages.pagination.count);
+  res.append("Query-Limit", packages.pagination.limit);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
@@ -320,7 +312,12 @@ async function getPackagesSearch(req, res) {
     return;
   }
 
-  const newPacks = await utils.constructPackageObjectShort(packs.content);
+  const page = packs.pagination.page;
+  const totPage = packs.pagination.total;
+  const newPacks = await utils.constructPackageObjectShort(
+    packs.content
+  );
+
   let packArray = null;
 
   if (Array.isArray(newPacks)) {
@@ -338,28 +335,25 @@ async function getPackagesSearch(req, res) {
     packArray = [newPacks];
   }
 
-  const totalPageEstimate = await database.getTotalPackageEstimate();
-
-  const totalPages = !totalPageEstimate.ok ? 1 : totalPageEstimate.content;
-
   const safeQuery = encodeURIComponent(
     params.query.replace(/[<>"':;\\/]+/g, "")
   );
   // now to get headers.
-  res.append(
-    "Link",
-    `<${server_url}/api/packages/search?q=${safeQuery}&page=${
-      params.page
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="self", <${server_url}/api/packages?q=${safeQuery}&page=${
-      totalPages.content
-    }&sort=${params.sort}&order=${
-      params.direction
-    }>; rel="last", <${server_url}/api/packages/search?q=${safeQuery}&page=${
-      params.page + 1
-    }&sort=${params.sort}&order=${params.direction}>; rel="next"`
-  );
+  let link = `<${server_url}/api/packages/search?q=${safeQuery}&page=${page}&sort=${params.sort}&order=${
+    params.direction
+  }>; rel="self", <${server_url}/api/packages/search?q=${safeQuery}&page=${totPage}&sort=${
+    params.sort
+  }&order=${params.direction}>; rel="last"`;
+
+  if (page !== totPage) {
+    link += `, <${server_url}/api/packages/search?q=${safeQuery}&page=${
+      page + 1
+    }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
+  }
+
+  res.append("Link", link);
+  res.append("Query-Total", packs.pagination.count);
+  res.append("Query-Limit", packs.pagination.limit);
 
   res.status(200).json(packArray);
   logger.httpLog(req, res);
