@@ -636,28 +636,33 @@ async function postPackagesVersion(req, res) {
     return;
   }
 
+  // Get `owner/repo` string format from package.
+  const ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+
   // Now it's important to note, that getPackageJSON was intended to be an internal function.
   // As such does not return a Server Status Object. This may change later, but for now,
   // we will expect `undefined` to not be success.
   const packJSON = await git.getPackageJSON(
-    `${user.content.username}/${packExists.content.name}`,
+    ownerRepo,
     user.content
   );
 
   if (packJSON === undefined) {
     logger.generic(
       6,
-      `Unable to get Package JSON from git with: ${user.content.username}/${packExists.content.name}`
+      `Unable to get Package JSON from git with: ${ownerRepo}`
     );
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
-      content: `Failed to get Package: ${packExists.content.name}`,
+      content: `Failed to get Package: ${ownerRepo}`,
     });
     return;
   }
 
-  if (packJSON.name !== packExists.content.name && !params.rename) {
+  const newName = packJSON.name;
+  const currentName = packExists.content.name;
+  if (newName !== currentName && !params.rename) {
     logger.generic(
       6,
       "Package JSON and Params Package Names don't match, with no rename flag"
@@ -676,7 +681,7 @@ async function postPackagesVersion(req, res) {
 
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packExists.content.data)
+    ownerRepo
   );
 
   if (!gitowner.ok) {
@@ -688,11 +693,11 @@ async function postPackagesVersion(req, res) {
   // Now the only thing left to do, is add this new version with the name from the package.
   // And check again if the name is incorrect, since it'll need a new entry onto the names.
 
-  const rename = packJSON.name !== packExists.content.name && params.rename;
+  const rename = newName !== currentName && params.rename;
   if (rename) {
     // Before allowing the rename of a package, ensure the new name isn't banned.
 
-    const isBanned = await utils.isPackageNameBanned(packJSON.name);
+    const isBanned = await utils.isPackageNameBanned(newName);
 
     if (isBanned.ok) {
       logger.generic(3, `postPackages Blocked by banned package name: ${repo}`);
@@ -711,7 +716,7 @@ async function postPackagesVersion(req, res) {
 
   const addVer = await database.insertNewPackageVersion(
     packJSON,
-    rename ? packExists.content.name : null
+    rename ? currentName : null
   );
 
   if (!addVer.ok) {
