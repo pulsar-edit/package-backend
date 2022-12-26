@@ -418,15 +418,6 @@ async function getPackageByName(name, user = false) {
   try {
     sqlStorage ??= setupSQL();
 
-    // While this query achieves the same as the one below it, there is about .1ms saved.
-    //const command = await sqlStorage`
-    //  SELECT p.*, JSON_AGG(v.*) FROM packages p JOIN versions v ON p.pointer = v.package
-    //  WHERE pointer IN (
-    //    SELECT pointer FROM names WHERE name = ${name}
-    //  )
-    //  GROUP BY p.pointer, v.package;
-    //`;
-
     const command = await sqlStorage`
       SELECT
         ${
@@ -505,14 +496,9 @@ async function getPackageVersionByNameAndVersion(name, version) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      SELECT semver, status, license, engine, meta
-      FROM versions
-      WHERE package IN (
-        SELECT pointer
-        FROM names
-        WHERE name = ${name}
-      )
-      AND semver = ${version} AND status != 'removed';
+      SELECT v.semver, v.status, v.license, v.engine, v.meta
+      FROM packages p INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
+        INNER JOIN versions v ON (p.pointer = v.package AND semver = ${version} AND status != 'removed');
     `;
 
     return command.count !== 0
@@ -543,12 +529,9 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
-      FROM packages AS p INNER JOIN versions AS v ON (p.pointer = v.package) AND (v.status = 'latest')
-      WHERE pointer IN (
-        SELECT pointer FROM names
-        WHERE name IN ${sqlStorage(packArray)}
-      )
+    SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
+    FROM packages p INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(packArray)})
+      INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
     `;
 
     return command.count !== 0
