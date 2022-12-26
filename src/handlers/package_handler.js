@@ -409,7 +409,21 @@ async function deletePackagesName(req, res) {
     return;
   }
 
-  const gitowner = await git.ownership(user.content, params.packageName);
+  // Lets also first check to make sure the package exists.
+  const packageExists = await database.getPackageByName(
+    params.packageName,
+    true
+  );
+
+  if (!packageExists.ok) {
+    await common.handleError(req, res, packageExists);
+    return;
+  }
+
+  const gitowner = await git.ownership(
+    user.content,
+    utils.getOwnerRepoFromPackage(packageExists.content.data)
+  );
 
   if (!gitowner.ok) {
     await common.handleError(req, res, gitowner, 4001);
@@ -660,7 +674,10 @@ async function postPackagesVersion(req, res) {
   // Else we will continue, and trust the name provided from the package as being accurate.
   // And now we can ensure the user actually owns this repo, with our updated name.
 
-  const gitowner = await git.ownership(user.content, packJSON.name);
+  const gitowner = await git.ownership(
+    user.content,
+    utils.getOwnerRepoFromPackage(packExists.content.data)
+  );
 
   if (!gitowner.ok) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
