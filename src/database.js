@@ -531,7 +531,9 @@ async function getPackageCollectionByName(packArray) {
     const command = await sqlStorage`
     SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
     FROM packages p
-      INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(packArray)})
+      INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
+        packArray
+      )})
       INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
     `;
 
@@ -1282,9 +1284,15 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
         v.semver, COUNT(*) OVER() AS query_result_count
       FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name LIKE ${"%" + lcterm + "%"})
+        INNER JOIN names n ON (p.pointer = n.pointer AND n.name LIKE ${
+          "%" + lcterm + "%"
+        })
         INNER JOIN versions AS v ON (p.pointer = v.package AND v.status = 'latest')
-      ${themes === true ? sqlStorage`WHERE p.package_type = 'theme'` : sqlStorage``}
+      ${
+        themes === true
+          ? sqlStorage`WHERE p.package_type = 'theme'`
+          : sqlStorage``
+      }
       ORDER BY ${
         sort === "relevance" ? sqlStorage`downloads` : sqlStorage`${sort}`
       }

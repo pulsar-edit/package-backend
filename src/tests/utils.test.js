@@ -248,7 +248,7 @@ describe("Tests for getOwnerRepoFromPackage", () => {
     const repo = "pulsar-edit/package-backend";
     const url = `https://github.com/${repo}.git`;
     const res = utils.getOwnerRepoFromPackage({
-      "repository": { "url": url }
+      repository: { url: url },
     });
     expect(res).toEqual(repo);
   });
@@ -256,7 +256,7 @@ describe("Tests for getOwnerRepoFromPackage", () => {
     const repo = "pulsar-edit/package-backend";
     const url = `git@github.com:${repo}.git`;
     const res = utils.getOwnerRepoFromPackage({
-      "metadata": { "repository": url }
+      metadata: { repository: url },
     });
     expect(res).toEqual(repo);
   });

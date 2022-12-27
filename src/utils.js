@@ -442,10 +442,7 @@ function semverLt(a1, a2) {
 function getOwnerRepoFromPackage(pack) {
   // pack.repository.url should be enough, but in case GitHub in the future decides to change it,
   // we use other properties to have chances to still extract the owner/repo string.
-  const props = [
-    pack?.repository?.url,
-    pack?.metadata?.repository,
-  ];
+  const props = [pack?.repository?.url, pack?.metadata?.repository];
 
   let repo = "";
   for (const p of props) {

@@ -173,7 +173,9 @@ describe("Package Lifecycle Tests", () => {
     );
 
     // === Can we get the package collection specifying the old name?
-    const packCollection = await database.getPackageCollectionByName([pack.createPack.name]);
+    const packCollection = await database.getPackageCollectionByName([
+      pack.createPack.name,
+    ]);
     expect(packCollection.ok).toBeTruthy();
     expect(Array.isArray(packCollection.content)).toBeTruthy();
     for (const p of packCollection.content) {
@@ -183,7 +185,6 @@ describe("Package Lifecycle Tests", () => {
       expect(`${p.downloads}`.match(/^\d+$/) === null).toBeFalsy();
       expect(typeof p.semver === "string").toBeTruthy();
     }
-
 
     // === Now let's try to delete the only version available.
     // This should fail because the package needs to have at least

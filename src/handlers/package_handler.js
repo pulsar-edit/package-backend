@@ -642,16 +642,10 @@ async function postPackagesVersion(req, res) {
   // Now it's important to note, that getPackageJSON was intended to be an internal function.
   // As such does not return a Server Status Object. This may change later, but for now,
   // we will expect `undefined` to not be success.
-  const packJSON = await git.getPackageJSON(
-    ownerRepo,
-    user.content
-  );
+  const packJSON = await git.getPackageJSON(ownerRepo, user.content);
 
   if (packJSON === undefined) {
-    logger.generic(
-      6,
-      `Unable to get Package JSON from git with: ${ownerRepo}`
-    );
+    logger.generic(6, `Unable to get Package JSON from git with: ${ownerRepo}`);
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
@@ -679,10 +673,7 @@ async function postPackagesVersion(req, res) {
   // Else we will continue, and trust the name provided from the package as being accurate.
   // And now we can ensure the user actually owns this repo, with our updated name.
 
-  const gitowner = await git.ownership(
-    user.content,
-    ownerRepo
-  );
+  const gitowner = await git.ownership(user.content, ownerRepo);
 
   if (!gitowner.ok) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
