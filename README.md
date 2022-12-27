@@ -7,7 +7,7 @@
 [![CI - Standards](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml)
 [![CI - Tests](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
@@ -53,6 +53,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Daeraxa"><img src="https://avatars.githubusercontent.com/u/58074586?v=4?s=100" width="100px;" alt="Daeraxa"/><br /><sub><b>Daeraxa</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=Daeraxa" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://justinwhite.info/"><img src="https://avatars.githubusercontent.com/u/6710794?v=4?s=100" width="100px;" alt="Justin White"/><br /><sub><b>Justin White</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=kyjus25" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Spiker985"><img src="https://avatars.githubusercontent.com/u/7829451?v=4?s=100" width="100px;" alt="Spiker985"/><br /><sub><b>Spiker985</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=Spiker985" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/PolariTOON"><img src="https://avatars.githubusercontent.com/u/36267812?v=4?s=100" width="100px;" alt="PolariTOON"/><br /><sub><b>PolariTOON</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=PolariTOON" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
