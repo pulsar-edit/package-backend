@@ -409,7 +409,21 @@ async function deletePackagesName(req, res) {
     return;
   }
 
-  const gitowner = await git.ownership(user.content, params.packageName);
+  // Lets also first check to make sure the package exists.
+  const packageExists = await database.getPackageByName(
+    params.packageName,
+    true
+  );
+
+  if (!packageExists.ok) {
+    await common.handleError(req, res, packageExists);
+    return;
+  }
+
+  const gitowner = await git.ownership(
+    user.content,
+    utils.getOwnerRepoFromPackage(packageExists.content.data)
+  );
 
   if (!gitowner.ok) {
     await common.handleError(req, res, gitowner, 4001);
@@ -622,28 +636,33 @@ async function postPackagesVersion(req, res) {
     return;
   }
 
+  // Get `owner/repo` string format from package.
+  const ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+
   // Now it's important to note, that getPackageJSON was intended to be an internal function.
   // As such does not return a Server Status Object. This may change later, but for now,
   // we will expect `undefined` to not be success.
   const packJSON = await git.getPackageJSON(
-    `${user.content.username}/${packExists.name}`,
+    ownerRepo,
     user.content
   );
 
   if (packJSON === undefined) {
     logger.generic(
       6,
-      `Unable to get Package JSON from git with: ${user.content.username}/${packExists.name}`
+      `Unable to get Package JSON from git with: ${ownerRepo}`
     );
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
-      content: `Failed to get Package: ${params.packageName}`,
+      content: `Failed to get Package: ${ownerRepo}`,
     });
     return;
   }
 
-  if (packJSON.name !== params.packageName && !params.rename) {
+  const newName = packJSON.name;
+  const currentName = packExists.content.name;
+  if (newName !== currentName && !params.rename) {
     logger.generic(
       6,
       "Package JSON and Params Package Names don't match, with no rename flag"
@@ -660,7 +679,10 @@ async function postPackagesVersion(req, res) {
   // Else we will continue, and trust the name provided from the package as being accurate.
   // And now we can ensure the user actually owns this repo, with our updated name.
 
-  const gitowner = await git.ownership(user.content, packJSON.name);
+  const gitowner = await git.ownership(
+    user.content,
+    ownerRepo
+  );
 
   if (!gitowner.ok) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
@@ -671,11 +693,11 @@ async function postPackagesVersion(req, res) {
   // Now the only thing left to do, is add this new version with the name from the package.
   // And check again if the name is incorrect, since it'll need a new entry onto the names.
 
-  const rename = packJSON.name !== params.packageName && params.rename;
+  const rename = newName !== currentName && params.rename;
   if (rename) {
     // Before allowing the rename of a package, ensure the new name isn't banned.
 
-    const isBanned = await utils.isPackageNameBanned(packJSON.name);
+    const isBanned = await utils.isPackageNameBanned(newName);
 
     if (isBanned.ok) {
       logger.generic(3, `postPackages Blocked by banned package name: ${repo}`);
@@ -694,7 +716,7 @@ async function postPackagesVersion(req, res) {
 
   const addVer = await database.insertNewPackageVersion(
     packJSON,
-    rename ? params.packageName : null
+    rename ? currentName : null
   );
 
   if (!addVer.ok) {
@@ -879,7 +901,7 @@ async function deletePackageVersion(req, res) {
 
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromURL(packageExists.content.data.repository.url)
+    utils.getOwnerRepoFromPackage(packageExists.content.data)
   );
 
   if (!gitowner.ok) {

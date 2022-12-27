@@ -172,6 +172,19 @@ describe("Package Lifecycle Tests", () => {
       `Unable to add the new name: ${pack.createPack.name} is already used.`
     );
 
+    // === Can we get the package collection specifying the old name?
+    const packCollection = await database.getPackageCollectionByName([pack.createPack.name]);
+    expect(packCollection.ok).toBeTruthy();
+    expect(Array.isArray(packCollection.content)).toBeTruthy();
+    for (const p of packCollection.content) {
+      expect(typeof p.data.name === "string").toBeTruthy();
+      // PostgreSQL numeric types are not fully compatible with js Number type
+      expect(`${p.stargazers_count}`.match(/^\d+$/) === null).toBeFalsy();
+      expect(`${p.downloads}`.match(/^\d+$/) === null).toBeFalsy();
+      expect(typeof p.semver === "string").toBeTruthy();
+    }
+
+
     // === Now let's try to delete the only version available.
     // This should fail because the package needs to have at least
     // one published (latest) version.
@@ -229,7 +242,7 @@ describe("Package Lifecycle Tests", () => {
     expect(getNewVerOnly.content.semver).toEqual(v1_0_1.version);
     expect(getNewVerOnly.content.meta.name).toEqual(pack.createPack.name);
 
-    // === Can we get the first verison published still?
+    // === Can we get the first version published still?
     const getOldVerOnly = await database.getPackageVersionByNameAndVersion(
       NEW_NAME,
       pack.createPack.metadata.version
