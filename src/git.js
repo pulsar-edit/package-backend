@@ -444,9 +444,9 @@ async function getRepoExistance(repo, user) {
       .get(`${GH_WEB_URL}/${repo}`)
       .set({ Authorization: `Bearer ${user.token}` })
       .set({ "User-Agent": GH_USERAGENT })
-      .ok((res) => (res.status == 200 || res.status == 404));
-      // Ensure the HTTP Status Codes we want to actively check for are returned
-      // and not emitting an error.
+      .ok((res) => res.status == 200 || res.status == 404);
+    // Ensure the HTTP Status Codes we want to actively check for are returned
+    // and not emitting an error.
 
     switch (res.status) {
       case 200:
