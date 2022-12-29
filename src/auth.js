@@ -66,7 +66,10 @@ async function verifyAuth(token) {
       user_data = await superagent
         .get("https://api.github.com/user")
         .set({ Authorization: `Bearer ${token}` })
-        .set({ "User-Agent": GH_USERAGENT });
+        .set({ "User-Agent": GH_USERAGENT })
+        .ok((res) => res.status < 500); // Provide custom handler to define what
+        // HTTP Status' are 'OK' since we need the handling on a 401 to inform of
+        // invalid auth, which otherwise emits an error.
     }
 
     if (user_data.status !== 200) {
