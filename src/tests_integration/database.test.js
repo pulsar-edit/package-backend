@@ -200,7 +200,7 @@ describe("Package Lifecycle Tests", () => {
 
     // === Now let's add a version
     const v1_0_1 = pack.addVersion("1.0.1");
-    const addNextVersion = await database.insertNewPackageVersion(v1_0_1);
+    const addNextVersion = await database.insertNewPackageVersion(v1_0_1, pack.packageDataForVersion(v1_0_1));
     if (!addNextVersion.ok) {
       console.log(addNextVersion);
     }
@@ -227,7 +227,7 @@ describe("Package Lifecycle Tests", () => {
     );
 
     // === Can we publish a duplicate or a lower version?
-    const dupVer = await database.insertNewPackageVersion(v1_0_1);
+    const dupVer = await database.insertNewPackageVersion(v1_0_1, pack.packageDataForVersion(v1_0_1));
     expect(dupVer.ok).toBeFalsy();
     expect(dupVer.content).toEqual(
       "Cannot publish a new version with semver lower or equal than the current latest one."
@@ -310,7 +310,7 @@ describe("Package Lifecycle Tests", () => {
     // === Can we reinsert a previous deleted version?
     // This is intentionally unsupported because we want a new package to be always
     // higher than the previous latest one in order to trigger an update to the user.
-    const reAddNextVersion = await database.insertNewPackageVersion(v1_0_1);
+    const reAddNextVersion = await database.insertNewPackageVersion(v1_0_1, pack.packageDataForVersion(v1_0_1));
     const latestVer = await database.getPackageByName(NEW_NAME);
     expect(reAddNextVersion.ok).toBeFalsy();
     expect(reAddNextVersion.content).toEqual(
@@ -321,7 +321,7 @@ describe("Package Lifecycle Tests", () => {
     // First let's push a new version.
     const newSemver = "1.1.0";
     const newVersion = pack.addVersion(newSemver);
-    const addNewVersion = await database.insertNewPackageVersion(newVersion);
+    const addNewVersion = await database.insertNewPackageVersion(newVersion, pack.packageDataForVersion(newVersion));
     expect(addNewVersion.ok).toBeTruthy();
     expect(addNewVersion.content).toEqual(
       `Successfully added new version: ${newVersion.name}@${newVersion.version}`
@@ -348,7 +348,7 @@ describe("Package Lifecycle Tests", () => {
 
     // === Can we add an odd yet valid semver?
     const oddVer = pack.addVersion("1.2.3-beta.0");
-    const oddNewVer = await database.insertNewPackageVersion(oddVer);
+    const oddNewVer = await database.insertNewPackageVersion(oddVer, pack.packageDataForVersion(oddVer));
     expect(oddNewVer.ok).toBeTruthy();
     expect(oddNewVer.content).toEqual(
       `Successfully added new version: ${oddVer.name}@${oddVer.version}`
@@ -356,7 +356,7 @@ describe("Package Lifecycle Tests", () => {
 
     // === What about another Odd yet valid semver?
     const oddVer2 = pack.addVersion("1.2.4-alpha1");
-    const oddNewVer2 = await database.insertNewPackageVersion(oddVer2);
+    const oddNewVer2 = await database.insertNewPackageVersion(oddVer2, pack.createPack);
     expect(oddNewVer2.ok).toBeTruthy();
     expect(oddNewVer2.content).toEqual(
       `Successfully added new version: ${oddVer2.name}@${oddVer2.version}`
