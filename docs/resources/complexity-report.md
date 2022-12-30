@@ -1,10 +1,10 @@
-# Complexity report, 12/29/2022
+# Complexity report, 12/30/2022
 
-* Mean per-function logical LOC: 17.153846153846153
+* Mean per-function logical LOC: 17.307692307692307
 * Mean per-function parameter count: 0.36538461538461536
 * Mean per-function cyclomatic complexity: 1.5769230769230769
-* Mean per-function Halstead effort: 5043.95238437846
-* Mean per-module maintainability index: 64.54258539120397
+* Mean per-function Halstead effort: 5058.562889750737
+* Mean per-module maintainability index: 64.46493028391954
 * First-order density: 0.591715976331361%
 * Change cost: 8.284023668639055%
 * Core size: 100%
@@ -231,12 +231,12 @@
 
 ## /home/runner/work/package-backend/package-backend/src/tests_integration/fixtures/lifetime/package-a.js
 
-* Physical LOC: 39
-* Logical LOC: 23
+* Physical LOC: 52
+* Logical LOC: 25
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 4.3478260869565215%
-* Maintainability index: 55.494411910399926
+* Cyclomatic complexity density: 4%
+* Maintainability index: 54.4848955157022
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/src/tests_integration/fixtures/lifetime/user-a.js

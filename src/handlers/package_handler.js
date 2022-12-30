@@ -661,11 +661,14 @@ async function postPackagesVersion(req, res) {
   // Again important to note, this was intended as an internal function of git
   // As such does not return a Server Status Object, and instead returns the obj or null
   if (packReadme === undefined) {
-    logger.generic(6, `Unable to Get Package Readme from git with: ${ownerRepo}`);
+    logger.generic(
+      6,
+      `Unable to Get Package Readme from git with: ${ownerRepo}`
+    );
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
-      content: `Failed to get Package Readme: ${ownerRepo}`
+      content: `Failed to get Package Readme: ${ownerRepo}`,
     });
   }
 
@@ -674,7 +677,7 @@ async function postPackagesVersion(req, res) {
     name: packJSON.name.toLowerCase(),
     repository: git.selectPackageRepository(packJSON.repository),
     readme: packReadme,
-    metadata: packJSON
+    metadata: packJSON,
   };
 
   const newName = packJSON.name;

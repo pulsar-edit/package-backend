@@ -38,10 +38,10 @@ const packageDataForVersion = (v) => {
     name: "package-a-lifetime",
     repository: {
       type: "git",
-      url: "https://github.com/pulsar-edit/package-a-lifetime"
+      url: "https://github.com/pulsar-edit/package-a-lifetime",
     },
     readme: "This is a readme!",
-    metadata: v
+    metadata: v,
   };
 };
 
