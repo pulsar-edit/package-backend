@@ -33,7 +33,20 @@ const addVersion = (v) => {
   };
 };
 
+const packageDataForVersion = (v) => {
+  return {
+    name: "package-a-lifetime",
+    repository: {
+      type: "git",
+      url: "https://github.com/pulsar-edit/package-a-lifetime"
+    },
+    readme: "This is a readme!",
+    metadata: v
+  };
+};
+
 module.exports = {
   createPack,
   addVersion,
+  packageDataForVersion,
 };

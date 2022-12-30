@@ -649,10 +649,33 @@ async function postPackagesVersion(req, res) {
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Package",
-      content: `Failed to get Package: ${ownerRepo}`,
+      content: `Failed to get Package JSON: ${ownerRepo}`,
     });
     return;
   }
+
+  // Now we will also need to get the packages data to update on the db
+  // during version pushes.
+
+  const packReadme = await git.getRepoReadMe(ownerRepo, user.content);
+  // Again important to note, this was intended as an internal function of git
+  // As such does not return a Server Status Object, and instead returns the obj or null
+  if (packReadme === undefined) {
+    logger.generic(6, `Unable to Get Package Readme from git with: ${ownerRepo}`);
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Bad Package",
+      content: `Failed to get Package Readme: ${ownerRepo}`
+    });
+  }
+
+  // Now construct the object that will be used to update the `data` column.
+  const packageData = {
+    name: packJSON.name.toLowerCase(),
+    repository: git.selectPackageRepository(packJSON.repository),
+    readme: packReadme,
+    metadata: packJSON
+  };
 
   const newName = packJSON.name;
   const currentName = packExists.content.name;
@@ -707,6 +730,7 @@ async function postPackagesVersion(req, res) {
 
   const addVer = await database.insertNewPackageVersion(
     packJSON,
+    packageData,
     rename ? currentName : null
   );
 

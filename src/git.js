@@ -619,4 +619,6 @@ module.exports = {
   getPackageJSON,
   setGHAPIURL,
   setGHWebURL,
+  selectPackageRepository,
+  getRepoReadMe,
 };

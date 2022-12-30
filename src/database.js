@@ -161,7 +161,7 @@ async function insertNewPackage(pack) {
  * @param {string|null} oldName - If provided, the old name to be replaced for the renaming of the package.
  * @returns {object} A server status object.
  */
-async function insertNewPackageVersion(packJSON, oldName = null) {
+async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
   sqlStorage ??= setupSQL();
 
   // We are expected to receive a standard `package.json` file.
@@ -257,7 +257,7 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
       // Then update the package object in the related column of packages table.
       const updatePackageData = await sqlTrans`
         UPDATE packages
-        SET data = ${packJSON}
+        SET data = ${packageData}
         WHERE pointer = ${pointer}
         RETURNING *;
       `;
@@ -294,7 +294,7 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
       const msg =
         typeof err === "string"
           ? err
-          : `A generic error occured while inserting the new package version ${packName}`;
+          : `A generic error occured while inserting the new package version ${packJSON.name}`;
 
       return { ok: false, content: msg, short: "Server Error" };
     });
