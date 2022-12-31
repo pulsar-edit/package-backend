@@ -1,10 +1,10 @@
 [
+  "tidalcycles",
+  "language-dart2",
+  "sb-atom-sonic-pi",
+  "x-terminal-reloaded",
+  "dracula-syntax",
   "hydrogen",
   "atom-clock",
-  "hey-pane",
-  "scroll-through-time",
-  "teletype",
-  "zentabs",
-  "atom-material-syntax",
-  "atom-material-ui"
+  "hey-pane"
 ]
