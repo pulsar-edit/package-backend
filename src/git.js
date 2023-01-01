@@ -268,6 +268,10 @@ async function createPackage(repo, user) {
       // would have the correct download URL. So the error would only be visual when browsing
       // the packages details.
       if (!versionMetadata) {
+        logger.generic(
+          3,
+          `Cannot retrieve metadata info for version ${ver} of packName`
+        );
         continue;
       }
 
