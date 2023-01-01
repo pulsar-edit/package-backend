@@ -363,7 +363,9 @@ describe("GET /api/packages/:packageName", () => {
     expect(typeof res.body.releases.latest === "string").toBeTruthy();
     for (const v of Object.keys(res.body.versions)) {
       expect(typeof res.body.versions[v].license === "string").toBeTruthy();
-      expect(typeof res.body.versions[v].dist.tarball === "string").toBeTruthy();
+      expect(
+        typeof res.body.versions[v].dist.tarball === "string"
+      ).toBeTruthy();
     }
   });
   test("Valid package, does not return sensible data", async () => {

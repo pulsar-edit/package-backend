@@ -947,7 +947,7 @@ Parses the 'engine' query parameter to ensure it's valid, otherwise returning fa
 <a name="module_query..auth"></a>
 
 ### query~auth(req) ⇒ <code>string</code>
-retrieves Authorization Headers from Request, and Checks for Undefined.
+Retrieves Authorization Headers from Request, and Checks for Undefined.
 
 **Kind**: inner method of [<code>query</code>](#module_query)  
 **Returns**: <code>string</code> - Returning a valid Authorization Token, or '' if invalid/not found.  
@@ -1182,7 +1182,7 @@ construction of package object shorts
 
 ### utils~constructPackageObjectJSON(pack) ⇒ <code>object</code>
 Takes the return of getPackageVersionByNameAndVersion and returns
-a recreation of the package.json with a modified dist.tarball key, poionting
+a recreation of the package.json with a modified dist.tarball key, pointing
 to this server for download.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
