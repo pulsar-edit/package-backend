@@ -95,9 +95,9 @@ async function insertNewPackage(pack) {
 
       // No need to specify downloads and stargazers. They default at 0 on creation.
       let command = await sqlTrans`
-      INSERT INTO packages (name, creation_method, data, package_type)
-      VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
-      RETURNING pointer;
+        INSERT INTO packages (name, creation_method, data, package_type)
+        VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
+        RETURNING pointer;
     `;
 
       const pointer = command[0].pointer;
@@ -107,8 +107,8 @@ async function insertNewPackage(pack) {
 
       // Populate names table
       command = await sqlTrans`
-      INSERT INTO names (name, pointer)
-      VALUES (${pack.name}, ${pointer});
+        INSERT INTO names (name, pointer)
+        VALUES (${pack.name}, ${pointer});
     `;
 
       if (command.count === 0) {
@@ -134,9 +134,9 @@ async function insertNewPackage(pack) {
         const license = pv[ver].license ?? defaultLicense;
 
         command = await sqlTrans`
-        INSERT INTO versions (package, status, semver, license, engine, meta)
-        VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
-        RETURNING id;
+          INSERT INTO versions (package, status, semver, license, engine, meta)
+          VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
+          RETURNING id;
       `;
 
         if (command[0].id === undefined) {
@@ -192,10 +192,10 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         // since we want that column to contain the current name.
         try {
           const updateNewName = await sqlTrans`
-          UPDATE packages
-          SET name = ${packJSON.name}
-          WHERE pointer = ${pointer}
-          RETURNING *;
+            UPDATE packages
+            SET name = ${packJSON.name}
+            WHERE pointer = ${pointer}
+            RETURNING *;
           `;
 
           if (updateNewName.count === 0) {
@@ -208,10 +208,10 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         // Now we can finally insert the new name inside the `names` table.
         try {
           const newInsertedName = await sqlTrans`
-          INSERT INTO names
-          (name, pointer) VALUES
-          (${packJSON.name}, ${pointer})
-          RETURNING *;
+            INSERT INTO names
+            (name, pointer) VALUES
+            (${packJSON.name}, ${pointer})
+            RETURNING *;
           `;
 
           if (newInsertedName.count === 0) {
@@ -275,9 +275,9 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
 
       try {
         const addVer = await sqlTrans`
-        INSERT INTO versions (package, status, semver, license, engine, meta)
-        VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
-        RETURNING *;
+          INSERT INTO versions (package, status, semver, license, engine, meta)
+          VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
+          RETURNING *;
         `;
 
         if (addVer.count === 0) {
@@ -333,10 +333,10 @@ async function insertNewPackageName(newName, oldName) {
       // since we want that column to contain the current name.
       try {
         const updateNewName = await sqlTrans`
-        UPDATE packages
-        SET name = ${newName}
-        WHERE pointer = ${pointer}
-        RETURNING *;
+          UPDATE packages
+          SET name = ${newName}
+          WHERE pointer = ${pointer}
+          RETURNING *;
         `;
 
         if (updateNewName.count === 0) {
@@ -349,10 +349,10 @@ async function insertNewPackageName(newName, oldName) {
       // Now we can finally insert the new name inside the `names` table.
       try {
         const newInsertedName = await sqlTrans`
-        INSERT INTO names
-        (name, pointer) VALUES
-        (${newName}, ${pointer})
-        RETURNING *;
+          INSERT INTO names
+          (name, pointer) VALUES
+          (${newName}, ${pointer})
+          RETURNING *;
         `;
 
         if (newInsertedName.count === 0) {
@@ -532,12 +532,12 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-    SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
-    FROM packages p
-      INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
-        packArray
-      )})
-      INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
+      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
+      FROM packages p
+        INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
+          packArray
+        )})
+        INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
     `;
 
     return command.count !== 0
