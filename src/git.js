@@ -268,7 +268,7 @@ async function createPackage(repo, user) {
       // would have the correct download URL. So the error would only be visual when browsing
       // the packages details.
       if (!versionMetadata) {
-        continue
+        continue;
       }
 
       newPack.versions[ver] = versionMetadata;
@@ -386,9 +386,7 @@ function selectPackageRepository(repo) {
       case "object":
         // If not null, it's likely a first party package
         // with an already valid package object that can just be added over.
-        return repo !== null
-          ? repo
-          : { type: "na", url: "" };
+        return repo !== null ? repo : { type: "na", url: "" };
 
       case "string": {
         const lcRepo = repo.toLowerCase();

@@ -675,7 +675,7 @@ async function postPackagesVersion(req, res) {
   const packMetadata = await git.metadataAppendTarballInfo(
     packJSON,
     packJSON.version,
-    user.content,
+    user.content
   );
   if (packMetadata === undefined) {
     await common.handleError(req, res, {
@@ -877,7 +877,10 @@ async function getPackagesVersionTarball(req, res) {
     "raw.githubusercontent.com",
   ];
 
-  if (!allowedHostnames.includes(hostname) && process.env.PULSAR_STATUS !== "dev") {
+  if (
+    !allowedHostnames.includes(hostname) &&
+    process.env.PULSAR_STATUS !== "dev"
+  ) {
     await common.handleError(req, res, {
       ok: false,
       short: "Server Error",

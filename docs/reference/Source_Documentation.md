@@ -596,6 +596,7 @@ Assists in interactions between the backend and GitHub.
     * [~setGHAPIURL(val)](#module_git..setGHAPIURL)
     * [~ownership(user, repo, [dev_override])](#module_git..ownership)
     * [~createPackage(repo)](#module_git..createPackage) ⇒ <code>object</code>
+    * [~metadataAppendTarballInfo(pack, repo, user)](#module_git..metadataAppendTarballInfo) ⇒ <code>object</code> \| <code>undefined</code>
     * [~selectPackageRepository(repo)](#module_git..selectPackageRepository) ⇒ <code>object</code>
     * [~doesUserHaveRepo(user, repo, [page])](#module_git..doesUserHaveRepo) ⇒ <code>object</code>
     * [~getRepoExistance(repo)](#module_git..getRepoExistance) ⇒ <code>boolean</code>
@@ -657,6 +658,21 @@ return back a proper `Server Object Full` object within a `Server Status`.conten
 | Param | Type | Description |
 | --- | --- | --- |
 | repo | <code>string</code> | The Repo to use in the form `owner/repo`. |
+
+<a name="module_git..metadataAppendTarballInfo"></a>
+
+### git~metadataAppendTarballInfo(pack, repo, user) ⇒ <code>object</code> \| <code>undefined</code>
+Get the version metadata package object and append tarball and hash.
+
+**Kind**: inner method of [<code>git</code>](#module_git)  
+**Returns**: <code>object</code> \| <code>undefined</code> - The metadata object with tarball URL and sha hash code
+appended, or undefined or error.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pack | <code>object</code> | The metadata package object. |
+| repo | <code>object</code> \| <code>string</code> | The repo object provided by GitHub or the tag string to retrieve the repo tag from getRepoTags(). |
+| user | <code>object</code> | The user object in case the repo tag has to be retrieved. |
 
 <a name="module_git..selectPackageRepository"></a>
 
