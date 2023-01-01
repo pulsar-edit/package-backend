@@ -19,6 +19,9 @@ const {
   paginated_amount,
 } = require("./config.js").getConfig();
 
+const defaultEngine = { atom: "*" };
+const defaultLicense = "NONE";
+
 let sqlStorage; // SQL object, to interact with the DB.
 // It is set after the first call with logical nullish assignment
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_nullish_assignment
@@ -124,11 +127,11 @@ async function insertNewPackage(pack) {
         // Since many packages don't define an engine field,
         // we will do it for them if not present,
         // following suit with what Atom internal packages do.
-        const engine = pv[ver].engines ?? { atom: "*" };
+        const engine = pv[ver].engines ?? defaultEngine;
 
         // It's common practice for packages to not specify license,
         // therefore set it as NONE if undefined.
-        const license = pv[ver].license ?? "NONE";
+        const license = pv[ver].license ?? defaultLicense;
 
         command = await sqlTrans`
         INSERT INTO versions (package, status, semver, license, engine, meta)
@@ -267,8 +270,8 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       }
 
       // We can finally insert the new latest version.
-      const license = packJSON.license ?? "NONE";
-      const engine = packJSON.engines ?? { atom: "*" };
+      const license = packJSON.license ?? defaultLicense;
+      const engine = packJSON.engines ?? defaultEngine;
 
       try {
         const addVer = await sqlTrans`
