@@ -9,7 +9,7 @@ const common = require("./common_handler.js");
 /**
  * @async
  * @function getUpdates
- * @desc Used to retreive new editor update information.
+ * @desc Used to retrieve new editor update information.
  * @param {object} req - The `Request` object inherited from the Express endpoint.
  * @param {object} res - The `Response` object inherited from the Express endpoint.
  * @property {http_method} - GET

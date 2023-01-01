@@ -10,7 +10,7 @@ const crypto = require("crypto");
 /**
  * @async
  * @function isPackageNameBanned
- * @desc This uses the `storage.js` to retreive a banlist. And then simply
+ * @desc This uses the `storage.js` to retrieve a banlist. And then simply
  * iterates through the banList array, until it finds a match to the name
  * it was given. If no match is found then it returns false.
  * @param {string} name - The name of the package to check if it is banned.
@@ -28,7 +28,7 @@ async function isPackageNameBanned(name) {
     return { ok: true };
   }
 
-  logger.generic(6, "Success Status while retreiving Name Ban List.");
+  logger.generic(6, "Success Status while retrieving Name Ban List.");
   return banList.content.find((b) => name === b) ? { ok: true } : { ok: false };
 }
 
@@ -150,7 +150,7 @@ async function constructPackageObjectShort(pack) {
  * @async
  * @function constructPackageObjectJSON
  * @desc Takes the return of getPackageVersionByNameAndVersion and returns
- * a recreation of the package.json with a modified dist.tarball key, poionting
+ * a recreation of the package.json with a modified dist.tarball key, pointing
  * to this server for download.
  * @param {object} pack - The expected raw SQL return of `getPackageVersionByNameAndVersion`
  * @returns {object} A properly formatted Package Object Mini.
@@ -189,7 +189,7 @@ async function constructPackageObjectJSON(pack) {
  * @async
  * @function engineFilter
  * @desc A complex function that provides filtering by Atom engine version.
- * This should take a package with it's versions and retreive whatever matches
+ * This should take a package with it's versions and retrieve whatever matches
  * that engine version as provided.
  * @returns {object} The filtered object.
  */

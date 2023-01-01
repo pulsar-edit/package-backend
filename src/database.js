@@ -1,7 +1,7 @@
 /**
  * @module database
  * @desc Provides an interface of a large collection of functions to interact
- * with and retreive data from the cloud hosted database instance.
+ * with and retrieve data from the cloud hosted database instance.
  */
 
 const fs = require("fs");
@@ -926,7 +926,7 @@ async function removePackageVersion(packName, semVer) {
  * @async
  * @function getFeaturedPackages
  * @desc Collects the hardcoded featured packages array from the storage.js
- * module. Then uses this.getPackageCollectionByName to retreive details of the
+ * module. Then uses this.getPackageCollectionByName to retrieve details of the
  * package.
  * @returns {object} A server status object.
  */
@@ -944,7 +944,7 @@ async function getFeaturedPackages() {
  * @async
  * @function getFeaturedThemes
  * @desc Collects the hardcoded featured themes array from the storage.js module.
- * Then uses this.getPackageCollectionByName to retreive details of the package.
+ * Then uses this.getPackageCollectionByName to retrieve details of the package.
  * @returns {object} A server status object.
  */
 async function getFeaturedThemes() {

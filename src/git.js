@@ -538,7 +538,7 @@ async function getRepoExistance(repo, user) {
 /**
  * @async
  * @function getPackageJSON
- * @desc Intends to retreive the raw text of the GitHub repo package.
+ * @desc Intends to retrieve the raw text of the GitHub repo package.
  * @param {string} repo - The string of the repo in format `owner/repo`.
  * @returns {string|undefined} Returns a proper string of the readme if successful.
  * And returns `undefined` otherwise.
@@ -575,7 +575,7 @@ async function getPackageJSON(repo, user) {
 /**
  * @async
  * @function getRepoReadMe
- * @desc Intends to retreive the GitHub repo readme file. Will look for both
+ * @desc Intends to retrieve the GitHub repo readme file. Will look for both
  * `readme.md` and `README.md` just in case.
  * @param {string} repo - A valid repo in format `owner/repo`.
  * @returns {string|undefined} Returns the raw string of the readme if available,
@@ -595,7 +595,7 @@ async function getRepoReadMe(repo, user) {
       default:
         logger.generic(
           3,
-          `Unexpected Status Code during README.md retrevial: ${res}`
+          `Unexpected Status Code during README.md retrieval: ${res}`
         );
         return undefined;
     }
@@ -633,7 +633,7 @@ async function getRepoReadMe(repo, user) {
           // it returned, but not the error code we expect.
           logger.generic(
             3,
-            `Unexpected Status code during readme.md retrevial: ${resLower}`
+            `Unexpected Status code during readme.md retrieval: ${resLower}`
           );
           return undefined;
       }

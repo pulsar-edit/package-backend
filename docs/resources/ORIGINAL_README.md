@@ -166,7 +166,7 @@ These JSON files will be saved under a UUID like so `UUIDv4.json` allowing any c
 while always pointing to the same file.
 This UUIDv4.json will also be the location the package_pointer.json index will refer to.
 
-Within each package file will be additional data not retreived in the API. Including a list of all users
+Within each package file will be additional data not retrieved in the API. Including a list of all users
 that have stared the package, listed by their username.
 Additionally will list the creation date, and last modified date.
 But these values will be removed before returning via the API.

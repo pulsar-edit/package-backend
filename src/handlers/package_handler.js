@@ -220,7 +220,7 @@ async function postPackages(req, res) {
 /**
  * @async
  * @function getPackagesFeatured
- * @desc Allows the user to retreive the featured packages, as package object shorts.
+ * @desc Allows the user to retrieve the featured packages, as package object shorts.
  * This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
  * Additionally for the time being this list is created manually, the same method used
  * on Atom.io for now. Although there are plans to have this become automatic later on.
@@ -763,7 +763,7 @@ async function postPackagesVersion(req, res) {
 /**
  * @async
  * @function getPackagesVersion
- * @desc Used to retreive a specific version from a package.
+ * @desc Used to retrieve a specific version from a package.
  * @param {object} req - The `Request` object inherited from the Express endpoint.
  * @param {object} res - The `Response` object inherited from the Express endpoint.
  * @property {http_method} - GET

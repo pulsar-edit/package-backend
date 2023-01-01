@@ -17,7 +17,7 @@ const { server_url } = require("../config.js").getConfig();
 /**
  * @async
  * @function getThemeFeatured
- * @desc Used to retreive all Featured Packages that are Themes. Originally an undocumented
+ * @desc Used to retrieve all Featured Packages that are Themes. Originally an undocumented
  * endpoint. Returns a 200 response based on other similar responses.
  * Additionally for the time being this list is created manually, the same method used
  * on Atom.io for now. Although there are plans to have this become automatic later on.

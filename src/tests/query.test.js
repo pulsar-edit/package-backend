@@ -95,7 +95,7 @@ describe("Verify Auth Query Returns", () => {
     }
   }
 
-  test("Properly Retreives Value", () => {
+  test("Properly Retrieves Value", () => {
     const req = new SimpleReq("ValidHeader");
     const res = query.auth(req);
     expect(res).toEqual("ValidHeader");

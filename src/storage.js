@@ -139,7 +139,7 @@ async function getFeaturedPackages() {
 /**
  * @async
  * @function getFeaturedThemes
- * @desc Used to retreive Google Cloud Storage Object for featured themes.
+ * @desc Used to retrieve Google Cloud Storage Object for featured themes.
  * @returns {Array} JSON Parsed Array of Featured Theme Names.
  */
 async function getFeaturedThemes() {
