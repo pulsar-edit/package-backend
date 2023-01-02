@@ -861,8 +861,8 @@ async function getPackagesVersionTarball(req, res) {
 
   // Try to extract the hostname
   try {
-    const url = new URL(tarballURL);
-    hostname = url.hostname;
+    const tbUrl = new URL(tarballURL);
+    hostname = tbUrl.hostname;
   } catch (e) {
     logger.generic(
       3,
