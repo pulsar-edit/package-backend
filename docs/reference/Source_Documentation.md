@@ -12,7 +12,7 @@ But this does provide an opportunity to allow multiple caching systems.</p>
 </dd>
 <dt><a href="#module_database">database</a></dt>
 <dd><p>Provides an interface of a large collection of functions to interact
-with and retreive data from the cloud hosted database instance.</p>
+with and retrieve data from the cloud hosted database instance.</p>
 </dd>
 <dt><a href="#module_debug_util">debug_util</a></dt>
 <dd><p>A collection of simple functions to help devs debug the application during runtime,
@@ -153,7 +153,7 @@ const { search_algorithm } = require("./config.js").getConfig();
 
 ## database
 Provides an interface of a large collection of functions to interact
-with and retreive data from the cloud hosted database instance.
+with and retrieve data from the cloud hosted database instance.
 
 
 * [database](#module_database)
@@ -394,7 +394,7 @@ This also makes sure that a new latest version is selected in case the previous 
 
 ### database~getFeaturedPackages() ⇒ <code>object</code>
 Collects the hardcoded featured packages array from the storage.js
-module. Then uses this.getPackageCollectionByName to retreive details of the
+module. Then uses this.getPackageCollectionByName to retrieve details of the
 package.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -403,7 +403,7 @@ package.
 
 ### database~getFeaturedThemes() ⇒ <code>object</code>
 Collects the hardcoded featured themes array from the storage.js module.
-Then uses this.getPackageCollectionByName to retreive details of the package.
+Then uses this.getPackageCollectionByName to retrieve details of the package.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - A server status object.  
@@ -596,6 +596,7 @@ Assists in interactions between the backend and GitHub.
     * [~setGHAPIURL(val)](#module_git..setGHAPIURL)
     * [~ownership(user, repo, [dev_override])](#module_git..ownership)
     * [~createPackage(repo)](#module_git..createPackage) ⇒ <code>object</code>
+    * [~metadataAppendTarballInfo(pack, repo, user)](#module_git..metadataAppendTarballInfo) ⇒ <code>object</code> \| <code>undefined</code>
     * [~selectPackageRepository(repo)](#module_git..selectPackageRepository) ⇒ <code>object</code>
     * [~doesUserHaveRepo(user, repo, [page])](#module_git..doesUserHaveRepo) ⇒ <code>object</code>
     * [~getRepoExistance(repo)](#module_git..getRepoExistance) ⇒ <code>boolean</code>
@@ -658,6 +659,21 @@ return back a proper `Server Object Full` object within a `Server Status`.conten
 | --- | --- | --- |
 | repo | <code>string</code> | The Repo to use in the form `owner/repo`. |
 
+<a name="module_git..metadataAppendTarballInfo"></a>
+
+### git~metadataAppendTarballInfo(pack, repo, user) ⇒ <code>object</code> \| <code>undefined</code>
+Get the version metadata package object and append tarball and hash.
+
+**Kind**: inner method of [<code>git</code>](#module_git)  
+**Returns**: <code>object</code> \| <code>undefined</code> - The metadata object with tarball URL and sha hash code
+appended, or undefined or error.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pack | <code>object</code> | The metadata package object. |
+| repo | <code>object</code> \| <code>string</code> | The repo object provided by GitHub or the tag string to retrieve the repo tag from getRepoTags(). |
+| user | <code>object</code> | The user object in case the repo tag has to be retrieved. |
+
 <a name="module_git..selectPackageRepository"></a>
 
 ### git~selectPackageRepository(repo) ⇒ <code>object</code>
@@ -704,7 +720,7 @@ on GitHub.
 <a name="module_git..getPackageJSON"></a>
 
 ### git~getPackageJSON(repo) ⇒ <code>string</code> \| <code>undefined</code>
-Intends to retreive the raw text of the GitHub repo package.
+Intends to retrieve the raw text of the GitHub repo package.
 
 **Kind**: inner method of [<code>git</code>](#module_git)  
 **Returns**: <code>string</code> \| <code>undefined</code> - Returns a proper string of the readme if successful.
@@ -717,7 +733,7 @@ And returns `undefined` otherwise.
 <a name="module_git..getRepoReadMe"></a>
 
 ### git~getRepoReadMe(repo) ⇒ <code>string</code> \| <code>undefined</code>
-Intends to retreive the GitHub repo readme file. Will look for both
+Intends to retrieve the GitHub repo readme file. Will look for both
 `readme.md` and `README.md` just in case.
 
 **Kind**: inner method of [<code>git</code>](#module_git)  
@@ -931,7 +947,7 @@ Parses the 'engine' query parameter to ensure it's valid, otherwise returning fa
 <a name="module_query..auth"></a>
 
 ### query~auth(req) ⇒ <code>string</code>
-Retreives Authorization Headers from Request, and Checks for Undefined.
+Retrieves Authorization Headers from Request, and Checks for Undefined.
 
 **Kind**: inner method of [<code>query</code>](#module_query)  
 **Returns**: <code>string</code> - Returning a valid Authorization Token, or '' if invalid/not found.  
@@ -1075,7 +1091,7 @@ Caching the object once read for this instance of the server run.
 <a name="module_storage..getFeaturedThemes"></a>
 
 ### storage~getFeaturedThemes() ⇒ <code>Array</code>
-Used to retreive Google Cloud Storage Object for featured themes.
+Used to retrieve Google Cloud Storage Object for featured themes.
 
 **Kind**: inner method of [<code>storage</code>](#module_storage)  
 **Returns**: <code>Array</code> - JSON Parsed Array of Featured Theme Names.  
@@ -1112,7 +1128,7 @@ These states are used during the authentication flow to help ensure against mali
 <a name="module_utils..isPackageNameBanned"></a>
 
 ### utils~isPackageNameBanned(name) ⇒ <code>object</code>
-This uses the `storage.js` to retreive a banlist. And then simply
+This uses the `storage.js` to retrieve a banlist. And then simply
 iterates through the banList array, until it finds a match to the name
 it was given. If no match is found then it returns false.
 
@@ -1166,7 +1182,7 @@ construction of package object shorts
 
 ### utils~constructPackageObjectJSON(pack) ⇒ <code>object</code>
 Takes the return of getPackageVersionByNameAndVersion and returns
-a recreation of the package.json with a modified dist.tarball key, poionting
+a recreation of the package.json with a modified dist.tarball key, pointing
 to this server for download.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
@@ -1181,7 +1197,7 @@ to this server for download.
 
 ### utils~engineFilter() ⇒ <code>object</code>
 A complex function that provides filtering by Atom engine version.
-This should take a package with it's versions and retreive whatever matches
+This should take a package with it's versions and retrieve whatever matches
 that engine version as provided.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
@@ -1628,7 +1644,7 @@ sensitive informations like primary and foreign keys.
 <a name="module_package_handler..getPackagesFeatured"></a>
 
 ### package_handler~getPackagesFeatured(req, res)
-Allows the user to retreive the featured packages, as package object shorts.
+Allows the user to retrieve the featured packages, as package object shorts.
 This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
 Additionally for the time being this list is created manually, the same method used
 on Atom.io for now. Although there are plans to have this become automatic later on.
@@ -1798,7 +1814,7 @@ a user to rename their application during this process.
 <a name="module_package_handler..getPackagesVersion"></a>
 
 ### package_handler~getPackagesVersion(req, res)
-Used to retreive a specific version from a package.
+Used to retrieve a specific version from a package.
 
 **Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
 
@@ -1916,7 +1932,7 @@ Endpoint Handlers relating to themes only.
 <a name="module_theme_handler..getThemeFeatured"></a>
 
 ### theme_handler~getThemeFeatured(req, res)
-Used to retreive all Featured Packages that are Themes. Originally an undocumented
+Used to retrieve all Featured Packages that are Themes. Originally an undocumented
 endpoint. Returns a 200 response based on other similar responses.
 Additionally for the time being this list is created manually, the same method used
 on Atom.io for now. Although there are plans to have this become automatic later on.
@@ -1988,7 +2004,7 @@ Endpoint Handlers relating to updating the editor.
 <a name="module_update_handler..getUpdates"></a>
 
 ### update_handler~getUpdates(req, res)
-Used to retreive new editor update information.
+Used to retrieve new editor update information.
 
 **Kind**: inner method of [<code>update\_handler</code>](#module_update_handler)  
 **Todo**

@@ -220,7 +220,7 @@ async function postPackages(req, res) {
 /**
  * @async
  * @function getPackagesFeatured
- * @desc Allows the user to retreive the featured packages, as package object shorts.
+ * @desc Allows the user to retrieve the featured packages, as package object shorts.
  * This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
  * Additionally for the time being this list is created manually, the same method used
  * on Atom.io for now. Although there are plans to have this become automatic later on.
@@ -577,7 +577,7 @@ async function getPackagesStargazers(req, res) {
  */
 async function postPackagesVersion(req, res) {
   const params = {
-    tag: query.tag(req),
+    // tag: query.tag(req), // unused parameter
     rename: query.rename(req),
     auth: query.auth(req),
     packageName: query.packageName(req),
@@ -588,7 +588,7 @@ async function postPackagesVersion(req, res) {
     await common.handleError(req, res, {
       ok: false,
       short: "Bad Repo",
-      content: "The tag parameter is not correctly specified",
+      content: "The tag parameter is not specified correctly",
     });
     return;
   }*/
@@ -672,15 +672,28 @@ async function postPackagesVersion(req, res) {
     });
   }
 
+  const packMetadata = await git.metadataAppendTarballInfo(
+    packJSON,
+    packJSON.version,
+    user.content
+  );
+  if (packMetadata === undefined) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Bad Package",
+      content: `Failed to get Package metadata info: ${ownerRepo}`,
+    });
+  }
+
   // Now construct the object that will be used to update the `data` column.
   const packageData = {
-    name: packJSON.name.toLowerCase(),
-    repository: git.selectPackageRepository(packJSON.repository),
+    name: packMetadata.name.toLowerCase(),
+    repository: git.selectPackageRepository(packMetadata.repository),
     readme: packReadme,
-    metadata: packJSON,
+    metadata: packMetadata,
   };
 
-  const newName = packJSON.name;
+  const newName = packMetadata.name;
   const currentName = packExists.content.name;
   if (newName !== currentName && !params.rename) {
     logger.generic(
@@ -732,7 +745,7 @@ async function postPackagesVersion(req, res) {
   // Now add the new Version key.
 
   const addVer = await database.insertNewPackageVersion(
-    packJSON,
+    packMetadata,
     packageData,
     rename ? currentName : null
   );
@@ -750,7 +763,7 @@ async function postPackagesVersion(req, res) {
 /**
  * @async
  * @function getPackagesVersion
- * @desc Used to retreive a specific version from a package.
+ * @desc Used to retrieve a specific version from a package.
  * @param {object} req - The `Request` object inherited from the Express endpoint.
  * @param {object} res - The `Response` object inherited from the Express endpoint.
  * @property {http_method} - GET
@@ -843,31 +856,37 @@ async function getPackagesVersionTarball(req, res) {
   // the download to take place from their servers.
 
   // But right before, lets do a couple simple checks to make sure we are sending to a legit site.
-  //let tarballURL = new url((pack.content.meta.tarball_url ? pack.content.meta.tarball_url : ""));
-  let tarballURL = pack.content.meta.tarball_url;
+  const tarballURL = pack.content.meta.tarball_url ?? "";
+  let hostname = "";
 
-  if (tarballURL !== undefined && false) {
-    // todo the url feature doesn't work the way we would expect in production
-    tarballURL = url.parse(pack.content.meta.tarball_url);
+  // Try to extract the hostname
+  try {
+    const tbUrl = new URL(tarballURL);
+    hostname = tbUrl.hostname;
+  } catch (e) {
+    logger.generic(
+      3,
+      `Malformed tarball URL for version ${params.versionName} of ${params.packageName}`
+    );
+  }
 
-    if (
-      url.hostname != "codeload.github.com" ||
-      url.hostname != "api.github.com" ||
-      url.hostname != "github.com" ||
-      url.hostname != "raw.githubusercontent.com"
-    ) {
-      await common.handleError(req, res, {
-        ok: false,
-        short: "Server Error",
-        content: `Invalid Domain for Download Redirect: ${url.toString()}`,
-      });
-      return;
-    }
+  const allowedHostnames = [
+    "codeload.github.com",
+    "api.github.com",
+    "github.com",
+    "raw.githubusercontent.com",
+  ];
 
-    tarballURL = tarballURL.toString();
-  } else {
-    // we are likely in a test environment. And will just leave this blank to error out on the client side.
-    //tarballURL = "";
+  if (
+    !allowedHostnames.includes(hostname) &&
+    process.env.PULSAR_STATUS !== "dev"
+  ) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Server Error",
+      content: `Invalid Domain for Download Redirect: ${hostname}`,
+    });
+    return;
   }
 
   res.redirect(tarballURL);

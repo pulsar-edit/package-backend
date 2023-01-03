@@ -1,7 +1,7 @@
 /**
  * @module database
  * @desc Provides an interface of a large collection of functions to interact
- * with and retreive data from the cloud hosted database instance.
+ * with and retrieve data from the cloud hosted database instance.
  */
 
 const fs = require("fs");
@@ -18,6 +18,9 @@ const {
   DB_SSL_CERT,
   paginated_amount,
 } = require("./config.js").getConfig();
+
+const defaultEngine = { atom: "*" };
+const defaultLicense = "NONE";
 
 let sqlStorage; // SQL object, to interact with the DB.
 // It is set after the first call with logical nullish assignment
@@ -92,9 +95,9 @@ async function insertNewPackage(pack) {
 
       // No need to specify downloads and stargazers. They default at 0 on creation.
       let command = await sqlTrans`
-      INSERT INTO packages (name, creation_method, data, package_type)
-      VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
-      RETURNING pointer;
+        INSERT INTO packages (name, creation_method, data, package_type)
+        VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
+        RETURNING pointer;
     `;
 
       const pointer = command[0].pointer;
@@ -104,8 +107,8 @@ async function insertNewPackage(pack) {
 
       // Populate names table
       command = await sqlTrans`
-      INSERT INTO names (name, pointer)
-      VALUES (${pack.name}, ${pointer});
+        INSERT INTO names (name, pointer)
+        VALUES (${pack.name}, ${pointer});
     `;
 
       if (command.count === 0) {
@@ -124,16 +127,16 @@ async function insertNewPackage(pack) {
         // Since many packages don't define an engine field,
         // we will do it for them if not present,
         // following suit with what Atom internal packages do.
-        const engine = pv[ver].engines ?? { atom: "*" };
+        const engine = pv[ver].engines ?? defaultEngine;
 
         // It's common practice for packages to not specify license,
         // therefore set it as NONE if undefined.
-        const license = pv[ver].license ?? "NONE";
+        const license = pv[ver].license ?? defaultLicense;
 
         command = await sqlTrans`
-        INSERT INTO versions (package, status, semver, license, engine, meta)
-        VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
-        RETURNING id;
+          INSERT INTO versions (package, status, semver, license, engine, meta)
+          VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
+          RETURNING id;
       `;
 
         if (command[0].id === undefined) {
@@ -189,10 +192,10 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         // since we want that column to contain the current name.
         try {
           const updateNewName = await sqlTrans`
-          UPDATE packages
-          SET name = ${packJSON.name}
-          WHERE pointer = ${pointer}
-          RETURNING *;
+            UPDATE packages
+            SET name = ${packJSON.name}
+            WHERE pointer = ${pointer}
+            RETURNING *;
           `;
 
           if (updateNewName.count === 0) {
@@ -205,10 +208,10 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         // Now we can finally insert the new name inside the `names` table.
         try {
           const newInsertedName = await sqlTrans`
-          INSERT INTO names
-          (name, pointer) VALUES
-          (${packJSON.name}, ${pointer})
-          RETURNING *;
+            INSERT INTO names
+            (name, pointer) VALUES
+            (${packJSON.name}, ${pointer})
+            RETURNING *;
           `;
 
           if (newInsertedName.count === 0) {
@@ -267,14 +270,14 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       }
 
       // We can finally insert the new latest version.
-      const license = packJSON.license ?? "NONE";
-      const engine = packJSON.engines ?? { atom: "*" };
+      const license = packJSON.license ?? defaultLicense;
+      const engine = packJSON.engines ?? defaultEngine;
 
       try {
         const addVer = await sqlTrans`
-        INSERT INTO versions (package, status, semver, license, engine, meta)
-        VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
-        RETURNING *;
+          INSERT INTO versions (package, status, semver, license, engine, meta)
+          VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
+          RETURNING *;
         `;
 
         if (addVer.count === 0) {
@@ -330,10 +333,10 @@ async function insertNewPackageName(newName, oldName) {
       // since we want that column to contain the current name.
       try {
         const updateNewName = await sqlTrans`
-        UPDATE packages
-        SET name = ${newName}
-        WHERE pointer = ${pointer}
-        RETURNING *;
+          UPDATE packages
+          SET name = ${newName}
+          WHERE pointer = ${pointer}
+          RETURNING *;
         `;
 
         if (updateNewName.count === 0) {
@@ -346,10 +349,10 @@ async function insertNewPackageName(newName, oldName) {
       // Now we can finally insert the new name inside the `names` table.
       try {
         const newInsertedName = await sqlTrans`
-        INSERT INTO names
-        (name, pointer) VALUES
-        (${newName}, ${pointer})
-        RETURNING *;
+          INSERT INTO names
+          (name, pointer) VALUES
+          (${newName}, ${pointer})
+          RETURNING *;
         `;
 
         if (newInsertedName.count === 0) {
@@ -529,12 +532,12 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-    SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
-    FROM packages p
-      INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
-        packArray
-      )})
-      INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
+      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
+      FROM packages p
+        INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
+          packArray
+        )})
+        INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
     `;
 
     return command.count !== 0
@@ -926,7 +929,7 @@ async function removePackageVersion(packName, semVer) {
  * @async
  * @function getFeaturedPackages
  * @desc Collects the hardcoded featured packages array from the storage.js
- * module. Then uses this.getPackageCollectionByName to retreive details of the
+ * module. Then uses this.getPackageCollectionByName to retrieve details of the
  * package.
  * @returns {object} A server status object.
  */
@@ -944,7 +947,7 @@ async function getFeaturedPackages() {
  * @async
  * @function getFeaturedThemes
  * @desc Collects the hardcoded featured themes array from the storage.js module.
- * Then uses this.getPackageCollectionByName to retreive details of the package.
+ * Then uses this.getPackageCollectionByName to retrieve details of the package.
  * @returns {object} A server status object.
  */
 async function getFeaturedThemes() {

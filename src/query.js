@@ -115,7 +115,7 @@ function engine(semver) {
 
 /**
  * @function auth
- * @desc Retreives Authorization Headers from Request, and Checks for Undefined.
+ * @desc Retrieves Authorization Headers from Request, and Checks for Undefined.
  * @param {object} req = The `Request` object inherited from the Express endpoint.
  * @returns {string} Returning a valid Authorization Token, or '' if invalid/not found.
  */

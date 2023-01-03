@@ -166,7 +166,7 @@ async function createPackage(repo, user) {
       };
     }
 
-    let repoTag = await getRepoTags(repo, user);
+    const repoTag = await getRepoTags(repo, user);
 
     if (repoTag === undefined) {
       return {
@@ -259,16 +259,23 @@ async function createPackage(repo, user) {
       }
 
       // They match tag and version, stuff the data into the package.
-      newPack.versions[ver] = pack;
+      const versionMetadata = await metadataAppendTarballInfo(pack, tag, user);
       // TODO::
-      // Its worthy to note that ^^^ assigns the current package.json file within the repo
+      // Its worthy to note that the function above assigns the current package.json file within the repo
       // as the version tag. Now this in most cases during a publish should be fine.
       // But if a user were to publish a version to the backend AFTER having published several
       // versions to their repo, this would cause identical versions to be created, although
       // would have the correct download URL. So the error would only be visual when browsing
       // the packages details.
-      newPack.versions[ver].tarball_url = tag.tarball_url;
-      newPack.versions[ver].sha = tag.commit.sha;
+      if (!versionMetadata) {
+        logger.generic(
+          3,
+          `Cannot retrieve metadata info for version ${ver} of packName`
+        );
+        continue;
+      }
+
+      newPack.versions[ver] = versionMetadata;
       versionCount++;
 
       // Check latest version.
@@ -309,6 +316,66 @@ async function createPackage(repo, user) {
 }
 
 /**
+ * @function metadataAppendTarballInfo
+ * @desc Get the version metadata package object and append tarball and hash.
+ * @param {object} pack - The metadata package object.
+ * @param {object|string} repo - The repo object provided by GitHub or the tag string
+ * to retrieve the repo tag from getRepoTags().
+ * @param {object} user - The user object in case the repo tag has to be retrieved.
+ * @returns {object|undefined} The metadata object with tarball URL and sha hash code
+ * appended, or undefined or error.
+ */
+async function metadataAppendTarballInfo(pack, repo, user) {
+  if (!pack || !repo) {
+    return undefined;
+  }
+
+  let tag = null;
+  switch (typeof repo) {
+    case "object":
+      tag = repo;
+      break;
+
+    case "string": {
+      // Retrieve tag object related to repo version
+      const repoTag = await getRepoTags(repo, user);
+      if (repoTag === undefined) {
+        return undefined;
+      }
+
+      const semVerInitRegex = /^\s*v/i;
+      for (const t of repoTag) {
+        if (typeof t.name !== "string") {
+          continue;
+        }
+        const sv = query.engine(t.name.replace(semVerInitRegex, "").trim());
+        if (sv === repo) {
+          tag = t;
+          break;
+        }
+      }
+
+      if (tag === null) {
+        return undefined;
+      }
+      break;
+    }
+
+    default:
+      return undefined;
+  }
+
+  if (!tag.tarball_url) {
+    return undefined;
+  }
+
+  pack.tarball_url = tag.tarball_url;
+  pack.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
+
+  return pack;
+}
+
+/**
  * @function selectPackageRepository
  * @desc Determines the repository object by the given argument.
  * The functionality will only be declarative for now, and may change later on.
@@ -318,51 +385,52 @@ async function createPackage(repo, user) {
 function selectPackageRepository(repo) {
   try {
     // First party packages do already have the regular package object.
-    // So we will need to check if its an object or string.
+    // So we will need to check if it's an object or string.
+    switch (typeof repo) {
+      case "object":
+        // If not null, it's likely a first party package
+        // with an already valid package object that can just be added over.
+        return repo !== null ? repo : { type: "na", url: "" };
 
-    if (!repo) {
-      // In case of faulty value, just return and empty url.
-      return {
-        type: "na",
-        url: "",
-      };
-    }
+      case "string": {
+        const lcRepo = repo.toLowerCase();
 
-    if (typeof repo !== "string") {
-      // Likely a first party package, with an already valid package object,
-      // that can just be added over.
-      return repo;
-    }
+        if (lcRepo.includes("github")) {
+          return {
+            type: "git",
+            url: lcRepo,
+          };
+        }
+        if (lcRepo.includes("bitbucket")) {
+          return {
+            type: "bit",
+            url: lcRepo,
+          };
+        }
+        if (lcRepo.includes("sourceforge")) {
+          return {
+            type: "sfr",
+            url: lcRepo,
+          };
+        }
+        if (lcRepo.includes("gitlab")) {
+          return {
+            type: "lab",
+            url: lcRepo,
+          };
+        }
+        return {
+          type: "na",
+          url: repo,
+        };
+      }
 
-    if (repo.includes("github")) {
-      return {
-        type: "git",
-        url: repo,
-      };
+      default:
+        return {
+          type: "na",
+          url: repo,
+        };
     }
-    if (repo.includes("bitbucket")) {
-      return {
-        type: "bit",
-        url: repo,
-      };
-    }
-    if (repo.includes("sourceforge")) {
-      return {
-        type: "sfr",
-        url: repo,
-      };
-    }
-    if (repo.includes("gitlab")) {
-      return {
-        type: "lab",
-        url: repo,
-      };
-    }
-
-    return {
-      type: "na",
-      url: repo,
-    };
   } catch (e) {
     return {
       type: "na",
@@ -470,7 +538,7 @@ async function getRepoExistance(repo, user) {
 /**
  * @async
  * @function getPackageJSON
- * @desc Intends to retreive the raw text of the GitHub repo package.
+ * @desc Intends to retrieve the raw text of the GitHub repo package.
  * @param {string} repo - The string of the repo in format `owner/repo`.
  * @returns {string|undefined} Returns a proper string of the readme if successful.
  * And returns `undefined` otherwise.
@@ -507,7 +575,7 @@ async function getPackageJSON(repo, user) {
 /**
  * @async
  * @function getRepoReadMe
- * @desc Intends to retreive the GitHub repo readme file. Will look for both
+ * @desc Intends to retrieve the GitHub repo readme file. Will look for both
  * `readme.md` and `README.md` just in case.
  * @param {string} repo - A valid repo in format `owner/repo`.
  * @returns {string|undefined} Returns the raw string of the readme if available,
@@ -527,7 +595,7 @@ async function getRepoReadMe(repo, user) {
       default:
         logger.generic(
           3,
-          `Unexpected Status Code during README.md retrevial: ${res}`
+          `Unexpected Status Code during README.md retrieval: ${res}`
         );
         return undefined;
     }
@@ -565,7 +633,7 @@ async function getRepoReadMe(repo, user) {
           // it returned, but not the error code we expect.
           logger.generic(
             3,
-            `Unexpected Status code during readme.md retrevial: ${resLower}`
+            `Unexpected Status code during readme.md retrieval: ${resLower}`
           );
           return undefined;
       }
@@ -621,4 +689,5 @@ module.exports = {
   setGHWebURL,
   selectPackageRepository,
   getRepoReadMe,
+  metadataAppendTarballInfo,
 };
