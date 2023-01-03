@@ -401,7 +401,11 @@ describe("Package Lifecycle Tests", () => {
     expect(noExistUser.short).toEqual("Not Found");
 
     // === Can we create our User?
-    const createUser = await database.insertNewUser(user.userObj);
+    const createUser = await database.insertNewUser(
+      user.userObj.username,
+      user.userObj.node_id,
+      user.userObj.avatar,
+    );
     expect(createUser.ok).toBeTruthy();
     expect(createUser.content.username).toEqual(user.userObj.username);
     expect(createUser.content.node_id).toEqual(user.userObj.node_id);

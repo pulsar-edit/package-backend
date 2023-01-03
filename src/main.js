@@ -53,6 +53,7 @@ const authLimit = rateLimit({
 // But once we have surpassed feature parity, we will instead enable these limits, to help
 // prevent overusage of the api server. With Auth having a lower limit, then non-authed requests.
 
+// TODO: Saving the state key on the database, maybe we don't need this anymore.
 app.set("trust proxy", true);
 // ^^^ Used to determine the true IP address behind the Google App Engine Load Balancer.
 // This is need for the Authentication features to proper maintain their StateStore

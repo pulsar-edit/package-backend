@@ -378,16 +378,18 @@ async function insertNewPackageName(newName, oldName) {
  * @async
  * @function insertNewUser
  * @desc Insert a new user into the database.
- * @param {object} user - An object containing information related to the user.
+ * @param {string} username - Username of the user.
+ * @param {object} id - Identifier code of the user.
+ * @param {object} avatar - The avatar of the user.
  * @returns {object} A server status object.
  */
-async function insertNewUser(user) {
+async function insertNewUser(username, id, avatar) {
   try {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
       INSERT INTO users (username, node_id, avatar)
-      VALUES (${user.username}, ${user.node_id}, ${user.avatar})
+      VALUES (${username}, ${id}, ${avatar})
       RETURNING *;
     `;
 
