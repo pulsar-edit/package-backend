@@ -155,7 +155,8 @@ VALUES (
 INSERT INTO versions (package, status, semver, license, engine, meta)
 VALUES (
   'd28c7ce5-c9c4-4fb6-a499-a7c6dcec355b', 'published', '0.45.7', 'MIT', '{"atom": "*", "node": "*"}',
-  '{"name": "language-css", "description": "CSS Support in Atom", "keywords": ["tree-sitter"]}'
+  '{"name": "language-css", "description": "CSS Support in Atom", "keywords": ["tree-sitter"],
+     "tarball_url": "https://github.com/pulsar-edit/language-css"}'
 ), (
   'd28c7ce5-c9c4-4fb6-a499-a7c6dcec355b', 'latest', '0.46.0', 'MIT', '{"atom": "*", "node": "*"}',
   '{"name": "language-css", "description": "CSS Support in Atom", "keywords": ["tree-sitter"]}'

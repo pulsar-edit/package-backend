@@ -19,7 +19,7 @@ const { server_url } = require("../config.js").getConfig();
 const utils = require("../utils.js");
 const database = require("../database.js");
 const auth = require("../auth.js");
-const url = require("url");
+const { URL } = require("node:url");
 
 /**
  * @async
@@ -868,6 +868,12 @@ async function getPackagesVersionTarball(req, res) {
       3,
       `Malformed tarball URL for version ${params.versionName} of ${params.packageName}`
     );
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Server Error",
+      content: e,
+    });
+    return;
   }
 
   const allowedHostnames = [
