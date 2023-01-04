@@ -19,7 +19,7 @@ const { server_url } = require("../config.js").getConfig();
 const utils = require("../utils.js");
 const database = require("../database.js");
 const auth = require("../auth.js");
-const url = require("url");
+const { URL } = require("node:url");
 
 /**
  * @async
@@ -637,7 +637,7 @@ async function postPackagesVersion(req, res) {
   }
 
   // Get `owner/repo` string format from package.
-  const ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+  let ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
 
   // Now it's important to note, that getPackageJSON was intended to be an internal function.
   // As such does not return a Server Status Object. This may change later, but for now,
@@ -711,6 +711,12 @@ async function postPackagesVersion(req, res) {
 
   // Else we will continue, and trust the name provided from the package as being accurate.
   // And now we can ensure the user actually owns this repo, with our updated name.
+
+  // But to support a GH repo being renamed, we will now regrab the owner/repo combo
+  // From the newest updated `package.json` info, just in case it's changed that will be
+  // supported here
+
+  ownerRepo = utils.getOwnerRepoFromPackage(packJSON);
 
   const gitowner = await git.ownership(user.content, ownerRepo);
 
@@ -868,6 +874,12 @@ async function getPackagesVersionTarball(req, res) {
       3,
       `Malformed tarball URL for version ${params.versionName} of ${params.packageName}`
     );
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Server Error",
+      content: e,
+    });
+    return;
   }
 
   const allowedHostnames = [
