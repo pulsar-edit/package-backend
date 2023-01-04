@@ -490,14 +490,19 @@ function getOwnerRepoFromUrlString(url) {
  * @desc Compares two sermver and return true if the first is equal to the second.
  * Expects to get the semver formatted as array of strings.
  * Should be always executed after running semverArray.
- * @param {array} a1 - First semver as array
- * @param {array} a2 - Second semver as array
- * @returns {boolean} The result of the comparison
+ * @param {array} a1 - First semver as array.
+ * @param {array} a2 - Second semver as array.
+ * @returns {boolean} The result of the comparison.
  */
 function semverEq(a1, a2) {
   return a1[0] === a2[0] && a1[1] === a2[1] && a1[2] === a2[2];
 }
 
+/**
+ * @function generateRandomCryptoAESKey
+ * @desc Uses the crypto module to generate and return a random key code.
+ * @returns {string} A random key code string.
+ */
 function generateRandomCryptoAESKey() {
   return crypto.generateKeySync("aes", { length: 128 });
 }
