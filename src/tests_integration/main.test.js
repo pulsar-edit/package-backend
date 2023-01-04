@@ -702,8 +702,12 @@ describe("GET /api/packages/:packageName/versions/:versionName/tarball", () => {
     expect(res.redirect).toBeTruthy();
   });
   test("Returns Expected Redirect URL", async () => {
-    const res = await request(app).get("/api/packages/language-css/versions/0.45.7/tarball");
-    expect(res.headers.location).toEqual("https://github.com/pulsar-edit/language-css");
+    const res = await request(app).get(
+      "/api/packages/language-css/versions/0.45.7/tarball"
+    );
+    expect(res.headers.location).toEqual(
+      "https://github.com/pulsar-edit/language-css"
+    );
   });
 });
 

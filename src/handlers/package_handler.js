@@ -717,7 +717,7 @@ async function postPackagesVersion(req, res) {
   // supported here
 
   ownerRepo = utils.getOwnerRepoFromPackage(packJSON);
-  
+
   const gitowner = await git.ownership(user.content, ownerRepo);
 
   if (!gitowner.ok) {
