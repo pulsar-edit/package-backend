@@ -158,11 +158,6 @@ async function getOauth(req, res) {
       return;
     }
 
-    // TODO: For now we will just return the user data as JSON.
-    // In the future this should redirect to `package-frontend` passing the user token as a query param.
-    // Once passed package-frontend should save it to the browser, logging the user in.
-    // And should be redirected to a user page, where they can view their user details.
-
     // Before returning, lets append their access token
     createdUser.content.token = accessToken;
 
@@ -251,11 +246,6 @@ async function getPat(req, res) {
       await common.handleError(req, res, createdUser);
       return;
     }
-
-    // TODO: For now we will just return the user data as JSON.
-    // In the future this should redirect to `package-frontend` passing the user token as a query param.
-    // Once passed package-frontend should save it to the browser, logging the user in.
-    // And should be redirected to a user page, where they can view their user details.
 
     // Before returning, lets append their PAT token
     createdUser.content.token = params.token;
