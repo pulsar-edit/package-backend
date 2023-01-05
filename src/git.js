@@ -49,7 +49,7 @@ async function ownership(user, repo, dev_override = false) {
   // user here is a full fledged user object. And repo is a text representation of the repository.
   // Since git auth is not setup, this will return positive.
   if (
-    process.env.PULSAR_STATUS == "dev" &&
+    process.env.PULSAR_STATUS === "dev" &&
     !dev_override &&
     process.env.MOCK_GH != "false"
   ) {
@@ -490,7 +490,7 @@ async function doesUserHaveRepo(user, repo, page = 1) {
       "doesUserHaveRepo Has failed check through caught error. Details Below:"
     );
     console.log(err);
-    if (err.status == 401) {
+    if (err.status === 401) {
       return { ok: false, short: "No Auth" };
     }
 
@@ -512,7 +512,7 @@ async function getRepoExistance(repo, user) {
       .get(`${GH_WEB_URL}/${repo}`)
       .set({ Authorization: `Bearer ${user.token}` })
       .set({ "User-Agent": GH_USERAGENT })
-      .ok((res) => res.status == 200 || res.status == 404);
+      .ok((res) => res.status === 200 || res.status === 404);
     // Ensure the HTTP Status Codes we want to actively check for are returned
     // and not emitting an error.
 

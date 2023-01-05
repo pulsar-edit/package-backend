@@ -28,8 +28,8 @@ async function verifyAuth(token) {
     let user_data;
 
     if (
-      process.env.PULSAR_STATUS == "dev" &&
-      process.env.MOCK_AUTH != "false"
+      process.env.PULSAR_STATUS === "dev" &&
+      process.env.MOCK_AUTH !== "false"
     ) {
       // Server is in developer mode.
       logger.generic(3, "auth.verifyAuth() is returning Dev Only Permissions!");
