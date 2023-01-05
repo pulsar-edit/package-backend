@@ -101,6 +101,14 @@ ALTER TABLE versions ADD COLUMN semver_v2 INTEGER
 ALTER TABLE versions ADD COLUMN semver_v3 INTEGER
     GENERATED ALWAYS AS (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[3] AS INTEGER)) STORED;
 
+-- Create authstate Table
+
+CREATE TABLE authstate (
+    id UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
+    keycode VARCHAR(256) NOT NULL UNIQUE,
+    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 ------------------------------------------------------------------------------
 
 -- Enter our Test data into the Database.

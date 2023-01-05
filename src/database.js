@@ -1479,9 +1479,9 @@ async function authStoreStateKey(stateKey) {
 
 /**
  * @async
- * @function authStoreStateKey
+ * @function authCheckAndDeleteStateKey
  * @desc Gets a state key from oauth process and delete it from the database.
- * It's used to verify if the request for the authentication is valid. The code should be first geerated in the
+ * It's used to verify if the request for the authentication is valid. The code should be first generated in the
  * initial stage of the login and then deleted by this function.
  * If the deletion is successful, the returned record is used to retrieve the created timestamp of the state key
  * and check if it's not expired (considering a specific timeout).
@@ -1501,7 +1501,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
     // high resolution up to microseconds, but it's returned in seconds with a
     // fractional part.
     // So we first convert it to milliseconds, then cast to BIGINT to remove the
-    // uneeded remaining fractional part.
+    // unneeded remaining fractional part.
     // BIGINT has to be used because ms UNIX timestamp does not fit into
     // PostgreSQL INT type.
     const command = await sqlStorage`
@@ -1513,7 +1513,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
     if (command.count === 0) {
       return {
         ok: false,
-        content: `The provided state key was not set for the auth login.`,
+        content: "The provided state key was not set for the auth login.",
         short: "Not Found",
       };
     }
@@ -1525,7 +1525,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
     if (now > created + timeout) {
       return {
         ok: false,
-        content: `The provided state key is expired for the auth login.`,
+        content: "The provided state key is expired for the auth login.",
         short: "Not Found",
       };
     }

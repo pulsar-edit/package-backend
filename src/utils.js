@@ -499,12 +499,14 @@ function semverEq(a1, a2) {
 }
 
 /**
- * @function generateRandomCryptoAESKey
- * @desc Uses the crypto module to generate and return a random key code.
- * @returns {string} A random key code string.
+ * @function generateRandomString
+ * @desc Uses the crypto module to generate and return a random string.
+ * @param {string} n - The number of bytes to generate.
+ * @returns {string} A string exported from the generated Buffer using the "hex" format (encode
+ * each byte as two hexadecimal characters).
  */
-function generateRandomCryptoAESKey() {
-  return crypto.generateKeySync("aes", { length: 128 });
+function generateRandomString(n) {
+  return crypto.randomBytes(n).toString("hex");
 }
 
 module.exports = {
@@ -519,5 +521,5 @@ module.exports = {
   semverEq,
   getOwnerRepoFromPackage,
   getOwnerRepoFromUrlString,
-  generateRandomCryptoAESKey,
+  generateRandomString,
 };

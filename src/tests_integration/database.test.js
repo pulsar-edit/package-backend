@@ -6,7 +6,8 @@
 // Or at the very least that if there is a failure within these, it will not result in
 // bad data being entered into the database in production.
 
-let database;
+let database = null;
+let utils = null;
 
 jest.setTimeout(300000);
 
@@ -23,6 +24,7 @@ beforeAll(async () => {
   process.env.DB_PORT = db_url_parsed[3];
 
   database = require("../database.js");
+  utils = require("../utils.js");
 });
 
 afterAll(async () => {
@@ -499,5 +501,28 @@ describe("Package Lifecycle Tests", () => {
     // === Can we remove our User?
     // TODO: Currently there is no way to delete a user account.
     // There is no supported endpoint for this, but is something that should be implemented.
+  });
+});
+
+describe("Manage Login State Keys", () => {
+  test("Save and Check State Key", async () => {
+    // === Generate and save the State Key
+    const stateKey = utils.generateRandomString(64);
+    const savedDbKey = await database.authStoreStateKey(stateKey);
+    expect(savedDbKey.ok).toBeTruthy();
+    expect(savedDbKey.content).toEqual(stateKey);
+
+    // === Check and delete the stored State Key
+    const deleteDbKey = await database.authCheckAndDeleteStateKey(stateKey);
+    expect(deleteDbKey.ok).toBeTruthy();
+    expect(deleteDbKey.content).toEqual(stateKey);
+
+    // === Test an expired State Key when the user takes too long to complete the login stage
+    const expiredStateKey = utils.generateRandomString(64);
+    await database.authStoreStateKey(expiredStateKey);
+    const testTimestamp = Date.now() + 121000; // 2 minutes after now
+    const deleteExpiredDbKey = await database.authCheckAndDeleteStateKey(expiredStateKey, testTimestamp);
+    expect(deleteExpiredDbKey.ok).toBeFalsy();
+    expect(deleteExpiredDbKey.content).toEqual("The provided state key is expired for the auth login.");
   });
 });

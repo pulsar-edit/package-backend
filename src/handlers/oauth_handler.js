@@ -37,10 +37,10 @@ async function getLogin(req, res) {
   logger.generic(4, "New Hit on api/login");
 
   // Generate a random key.
-  const stateKey = utils.generateRandomCryptoAESKey();
+  const stateKey = utils.generateRandomString(64);
 
   // Before redirect, save the key into the database.
-  const saveStateKey = database.authStoreStateKey(stateKey);
+  const saveStateKey = await database.authStoreStateKey(stateKey);
   if (!saveStateKey.ok) {
     await common.handleError(req, res, saveStateKey);
     return;
@@ -72,7 +72,7 @@ async function getOauth(req, res) {
   logger.generic(4, "Get OAuth Hit!");
 
   // First we want to ensure that the received state key is valid.
-  const validStateKey = database.authCheckAndDeleteStateKey(params.state);
+  const validStateKey = await database.authCheckAndDeleteStateKey(params.state);
   if (!validStateKey.ok) {
     logger.generic(3, `Provided State Key is NOT Valid!`);
     await common.handleError(req, res, validStateKey);
