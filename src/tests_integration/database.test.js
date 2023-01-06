@@ -516,10 +516,19 @@ describe("Manage Login State Keys", () => {
     const deleteDbKey = await database.authCheckAndDeleteStateKey(stateKey);
     expect(deleteDbKey.ok).toBeTruthy();
     expect(deleteDbKey.content).toEqual(stateKey);
-
+  });
+  test("Fail when an Unsaved State Key is provided", async () => {
+    // === Test aa State Key that has not been stored
+    const stateKey = utils.generateRandomString(64);
+    const notFoundDbKey = await database.authCheckAndDeleteStateKey(stateKey);
+    expect(notFoundDbKey.ok).toBeFalsy();
+    expect(notFoundDbKey.content).toEqual("The provided state key was not set for the auth login.");
+  });
+  test("Fail when an Expired State Key is provided", async () => {
     // === Test an expired State Key when the user takes too long to complete the login stage
     const expiredStateKey = utils.generateRandomString(64);
     await database.authStoreStateKey(expiredStateKey);
+
     const testTimestamp = Date.now() + 121000; // 2 minutes after now
     const deleteExpiredDbKey = await database.authCheckAndDeleteStateKey(expiredStateKey, testTimestamp);
     expect(deleteExpiredDbKey.ok).toBeFalsy();
