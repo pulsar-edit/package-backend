@@ -15,15 +15,14 @@ let gcsStorage;
 let cachedBanlist, cachedFeaturedlist, cachedThemelist;
 
 /**
- * @function checkGCS
+ * @function setupGCS
  * @desc Sets up the Google Cloud Storage Class, to ensure its ready to use.
+ * @returns {object} - A new Google Cloud Storage instance.
  */
-function checkGCS() {
-  if (gcsStorage === undefined) {
-    gcsStorage = new Storage({
-      keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
-    });
-  }
+function setupGCS() {
+  return new Storage({
+    keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
+  });
 }
 
 /**
@@ -36,7 +35,7 @@ function checkGCS() {
  * @returns {Array} Parsed JSON Array of all Banned Packages.
  */
 async function getBanList() {
-  checkGCS();
+  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
     if (
@@ -89,7 +88,7 @@ async function getBanList() {
  * @returns {Array} Parsed JSON Array of all Featured Packages.
  */
 async function getFeaturedPackages() {
-  checkGCS();
+  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
     if (
@@ -143,7 +142,7 @@ async function getFeaturedPackages() {
  * @returns {Array} JSON Parsed Array of Featured Theme Names.
  */
 async function getFeaturedThemes() {
-  checkGCS();
+  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
     if (
