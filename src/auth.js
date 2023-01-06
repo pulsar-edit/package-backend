@@ -12,7 +12,8 @@ const logger = require("./logger.js");
  * Once that is done, we can go ahead and search for said user within the database.
  * If the user exists, then we can confirm that they are both locally and globally
  * authenticated, and execute whatever action it is they wanted to.
- * @params {object} token - The token the user provided.
+ * @params {string} token - The token the user provided.
+ * @returns {object} A server status object.
  */
 async function verifyAuth(token) {
   if (token === null || token === undefined) {
@@ -25,45 +26,17 @@ async function verifyAuth(token) {
   }
 
   try {
-    let user_data;
+    let userData = null;
 
     if (
       process.env.PULSAR_STATUS === "dev" &&
       process.env.MOCK_AUTH !== "false"
     ) {
       // Server is in developer mode.
-      logger.generic(3, "auth.verifyAuth() is returning Dev Only Permissions!");
-
-      switch (token) {
-        case "valid-token":
-          user_data = { status: 200, body: { node_id: "dever-nodeid" } };
-          break;
-        case "no-valid-token":
-          user_data = { status: 200, body: { node_id: "no-perm-user-nodeid" } };
-          break;
-        case "admin-token":
-          user_data = { status: 200, body: { node_id: "admin-user-nodeid" } };
-          break;
-        case "no-star-token":
-          user_data = { status: 200, body: { node_id: "has-no-stars-nodeid" } };
-          break;
-        case "all-star-token":
-          user_data = {
-            status: 200,
-            body: { node_id: "has-all-stars-nodeid" },
-          };
-          break;
-        default:
-          logger.generic(3, "No Valid dev user found!");
-          user_data = {
-            status: 401,
-            body: { message: "No Valid dev user found!" },
-          };
-          break;
-      }
+      userData = getUserDataDevMode(token);
     } else {
       logger.generic(6, "auth.verifyAuth() Called in Production instance");
-      user_data = await superagent
+      userData = await superagent
         .get("https://api.github.com/user")
         .set({ Authorization: `Bearer ${token}` })
         .set({ "User-Agent": GH_USERAGENT })
@@ -72,58 +45,58 @@ async function verifyAuth(token) {
       // invalid auth, which otherwise emits an error.
     }
 
-    if (user_data.status !== 200) {
+    if (userData.status !== 200) {
       logger.generic(
         3,
-        `auth.verifyAuth() API Call returned: ${user_data.status}`
+        `auth.verifyAuth() API Call returned: ${userData.status}`
       );
-      switch (user_data.status) {
+      switch (userData.status) {
         case 403:
         case 401:
           // When the user provides bad authentication, lets tell them it's bad auth.
           logger.generic(6, "auth.verifyAuth() API Call Returning Bad Auth");
-          return { ok: false, short: "Bad Auth", content: user_data };
+          return { ok: false, short: "Bad Auth", content: userData };
           break;
         default:
           logger.generic(
             3,
             "auth.verifyAuth() API Call Returned Uncaught Status",
-            { type: "object", obj: user_data }
+            { type: "object", obj: userData }
           );
 
-          return { ok: false, short: "Server Error", content: user_data };
+          return { ok: false, short: "Server Error", content: userData };
       }
     }
 
-    const prov_node_id = user_data.body.node_id;
+    const provNodeId = userData.body.node_id;
 
     // Now we want to see if we are able to locate this user's node_id in our db.
-    const db_user = await database.getUserByNodeID(prov_node_id);
+    const dbUser = await database.getUserByNodeID(provNodeId);
 
-    if (!db_user.ok) {
-      return db_user;
+    if (!dbUser.ok) {
+      return dbUser;
     }
 
     // Now we have a valid user from the database, that we can confirm is fully authenticated.
     // We will go ahead and return an "Auth User Object" to let the rest of the system use
 
-    const auth_user_object = {
+    const authUserObject = {
       token: token,
-      id: db_user.content.id,
-      node_id: prov_node_id,
-      created_at: db_user.content.created_at,
-      username: db_user.content.username,
-      avatar: db_user.content.avatar,
-      data: db_user.content.data,
+      id: dbUser.content.id,
+      node_id: provNodeId,
+      created_at: dbUser.content.created_at,
+      username: dbUser.content.username,
+      avatar: dbUser.content.avatar,
+      data: dbUser.content.data,
     };
 
     logger.generic(
       4,
-      `auth.verifyAuth() Returning Authenticated User: ${auth_user_object.username}`
+      `auth.verifyAuth() Returning Authenticated User: ${authUserObject.username}`
     );
     return {
       ok: true,
-      content: auth_user_object,
+      content: authUserObject,
     };
   } catch (err) {
     logger.generic(3, "auth.verifyAuth() Caught an error", {
@@ -131,6 +104,38 @@ async function verifyAuth(token) {
       err: err,
     });
     return { ok: false, short: "Server Error", content: err };
+  }
+}
+
+/**
+ * @function getUserDataDevMode
+ * @desc An internal util to retrieve the user data object in developer mode only.
+ * @params {string} token - The token the user provided.
+ * @returns {object} A server status object containing the user data.
+ */
+function getUserDataDevMode(token) {
+  logger.generic(3, "auth.verifyAuth() is returning Dev Only Permissions!");
+
+  switch (token) {
+    case "valid-token":
+      return { status: 200, body: { node_id: "dever-nodeid" } };
+    case "no-valid-token":
+      return { status: 200, body: { node_id: "no-perm-user-nodeid" } };
+    case "admin-token":
+      return { status: 200, body: { node_id: "admin-user-nodeid" } };
+    case "no-star-token":
+      return { status: 200, body: { node_id: "has-no-stars-nodeid" } };
+    case "all-star-token":
+      return {
+        status: 200,
+        body: { node_id: "has-all-stars-nodeid" },
+      };
+    default:
+      logger.generic(3, "No Valid dev user found!");
+      return {
+        status: 401,
+        body: { message: "No Valid dev user found!" },
+      };
   }
 }
 
