@@ -7,4 +7,4 @@ CREATE TABLE authstate (
 -- Query for the cleanup of the unused keys to be executed
 -- regularly on the server by a cron job service.
 DELETE FROM authstate
-WHERE CURRENT_TIMESTAMP > created + INTERVAL '2 minutes';
+WHERE created < CURRENT_TIMESTAMP - INTERVAL '10 minutes';

@@ -1519,7 +1519,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
     }
 
     const created = BigInt(command[0].created);
-    const timeout = 120000n; // 2*60*1000 => 2 minutes in ms
+    const timeout = 600000n; // 10*60*1000 => 10 minutes in ms
     const now = timestamp ?? Date.now();
 
     if (now > created + timeout) {

@@ -529,7 +529,7 @@ describe("Manage Login State Keys", () => {
     const expiredStateKey = utils.generateRandomString(64);
     await database.authStoreStateKey(expiredStateKey);
 
-    const testTimestamp = Date.now() + 121000; // 2 minutes after now
+    const testTimestamp = Date.now() + 601000; // 10 minutes after now
     const deleteExpiredDbKey = await database.authCheckAndDeleteStateKey(expiredStateKey, testTimestamp);
     expect(deleteExpiredDbKey.ok).toBeFalsy();
     expect(deleteExpiredDbKey.content).toEqual("The provided state key is expired for the auth login.");
