@@ -12,16 +12,16 @@ let utils = null;
 jest.setTimeout(300000);
 
 beforeAll(async () => {
-  let db_url = process.env.DATABASE_URL;
+  const dbUrl = process.env.DATABASE_URL;
   // This returns: postgres://test-user@localhost:5432/test-db
-  let db_url_reg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
-  let db_url_parsed = db_url_reg.exec(db_url);
+  const dbUrlReg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
+  const dbUrlParsed = dbUrlReg.exec(dbUrl);
 
   // set the parsed URL as proper env for the db module
-  process.env.DB_HOST = db_url_parsed[2];
-  process.env.DB_USER = db_url_parsed[1];
-  process.env.DB_DB = db_url_parsed[4];
-  process.env.DB_PORT = db_url_parsed[3];
+  process.env.DB_HOST = dbUrlParsed[2];
+  process.env.DB_USER = dbUrlParsed[1];
+  process.env.DB_DB = dbUrlParsed[4];
+  process.env.DB_PORT = dbUrlParsed[3];
 
   database = require("../database.js");
   utils = require("../utils.js");
