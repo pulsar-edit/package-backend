@@ -247,7 +247,7 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       // Here we need to check if the current latest version is lower than the new one
       // which we want to publish.
       const latestVersion = await sqlTrans`
-        SELECT *
+        SELECT id, status, semver
         FROM versions
         WHERE package = ${pointer} AND status = 'latest';
       `;
@@ -353,7 +353,7 @@ async function insertNewPackageName(newName, oldName) {
           UPDATE packages
           SET name = ${newName}
           WHERE pointer = ${pointer}
-          RETURNING *;
+          RETURNING name;
         `;
 
         if (updateNewName.count === 0) {
@@ -369,7 +369,7 @@ async function insertNewPackageName(newName, oldName) {
           INSERT INTO names
           (name, pointer) VALUES
           (${newName}, ${pointer})
-          RETURNING *;
+          RETURNING name;
         `;
 
         if (newInsertedName.count === 0) {
@@ -728,7 +728,7 @@ async function removePackageByName(name) {
       const commandVers = await sqlTrans`
         DELETE FROM versions
         WHERE package = ${pointer}
-        RETURNING *;
+        RETURNING semver;
       `;
 
       if (commandVers.count === 0) {
@@ -739,7 +739,7 @@ async function removePackageByName(name) {
       await sqlTrans`
         DELETE FROM stars
         WHERE package = ${pointer}
-        RETURNING *;
+        RETURNING userid;
       `;
 
       /*if (commandStar.count === 0) {
@@ -750,7 +750,7 @@ async function removePackageByName(name) {
       const commandName = await sqlTrans`
         DELETE FROM names
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (commandName.count === 0) {
@@ -760,7 +760,7 @@ async function removePackageByName(name) {
       const commandPack = await sqlTrans`
         DELETE FROM packages
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (commandPack.count === 0) {
@@ -848,14 +848,14 @@ async function removePackageVersion(packName, semVer) {
       }
 
       // The package will have published versions, so we can remove the targeted semVer.
-      const command = await sqlTrans`
+      const updateRemovedStatus = await sqlTrans`
         UPDATE versions
         SET status = 'removed'
         WHERE id = ${versionId}
-        RETURNING *;
+        RETURNING id;
       `;
 
-      if (command.count === 0) {
+      if (updateRemovedStatus.count === 0) {
         // Do not use throw here because we specify Not Found reason.
         return {
           ok: false,
@@ -896,7 +896,7 @@ async function removePackageVersion(packName, semVer) {
         UPDATE versions
         SET status = 'latest'
         WHERE id = ${latestVersionId}
-        RETURNING *;
+        RETURNING id, meta;
       `;
 
       if (commandLatest.count === 0) {
@@ -916,7 +916,7 @@ async function removePackageVersion(packName, semVer) {
         UPDATE packages
         SET data = ${latestDataObject}
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (updatePackageData.count === 0) {
@@ -1169,7 +1169,7 @@ async function updateDecrementStar(user, pack) {
       RETURNING *;
     `;
 
-    if (commandUnstar.length === 0) {
+    if (commandUnstar.count === 0) {
       // We know user and package exist both, so the fail is because
       // the star was already missing,
       // The user expects its star is not given, so we return ok.
