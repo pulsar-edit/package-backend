@@ -2,21 +2,22 @@
 
 CREATE EXTENSION pgcrypto;
 
+CREATE TYPE packageType AS ENUM('package', 'theme');
+
 CREATE TABLE packages (
-  pointer UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
-  name VARCHAR(128) NOT NULL UNIQUE,
-  created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  creation_method VARCHAR(128),
-  downloads BIGINT NOT NULL DEFAULT 0,
-  stargazers_count BIGINT NOT NULL DEFAULT 0,
-  original_stargazers BIGINT NOT NULL DEFAULT 0,
-  data JSONB
+    pointer UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
+    name VARCHAR(128) NOT NULL UNIQUE,
+    package_type packageType NOT NULL,
+    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    creation_method VARCHAR(128),
+    downloads BIGINT NOT NULL DEFAULT 0,
+    stargazers_count BIGINT NOT NULL DEFAULT 0,
+    original_stargazers BIGINT NOT NULL DEFAULT 0,
+    data JSONB,
+    -- constraints
+    CONSTRAINT lowercase_names CHECK (name = LOWER(name))
 );
-
-ALTER TABLE packages ADD CONSTRAINT lowercase_names CHECK (name = LOWER(name));
-
-ALTER TABLE packages ADD COLUMN package_type VARCHAR(20);
 
 -- While the following commands have been used in production, they are excluded here
 -- Because there is no need to modify existing data during server startup
@@ -28,12 +29,6 @@ ALTER TABLE packages ADD COLUMN package_type VARCHAR(20);
 -- UPDATE packages
 -- SET package_type = 'package'
 -- WHERE package_type != 'theme';
-
-CREATE TYPE packageType AS ENUM('package', 'theme');
-
-ALTER TABLE packages
-ALTER COLUMN package_type TYPE packageType USING (package_type::packageType),
-ALTER COLUMN package_type SET NOT NULL;
 
 CREATE FUNCTION now_on_updated_package()
 RETURNS TRIGGER AS $$
@@ -51,11 +46,11 @@ EXECUTE PROCEDURE now_on_updated_package();
 -- Create names Table
 
 CREATE TABLE names (
-  name VARCHAR(128) NOT NULL PRIMARY KEY,
-  pointer UUID NOT NULL REFERENCES packages(pointer)
+    name VARCHAR(128) NOT NULL PRIMARY KEY,
+    pointer UUID NOT NULL REFERENCES packages(pointer),
+    -- constraints
+    CONSTRAINT lowercase_names CHECK (name = LOWER(name))
 );
-
-ALTER TABLE names ADD CONSTRAINT lowercase_names CHECK (name = LOWER(name));
 
 -- Create users Table
 
@@ -87,19 +82,18 @@ CREATE TABLE versions (
     semver VARCHAR(256) NOT NULL,
     license VARCHAR(128) NOT NULL,
     engine JSONB NOT NULL,
-    meta JSONB
+    meta JSONB,
+    -- generated columns
+    semver_v1 INTEGER GENERATED ALWAYS AS
+        (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[1] AS INTEGER)) STORED,
+    semver_v2 INTEGER GENERATED ALWAYS AS
+        (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[2] AS INTEGER)) STORED,
+    semver_v3 INTEGER GENERATED ALWAYS AS
+        (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[3] AS INTEGER)) STORED,
+    -- constraints
+    CONSTRAINT semver2_format CHECK (semver ~ '^\d+\.\d+\.\d+'),
+    CONSTRAINT unique_pack_version UNIQUE(package, semver_v1, semver_v2, semver_v3)
 );
-
-ALTER TABLE versions ADD CONSTRAINT unique_pack_version UNIQUE(package, semver);
-
-ALTER TABLE versions ADD CONSTRAINT semver2_format CHECK (semver ~ '^\d+\.\d+\.\d+');
-
-ALTER TABLE versions ADD COLUMN semver_v1 INTEGER
-    GENERATED ALWAYS AS (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[1] AS INTEGER)) STORED;
-ALTER TABLE versions ADD COLUMN semver_v2 INTEGER
-    GENERATED ALWAYS AS (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[2] AS INTEGER)) STORED;
-ALTER TABLE versions ADD COLUMN semver_v3 INTEGER
-    GENERATED ALWAYS AS (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[3] AS INTEGER)) STORED;
 
 -- Create authstate Table
 

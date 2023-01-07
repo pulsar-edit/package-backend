@@ -4,25 +4,31 @@
 
 CREATE EXTENSION pgcrypto;
 
+-- packageType enum type
+CREATE TYPE packageType AS ENUM('package', 'theme');
+
 CREATE TABLE packages (
     pointer UUID DEFAULT GEN_RANDOM_UUID() PRIMARY KEY,
     name VARCHAR(128) NOT NULL UNIQUE,
+    package_type packageType NOT NULL,
     created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     creation_method VARCHAR(128),
     downloads BIGINT NOT NULL DEFAULT 0,
     stargazers_count BIGINT NOT NULL DEFAULT 0,
     original_stargazers BIGINT NOT NULL DEFAULT 0,
-    data JSONB
+    data JSONB,
+    -- constraints
+    CONSTRAINT lowercase_names CHECK (name = LOWER(name))
 );
 
--- Lowercase constraint
+-- Lowercase constraint added upon the following issue:
 -- https://github.com/confused-Techie/atom-backend/issues/90
 
 ALTER TABLE packages ADD CONSTRAINT lowercase_names CHECK (name = LOWER(name));
 
+/* The introduction of the packageType column
 -- Add packageType column
-
 ALTER TABLE packages ADD COLUMN package_type VARCHAR(20);
 
 UPDATE packages
@@ -33,15 +39,11 @@ UPDATE packages
 SET package_type = 'package'
 WHERE package_type IS DISTINCT FROM 'theme';
 
--- Create packageType enum type
-
-CREATE TYPE packageType AS ENUM('package', 'theme');
-
 -- Cast existing values of package_type in packageType
-
 ALTER TABLE packages
 ALTER COLUMN package_type TYPE packageType USING (package_type::packageType),
 ALTER COLUMN package_type SET NOT NULL;
+*/
 
 -- Create a function and a trigger to set the current timestamp
 -- in the `updated` column of the updated row
