@@ -93,25 +93,40 @@ async function insertNewPackage(pack) {
           ? "theme"
           : "package";
 
-      // No need to specify downloads and stargazers. They default at 0 on creation.
-      let command = await sqlTrans`
-        INSERT INTO packages (name, creation_method, data, package_type)
-        VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
-        RETURNING pointer;
-    `;
+      // Populate packages table
+      let pointer = null;
+      let insertNewPack = {};
+      try {
+        // No need to specify downloads and stargazers. They default at 0 on creation.
+        insertNewPack = await sqlTrans`
+          INSERT INTO packages (name, creation_method, data, package_type)
+          VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
+          RETURNING pointer;
+      `;
+      } catch (e) {
+        throw `A constraint has been violated while inserting ${pack.name} in packages table.`
+      }
 
-      const pointer = command[0].pointer;
-      if (pointer === undefined) {
+      if (!insertNewPack?.count) {
         throw `Cannot insert ${pack.name} in packages table`;
       }
 
-      // Populate names table
-      command = await sqlTrans`
-        INSERT INTO names (name, pointer)
-        VALUES (${pack.name}, ${pointer});
-    `;
+      // Retrieve package pointer
+      pointer = insertNewPack[0].pointer;
 
-      if (command.count === 0) {
+      // Populate names table
+      let insertNewName = {};
+      try {
+        insertNewName = await sqlTrans`
+          INSERT INTO names (name, pointer)
+          VALUES (${pack.name}, ${pointer})
+          RETURNING name;
+      `;
+      } catch (e) {
+        throw `A constraint has been violated while inserting ${pack.name} in names table`;
+      }
+
+      if (!insertNewName?.count) {
         throw `Cannot insert ${pack.name} in names table`;
       }
 
@@ -133,13 +148,18 @@ async function insertNewPackage(pack) {
         // therefore set it as NONE if undefined.
         const license = pv[ver].license ?? defaultLicense;
 
-        command = await sqlTrans`
-          INSERT INTO versions (package, status, semver, license, engine, meta)
-          VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
-          RETURNING id;
-      `;
+        let insertNewVersion = {};
+        try {
+          insertNewVersion = await sqlTrans`
+            INSERT INTO versions (package, status, semver, license, engine, meta)
+            VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
+            RETURNING id;
+        `;
+        } catch (e) {
+          throw `A constraint is violated while inserting ${ver} version for ${pack.name} in versions table`;
+        }
 
-        if (command[0].id === undefined) {
+        if (!insertNewVersion?.count) {
           throw `Cannot insert ${ver} version for ${pack.name} package in versions table`;
         }
       }
@@ -147,12 +167,9 @@ async function insertNewPackage(pack) {
       return { ok: true, content: pointer };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting ${pack.name} package`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting ${pack.name} package`, short: "Server Error", error: err };
     });
 }
 
@@ -190,35 +207,37 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         // The flow for renaming the package.
         // Before inserting the new name, we try to update it into the `packages` table
         // since we want that column to contain the current name.
+        let updateNewName = {};
         try {
-          const updateNewName = await sqlTrans`
+          updateNewName = await sqlTrans`
             UPDATE packages
             SET name = ${packJSON.name}
             WHERE pointer = ${pointer}
-            RETURNING *;
+            RETURNING name;
           `;
-
-          if (updateNewName.count === 0) {
-            throw `Unable to update the package name.`;
-          }
         } catch (e) {
           throw `Unable to update the package name. ${packJSON.name} is already used by another package.`;
         }
 
+        if (!updateNewName?.count) {
+          throw `Unable to update the package name.`;
+        }
+
         // Now we can finally insert the new name inside the `names` table.
+        let newInsertedName = {};
         try {
-          const newInsertedName = await sqlTrans`
+          newInsertedName = await sqlTrans`
             INSERT INTO names
             (name, pointer) VALUES
             (${packJSON.name}, ${pointer})
-            RETURNING *;
+            RETURNING name;
           `;
-
-          if (newInsertedName.count === 0) {
-            throw `Unable to add the new name: ${packJSON.name}`;
-          }
         } catch (e) {
           throw `Unable to add the new name: ${packJSON.name} is already used.`;
+        }
+
+        if (!newInsertedName?.count) {
+          throw `Unable to add the new name: ${packJSON.name}`;
         }
 
         // After renaming, we can use packJSON.name as the package name.
@@ -250,7 +269,7 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         UPDATE versions
         SET status = 'published'
         WHERE id = ${latestVersion[0].id}
-        RETURNING *;
+        RETURNING semver, status;
       `;
 
       if (updateLastVer.count === 0) {
@@ -262,7 +281,7 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         UPDATE packages
         SET data = ${packageData}
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (updatePackageData.count === 0) {
@@ -273,19 +292,20 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       const license = packJSON.license ?? defaultLicense;
       const engine = packJSON.engines ?? defaultEngine;
 
+      let addVer = {};
       try {
-        const addVer = await sqlTrans`
+        addVer = await sqlTrans`
           INSERT INTO versions (package, status, semver, license, engine, meta)
           VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
-          RETURNING *;
+          RETURNING semver, status;
         `;
-
-        if (addVer.count === 0) {
-          throw `Unable to create a new version for ${packName}`;
-        }
       } catch (e) {
-        // This occurs when the (package, semver) unique constraint is violated.
+        // This occurs when the (package, semver_vx) unique constraint is violated.
         throw `Not allowed to publish a version previously deleted for ${packName}`;
+      }
+
+      if (!addVer?.count) {
+        throw `Unable to create a new version for ${packName}`;
       }
 
       return {
@@ -294,12 +314,9 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occured while inserting the new package version ${packJSON.name}`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occured while inserting the new package version ${packJSON.name}`, short: "Server Error", error: err };
     });
 }
 
@@ -365,12 +382,9 @@ async function insertNewPackageName(newName, oldName) {
       return { ok: true, content: `Successfully inserted ${newName}.` };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting the new package name ${newName}`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting the new package name ${newName}`, short: "Server Error", error: err };
     });
 }
 
@@ -761,12 +775,9 @@ async function removePackageByName(name) {
       return { ok: true, content: `Successfully Deleted Package: ${name}` };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting ${pack.name} package`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting ${pack.name} package`, short: "Server Error", error: err };
     });
 }
 
@@ -918,12 +929,9 @@ async function removePackageVersion(packName, semVer) {
       };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting ${packName} package`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting ${packName} package`, short: "Server Error", error: err };
     });
 }
 

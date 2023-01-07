@@ -11,6 +11,8 @@ const utils = require("./utils.js");
 let GH_API_URL = "https://api.github.com";
 let GH_WEB_URL = "https://github.com";
 
+const semVerInitRegex = /^\s*v/i;
+
 /**
  * @function setGHWebURL
  * @desc Allows this module to be more testable. Sets a single place to modify
@@ -178,7 +180,6 @@ async function createPackage(repo, user) {
 
     // Build a repo tag object indexed by tag names so we can handle versions easily and
     // won't call query.engine() multiple times for a single version.
-    const semVerInitRegex = /^\s*v/i;
     let tagList = {};
     for (const tag of repoTag) {
       if (typeof tag.name !== "string") {
@@ -343,7 +344,6 @@ async function metadataAppendTarballInfo(pack, repo, user) {
         return undefined;
       }
 
-      const semVerInitRegex = /^\s*v/i;
       for (const t of repoTag) {
         if (typeof t.name !== "string") {
           continue;
