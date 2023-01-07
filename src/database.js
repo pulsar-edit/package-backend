@@ -415,7 +415,7 @@ async function insertNewUser(username, id, avatar) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -468,7 +468,7 @@ async function getPackageByName(name, user = false) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -497,7 +497,7 @@ async function getPackageByNameSimple(name) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -528,7 +528,7 @@ async function getPackageVersionByNameAndVersion(name, version) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -560,7 +560,7 @@ async function getPackageCollectionByName(packArray) {
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -586,7 +586,7 @@ async function getPackageCollectionByID(packArray) {
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -635,7 +635,7 @@ async function updatePackageStargazers(name, pointer = null) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -666,7 +666,7 @@ async function updatePackageIncrementDownloadByName(name) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -697,7 +697,7 @@ async function updatePackageDecrementDownloadByName(name) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -994,7 +994,7 @@ async function getUserByName(username) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1030,7 +1030,7 @@ async function getUserByNodeID(id) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1066,7 +1066,7 @@ async function getUserByID(id) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1135,7 +1135,7 @@ async function updateIncrementStar(user, pack) {
       };
     }
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1203,7 +1203,7 @@ async function updateDecrementStar(user, pack) {
       content: "Package Successfully Unstarred",
     };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1235,7 +1235,7 @@ async function getStarredPointersByUserID(userid) {
 
     return { ok: true, content: packArray };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1271,7 +1271,7 @@ async function getStarringUsersByPointer(pointer) {
 
     return { ok: true, content: userArray };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1334,7 +1334,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       },
     };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1452,7 +1452,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
       },
     };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1481,7 +1481,7 @@ async function authStoreStateKey(stateKey) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1540,7 +1540,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
 
     return { ok: true, content: command[0].keycode };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
