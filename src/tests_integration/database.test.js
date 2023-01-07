@@ -263,6 +263,16 @@ describe("Package Lifecycle Tests", () => {
     );
     expect(getOldVerOnly.content.meta.name).toEqual(pack.createPack.name);
 
+    // === Can we get a specific version if the provided semver contains an extension?
+    const getNewVerWithExt = await database.getPackageVersionByNameAndVersion(
+      NEW_NAME,
+      `${v1_0_1.version}-beta`
+    );
+    expect(getNewVerWithExt.ok).toBeTruthy();
+    expect(getNewVerWithExt.content.status).toEqual("latest");
+    expect(getNewVerWithExt.content.semver).toEqual(v1_0_1.version);
+    expect(getNewVerWithExt.content.meta.name).toEqual(pack.createPack.name);
+
     // === Can we add a download to our package?
     const downPack = await database.updatePackageIncrementDownloadByName(
       NEW_NAME

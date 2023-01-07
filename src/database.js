@@ -513,11 +513,23 @@ async function getPackageVersionByNameAndVersion(name, version) {
   try {
     sqlStorage ??= setupSQL();
 
+    // We are permissive on the right side of the semver, so if it's stored with an extension
+    // we can still get it retrieving the semverArray and looking by semver_vx generated columns.
+    const svArr = utils.semverArray(version);
+    if (svArr === null) {
+      return {
+        ok: false,
+        content: `Provided version ${version} is not a valid semver.`,
+        short: "Not Found",
+      };
+    }
+
     const command = await sqlStorage`
       SELECT v.semver, v.status, v.license, v.engine, v.meta
       FROM packages p
         INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.semver = ${version} AND v.status != 'removed');
+        INNER JOIN versions v ON (p.pointer = v.package AND v.semver_v1 = ${svArr[0]} AND
+          v.semver_v2 = ${svArr[1]} AND v.semver_v3 = ${svArr[2]} AND v.status != 'removed');
     `;
 
     return command.count !== 0
