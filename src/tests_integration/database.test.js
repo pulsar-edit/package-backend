@@ -51,13 +51,13 @@ describe("insertNewPackage", () => {
 });
 
 describe("insertNewPackageName", () => {
-  test("Should return Server Error for package that doesn't exist", async () => {
+  test("Should return Not Found for package that doesn't exist", async () => {
     const obj = await database.insertNewPackageName(
       "notARepo",
       "notARepo-Reborn"
     );
     expect(obj.ok).toBeFalsy();
-    expect(obj.short).toEqual("Server Error");
+    expect(obj.short).toEqual("Not Found");
   });
   test("Should return Success for valid package", async () => {
     const obj = await database.insertNewPackageName(
@@ -306,13 +306,15 @@ describe("Package Lifecycle Tests", () => {
     expect(downPackOld.content.downloads).toEqual("1");
 
     // === Can we delete our newest version?
+    // === Here we append an extension to test if the version is selected in the same way.
+    const versionWithExt = `${v1_0_1.version}-beta`;
     const delLatestVer = await database.removePackageVersion(
       NEW_NAME,
-      v1_0_1.version
+      versionWithExt
     );
     expect(delLatestVer.ok).toBeTruthy();
     expect(delLatestVer.content).toEqual(
-      `Removed ${v1_0_1.version} of ${NEW_NAME} and ${pack.createPack.metadata.version} is the new latest version.`
+      `Removed ${versionWithExt} of ${NEW_NAME} and ${pack.createPack.metadata.version} is the new latest version.`
     );
 
     // === Is our old version the latest again?
@@ -370,7 +372,7 @@ describe("Package Lifecycle Tests", () => {
       `There's no version ${pack.createPack.metadata.version} to remove for ${NEW_NAME} package`
     );
 
-    // === Can we add an odd yet valid semver?
+    // === Can we add an odd yet valid semver using an extension?
     const oddVer = pack.addVersion("1.2.3-beta.0");
     const oddNewVer = await database.insertNewPackageVersion(
       oddVer,

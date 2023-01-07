@@ -341,7 +341,12 @@ async function insertNewPackageName(newName, oldName) {
       const packID = await getPackageByNameSimple(oldName);
 
       if (!packID.ok) {
-        throw `Unable to find the original pointer of ${oldName}`;
+        // Return Not Found
+        return {
+          ok: false,
+          content: `Unable to find the original pointer of ${oldName}`,
+          short: "Not Found",
+        };
       }
 
       const pointer = packID.content.pointer;
@@ -493,7 +498,7 @@ async function getPackageByNameSimple(name) {
       ? { ok: true, content: command[0] }
       : {
           ok: false,
-          content: `package ${name} not found.`,
+          content: `Package ${name} not found.`,
           short: "Not Found",
         };
   } catch (err) {
@@ -812,14 +817,28 @@ async function removePackageVersion(packName, semVer) {
       const packID = await getPackageByNameSimple(packName);
 
       if (!packID.ok) {
-        throw `Unable to find the pointer of ${packName}`;
+        // Return Not Found
+        return {
+          ok: false,
+          content: `Unable to find the pointer of ${packName}`,
+          short: "Not Found",
+        };
       }
 
       const pointer = packID.content.pointer;
 
+      const svArr = utils.semverArray(semVer);
+      if (svArr === null) {
+        return {
+          ok: false,
+          content: `Provided version ${version} is not a valid semver.`,
+          short: "Not Found",
+        };
+      }
+
       // Retrieve all non-removed versions sorted from latest to older
       const getVersions = await sqlTrans`
-        SELECT id, semver, status
+        SELECT id, semver, semver_v1, semver_v2, semver_v3, status
         FROM versions
         WHERE package = ${pointer} AND status != 'removed'
         ORDER BY semver_v1 DESC, semver_v2 DESC, semver_v3 DESC;
@@ -836,7 +855,9 @@ async function removePackageVersion(packName, semVer) {
       let removeLatest = false;
       let versionId = null;
       for (const v of getVersions) {
-        if (v.semver === semVer) {
+        // Type coercion on the following comparisons because semverArray contains strings
+        // while PostgreSQL returns versions as integer.
+        if (v.semver_v1 == svArr[0] && v.semver_v2 == svArr[1] && v.semver_v3 == svArr[2]) {
           versionId = v.id;
           removeLatest = v.status === "latest";
           break;
