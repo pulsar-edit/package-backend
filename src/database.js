@@ -104,7 +104,7 @@ async function insertNewPackage(pack) {
           RETURNING pointer;
       `;
       } catch (e) {
-        throw `A constraint has been violated while inserting ${pack.name} in packages table.`
+        throw `A constraint has been violated while inserting ${pack.name} in packages table.`;
       }
 
       if (!insertNewPack?.count) {
