@@ -135,6 +135,7 @@ async function insertNewPackage(pack) {
       const latest = pack.releases.latest;
 
       // Populate versions table
+      let versionCount = 0;
       const pv = pack.versions;
       for (const ver of Object.keys(pv)) {
         const status = ver === latest ? "latest" : "published";
@@ -162,6 +163,11 @@ async function insertNewPackage(pack) {
         if (!insertNewVersion?.count) {
           throw `Cannot insert ${ver} version for ${pack.name} package in versions table`;
         }
+        versionCount++;
+      }
+
+      if (versionCount === 0) {
+        throw `${pack.name} package does not contain any version.`;
       }
 
       return { ok: true, content: pointer };
