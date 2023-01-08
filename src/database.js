@@ -93,25 +93,40 @@ async function insertNewPackage(pack) {
           ? "theme"
           : "package";
 
-      // No need to specify downloads and stargazers. They default at 0 on creation.
-      let command = await sqlTrans`
-        INSERT INTO packages (name, creation_method, data, package_type)
-        VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
-        RETURNING pointer;
-    `;
+      // Populate packages table
+      let pointer = null;
+      let insertNewPack = {};
+      try {
+        // No need to specify downloads and stargazers. They default at 0 on creation.
+        insertNewPack = await sqlTrans`
+          INSERT INTO packages (name, creation_method, data, package_type)
+          VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
+          RETURNING pointer;
+      `;
+      } catch (e) {
+        throw `A constraint has been violated while inserting ${pack.name} in packages table.`;
+      }
 
-      const pointer = command[0].pointer;
-      if (pointer === undefined) {
+      if (!insertNewPack?.count) {
         throw `Cannot insert ${pack.name} in packages table`;
       }
 
-      // Populate names table
-      command = await sqlTrans`
-        INSERT INTO names (name, pointer)
-        VALUES (${pack.name}, ${pointer});
-    `;
+      // Retrieve package pointer
+      pointer = insertNewPack[0].pointer;
 
-      if (command.count === 0) {
+      // Populate names table
+      let insertNewName = {};
+      try {
+        insertNewName = await sqlTrans`
+          INSERT INTO names (name, pointer)
+          VALUES (${pack.name}, ${pointer})
+          RETURNING name;
+      `;
+      } catch (e) {
+        throw `A constraint has been violated while inserting ${pack.name} in names table`;
+      }
+
+      if (!insertNewName?.count) {
         throw `Cannot insert ${pack.name} in names table`;
       }
 
@@ -120,6 +135,7 @@ async function insertNewPackage(pack) {
       const latest = pack.releases.latest;
 
       // Populate versions table
+      let versionCount = 0;
       const pv = pack.versions;
       for (const ver of Object.keys(pv)) {
         const status = ver === latest ? "latest" : "published";
@@ -133,26 +149,33 @@ async function insertNewPackage(pack) {
         // therefore set it as NONE if undefined.
         const license = pv[ver].license ?? defaultLicense;
 
-        command = await sqlTrans`
-          INSERT INTO versions (package, status, semver, license, engine, meta)
-          VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
-          RETURNING id;
-      `;
+        let insertNewVersion = {};
+        try {
+          insertNewVersion = await sqlTrans`
+            INSERT INTO versions (package, status, semver, license, engine, meta)
+            VALUES (${pointer}, ${status}, ${ver}, ${license}, ${engine}, ${pv[ver]})
+            RETURNING id;
+        `;
+        } catch (e) {
+          throw `A constraint is violated while inserting ${ver} version for ${pack.name} in versions table`;
+        }
 
-        if (command[0].id === undefined) {
+        if (!insertNewVersion?.count) {
           throw `Cannot insert ${ver} version for ${pack.name} package in versions table`;
         }
+        versionCount++;
+      }
+
+      if (versionCount === 0) {
+        throw `${pack.name} package does not contain any version.`;
       }
 
       return { ok: true, content: pointer };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting ${pack.name} package`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting ${pack.name} package`, short: "Server Error", error: err };
     });
 }
 
@@ -190,35 +213,37 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         // The flow for renaming the package.
         // Before inserting the new name, we try to update it into the `packages` table
         // since we want that column to contain the current name.
+        let updateNewName = {};
         try {
-          const updateNewName = await sqlTrans`
+          updateNewName = await sqlTrans`
             UPDATE packages
             SET name = ${packJSON.name}
             WHERE pointer = ${pointer}
-            RETURNING *;
+            RETURNING name;
           `;
-
-          if (updateNewName.count === 0) {
-            throw `Unable to update the package name.`;
-          }
         } catch (e) {
           throw `Unable to update the package name. ${packJSON.name} is already used by another package.`;
         }
 
+        if (!updateNewName?.count) {
+          throw `Unable to update the package name.`;
+        }
+
         // Now we can finally insert the new name inside the `names` table.
+        let newInsertedName = {};
         try {
-          const newInsertedName = await sqlTrans`
+          newInsertedName = await sqlTrans`
             INSERT INTO names
             (name, pointer) VALUES
             (${packJSON.name}, ${pointer})
-            RETURNING *;
+            RETURNING name;
           `;
-
-          if (newInsertedName.count === 0) {
-            throw `Unable to add the new name: ${packJSON.name}`;
-          }
         } catch (e) {
           throw `Unable to add the new name: ${packJSON.name} is already used.`;
+        }
+
+        if (!newInsertedName?.count) {
+          throw `Unable to add the new name: ${packJSON.name}`;
         }
 
         // After renaming, we can use packJSON.name as the package name.
@@ -228,7 +253,7 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       // Here we need to check if the current latest version is lower than the new one
       // which we want to publish.
       const latestVersion = await sqlTrans`
-        SELECT *
+        SELECT id, status, semver
         FROM versions
         WHERE package = ${pointer} AND status = 'latest';
       `;
@@ -250,7 +275,7 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         UPDATE versions
         SET status = 'published'
         WHERE id = ${latestVersion[0].id}
-        RETURNING *;
+        RETURNING semver, status;
       `;
 
       if (updateLastVer.count === 0) {
@@ -262,7 +287,7 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         UPDATE packages
         SET data = ${packageData}
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (updatePackageData.count === 0) {
@@ -273,19 +298,20 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       const license = packJSON.license ?? defaultLicense;
       const engine = packJSON.engines ?? defaultEngine;
 
+      let addVer = {};
       try {
-        const addVer = await sqlTrans`
+        addVer = await sqlTrans`
           INSERT INTO versions (package, status, semver, license, engine, meta)
           VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
-          RETURNING *;
+          RETURNING semver, status;
         `;
-
-        if (addVer.count === 0) {
-          throw `Unable to create a new version for ${packName}`;
-        }
       } catch (e) {
-        // This occurs when the (package, semver) unique constraint is violated.
+        // This occurs when the (package, semver_vx) unique constraint is violated.
         throw `Not allowed to publish a version previously deleted for ${packName}`;
+      }
+
+      if (!addVer?.count) {
+        throw `Unable to create a new version for ${packName}`;
       }
 
       return {
@@ -294,12 +320,9 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
       };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occured while inserting the new package version ${packJSON.name}`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occured while inserting the new package version ${packJSON.name}`, short: "Server Error", error: err };
     });
 }
 
@@ -324,7 +347,12 @@ async function insertNewPackageName(newName, oldName) {
       const packID = await getPackageByNameSimple(oldName);
 
       if (!packID.ok) {
-        throw `Unable to find the original pointer of ${oldName}`;
+        // Return Not Found
+        return {
+          ok: false,
+          content: `Unable to find the original pointer of ${oldName}`,
+          short: "Not Found",
+        };
       }
 
       const pointer = packID.content.pointer;
@@ -336,7 +364,7 @@ async function insertNewPackageName(newName, oldName) {
           UPDATE packages
           SET name = ${newName}
           WHERE pointer = ${pointer}
-          RETURNING *;
+          RETURNING name;
         `;
 
         if (updateNewName.count === 0) {
@@ -352,7 +380,7 @@ async function insertNewPackageName(newName, oldName) {
           INSERT INTO names
           (name, pointer) VALUES
           (${newName}, ${pointer})
-          RETURNING *;
+          RETURNING name;
         `;
 
         if (newInsertedName.count === 0) {
@@ -365,12 +393,9 @@ async function insertNewPackageName(newName, oldName) {
       return { ok: true, content: `Successfully inserted ${newName}.` };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting the new package name ${newName}`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting the new package name ${newName}`, short: "Server Error", error: err };
     });
 }
 
@@ -401,7 +426,7 @@ async function insertNewUser(username, id, avatar) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -454,7 +479,7 @@ async function getPackageByName(name, user = false) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -479,11 +504,11 @@ async function getPackageByNameSimple(name) {
       ? { ok: true, content: command[0] }
       : {
           ok: false,
-          content: `package ${name} not found.`,
+          content: `Package ${name} not found.`,
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -499,11 +524,23 @@ async function getPackageVersionByNameAndVersion(name, version) {
   try {
     sqlStorage ??= setupSQL();
 
+    // We are permissive on the right side of the semver, so if it's stored with an extension
+    // we can still get it retrieving the semverArray and looking by semver_vx generated columns.
+    const svArr = utils.semverArray(version);
+    if (svArr === null) {
+      return {
+        ok: false,
+        content: `Provided version ${version} is not a valid semver.`,
+        short: "Not Found",
+      };
+    }
+
     const command = await sqlStorage`
       SELECT v.semver, v.status, v.license, v.engine, v.meta
       FROM packages p
         INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.semver = ${version} AND v.status != 'removed');
+        INNER JOIN versions v ON (p.pointer = v.package AND v.semver_v1 = ${svArr[0]} AND
+          v.semver_v2 = ${svArr[1]} AND v.semver_v3 = ${svArr[2]} AND v.status != 'removed');
     `;
 
     return command.count !== 0
@@ -514,7 +551,7 @@ async function getPackageVersionByNameAndVersion(name, version) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -546,7 +583,7 @@ async function getPackageCollectionByName(packArray) {
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -572,7 +609,7 @@ async function getPackageCollectionByID(packArray) {
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -621,7 +658,7 @@ async function updatePackageStargazers(name, pointer = null) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -652,7 +689,7 @@ async function updatePackageIncrementDownloadByName(name) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -683,7 +720,7 @@ async function updatePackageDecrementDownloadByName(name) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -714,7 +751,7 @@ async function removePackageByName(name) {
       const commandVers = await sqlTrans`
         DELETE FROM versions
         WHERE package = ${pointer}
-        RETURNING *;
+        RETURNING semver;
       `;
 
       if (commandVers.count === 0) {
@@ -725,7 +762,7 @@ async function removePackageByName(name) {
       await sqlTrans`
         DELETE FROM stars
         WHERE package = ${pointer}
-        RETURNING *;
+        RETURNING userid;
       `;
 
       /*if (commandStar.count === 0) {
@@ -736,7 +773,7 @@ async function removePackageByName(name) {
       const commandName = await sqlTrans`
         DELETE FROM names
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (commandName.count === 0) {
@@ -746,7 +783,7 @@ async function removePackageByName(name) {
       const commandPack = await sqlTrans`
         DELETE FROM packages
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (commandPack.count === 0) {
@@ -761,12 +798,9 @@ async function removePackageByName(name) {
       return { ok: true, content: `Successfully Deleted Package: ${name}` };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting ${pack.name} package`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting ${pack.name} package`, short: "Server Error", error: err };
     });
 }
 
@@ -789,14 +823,28 @@ async function removePackageVersion(packName, semVer) {
       const packID = await getPackageByNameSimple(packName);
 
       if (!packID.ok) {
-        throw `Unable to find the pointer of ${packName}`;
+        // Return Not Found
+        return {
+          ok: false,
+          content: `Unable to find the pointer of ${packName}`,
+          short: "Not Found",
+        };
       }
 
       const pointer = packID.content.pointer;
 
+      const svArr = utils.semverArray(semVer);
+      if (svArr === null) {
+        return {
+          ok: false,
+          content: `Provided version ${version} is not a valid semver.`,
+          short: "Not Found",
+        };
+      }
+
       // Retrieve all non-removed versions sorted from latest to older
       const getVersions = await sqlTrans`
-        SELECT id, semver, status
+        SELECT id, semver, semver_v1, semver_v2, semver_v3, status
         FROM versions
         WHERE package = ${pointer} AND status != 'removed'
         ORDER BY semver_v1 DESC, semver_v2 DESC, semver_v3 DESC;
@@ -813,7 +861,9 @@ async function removePackageVersion(packName, semVer) {
       let removeLatest = false;
       let versionId = null;
       for (const v of getVersions) {
-        if (v.semver === semVer) {
+        // Type coercion on the following comparisons because semverArray contains strings
+        // while PostgreSQL returns versions as integer.
+        if (v.semver_v1 == svArr[0] && v.semver_v2 == svArr[1] && v.semver_v3 == svArr[2]) {
           versionId = v.id;
           removeLatest = v.status === "latest";
           break;
@@ -837,14 +887,14 @@ async function removePackageVersion(packName, semVer) {
       }
 
       // The package will have published versions, so we can remove the targeted semVer.
-      const command = await sqlTrans`
+      const updateRemovedStatus = await sqlTrans`
         UPDATE versions
         SET status = 'removed'
         WHERE id = ${versionId}
-        RETURNING *;
+        RETURNING id;
       `;
 
-      if (command.count === 0) {
+      if (updateRemovedStatus.count === 0) {
         // Do not use throw here because we specify Not Found reason.
         return {
           ok: false,
@@ -885,7 +935,7 @@ async function removePackageVersion(packName, semVer) {
         UPDATE versions
         SET status = 'latest'
         WHERE id = ${latestVersionId}
-        RETURNING *;
+        RETURNING id, meta;
       `;
 
       if (commandLatest.count === 0) {
@@ -905,7 +955,7 @@ async function removePackageVersion(packName, semVer) {
         UPDATE packages
         SET data = ${latestDataObject}
         WHERE pointer = ${pointer}
-        RETURNING *;
+        RETURNING name;
       `;
 
       if (updatePackageData.count === 0) {
@@ -918,12 +968,9 @@ async function removePackageVersion(packName, semVer) {
       };
     })
     .catch((err) => {
-      const msg =
-        typeof err === "string"
-          ? err
-          : `A generic error occurred while inserting ${packName} package`;
-
-      return { ok: false, content: msg, short: "Server Error" };
+      return typeof err === "string"
+        ? { ok: false, content: err, short: "Server Error" }
+        : { ok: false, content: `A generic error occurred while inserting ${packName} package`, short: "Server Error", error: err };
     });
 }
 
@@ -986,7 +1033,7 @@ async function getUserByName(username) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1022,7 +1069,7 @@ async function getUserByNodeID(id) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1058,7 +1105,7 @@ async function getUserByID(id) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1127,7 +1174,7 @@ async function updateIncrementStar(user, pack) {
       };
     }
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1161,7 +1208,7 @@ async function updateDecrementStar(user, pack) {
       RETURNING *;
     `;
 
-    if (commandUnstar.length === 0) {
+    if (commandUnstar.count === 0) {
       // We know user and package exist both, so the fail is because
       // the star was already missing,
       // The user expects its star is not given, so we return ok.
@@ -1195,7 +1242,7 @@ async function updateDecrementStar(user, pack) {
       content: "Package Successfully Unstarred",
     };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1227,7 +1274,7 @@ async function getStarredPointersByUserID(userid) {
 
     return { ok: true, content: packArray };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1263,7 +1310,7 @@ async function getStarringUsersByPointer(pointer) {
 
     return { ok: true, content: userArray };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1326,7 +1373,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       },
     };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1444,7 +1491,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
       },
     };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1473,7 +1520,7 @@ async function authStoreStateKey(stateKey) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 
@@ -1532,7 +1579,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
 
     return { ok: true, content: command[0].keycode };
   } catch (err) {
-    return { ok: false, content: err, short: "Server Error" };
+    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
   }
 }
 

@@ -372,8 +372,8 @@ function semverArray(semver) {
       ? semver.match(/^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/) ?? []
       : [];
 
-  // returning null on no match
-  return array.length !== 4 ? null : array.slice(1, 4);
+  // Returning null on no match or slice the array to get only indexes from 1 to 3.
+  return array.length !== 4 ? null : array.slice(1);
 }
 
 /**
