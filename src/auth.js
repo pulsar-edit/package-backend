@@ -111,7 +111,7 @@ async function verifyAuth(token) {
  * @function getUserDataDevMode
  * @desc An internal util to retrieve the user data object in developer mode only.
  * @params {string} token - The token the user provided.
- * @returns {object} A server status object containing the user data.
+ * @returns {object} A mocked HTTP return containing the minimum information required to mock the return expected from GitHub.
  */
 function getUserDataDevMode(token) {
   logger.generic(3, "auth.verifyAuth() is returning Dev Only Permissions!");
