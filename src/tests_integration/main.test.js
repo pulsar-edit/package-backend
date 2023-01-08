@@ -25,17 +25,17 @@ const msg = {
 };
 
 beforeAll(async () => {
-  let db_url = process.env.DATABASE_URL;
+  const dbUrl = process.env.DATABASE_URL;
   // this gives us something like postgres://test-user@localhost:5432/test-db
   // We then need to map these values to where the API server expects,
-  let db_url_reg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
-  let db_url_parsed = db_url_reg.exec(db_url);
+  const dbUrlReg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
+  const dbUrlParsed = dbUrlReg.exec(dbUrl);
 
   // set the parsed URL as proper env
-  process.env.DB_HOST = db_url_parsed[2];
-  process.env.DB_USER = db_url_parsed[1];
-  process.env.DB_DB = db_url_parsed[4];
-  process.env.DB_PORT = db_url_parsed[3];
+  process.env.DB_HOST = dbUrlParsed[2];
+  process.env.DB_USER = dbUrlParsed[1];
+  process.env.DB_DB = dbUrlParsed[4];
+  process.env.DB_PORT = dbUrlParsed[3];
 
   // Then since we want to make sure we don't initialize the config module, before we have set our values,
   // we will define our own port to use here.

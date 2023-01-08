@@ -1,7 +1,7 @@
 const debug_utils = require("../debug_utils.js");
 
 describe("Test lengths Returned by different Variables", () => {
-  const object_cases = [
+  const objectCases = [
     [
       {
         value: "Hello World",
@@ -25,7 +25,7 @@ describe("Test lengths Returned by different Variables", () => {
     ],
   ];
 
-  test.each(object_cases)("Given %o Returns %p", (arg, expectedResult) => {
+  test.each(objectCases)("Given %o Returns %p", (arg, expectedResult) => {
     expect(debug_utils.roughSizeOfObject(arg)).toBe(expectedResult);
   });
 });

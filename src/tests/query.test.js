@@ -2,7 +2,7 @@ const query = require("../query.js");
 
 // Page Testing
 
-const page_cases = [
+const pageCases = [
   [{ query: { page: "3" } }, 3],
   [{ query: {} }, 1],
   [{ query: { page: "2" } }, 2],
@@ -12,24 +12,24 @@ const page_cases = [
 // once proper type conversion is implemented the last test should pass a string "2"
 
 describe("Verify Page Query Returns", () => {
-  test.each(page_cases)("Given %o Returns %p", (arg, expectedResult) => {
+  test.each(pageCases)("Given %o Returns %p", (arg, expectedResult) => {
     expect(query.page(arg)).toBe(expectedResult);
   });
 });
 
-const sort_cases = [
+const sortCases = [
   [{ query: { sort: "stars" } }, "stars"],
   [{ query: { sort: "starr" } }, "downloads"],
   [{ query: {} }, "downloads"],
 ];
 
 describe("Verify Sort Query Returns", () => {
-  test.each(sort_cases)("Given %o Returns %p", (arg, expectedResult) => {
+  test.each(sortCases)("Given %o Returns %p", (arg, expectedResult) => {
     expect(query.sort(arg)).toBe(expectedResult);
   });
 });
 
-const dir_cases = [
+const dirCases = [
   [{ query: { direction: "asc" } }, "asc"],
   [{ query: { direction: "desc" } }, "desc"],
   [{ query: {} }, "desc"],
@@ -39,24 +39,24 @@ const dir_cases = [
 ];
 
 describe("Verify Direction Query Returns", () => {
-  test.each(dir_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(dirCases)("Given %o Returns %p", (arg, result) => {
     expect(query.dir(arg)).toBe(result);
   });
 });
 
-const order_cases = [
+const orderCases = [
   [{ query: { order: "asc" } }, "asc"],
   [{ query: { order: "desc" } }, "desc"],
   [{ query: {} }, "desc"],
 ];
 
 describe("Verify Order Query Returns", () => {
-  test.each(order_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(orderCases)("Given %o Returns %p", (arg, result) => {
     expect(query.dir(arg)).toBe(result);
   });
 });
 
-const query_cases = [
+const queryCases = [
   [{ query: { q: "search-term" } }, "search-term"],
   [{ query: {} }, ""],
   [{ query: { q: "../your-secret.env" } }, ""], // malicious path traversal attempt
@@ -65,14 +65,14 @@ const query_cases = [
 ];
 
 describe("Verify 'Query' Query Returns", () => {
-  test.each(query_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(queryCases)("Given %o Returns %p", (arg, result) => {
     expect(query.query(arg)).toBe(result);
   });
 });
 
 // query.engine() used to accept both the object and the string,
 // but it has been simplified to accept only the string.
-const engine_cases = [
+const engineCases = [
   ["0.1.2", "0.1.2"],
   ["JustText", false],
   [undefined, false],
@@ -80,7 +80,7 @@ const engine_cases = [
 ];
 
 describe("Verify Engine Query Returns", () => {
-  test.each(engine_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(engineCases)("Given %o Returns %p", (arg, result) => {
     expect(query.engine(arg)).toBe(result);
   });
 });
@@ -102,19 +102,19 @@ describe("Verify Auth Query Returns", () => {
   });
 });
 
-const repo_cases = [
+const repoCases = [
   [{ query: { repository: "owner/repo" } }, "owner/repo"],
   [{ query: {} }, ""],
   [{ query: { repository: "InvalidRepo" } }, ""],
 ];
 
 describe("Verify Repo Query Returns", () => {
-  test.each(repo_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(repoCases)("Given %o Returns %p", (arg, result) => {
     expect(query.repo(arg)).toBe(result);
   });
 });
 
-const tag_cases = [
+const tagCases = [
   [{ query: { tag: "latest" } }, "latest"],
   [{ query: {} }, ""],
   [{ query: { tag: null } }, ""],
@@ -122,12 +122,12 @@ const tag_cases = [
 ];
 
 describe("Verify Tag Query Returns", () => {
-  test.each(tag_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(tagCases)("Given %o Returns %p", (arg, result) => {
     expect(query.tag(arg)).toBe(result);
   });
 });
 
-const rename_cases = [
+const renameCases = [
   [{ query: { rename: "true" } }, true],
   [{ query: { rename: "false" } }, false],
   [{ query: {} }, false],
@@ -137,7 +137,7 @@ const rename_cases = [
 ];
 
 describe("Verify Rename Query Returns", () => {
-  test.each(rename_cases)("Given %o Returns %p", (arg, result) => {
+  test.each(renameCases)("Given %o Returns %p", (arg, result) => {
     expect(query.rename(arg)).toBe(result);
   });
 });

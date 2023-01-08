@@ -11,19 +11,18 @@ const { CacheObject } = require("./cache.js");
 const { GCLOUD_STORAGE_BUCKET, GOOGLE_APPLICATION_CREDENTIALS } =
   require("./config.js").getConfig();
 
-let gcs_storage;
-let cached_banlist, cached_featuredlist, cached_themelist;
+let gcsStorage;
+let cachedBanlist, cachedFeaturedlist, cachedThemelist;
 
 /**
- * @function checkGCS
+ * @function setupGCS
  * @desc Sets up the Google Cloud Storage Class, to ensure its ready to use.
+ * @returns {object} - A new Google Cloud Storage instance.
  */
-function checkGCS() {
-  if (gcs_storage === undefined) {
-    gcs_storage = new Storage({
-      keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
-    });
-  }
+function setupGCS() {
+  return new Storage({
+    keyFilename: GOOGLE_APPLICATION_CREDENTIALS,
+  });
 }
 
 /**
@@ -36,45 +35,45 @@ function checkGCS() {
  * @returns {Array} Parsed JSON Array of all Banned Packages.
  */
 async function getBanList() {
-  checkGCS();
+  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
     if (
       GCLOUD_STORAGE_BUCKET === undefined ||
       GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS == "dev" && process.env.MOCK_GOOGLE != "false")
+      (process.env.PULSAR_STATUS === "dev" && process.env.MOCK_GOOGLE !== "false")
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
       // We will log a warning, and return preset test data.
       console.log("storage.js.getBanList() Returning Development Set of Data.");
       let list = ["slothoki", "slot-pulsa", "slot-dana", "hoki-slot"];
-      cached_banlist = new CacheObject(list);
-      cached_banlist.last_validate = Date.now();
-      return { ok: true, content: cached_banlist.data };
+      cachedBanlist = new CacheObject(list);
+      cachedBanlist.last_validate = Date.now();
+      return { ok: true, content: cachedBanlist.data };
     }
 
     try {
-      let contents = await gcs_storage
+      let contents = await gcsStorage
         .bucket(GCLOUD_STORAGE_BUCKET)
         .file("name_ban_list.json")
         .download();
-      cached_banlist = new CacheObject(JSON.parse(contents));
-      cached_banlist.last_validate = Date.now();
-      return { ok: true, content: cached_banlist.data };
+      cachedBanlist = new CacheObject(JSON.parse(contents));
+      cachedBanlist.last_validate = Date.now();
+      return { ok: true, content: cachedBanlist.data };
     } catch (err) {
       return { ok: false, content: err, short: "Server Error" };
     }
   };
 
-  if (cached_banlist === undefined) {
+  if (cachedBanlist === undefined) {
     logger.generic(5, "Creating Ban List Cache.");
     return getNew();
   }
 
-  if (!cached_banlist.Expired) {
+  if (!cachedBanlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return { ok: true, content: cached_banlist.data };
+    return { ok: true, content: cachedBanlist.data };
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -89,13 +88,13 @@ async function getBanList() {
  * @returns {Array} Parsed JSON Array of all Featured Packages.
  */
 async function getFeaturedPackages() {
-  checkGCS();
+  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
     if (
       GCLOUD_STORAGE_BUCKET === undefined ||
       GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS == "dev" && process.env.MOCK_GOOGLE != "false")
+      (process.env.PULSAR_STATUS === "dev" && process.env.MOCK_GOOGLE !== "false")
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
@@ -104,32 +103,32 @@ async function getFeaturedPackages() {
         "storage.js.getFeaturedPackages() Returning Development Set of Data."
       );
       let list = ["hydrogen", "atom-clock", "hey-pane"];
-      cached_featuredlist = new CacheObject(list);
-      cached_featuredlist.last_validate = Date.now();
-      return { ok: true, content: cached_featuredlist.data };
+      cachedFeaturedlist = new CacheObject(list);
+      cachedFeaturedlist.last_validate = Date.now();
+      return { ok: true, content: cachedFeaturedlist.data };
     }
 
     try {
-      let contents = await gcs_storage
+      let contents = await gcsStorage
         .bucket(GCLOUD_STORAGE_BUCKET)
         .file("featured_packages.json")
         .download();
-      cached_featuredlist = new CacheObject(JSON.parse(contents));
-      cached_featuredlist.last_validate = Date.now();
-      return { ok: true, content: cached_featuredlist.data };
+      cachedFeaturedlist = new CacheObject(JSON.parse(contents));
+      cachedFeaturedlist.last_validate = Date.now();
+      return { ok: true, content: cachedFeaturedlist.data };
     } catch (err) {
       return { ok: false, content: err, short: "Server Error" };
     }
   };
 
-  if (cached_featuredlist === undefined) {
+  if (cachedFeaturedlist === undefined) {
     logger.generic(5, "Creating Ban List Cache.");
     return getNew();
   }
 
-  if (!cached_featuredlist.Expired) {
+  if (!cachedFeaturedlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return { ok: true, content: cached_featuredlist.data };
+    return { ok: true, content: cachedFeaturedlist.data };
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -143,13 +142,13 @@ async function getFeaturedPackages() {
  * @returns {Array} JSON Parsed Array of Featured Theme Names.
  */
 async function getFeaturedThemes() {
-  checkGCS();
+  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
     if (
       GCLOUD_STORAGE_BUCKET === undefined ||
       GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS == "dev" && process.env.MOCK_GOOGLE != "false")
+      (process.env.PULSAR_STATUS === "dev" && process.env.MOCK_GOOGLE !== "false")
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
@@ -158,32 +157,32 @@ async function getFeaturedThemes() {
         "storage.js.getFeaturedThemes() Returning Development Set of Data."
       );
       let list = ["atom-material-ui", "atom-material-syntax"];
-      cached_themelist = new CacheObject(list);
-      cached_themelist.last_validate = Date.now();
-      return { ok: true, content: cached_themelist.data };
+      cachedThemelist = new CacheObject(list);
+      cachedThemelist.last_validate = Date.now();
+      return { ok: true, content: cachedThemelist.data };
     }
 
     try {
-      let contents = await gcs_storage
+      let contents = await gcsStorage
         .bucket(GCLOUD_STORAGE_BUCKET)
         .file("featured_themes.json")
         .download();
-      cached_themelist = new CacheObject(JSON.parse(contents));
-      cached_themelist.last_validate = Date.now();
-      return { ok: true, content: cached_themelist.data };
+      cachedThemelist = new CacheObject(JSON.parse(contents));
+      cachedThemelist.last_validate = Date.now();
+      return { ok: true, content: cachedThemelist.data };
     } catch (err) {
       return { ok: false, content: err, short: "Server Error" };
     }
   };
 
-  if (cached_themelist === undefined) {
+  if (cachedThemelist === undefined) {
     logger.generic(5, "Creating Theme List Cache");
     return getNew();
   }
 
-  if (!cached_themelist.Expired) {
+  if (!cachedThemelist.Expired) {
     logger.generic(5, "Theme List Cache NOT Expired.");
-    return { ok: true, content: cached_themelist.data };
+    return { ok: true, content: cachedThemelist.data };
   }
 
   logger.generic(5, "Theme List Cache IS Expired.");

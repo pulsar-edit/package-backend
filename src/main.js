@@ -22,7 +22,7 @@ const { MemoryStore } = require("express-rate-limit");
 // Define our Basic Rate Limiters
 const genericLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.PULSAR_STATUS == "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
+  max: process.env.PULSAR_STATUS === "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // Use default memory store
@@ -36,7 +36,7 @@ const genericLimit = rateLimit({
 
 const authLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: process.env.PULSAR_STATUS == "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
+  max: process.env.PULSAR_STATUS === "dev" ? 0 : 75, // Limit each IP per window, 0 disables rate limit.
   standardHeaders: true, // Return rate limit info on headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // use default memory store

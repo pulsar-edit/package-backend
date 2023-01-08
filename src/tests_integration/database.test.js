@@ -6,23 +6,25 @@
 // Or at the very least that if there is a failure within these, it will not result in
 // bad data being entered into the database in production.
 
-let database;
+let database = null;
+let utils = null;
 
 jest.setTimeout(300000);
 
 beforeAll(async () => {
-  let db_url = process.env.DATABASE_URL;
+  const dbUrl = process.env.DATABASE_URL;
   // This returns: postgres://test-user@localhost:5432/test-db
-  let db_url_reg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
-  let db_url_parsed = db_url_reg.exec(db_url);
+  const dbUrlReg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
+  const dbUrlParsed = dbUrlReg.exec(dbUrl);
 
   // set the parsed URL as proper env for the db module
-  process.env.DB_HOST = db_url_parsed[2];
-  process.env.DB_USER = db_url_parsed[1];
-  process.env.DB_DB = db_url_parsed[4];
-  process.env.DB_PORT = db_url_parsed[3];
+  process.env.DB_HOST = dbUrlParsed[2];
+  process.env.DB_USER = dbUrlParsed[1];
+  process.env.DB_DB = dbUrlParsed[4];
+  process.env.DB_PORT = dbUrlParsed[3];
 
   database = require("../database.js");
+  utils = require("../utils.js");
 });
 
 afterAll(async () => {
@@ -401,7 +403,11 @@ describe("Package Lifecycle Tests", () => {
     expect(noExistUser.short).toEqual("Not Found");
 
     // === Can we create our User?
-    const createUser = await database.insertNewUser(user.userObj);
+    const createUser = await database.insertNewUser(
+      user.userObj.username,
+      user.userObj.node_id,
+      user.userObj.avatar,
+    );
     expect(createUser.ok).toBeTruthy();
     expect(createUser.content.username).toEqual(user.userObj.username);
     expect(createUser.content.node_id).toEqual(user.userObj.node_id);
@@ -495,5 +501,37 @@ describe("Package Lifecycle Tests", () => {
     // === Can we remove our User?
     // TODO: Currently there is no way to delete a user account.
     // There is no supported endpoint for this, but is something that should be implemented.
+  });
+});
+
+describe("Manage Login State Keys", () => {
+  test("Save and Check State Key", async () => {
+    // === Generate and save the State Key
+    const stateKey = utils.generateRandomString(64);
+    const savedDbKey = await database.authStoreStateKey(stateKey);
+    expect(savedDbKey.ok).toBeTruthy();
+    expect(savedDbKey.content).toEqual(stateKey);
+
+    // === Check and delete the stored State Key
+    const deleteDbKey = await database.authCheckAndDeleteStateKey(stateKey);
+    expect(deleteDbKey.ok).toBeTruthy();
+    expect(deleteDbKey.content).toEqual(stateKey);
+  });
+  test("Fail when an Unsaved State Key is provided", async () => {
+    // === Test aa State Key that has not been stored
+    const stateKey = utils.generateRandomString(64);
+    const notFoundDbKey = await database.authCheckAndDeleteStateKey(stateKey);
+    expect(notFoundDbKey.ok).toBeFalsy();
+    expect(notFoundDbKey.content).toEqual("The provided state key was not set for the auth login.");
+  });
+  test("Fail when an Expired State Key is provided", async () => {
+    // === Test an expired State Key when the user takes too long to complete the login stage
+    const expiredStateKey = utils.generateRandomString(64);
+    await database.authStoreStateKey(expiredStateKey);
+
+    const testTimestamp = Date.now() + 601000; // 10 minutes after now
+    const deleteExpiredDbKey = await database.authCheckAndDeleteStateKey(expiredStateKey, testTimestamp);
+    expect(deleteExpiredDbKey.ok).toBeFalsy();
+    expect(deleteExpiredDbKey.content).toEqual("The provided state key is expired for the auth login.");
   });
 });

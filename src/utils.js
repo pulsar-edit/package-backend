@@ -490,115 +490,23 @@ function getOwnerRepoFromUrlString(url) {
  * @desc Compares two sermver and return true if the first is equal to the second.
  * Expects to get the semver formatted as array of strings.
  * Should be always executed after running semverArray.
- * @param {array} a1 - First semver as array
- * @param {array} a2 - Second semver as array
- * @returns {boolean} The result of the comparison
+ * @param {array} a1 - First semver as array.
+ * @param {array} a2 - Second semver as array.
+ * @returns {boolean} The result of the comparison.
  */
 function semverEq(a1, a2) {
   return a1[0] === a2[0] && a1[1] === a2[1] && a1[2] === a2[2];
 }
 
 /**
- * @class StateStore
- * @classdesc This simple state store acts as a hash map, allowing authentication request
- * to quickly add a new state related to an IP, and retrieve it later on.
- * These states are used during the authentication flow to help ensure against malicious activity.
+ * @function generateRandomString
+ * @desc Uses the crypto module to generate and return a random string.
+ * @param {string} n - The number of bytes to generate.
+ * @returns {string} A string exported from the generated Buffer using the "hex" format (encode
+ * each byte as two hexadecimal characters).
  */
-class StateStore {
-  constructor() {
-    logger.generic(6, "StateStore Initialized");
-    this.hashmap = {};
-    // In the future ideally we could allow the choice of how to generate the state
-    // But in this case it'll currently be hard coded
-  }
-  /**
-   * @function getState
-   * @desc `getState` of `StateStore` checks if the given IP in the hashmap matches
-   * the given IP and given State in the StateStore.
-   * @param {string} ip - The IP Address to check with.
-   * @param {string} state - The State to check with.
-   * @returns {object} A Server Status Object, where `ok` is true if the IP corresponds to
-   * the given state. And `ok` is false otherwise.
-   */
-  getState(ip, state) {
-    logger.generic(
-      4,
-      `StateStore.getState() Called with IP: ${ip} - State: ${state}`
-    );
-    logger.generic(
-      6,
-      `StateStore.getState(): HashMap Report - HashMap Size: ${
-        Object.keys(this.hashmap).length
-      }`
-    );
-
-    if (this.hashmap[ip] == state) {
-      logger.generic(
-        6,
-        `StateStore.getState() Successfully Returning for IP: ${ip} - State: ${state}`
-      );
-      return { ok: true, content: this.hashmap[ip] };
-    } else {
-      logger.generic(
-        3,
-        `StateStore.getState() Fail Returning for IP: ${ip} - State: ${state}`
-      );
-      logger.generic(
-        3,
-        `StateStore.getState() Fail Return Anyway due to bug: ${ip}`
-      );
-      return {
-        ok: true,
-        content: state,
-      };
-      // The design here is flawed. Essentially it seems that because we are behind a load balancer
-      // the process here needs to retain the stateStore, but there's no guarantee that
-      // one request will hit the same state store, so we will temporarily disable this,
-      // and instead use the state store as a microservice
-      //return {
-      //  ok: false,
-      //  short: "Not Found",
-      //  content: "Couldn't find IP within StateStore",
-      //};
-    }
-  }
-  /**
-   * @function setState
-   * @desc A Promise that inputs the given IP into the StateStore, and returns
-   * it's generated State Hash.
-   * @param {string} ip - The IP to enter into the State Store.
-   * @returns {object} A Server Status Object where if `ok` is true, `content` contains
-   * the generated state.
-   */
-  setState(ip) {
-    return new Promise((resolve, reject) => {
-      logger.generic(6, `StateStore.setState() Called with IP: ${ip}`);
-      crypto.generateKey("aes", { length: 128 }, (err, key) => {
-        if (err) {
-          logger.generic(
-            2,
-            "StateStore.setState() crypto.generateKey() Failed!",
-            {
-              type: "error",
-              err: err,
-            }
-          );
-          reject({
-            ok: false,
-            short: "Server Error",
-            content: `Failed to generate AES State: ${err}`,
-          });
-        }
-        let state = key.export().toString("hex");
-        this.hashmap[ip] = state;
-        logger.generic(
-          5,
-          "StateStore.setState() Successfully added IP and State to Hashmap"
-        );
-        resolve({ ok: true, content: state });
-      });
-    });
-  }
+function generateRandomString(n) {
+  return crypto.randomBytes(n).toString("hex");
 }
 
 module.exports = {
@@ -611,7 +519,7 @@ module.exports = {
   semverGt,
   semverLt,
   semverEq,
-  StateStore,
   getOwnerRepoFromPackage,
   getOwnerRepoFromUrlString,
+  generateRandomString,
 };
