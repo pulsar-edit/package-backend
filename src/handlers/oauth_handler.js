@@ -5,13 +5,11 @@
  * @implements {common_handler}
  */
 
-// TODO: remove STATE_STORE_CODE
 const {
   GH_CLIENTID,
   GH_REDIRECTURI,
   GH_CLIENTSECRET,
   GH_USERAGENT,
-  STATE_STORE_CODE,
 } = require("../config.js").getConfig();
 const common = require("./common_handler.js");
 const utils = require("../utils.js");

@@ -85,8 +85,6 @@ function getConfig() {
     DB_SSL_CERT: process.env.DB_SSL_CERT ?? data.env_variables.DB_SSL_CERT,
     LOG_LEVEL: process.env.LOG_LEVEL ?? data.env_variables.LOG_LEVEL,
     LOG_FORMAT: process.env.LOG_FORMAT ?? data.env_variables.LOG_FORMAT,
-    STATE_STORE_CODE:
-      process.env.STATE_STORE_CODE ?? data.env_variables.STATE_STORE_CODE,
   };
 }
 
