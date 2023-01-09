@@ -4,6 +4,8 @@ This project welcomes all forms of contributions, and everything is always appre
 
 But please before contributing ensure to read this document in it's entirety.
 
+To gain the quickest understanding of the codebase a whole please read through the [ARCHITECTURE](ARCHITECTURE.md) file at the root of the repo.
+
 ## Guidelines
 
 Our contributing guidelines and conventions surrounding all types of contributions.
