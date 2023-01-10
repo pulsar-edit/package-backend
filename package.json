@@ -24,7 +24,7 @@
   "license": "MIT",
   "prettier": {
     "singleQuote": false,
-    "semi": true,
+    "semi": true
   },
   "pg": {
     "test": {
