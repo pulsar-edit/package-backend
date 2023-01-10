@@ -45,7 +45,7 @@ Additionally you'll find the following at the root of this directory:
   * `name_ban_list.json`: Again, lastly, this document is a good reference for the contents of this file, as it is the exact file uploaded to the cloud.
 - `swagger`: This file contains the configuration for `swagger` which is our OpenAPI spec file detailing the API of the `package-backend`. This file additionally serves as the content used to create our API Browser hosted on the `package-backend` in the [cloud](https://api.pulsar-edit.dev/swagger-ui/).
 
-Lastly within the root are additional documents which are helpful to read through, only separated from those in `reference` due to there importance, and having a non-scoped purpose.
+Lastly within the root are additional documents which are helpful to read through, only separated from those in `reference` due to their importance, and having a non-scoped purpose.
 
 ### `scripts`
 
