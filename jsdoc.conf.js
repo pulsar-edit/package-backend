@@ -11,4 +11,23 @@ module.exports = {
   // There's no need for us to actually configure JSDoc
   // We are only using the config file to be able to parse BigInts
   // Once the above linked issue is resolved, we can remove our config
+  //
+  // But with that said, seems that Codacy fails with this empty config,
+  // Possibly using it internally? (For some reason)
+  // Lets try putting the default config here
+  "plugins": [],
+  "recurseDepth": 10,
+  "source": {
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnkownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
 };
