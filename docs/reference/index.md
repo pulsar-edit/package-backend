@@ -21,6 +21,7 @@ After every push, GitHub Actions build several forms of documentation and resour
 
 * Our build guide [build.md](../build.md).
 * Codebase Glossary [glossary.md](./glossary.md).
+* Our Style Guide [style_guide.md](./style_guide.md).
 * A history of the [Admin_Actions.md](./Admin_Actions.md) that have been taken on the backend.
 * Information on where Pulsar got it's packages and what to do if you do/don't see yours [packages.md](./packages.md).
 * Guide to hosting your own instance of the Atom Backend for your fork of Atom [host_your_own.md](../host_your_own.md).

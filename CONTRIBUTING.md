@@ -10,6 +10,8 @@ To gain the quickest understanding of the codebase a whole please read through t
 
 Our contributing guidelines and conventions surrounding all types of contributions.
 
+> Feel free to review our [Style Guide](/docs/reference/style_guide.md) to review our coding Style Guide before contributing.
+
 * Keep the barrier to entry low. This codebase does everything it can to reduce the complexity of any single area of code. Hopefully allowing developers to infer the behavior and returns of any function or module easily by looking at similar ones around it. If you PR adds additional complexity or causes something to behave differently than what you would assume from all other features around it, make sure there is a good justification for doing so and that there is no other way to reduce this complexity to outside modules.
 * Document, Document, and Document.
   - If you are adding a new function ensure to write some type of documentation for it in [JSDoc](https://jsdoc.app/) comments.
