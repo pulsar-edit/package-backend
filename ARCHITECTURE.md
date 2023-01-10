@@ -21,7 +21,7 @@ At the highest level overview, the `package-backend` is the service that respond
 
 This data can range from a collection of packages by specific filters/sorting, to starring those packages, creating user accounts, uploading new packages, or deleting packages or their versions.
 
-At the slightly more specific level, the `package-backend` has been designed to interact with a [PostgreSQL](https://www.postgresql.org/) Database hosted remotely to create, delete, and modify columns and tables containing the entire Pulsar Package Registry. It then uses [ExpressJS](https://expressjs.com/) to manage it's HTTP Rest API to respond to user queries. Additionally it uses some remote calls to [Google Cloud Storage](https://cloud.google.com/storage/docs) for some types of static stored data, and lastly uses [SuperAgent](https://github.com/ladjs/superagent) to run API queries against GitHub when needed.
+At the slightly more specific level, the `package-backend` has been designed to interact with a [PostgreSQL](https://www.postgresql.org/) Database hosted remotely to create, delete, and modify columns and tables containing the entire Pulsar Package Registry. It then uses [ExpressJS](https://expressjs.com/) to manage its HTTP Rest API to respond to user queries. Additionally it uses some remote calls to [Google Cloud Storage](https://cloud.google.com/storage/docs) for some types of static stored data, and lastly uses [SuperAgent](https://github.com/ladjs/superagent) to run API queries against GitHub when needed.
 
 ## Code Map
 
