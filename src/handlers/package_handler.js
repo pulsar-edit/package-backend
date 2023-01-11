@@ -577,21 +577,10 @@ async function getPackagesStargazers(req, res) {
  */
 async function postPackagesVersion(req, res) {
   const params = {
-    // tag: query.tag(req), // unused parameter
     rename: query.rename(req),
     auth: query.auth(req),
     packageName: query.packageName(req),
   };
-
-  /* Check tag validity
-  if (params.tag === "") {
-    await common.handleError(req, res, {
-      ok: false,
-      short: "Bad Repo",
-      content: "The tag parameter is not specified correctly",
-    });
-    return;
-  }*/
 
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
