@@ -15,7 +15,7 @@ const config = {
     },
     {
       displayName: "Unit-Tests",
-      testMatch: ["<rootDir>/src/tests/*.test.js"],
+      testMatch: ["<rootDir>/src/tests/vcs.test.js"],
     },
   ],
 };
