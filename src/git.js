@@ -53,7 +53,7 @@ async function ownership(user, repo, dev_override = false) {
   if (
     process.env.PULSAR_STATUS === "dev" &&
     !dev_override &&
-    process.env.MOCK_GH != "false"
+    process.env.MOCK_GH !== "false"
   ) {
     console.log(
       `git.js.Ownership() Is returning Dev Only Permissions for ${logger.sanitizeLogs(

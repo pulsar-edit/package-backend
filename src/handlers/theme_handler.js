@@ -127,7 +127,7 @@ async function getThemesSearch(req, res) {
   );
 
   if (!packs.ok) {
-    if (packs.short == "Not Found") {
+    if (packs.short === "Not Found") {
       logger.generic(
         4,
         "getThemesSearch-simpleSearch Responding with Empty Array for Not Found Status"
