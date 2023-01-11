@@ -13,6 +13,6 @@ Our ESLint rules are run on Codacy, to alert of errors there, but only there, as
 * camelCase: We enforce the use of camelCase variables within this repo for readability purposes, and keeping the code similar enough throughout the codebase. This rule is enforced via ESLint.
 * Cyclomatic Complexity: We enforce a maximum cyclomatic complexity on any one function to reduce the likelihood of mistakes and bugs within a code block. This rule is enforced via ESLint.
 * Type-Safe Equality Operators: We enforce the use of `===` or `!==` to avoid type coercion. Some instances it will be needed to use alternative comparisons, and these are accounted for. This rule will not flag usage when comparing against two literal values, when evaluating `typeof`, and when comparing against `null`. This rule is enforced via ESLint.
-* Max Nesting: We enforce a Max Nesting Depth of `4` within a code block. Following our coding principle of Inversion Denesting. This is enforced via ESLint.
+* Max Nesting: We enforce a Max Nesting Depth of `4` within a code block. Following our coding principle of [Early Return Patterns](ARCHITECTURE.md). This is enforced via ESLint.
 * Double Quotes: We enforce the usage of Double Quotes when possible within code. This rule is enforced via Prettier and should be done automatically once code is merged into the repo.
 * Semicolons: We enforce the use of Semicolons at the end of lines. This rule is enforced via Prettier.
