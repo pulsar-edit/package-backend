@@ -94,6 +94,12 @@ function determineProvider(repo) {
           url: repo,
         };
 
+      case lcRepo.includes("codeberg"):
+        return {
+          type: "berg",
+          url: repo
+        };
+        
       default:
         // If no other recognized matches exist, return repo with na service provider.
         return {

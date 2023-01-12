@@ -53,4 +53,10 @@ describe("determineProvider Returns as expected", () => {
     expect(res.type).toBe("bit");
     expect(res.url).toBe(tmp);
   });
+  test("Returns proper Codeberg Object, when passed Codeberg string", () => {
+    const tmp = "https://codeberg.org/itbastian/makemkv-move-extras";
+    const res = vcs.determineProvider(tmp);
+    expect(res.type).toBe("berg");
+    expect(res.url).toBe(tmp);
+  });
 });
