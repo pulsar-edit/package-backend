@@ -46,13 +46,19 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
   // Since the package is already on the DB when attempting to determine ownership
   // (Or is at least formatted correctly, as if it was) We can directly access the
   // repository object provided by determineProvider
-  let repo = packObj.repository;
+  let repoObj = packObj.repository;
   // TODO: Double check validity of Object, but we should have `.type` & `.url`
+  let ownerRepo = getOwnerRepo(packObj);
 
-  switch(repo.type) {
+  let owner;
+
+  switch(repoObj.type) {
+    // Additional supported VCS systems go here.
     case "git":
+    default:
       const github = new GitHub();
-      
+      let owner = await github.ownership(userObj, ownerRepo);
+      return owner;
   }
 
 }
@@ -140,7 +146,17 @@ function determineProvider(repo) {
   }
 }
 
+/**
+ * @function getOwnerRepo
+ * @desc Takes a full fledged package object, as from the database, and extracts an
+ * owner/repo combo from it to further work with this data.
+ */
+function getOwnerRepo(packObj) {
+
+}
+
 module.exports = {
   determineProvider,
   ownership,
+  getOwnerRepo,
 };

@@ -4,6 +4,7 @@
  */
 
 const Git = require("./git.js");
+const utils = require("../utils.js");
 
 class GitHub extends Git {
   constructor(opts) {
@@ -14,8 +15,35 @@ class GitHub extends Git {
     });
   }
 
-  ownership(user, repo) {
+  async ownership(user, pack) {
+    // expects full userObj, and repoObj
+    let ownerRepo = utils.getOwnerRepoFromPackage(pack.data);
 
+    let owner = await this.doesUserHaveRepo(user.token, ownerRepo);
+
+    if (owner.ok) {
+      // We were able to confirm the ownership of the repo just fine and can return.
+      return owner;
+    }
+
+    switch(owner.short) {
+      case "No Access":
+        // The user does not have any access to the repo.
+        return { ok: false, short: "No Repo Access" };
+      case "Bad Auth":
+        // TODO: Properly handle token refresh
+        return {
+          ok: false,
+          short: "Server Error",
+          content: owner.short,
+        };
+      default:
+        return {
+          ok: false,
+          short: "Server Error",
+          content: owner.short
+        };
+    }
   }
 
   async doesUserHaveRepo(token, ownerRepo, page = 1) {
