@@ -41,7 +41,6 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
  * with it.
  * @param {string|object} repo - The `repository` of the retrieved package.
  * @returns {object} The object related to the package repository type.
- * Where the `url` object will always be lowercase.
  */
 function determineProvider(repo) {
   try {
@@ -51,19 +50,18 @@ function determineProvider(repo) {
       return {
         type: "na",
         url: ""
-      };
+      }
     }
 
     // If not null, it's likely a first party package
     // With an already valid package object that can just be returned.
-
     if (typeof repo === "object") {
       return repo;
     }
 
     if (typeof repo !== "string") {
       return {
-        type: "na",
+        type: "unkown",
         url: repo
       };
     }
@@ -71,35 +69,38 @@ function determineProvider(repo) {
     // The repo is a string, and we need to determine who the provider is.
     const lcRepo = repo.toLowerCase();
 
-    if (lcRepo.includes("github")) {
-      return {
-        type: "git",
-        url: lcRepo,
-      };
+    switch(true) {
+      case lcRepo.includes("github"):
+        return {
+          type: "git",
+          url: repo,
+        };
+
+      case lcRepo.includes("bitbucket"):
+        return {
+          type: "bit",
+          url: repo,
+        };
+
+      case lcRepo.includes("sourceforge"):
+        return {
+          type: "sfr",
+          url: repo,
+        };
+
+      case lcRepo.includes("gitlab"):
+        return {
+          type: "lab",
+          url: repo,
+        };
+
+      default:
+        // If no other recognized matches exist, return repo with na service provider.
+        return {
+          type: "unkown",
+          url: repo,
+        };
     }
-    if (lcRepo.includes("bitbucket")) {
-      return {
-        type: "bit",
-        url: lcRepo,
-      };
-    }
-    if (lcRepo.includes("sourceforge")) {
-      return {
-        type: "sfr",
-        url: lcRepo,
-      };
-    }
-    if (lcRepo.includes("gitlab")) {
-      return {
-        type: "lab",
-        url: lcRepo,
-      };
-    }
-    // If no other recognized matches exist, return repo with na service provider.
-    return {
-      type: "na",
-      url: repo,
-    };
 
   } catch(err) {
     return {
