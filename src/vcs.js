@@ -50,7 +50,7 @@ function determineProvider(repo) {
       return {
         type: "na",
         url: ""
-      }
+      };
     }
 
     // If not null, it's likely a first party package
@@ -99,7 +99,7 @@ function determineProvider(repo) {
           type: "berg",
           url: repo
         };
-        
+
       default:
         // If no other recognized matches exist, return repo with na service provider.
         return {
