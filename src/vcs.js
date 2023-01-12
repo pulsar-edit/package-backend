@@ -30,7 +30,18 @@
  * success or a failure.
  */
 async function ownership(userObj, packObj, opts = { dev_override: false }) {
+  if (
+    process.env.PULSAR_STATUS === "dev" &&
+    !dev_override &&
+    process.env.MOCK_GH !== "false"
+  ) {
+    console.log(`git.js.ownership() Is returning Dev Only Permissions for ${user.username}`);
 
+
+  }
+  // None dev return.
+
+  
 }
 
 /**
