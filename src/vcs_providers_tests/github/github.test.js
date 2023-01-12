@@ -21,7 +21,7 @@ describe("vcs_providers/github.doesUserHaveRepo()", () => {
     let port = "65535";
     let repo = "pulsar-edit/pulsar";
 
-    let server = require("./fixtures/doesUserHaveRepo_authFirstPage.js");
+    let server = require("./fixtures/doesUserHaveRepo_authFirstPageReturn.js");
     server.setRepoName(repo);
     server.setPort(port);
     let serve = server.app.listen(port);

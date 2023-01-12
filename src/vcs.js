@@ -6,6 +6,8 @@
  * function.
  */
 
+const GitHub = require("./vcs_providers/github.js");
+
 /**
  * @async
  * @function ownership
@@ -41,7 +43,18 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
   }
   // None dev return.
 
-  
+  // Since the package is already on the DB when attempting to determine ownership
+  // (Or is at least formatted correctly, as if it was) We can directly access the
+  // repository object provided by determineProvider
+  let repo = packObj.repository;
+  // TODO: Double check validity of Object, but we should have `.type` & `.url`
+
+  switch(repo.type) {
+    case "git":
+      const github = new GitHub();
+      
+  }
+
 }
 
 /**
