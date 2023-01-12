@@ -1,8 +1,7 @@
 const express = require("express");
 const app = express();
 
-let port = "9999";
-let repoName = "pulsar_edit/pulsar";
+let port, repoName;
 
 app.get("/user/repos", async (req, res) => {
   res
@@ -10,7 +9,7 @@ app.get("/user/repos", async (req, res) => {
     .set({
       Authorization: req.get("Authorization"),
       "User-Agent": req.get("User-Agent"),
-      Link: `<localhost:${port}/user/repos?page=1>; rel="first", <localhost:${port}/user/repos?page=1>; rel="last"`
+      Link: `<localhost:${port}/user/repos?page=1; rel="first", <localhost:${port}/user/repos?page=1; rel="last"`
     })
     .json([
       {
@@ -21,7 +20,7 @@ app.get("/user/repos", async (req, res) => {
 });
 
 function setRepoName(val) {
-  repoName = val;
+  reponame = val;
 }
 
 function setPort(val) {

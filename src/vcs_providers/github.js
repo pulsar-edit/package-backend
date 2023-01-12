@@ -46,7 +46,7 @@ class GitHub extends Git {
           short: "Server Error"
         };
       }
-      
+
       for (let i = 0; i < check.content.body.length; i++) {
         if (check.content.body[i].full_name === ownerRepo) {
           return {
@@ -59,7 +59,7 @@ class GitHub extends Git {
       // After going through every repo returned, we haven't found a repo
       // that the user owns. Lets check if there's multiple pages of returns.
       const nextPage = page + 1;
-      if (res.headers.link.includes(`?page=${nextPage}`)) {
+      if (check.content.headers.link.includes(`?page=${nextPage}`)) {
         // We have another page available via the page headers
         // Lets call this again with the next page
         return await this.doesUserHaveRepo(token, ownerRepo, nextPage);
