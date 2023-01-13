@@ -62,7 +62,6 @@ async function checkDuplicates() {
 }
 
 async function latestVersion(p) {
-  console.log(`latestVersion: ${p}`);
   try {
     const command = await sqlStorage`
       SELECT semver_v1, semver_v2, semver_v3
