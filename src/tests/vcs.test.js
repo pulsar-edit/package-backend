@@ -20,13 +20,13 @@ describe("determineProvider Returns as expected", () => {
   test("Returns unknown VCS Object, when unkown is passed", () => {
     const tmp = "https://new-vcs.com/pulsar-edit/pulsar";
     const res = vcs.determineProvider(tmp);
-    expect(res.type).toBe("unkown");
+    expect(res.type).toBe("unknown");
     expect(res.url).toBe(tmp);
   });
   test("Returns unkown string when passed invalid data", () => {
     const tmp = 123;
     const res = vcs.determineProvider(tmp);
-    expect(res.type).toBe("unkown");
+    expect(res.type).toBe("unknown");
     expect(res.url).toBe(tmp);
   });
   test("Returns proper GitHub Object, passed GitHub string", () => {

@@ -91,7 +91,7 @@ function determineProvider(repo) {
 
     if (typeof repo !== "string") {
       return {
-        type: "unkown",
+        type: "unknown",
         url: repo
       };
     }
@@ -133,7 +133,7 @@ function determineProvider(repo) {
       default:
         // If no other recognized matches exist, return repo with na service provider.
         return {
-          type: "unkown",
+          type: "unknown",
           url: repo,
         };
     }
