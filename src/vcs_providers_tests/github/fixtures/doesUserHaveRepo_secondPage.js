@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
 
-let port, repoName = [];
+let port, nodeID = [];
 
-app.get("/user/repos", async (req, res) => {
+app.get("/repos/:owner/:repo/contributors", async (req, res) => {
   switch(parseInt(req.query.page, 10)) {
     case 2: // Only return the page the test wants
     // on the second page
@@ -16,8 +16,11 @@ app.get("/user/repos", async (req, res) => {
         })
         .json([
           {
-            id: 123456,
-            full_name: repoName[1]
+            node_id: nodeID[1],
+            permissions: {
+              admin: true
+            },
+            role_name: "admin"
           }
         ]);
       break;
@@ -32,15 +35,18 @@ app.get("/user/repos", async (req, res) => {
         })
         .json([
           {
-            id: 123456,
-            full_name: repoName[0]
+            node_id: nodeID[0],
+            permissions: {
+              admin: true
+            },
+            role_name: "admin"
           }
         ]);
   }
 });
 
-function setRepoName(val) {
-  repoName = val;
+function setNodeID(val) {
+  nodeID = val;
 }
 
 function setPort(val) {
@@ -49,6 +55,6 @@ function setPort(val) {
 
 module.exports = {
   app,
-  setRepoName,
+  setNodeID,
   setPort,
 };
