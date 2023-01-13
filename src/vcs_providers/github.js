@@ -22,6 +22,7 @@ class GitHub extends Git {
   }
 
   /**
+   * @async
    * @function ownership
    * @desc The main `ownership` function, as called by `vcs.ownership()` that will
    * relegate off to `this.doesUserHaveRepo()` to determine the access level the user
@@ -61,6 +62,7 @@ class GitHub extends Git {
   }
 
   /**
+   * @async
    * @function doesUserHaveRepo
    * @desc Determines if the specified user has write access to the specified
    * repository. It contacts GitHub APIs recursively to discover all users that have
@@ -158,6 +160,7 @@ class GitHub extends Git {
   }
 
   /**
+   * @async
    * @function readme
    * @desc Returns the Readme from GitHub for the specified owner/repo combo, with
    * the specified users credentials.
@@ -165,7 +168,7 @@ class GitHub extends Git {
    * @param {string} ownerRepo - The `owner/repo` combo of the repository to get.
    * @returns {object} A Server Status Object where content is the Markdown text of a readme.
    */
-  readme(userObj, ownerRepo) {
+  async readme(userObj, ownerRepo) {
     try {
 
       const readmeRaw = await this._webRequestAuth(`/repos/${ownerRepo}/contents/readme`, userObj.token);
@@ -198,7 +201,7 @@ class GitHub extends Git {
       // So lets go ahead and return the Readme
       return {
         ok: true,
-        content: Buffer.from(readmeRaw.content.body.content, readmeRaw.content.body.encoding).toString();
+        content: Buffer.from(readmeRaw.content.body.content, readmeRaw.content.body.encoding).toString()
       };
 
     } catch(err) {

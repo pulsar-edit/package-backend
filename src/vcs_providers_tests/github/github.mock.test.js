@@ -131,3 +131,24 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
     expect(res.short).toBe("No Access");
   });
 });
+
+describe("vcs_providers/github.readme() MOCK", () => {
+  test("Returns Bad Auth", async () => {
+    const mockData = {
+      ok: false,
+      short: "Failed Request",
+      content: {
+        status: 401
+      }
+    };
+
+    const tmpMock = webRequestMockHelper(mockData);
+
+    let tmp = new GitHub();
+    let res = await tmp.readme({ token: "123" }, "pulsar-edit/pulsar");
+    tmpMock.mockClear();
+
+    expect(res.ok).toBe(false);
+    expect(res.short).toBe("Bad Auth");
+  });
+});
