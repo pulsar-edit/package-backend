@@ -28,8 +28,8 @@ const GitHub = require("./vcs_providers/github.js");
  *    by default, this dangerous boolean is inteded to be used during tests that
  *    overrides the default safe static returns, and lets the function run as intended
  *    in development mode.
- * @returns {object} - A Server Status object containing either minor repo data on
- * success or a failure.
+ * @returns {object} - A Server Status object containing the role of the user according
+ * to the repo or otherwise a failure.
  */
 async function ownership(userObj, packObj, opts = { dev_override: false }) {
   if (
@@ -62,6 +62,38 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
       return owner;
   }
 
+}
+
+/**
+ * @function readme
+ * @desc Intended to retreive the ReadMe, or major entry documentation of a package.
+ * Will utilize whatever service specified in order to collect it.
+ * @param {object} userObj - The Raw Useer Object after verification.
+ * @param {string} ownerRepo - The `owner/repo` string combo for the repo.
+ * @param {string} service - The name of the service as expected to be returned
+ * by vcs.determineProvider(). It's required as a parameter rather than done itself
+ * since the situations when a readme is collected don't have the same structured
+ * data to request, and as such there is no positive way to know what data will
+ * be available for this function to determine the provider.
+ */
+async function readme(userObj, ownerRepo, service) {
+  if (
+    process.env.PULSAR_STATUS === "dev" &&
+    process.env.MOCK_GH !== "false"
+  ) {
+    console.log(`git.js.readme() Is returning Dev Only Permissions for ${user.username}`);
+
+  }
+  // Non-dev return.
+
+  switch(service) {
+    // Other services added here
+    case "git":
+    default:
+      const github = new GitHub();
+      return await github.readme(userObj, ownerRepo);
+  }
+  )
 }
 
 /**
@@ -150,4 +182,5 @@ function determineProvider(repo) {
 module.exports = {
   determineProvider,
   ownership,
+  readme,
 };

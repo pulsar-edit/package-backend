@@ -6,6 +6,12 @@
 const Git = require("./git.js");
 const utils = require("../utils.js");
 
+/**
+ * @class GitHub
+ * @classdesc The GitHub class serves as a way for `vcs` to interact directly with
+ * GitHub when needed. This Class extends `Git` to provide the standard functions
+ * expected of a VCS service.
+ */
 class GitHub extends Git {
   constructor(opts) {
 
@@ -15,6 +21,14 @@ class GitHub extends Git {
     });
   }
 
+  /**
+   * @function ownership
+   * @desc The main `ownership` function, as called by `vcs.ownership()` that will
+   * relegate off to `this.doesUserHaveRepo()` to determine the access level the user
+   * has over the repo, and will return accordingly. Mostly processing errors.
+   * @param {object} user - The User Object as retreived during verification.
+   * @param {object} pack - The Package Object, as retreived from the Database.
+   */
   async ownership(user, pack) {
     // expects full userObj, and repoObj
     let ownerRepo = utils.getOwnerRepoFromPackage(pack.data);
@@ -46,6 +60,21 @@ class GitHub extends Git {
     }
   }
 
+  /**
+   * @function doesUserHaveRepo
+   * @desc Determines if the specified user has write access to the specified
+   * repository. It contacts GitHub APIs recursively to discover all users that have
+   * access to the specified repository, which when/if finding the specified
+   * user, will determine the amount of access that user has to the repo. Which
+   * if sufficient, will return a successful Server Status Object along with
+   * their `role_name` on the repository.
+   * @param {object} user - The User Object from verification
+   * @param {string} ownerRepo - The `owner/repo` combo string.
+   * @param {number} [page] - The optional page used to determine what page of results
+   * to search for the user. This is used for the function to call itself recursively.
+   * @returns {object} - A Server Status Object which when successful contains
+   * the `role_name` as `content` that the user has over the given repo.
+   */
   async doesUserHaveRepo(user, ownerRepo, page = 1) {
     try {
       let check = await this._webRequestAuth(`/repos/${ownerRepo}/contributors?page=${page}`, user.token);
@@ -127,6 +156,60 @@ class GitHub extends Git {
       };
     }
   }
+
+  /**
+   * @function readme
+   * @desc Returns the Readme from GitHub for the specified owner/repo combo, with
+   * the specified users credentials.
+   * @param {object} userObj - The Raw User Object after verification.
+   * @param {string} ownerRepo - The `owner/repo` combo of the repository to get.
+   * @returns {object} A Server Status Object where content is the Markdown text of a readme.
+   */
+  readme(userObj, ownerRepo) {
+    try {
+
+      const readmeRaw = await this._webRequestAuth(`/repos/${ownerRepo}/contents/readme`, userObj.token);
+      // Using just `/readme` will let GitHub attempt to get the repos prefferred readme file,
+      // so we don't have to check mutliple times.
+      // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-a-repository-readme
+      if (!readmeRaw.ok) {
+        if (readmeRaw.short === "Failed Request") {
+          switch(readmeRaw.content.status) {
+            case 401:
+              return {
+                ok: false,
+                short: "Bad Auth"
+              };
+            default:
+              return {
+                ok: false,
+                short: "Server Error"
+              };
+          }
+        }
+        // The HTTP error is not accounted for, so lets return a server error.
+        return {
+          ok: false,
+          short: "Server Error"
+        };
+      }
+
+      // We have likely received a valid readme.
+      // So lets go ahead and return the Readme
+      return {
+        ok: true,
+        content: Buffer.from(readmeRaw.content.body.content, readmeRaw.content.body.encoding).toString();
+      };
+
+    } catch(err) {
+      return {
+        ok: false,
+        short: "Server Error",
+        content: err
+      };
+    }
+  }
+
 }
 
 module.exports = GitHub;
