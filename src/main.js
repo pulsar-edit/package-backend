@@ -696,7 +696,7 @@ app.options(
  * @path /api/packages/:packageName/versions
  * @auth true
  * @method POST
- * @desc Creates a new package version from a git tag. If `rename` is not `true`, the `name` field in `package.json` _must_ match the current package name.
+ * @desc Creates a new package version. If `rename` is not `true`, the `name` field in `package.json` _must_ match the current package name.
  * @param
  *   @name packType
  *   @location path
@@ -715,11 +715,6 @@ app.options(
  *  @required false
  *  @Pdesc Boolean indicating whether this version contains a new name for the package.
  * @param
- *  @location query
- *  @name tag
- *  @required true
- *  @Pdesc A git tag for the version you'd like to create. It's important to note that the version name will not be taken from the tag, but from the `version` key in the `package.json` file at that ref.
- * @param
  *  @location header
  *  @name auth
  *  @required true
@@ -730,9 +725,6 @@ app.options(
  * @response
  *  @status 400
  *  @Rdesc Git tag not found / Repository inaccessible / package.json invalid.
- * @response
- *  @status 409
- *  @Rdesc Version exists.
  */
 app.post(
   "/api/:packType/:packageName/versions",

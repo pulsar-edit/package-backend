@@ -60,6 +60,7 @@ expect.extend({
     }
   },
   toHaveHTTPCode(req, want) {
+    // Type coercion here because the statusCode in the request object could be set as a string.
     if (req.statusCode == want) {
       return {
         pass: true,
@@ -140,8 +141,7 @@ describe("Get /api/packages", () => {
   test("Should respond with an array not containing sensible data", async () => {
     const res = await request(app).get("/api/packages");
     for (const p of res.body) {
-      // Use type coercion to catch also undefined
-      expect(p.pointer == null).toBeTruthy();
+      expect(p.pointer === undefined).toBeTruthy();
     }
   });
   test("Should respond with the expected headers", async () => {
@@ -275,8 +275,7 @@ describe("GET /api/packages/featured", () => {
   test("Does Not Return Sensible Data", async () => {
     const res = await request(app).get("/api/packages/featured");
     for (const p of res.body) {
-      // Use type coercion to catch also undefined
-      expect(p.pointer == null).toBeTruthy();
+      expect(p.pointer === undefined).toBeTruthy();
     }
   });
 });
@@ -304,8 +303,7 @@ describe("GET /api/packages/search", () => {
   test("Valid Search Does Not Return Sensible Data", async () => {
     const res = await request(app).get("/api/packages/search?q=language");
     for (const p of res.body) {
-      // Use type coercion to catch also undefined
-      expect(p.pointer == null).toBeTruthy();
+      expect(p.pointer === undefined).toBeTruthy();
     }
   });
   test("Valid Search Returns Expected Headers", async () => {
@@ -370,11 +368,10 @@ describe("GET /api/packages/:packageName", () => {
   });
   test("Valid package, does not return sensible data", async () => {
     const res = await request(app).get("/api/packages/language-css");
-    // Use type coercion to catch also undefined
-    expect(res.body.pointer == null).toBeTruthy();
+    expect(res.body.pointer === undefined).toBeTruthy();
     for (const v of Object.keys(res.body.versions)) {
-      expect(res.body.versions[v].id == null).toBeTruthy();
-      expect(res.body.versions[v].package == null).toBeTruthy();
+      expect(res.body.versions[v].id === undefined).toBeTruthy();
+      expect(res.body.versions[v].package === undefined).toBeTruthy();
     }
   });
   test("Valid package, gives success status code", async () => {
@@ -657,10 +654,9 @@ describe("GET /api/packages/:packageName/versions/:versionName", () => {
     const res = await request(app).get(
       "/api/packages/language-css/versions/0.45.7"
     );
-    // Use type coercion to catch also undefined
-    expect(res.body.id == null).toBeTruthy();
-    expect(res.body.package == null).toBeTruthy();
-    expect(res.body.sha == null).toBeTruthy();
+    expect(res.body.id === undefined).toBeTruthy();
+    expect(res.body.package === undefined).toBeTruthy();
+    expect(res.body.sha === undefined).toBeTruthy();
   });
 });
 
@@ -881,8 +877,7 @@ describe("GET /api/themes", () => {
   test("Should respond with an array not containing sensible data", async () => {
     const res = await request(app).get("/api/themes");
     for (const p of res.body) {
-      // Use type coercion to catch also undefined
-      expect(p.pointer == null).toBeTruthy();
+      expect(p.pointer === undefined).toBeTruthy();
     }
   });
   test("Should respond with the expected headers", async () => {
@@ -910,7 +905,7 @@ describe("GET /api/themes/search", () => {
   test("Valid Search does not Return Sensitive Data", async () => {
     const res = await request(app).get("/api/themes/search?q=syntax");
     for (const p of res.body) {
-      expect(p.pointer == null).toBeTruthy();
+      expect(p.pointer === undefined).toBeTruthy();
     }
   });
   test("Valid Search Returns Valid Data", async () => {
@@ -943,7 +938,7 @@ describe("Ensure Themes is passed to each endpoint Properly", () => {
     const res = await request(app).get("/api/themes/language-css");
     expect(res).toHaveHTTPCode(200);
     expect(res.body.name).toBe("language-css");
-    expect(res.body.pointer == null).toBeTruthy();
+    expect(res.body.pointer === undefined).toBeTruthy();
   });
   test("GET /api/themes/:packageName/stargazers", async () => {
     const res = await request(app).get("/api/themes/language-css/stargazers");
@@ -960,9 +955,9 @@ describe("Ensure Themes is passed to each endpoint Properly", () => {
     expect(res).toHaveHTTPCode(200);
     expect(res.body.name).toEqual("language-css");
     expect(typeof res.body.dist.tarball === "string").toBeTruthy();
-    expect(res.body.id == null).toBeTruthy();
-    expect(res.body.package == null).toBeTruthy();
-    expect(res.body.sha == null).toBeTruthy();
+    expect(res.body.id === undefined).toBeTruthy();
+    expect(res.body.package === undefined).toBeTruthy();
+    expect(res.body.sha === undefined).toBeTruthy();
   });
   test("GET /api/themes/:pakageName/versions/:versionName/tarball", async () => {
     const res = await request(app).get(
@@ -1047,9 +1042,9 @@ describe("GET /api/users/:login", () => {
   test("Returns No Senstive Data for Valid User", async () => {
     const res = await request(app).get("/api/users/dever");
     expect(res).toHaveHTTPCode(200);
-    expect(res.body.token == null).toBeTruthy();
-    expect(res.body.id == null).toBeTruthy();
-    expect(res.body.node_id == null).toBeTruthy();
+    expect(res.body.token === undefined).toBeTruthy();
+    expect(res.body.id === undefined).toBeTruthy();
+    expect(res.body.node_id === undefined).toBeTruthy();
   });
 });
 

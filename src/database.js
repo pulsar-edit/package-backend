@@ -35,7 +35,7 @@ let sqlStorage; // SQL object, to interact with the DB.
  * @returns {object} PostgreSQL connection object.
  */
 function setupSQL() {
-  return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB != "false"
+  return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB !== "false"
     ? postgres({
         host: DB_HOST,
         username: DB_USER,
@@ -625,7 +625,7 @@ async function updatePackageStargazers(name, pointer = null) {
   try {
     sqlStorage ??= setupSQL();
 
-    if (pointer == null) {
+    if (pointer === null) {
       const packID = await getPackageByNameSimple(name);
 
       if (!packID.ok) {
@@ -1144,8 +1144,8 @@ async function updateIncrementStar(user, pack) {
       // Now we expect to get our data right back, and can check the
       // validity to know if this happened successfully or not.
       if (
-        pointer != commandStar[0].package ||
-        user.id != commandStar[0].userid
+        pointer !== commandStar[0].package ||
+        user.id !== commandStar[0].userid
       ) {
         return {
           ok: false,
@@ -1220,8 +1220,8 @@ async function updateDecrementStar(user, pack) {
 
     // If the return does not match our input, it failed.
     if (
-      user.id != commandUnstar[0].userid ||
-      pointer != commandUnstar[0].package
+      user.id !== commandUnstar[0].userid ||
+      pointer !== commandUnstar[0].package
     ) {
       return {
         ok: false,

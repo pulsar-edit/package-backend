@@ -241,7 +241,7 @@ async function engineFilter(pack, engine) {
       /(>=?)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/
     );
 
-    if (lowSv != null) {
+    if (lowSv !== null) {
       // Lower end condition present, so test it.
       switch (lowSv[0]) {
         case ">":
@@ -271,7 +271,7 @@ async function engineFilter(pack, engine) {
       /(<=?)(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/
     );
 
-    if (upSv != null) {
+    if (upSv !== null) {
       // Upper end condition present, so test it.
       switch (upSv[1]) {
         case "<":
