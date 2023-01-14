@@ -10,28 +10,28 @@
 
  class Git {
    // Public properties:
-   api_url = "";
-   acceptable_status_codes = [200];
+   apiUrl = "";
+   acceptableStatusCodes = [200];
 
    // Setters:
-   set api_url(url) {
-     this.api_url = typeof url === "string" ? url : "";
+   set apiUrl(url) {
+     this.apiUrl = typeof url === "string" ? url : this.apiUrl;
    }
 
-   set acceptable_status_codes(codes) {
-     this.api_url = Array.isArray(codes) ? codes : this.acceptable_status_codes;
+   set acceptableStatusCodes(codes) {
+     this.acceptableStatusCodes = Array.isArray(codes) ? codes : this.acceptableStatusCodes;
    }
 
    _initializer(opts) {
-     this.api_url = opts.api_url ?? this.api_url;
-     this.acceptable_status_codes = opts.ok_status ?? this.acceptable_status_codes;
+     this.apiUrl = opts.api_url ?? this.apiUrl;
+     this.acceptableStatusCodes = opts.ok_status ?? this.acceptableStatusCodes;
    }
 
    async _webRequestAuth(url, token) {
      try {
 
        const res = await superagent
-        .get(`${this.api_url}${url}`)
+        .get(`${this.apiUrl}${url}`)
         .set({
           Authorization: `Bearer ${token}`,
         })
@@ -39,7 +39,7 @@
         // This last line here, lets the class define what HTTP Status Codes
         // It will not throw an error on.
         // If a status code not present in this array is received, it will throw an error.
-        .ok((res) => this.acceptable_status_codes.includes(res.status));
+        .ok((res) => this.acceptableStatusCodes.includes(res.status));
 
       if (res.status !== 200) {
         // We have not received 200 code: return a failure
