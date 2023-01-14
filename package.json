@@ -15,7 +15,7 @@
     "api-docs": "quick-webserver-docs -i ./src/main.js -o ./docs/reference/API_Definition.md",
     "lint": "prettier --check -u -w .",
     "complex": "cr --newmi --config .complexrc .",
-    "js-docs": "jsdoc2md ./src/*.js ./src/handlers/*.js > ./docs/reference/Source_Documentation.md",
+    "js-docs": "jsdoc2md -c ./jsdoc.conf.js ./src/*.js ./src/handlers/*.js > ./docs/reference/Source_Documentation.md",
     "contributors:add": "all-contributors add",
     "test_search": "node ./scripts/tools/search.js",
     "migrations": "pg-migrations apply --directory ./src/dev-runner/migrations"
