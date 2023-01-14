@@ -332,7 +332,7 @@ A list of user Objects.
 
 ---
 # **[POST]** /api/packages/:packageName/versions
-Creates a new package version from a git tag. If `rename` is not `true`, the `name` field in `package.json` _must_ match the current package name.
+Creates a new package version. If `rename` is not `true`, the `name` field in `package.json` _must_ match the current package name.
 
 Auth: `true`
 Parameters:
@@ -352,11 +352,6 @@ Parameters:
 
 
 ---
-* tag _(required)_  | Location: `query`  
-  - A git tag for the version you'd like to create. It's important to note that the version name will not be taken from the tag, but from the `version` key in the `package.json` file at that ref.
-
-
----
 * auth _(required)_  | Location: `header`  
   - A valid Atom.io API token, to authenticate with Github.
 
@@ -373,12 +368,6 @@ Successfully created. Returns created version.
 **HTTP Status Code:** `400 Bad Request`
 
 Git tag not found / Repository inaccessible / package.json invalid.
-
-
----
-**HTTP Status Code:** `409 Conflict`
-
-Version exists.
 
 
 ---
