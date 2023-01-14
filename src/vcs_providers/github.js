@@ -213,7 +213,7 @@ class GitHub extends Git {
     }
   }
 
-  async function getRepoTags(userObj, ownerRepo) {
+  async getRepoTags(userObj, ownerRepo) {
     try {
       const raw = this._webRequestAuth(`/repos/${ownerRepo}/tags`, userObj.token);
 
@@ -253,7 +253,7 @@ class GitHub extends Git {
     }
   }
 
-  async function getPackageJSON(useerObj, ownerRepo) {
+  async getPackageJSON(useerObj, ownerRepo) {
     try {
 
     } catch(err) {
