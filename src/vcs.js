@@ -97,6 +97,20 @@ async function readme(userObj, ownerRepo, service) {
 }
 
 /**
+ * NOTE: Replaces createPackage - Intended to retreive the full packages data.
+ */
+async function packageData() {
+
+}
+
+/**
+ * NOTE: Replaces metadataAppendTarballInfo - Intended to retreive the basics of package data.
+ */
+async function miniPackageData() {
+
+}
+
+/**
  * @function determineProvider
  * @desc Determines the repostiry object by the given argument.
  * Takes the `repository` key of a `package.json` and with very little if not no

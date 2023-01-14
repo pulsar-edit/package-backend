@@ -151,4 +151,23 @@ describe("vcs_providers/github.readme() MOCK", () => {
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Auth");
   });
+  test("Unexpected Status Code Returns Server Error", async () => {
+    const mockData = {
+      ok: false,
+      short: "Failed Request",
+      content: {
+        status: 404
+      }
+    };
+
+    const tmpMock = webRequestMockHelper(mockData);
+
+    let tmp = new GitHub();
+    let res = await tmp.readme({ tokne: "123" }, "pulsar-edit/pulsar");
+    tmpMock.mockClear();
+
+    expect(res.ok).toBe(false);
+    expect(res.short).toBe("Server Error");
+  });
+
 });

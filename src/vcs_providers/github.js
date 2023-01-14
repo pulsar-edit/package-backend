@@ -213,6 +213,58 @@ class GitHub extends Git {
     }
   }
 
+  async function getRepoTags(userObj, ownerRepo) {
+    try {
+      const raw = this._webRequestAuth(`/repos/${ownerRepo}/tags`, userObj.token);
+
+      if (!raw.ok) {
+        if (raw.short === "Failed Request") {
+          switch(raw.content.status) {
+            case 401:
+              return {
+                ok: false,
+                short: "Bad Auth"
+              };
+            default:
+              return {
+                ok: false,
+                short: "Server Error"
+              };
+          }
+        }
+        return {
+          ok: false,
+          short: "Server Error"
+        };
+      }
+
+      // We have valid tags, lets return.
+      return {
+        ok: true,
+        content: raw.content
+      };
+
+    } catch(err) {
+      return {
+        ok: false,
+        short: "Server Error",
+        content: err
+      };
+    }
+  }
+
+  async function getPackageJSON(useerObj, ownerRepo) {
+    try {
+
+    } catch(err) {
+      return {
+        ok: false,
+        short: "Server Error",
+        content: err
+      };
+    }
+  }
+
 }
 
 module.exports = GitHub;
