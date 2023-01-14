@@ -41,7 +41,8 @@ async function getBanList() {
     if (
       GCLOUD_STORAGE_BUCKET === undefined ||
       GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS === "dev" && process.env.MOCK_GOOGLE !== "false")
+      (process.env.PULSAR_STATUS === "dev" &&
+        process.env.MOCK_GOOGLE !== "false")
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
@@ -94,7 +95,8 @@ async function getFeaturedPackages() {
     if (
       GCLOUD_STORAGE_BUCKET === undefined ||
       GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS === "dev" && process.env.MOCK_GOOGLE !== "false")
+      (process.env.PULSAR_STATUS === "dev" &&
+        process.env.MOCK_GOOGLE !== "false")
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
@@ -148,7 +150,8 @@ async function getFeaturedThemes() {
     if (
       GCLOUD_STORAGE_BUCKET === undefined ||
       GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS === "dev" && process.env.MOCK_GOOGLE !== "false")
+      (process.env.PULSAR_STATUS === "dev" &&
+        process.env.MOCK_GOOGLE !== "false")
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.

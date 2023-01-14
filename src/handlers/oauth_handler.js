@@ -5,12 +5,8 @@
  * @implements {common_handler}
  */
 
-const {
-  GH_CLIENTID,
-  GH_REDIRECTURI,
-  GH_CLIENTSECRET,
-  GH_USERAGENT,
-} = require("../config.js").getConfig();
+const { GH_CLIENTID, GH_REDIRECTURI, GH_CLIENTSECRET, GH_USERAGENT } =
+  require("../config.js").getConfig();
 const common = require("./common_handler.js");
 const utils = require("../utils.js");
 const logger = require("../logger.js");
@@ -91,10 +87,7 @@ async function getOauth(req, res) {
 
   const accessToken = initialAuth.body?.access_token;
 
-  if (
-    accessToken === null ||
-    initialAuth.body?.token_type === null
-  ) {
+  if (accessToken === null || initialAuth.body?.token_type === null) {
     logger.generic(2, "Auth Request to GitHub Failed!", {
       type: "object",
       obj: initialAuth,
@@ -148,7 +141,11 @@ async function getOauth(req, res) {
     }
 
     // The user does not exist, so we save its data into the DB.
-    let createdUser = await database.insertNewUser(username, userId, userAvatar);
+    let createdUser = await database.insertNewUser(
+      username,
+      userId,
+      userAvatar
+    );
 
     if (!createdUser.ok) {
       logger.generic(2, `Creating User Failed! ${userObj.username}`);
@@ -237,7 +234,11 @@ async function getPat(req, res) {
       return;
     }
 
-    let createdUser = await database.insertNewUser(username, userId, userAvatar);
+    let createdUser = await database.insertNewUser(
+      username,
+      userId,
+      userAvatar
+    );
 
     if (!createdUser.ok) {
       logger.generic(2, `Creating User Failed! ${username}`);

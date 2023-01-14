@@ -35,7 +35,7 @@ let sqlStorage; // SQL object, to interact with the DB.
  * @returns {object} PostgreSQL connection object.
  */
 function setupSQL() {
-  return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB != "false"
+  return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB !== "false"
     ? postgres({
         host: DB_HOST,
         username: DB_USER,
@@ -175,7 +175,12 @@ async function insertNewPackage(pack) {
     .catch((err) => {
       return typeof err === "string"
         ? { ok: false, content: err, short: "Server Error" }
-        : { ok: false, content: `A generic error occurred while inserting ${pack.name} package`, short: "Server Error", error: err };
+        : {
+            ok: false,
+            content: `A generic error occurred while inserting ${pack.name} package`,
+            short: "Server Error",
+            error: err,
+          };
     });
 }
 
@@ -322,7 +327,12 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
     .catch((err) => {
       return typeof err === "string"
         ? { ok: false, content: err, short: "Server Error" }
-        : { ok: false, content: `A generic error occured while inserting the new package version ${packJSON.name}`, short: "Server Error", error: err };
+        : {
+            ok: false,
+            content: `A generic error occured while inserting the new package version ${packJSON.name}`,
+            short: "Server Error",
+            error: err,
+          };
     });
 }
 
@@ -395,7 +405,12 @@ async function insertNewPackageName(newName, oldName) {
     .catch((err) => {
       return typeof err === "string"
         ? { ok: false, content: err, short: "Server Error" }
-        : { ok: false, content: `A generic error occurred while inserting the new package name ${newName}`, short: "Server Error", error: err };
+        : {
+            ok: false,
+            content: `A generic error occurred while inserting the new package name ${newName}`,
+            short: "Server Error",
+            error: err,
+          };
     });
 }
 
@@ -426,7 +441,12 @@ async function insertNewUser(username, id, avatar) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -479,7 +499,12 @@ async function getPackageByName(name, user = false) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -508,7 +533,12 @@ async function getPackageByNameSimple(name) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -551,7 +581,12 @@ async function getPackageVersionByNameAndVersion(name, version) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -583,7 +618,12 @@ async function getPackageCollectionByName(packArray) {
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -609,7 +649,12 @@ async function getPackageCollectionByID(packArray) {
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "Not Found" };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -625,7 +670,7 @@ async function updatePackageStargazers(name, pointer = null) {
   try {
     sqlStorage ??= setupSQL();
 
-    if (pointer == null) {
+    if (pointer === null) {
       const packID = await getPackageByNameSimple(name);
 
       if (!packID.ok) {
@@ -658,7 +703,12 @@ async function updatePackageStargazers(name, pointer = null) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -689,7 +739,12 @@ async function updatePackageIncrementDownloadByName(name) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -720,7 +775,12 @@ async function updatePackageDecrementDownloadByName(name) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -800,7 +860,12 @@ async function removePackageByName(name) {
     .catch((err) => {
       return typeof err === "string"
         ? { ok: false, content: err, short: "Server Error" }
-        : { ok: false, content: `A generic error occurred while inserting ${pack.name} package`, short: "Server Error", error: err };
+        : {
+            ok: false,
+            content: `A generic error occurred while inserting ${pack.name} package`,
+            short: "Server Error",
+            error: err,
+          };
     });
 }
 
@@ -863,7 +928,11 @@ async function removePackageVersion(packName, semVer) {
       for (const v of getVersions) {
         // Type coercion on the following comparisons because semverArray contains strings
         // while PostgreSQL returns versions as integer.
-        if (v.semver_v1 == svArr[0] && v.semver_v2 == svArr[1] && v.semver_v3 == svArr[2]) {
+        if (
+          v.semver_v1 == svArr[0] &&
+          v.semver_v2 == svArr[1] &&
+          v.semver_v3 == svArr[2]
+        ) {
           versionId = v.id;
           removeLatest = v.status === "latest";
           break;
@@ -970,7 +1039,12 @@ async function removePackageVersion(packName, semVer) {
     .catch((err) => {
       return typeof err === "string"
         ? { ok: false, content: err, short: "Server Error" }
-        : { ok: false, content: `A generic error occurred while inserting ${packName} package`, short: "Server Error", error: err };
+        : {
+            ok: false,
+            content: `A generic error occurred while inserting ${packName} package`,
+            short: "Server Error",
+            error: err,
+          };
     });
 }
 
@@ -1033,7 +1107,12 @@ async function getUserByName(username) {
           short: "Not Found",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1069,7 +1148,12 @@ async function getUserByNodeID(id) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1105,7 +1189,12 @@ async function getUserByID(id) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1144,8 +1233,8 @@ async function updateIncrementStar(user, pack) {
       // Now we expect to get our data right back, and can check the
       // validity to know if this happened successfully or not.
       if (
-        pointer != commandStar[0].package ||
-        user.id != commandStar[0].userid
+        pointer !== commandStar[0].package ||
+        user.id !== commandStar[0].userid
       ) {
         return {
           ok: false,
@@ -1174,7 +1263,12 @@ async function updateIncrementStar(user, pack) {
       };
     }
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1220,8 +1314,8 @@ async function updateDecrementStar(user, pack) {
 
     // If the return does not match our input, it failed.
     if (
-      user.id != commandUnstar[0].userid ||
-      pointer != commandUnstar[0].package
+      user.id !== commandUnstar[0].userid ||
+      pointer !== commandUnstar[0].package
     ) {
       return {
         ok: false,
@@ -1242,7 +1336,12 @@ async function updateDecrementStar(user, pack) {
       content: "Package Successfully Unstarred",
     };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1274,7 +1373,12 @@ async function getStarredPointersByUserID(userid) {
 
     return { ok: true, content: packArray };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1310,7 +1414,12 @@ async function getStarringUsersByPointer(pointer) {
 
     return { ok: true, content: userArray };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1373,7 +1482,12 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       },
     };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1491,7 +1605,12 @@ async function getSortedPackages(page, dir, method, themes = false) {
       },
     };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1520,7 +1639,12 @@ async function authStoreStateKey(stateKey) {
           short: "Server Error",
         };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 
@@ -1579,7 +1703,12 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
 
     return { ok: true, content: command[0].keycode };
   } catch (err) {
-    return { ok: false, content: "Generic Error", short: "Server Error", error: err };
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
   }
 }
 

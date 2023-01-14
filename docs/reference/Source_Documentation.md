@@ -81,13 +81,16 @@ verbosity, and duplication within the codebase.</p>
 ## Functions
 
 <dl>
-<dt><a href="#verifyAuth">verifyAuth()</a></dt>
+<dt><a href="#verifyAuth">verifyAuth()</a> ⇒ <code>object</code></dt>
 <dd><p>This will be the major function to determine, confirm, and provide user
 details of an authenticated user. This will take a users provided token,
 and use it to check GitHub for the details of whoever owns this token.
 Once that is done, we can go ahead and search for said user within the database.
 If the user exists, then we can confirm that they are both locally and globally
 authenticated, and execute whatever action it is they wanted to.</p>
+</dd>
+<dt><a href="#getUserDataDevMode">getUserDataDevMode()</a> ⇒ <code>object</code></dt>
+<dd><p>An internal util to retrieve the user data object in developer mode only.</p>
 </dd>
 </dl>
 
@@ -162,7 +165,7 @@ with and retrieve data from the cloud hosted database instance.
     * [~insertNewPackage(pack)](#module_database..insertNewPackage) ⇒ <code>object</code>
     * [~insertNewPackageVersion(packJSON, oldName)](#module_database..insertNewPackageVersion) ⇒ <code>object</code>
     * [~insertNewPackageName(newName, oldName)](#module_database..insertNewPackageName) ⇒ <code>object</code>
-    * [~insertNewUser(user)](#module_database..insertNewUser) ⇒ <code>object</code>
+    * [~insertNewUser(username, id, avatar)](#module_database..insertNewUser) ⇒ <code>object</code>
     * [~getPackageByName(name, user)](#module_database..getPackageByName) ⇒ <code>object</code>
     * [~getPackageByNameSimple(name)](#module_database..getPackageByNameSimple) ⇒ <code>object</code>
     * [~getPackageVersionByNameAndVersion(name, version)](#module_database..getPackageVersionByNameAndVersion) ⇒ <code>object</code>
@@ -185,6 +188,8 @@ with and retrieve data from the cloud hosted database instance.
     * [~simpleSearch()](#module_database..simpleSearch) ⇒ <code>object</code>
     * [~getUserCollectionById(ids)](#module_database..getUserCollectionById) ⇒ <code>object</code>
     * [~getSortedPackages(page, dir, dir, method, [themes])](#module_database..getSortedPackages) ⇒ <code>object</code>
+    * [~authStoreStateKey(stateKey)](#module_database..authStoreStateKey) ⇒ <code>object</code>
+    * [~authCheckAndDeleteStateKey(stateKey, timestamp)](#module_database..authCheckAndDeleteStateKey) ⇒ <code>object</code>
 
 <a name="module_database..setupSQL"></a>
 
@@ -249,7 +254,7 @@ directly on the endpoint.
 
 <a name="module_database..insertNewUser"></a>
 
-### database~insertNewUser(user) ⇒ <code>object</code>
+### database~insertNewUser(username, id, avatar) ⇒ <code>object</code>
 Insert a new user into the database.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -257,7 +262,9 @@ Insert a new user into the database.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| user | <code>object</code> | An object containing information related to the user. |
+| username | <code>string</code> | Username of the user. |
+| id | <code>object</code> | Identifier code of the user. |
+| avatar | <code>object</code> | The avatar of the user. |
 
 <a name="module_database..getPackageByName"></a>
 
@@ -532,6 +539,36 @@ then reconstruct the JSON as needed.
 | dir | <code>string</code> |  | String flag for asc/desc order. |
 | method | <code>string</code> |  | The column name the results have to be sorted by. |
 | [themes] | <code>boolean</code> | <code>false</code> | Optional Parameter to specify if this should only return themes. |
+
+<a name="module_database..authStoreStateKey"></a>
+
+### database~authStoreStateKey(stateKey) ⇒ <code>object</code>
+Gets a state key from login process and saves it on the database.
+
+**Kind**: inner method of [<code>database</code>](#module_database)  
+**Returns**: <code>object</code> - A server status object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stateKey | <code>string</code> | The key code string. |
+
+<a name="module_database..authCheckAndDeleteStateKey"></a>
+
+### database~authCheckAndDeleteStateKey(stateKey, timestamp) ⇒ <code>object</code>
+Gets a state key from oauth process and delete it from the database.
+It's used to verify if the request for the authentication is valid. The code should be first generated in the
+initial stage of the login and then deleted by this function.
+If the deletion is successful, the returned record is used to retrieve the created timestamp of the state key
+and check if it's not expired (considering a specific timeout).
+A custom timestamp can be passed as argument for testing purpose, otherwise the current timestamp is considered.
+
+**Kind**: inner method of [<code>database</code>](#module_database)  
+**Returns**: <code>object</code> - A server status object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stateKey | <code>string</code> | The key code string to delete. |
+| timestamp | <code>string</code> | A string in SQL timestamp format to check against the created timestamp of the given state key. If not provided, the current UNIX timestamp is used. |
 
 <a name="module_debug_util"></a>
 
@@ -1059,17 +1096,18 @@ file storage. Specifically intended for use with Google Cloud Storage.
 
 
 * [storage](#module_storage)
-    * [~checkGCS()](#module_storage..checkGCS)
+    * [~setupGCS()](#module_storage..setupGCS) ⇒ <code>object</code>
     * [~getBanList()](#module_storage..getBanList) ⇒ <code>Array</code>
     * [~getFeaturedPackages()](#module_storage..getFeaturedPackages) ⇒ <code>Array</code>
     * [~getFeaturedThemes()](#module_storage..getFeaturedThemes) ⇒ <code>Array</code>
 
-<a name="module_storage..checkGCS"></a>
+<a name="module_storage..setupGCS"></a>
 
-### storage~checkGCS()
+### storage~setupGCS() ⇒ <code>object</code>
 Sets up the Google Cloud Storage Class, to ensure its ready to use.
 
 **Kind**: inner method of [<code>storage</code>](#module_storage)  
+**Returns**: <code>object</code> - - A new Google Cloud Storage instance.  
 <a name="module_storage..getBanList"></a>
 
 ### storage~getBanList() ⇒ <code>Array</code>
@@ -1102,7 +1140,6 @@ A helper for any functions that are agnostic in handlers.
 
 
 * [utils](#module_utils)
-    * [~StateStore](#module_utils..StateStore)
     * [~isPackageNameBanned(name)](#module_utils..isPackageNameBanned) ⇒ <code>object</code>
     * [~constructPackageObjectFull(pack)](#module_utils..constructPackageObjectFull) ⇒ <code>object</code>
     * [~constructPackageObjectShort(pack)](#module_utils..constructPackageObjectShort) ⇒ <code>object</code> \| <code>array</code>
@@ -1114,17 +1151,8 @@ A helper for any functions that are agnostic in handlers.
     * [~getOwnerRepoFromPackage(pack)](#module_utils..getOwnerRepoFromPackage) ⇒ <code>string</code>
     * [~getOwnerRepoFromUrlString(url)](#module_utils..getOwnerRepoFromUrlString) ⇒ <code>string</code>
     * [~semverEq(a1, a2)](#module_utils..semverEq) ⇒ <code>boolean</code>
-    * [~getState(ip, state)](#module_utils..getState) ⇒ <code>object</code>
-    * [~setState(ip)](#module_utils..setState) ⇒ <code>object</code>
+    * [~generateRandomString(n)](#module_utils..generateRandomString) ⇒ <code>string</code>
 
-<a name="module_utils..StateStore"></a>
-
-### utils~StateStore
-This simple state store acts as a hash map, allowing authentication request
-to quickly add a new state related to an IP, and retrieve it later on.
-These states are used during the authentication flow to help ensure against malicious activity.
-
-**Kind**: inner class of [<code>utils</code>](#module_utils)  
 <a name="module_utils..isPackageNameBanned"></a>
 
 ### utils~isPackageNameBanned(name) ⇒ <code>object</code>
@@ -1289,41 +1317,25 @@ Expects to get the semver formatted as array of strings.
 Should be always executed after running semverArray.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison  
+**Returns**: <code>boolean</code> - The result of the comparison.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| a1 | <code>array</code> | First semver as array |
-| a2 | <code>array</code> | Second semver as array |
+| a1 | <code>array</code> | First semver as array. |
+| a2 | <code>array</code> | Second semver as array. |
 
-<a name="module_utils..getState"></a>
+<a name="module_utils..generateRandomString"></a>
 
-### utils~getState(ip, state) ⇒ <code>object</code>
-`getState` of `StateStore` checks if the given IP in the hashmap matches
-the given IP and given State in the StateStore.
+### utils~generateRandomString(n) ⇒ <code>string</code>
+Uses the crypto module to generate and return a random string.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>object</code> - A Server Status Object, where `ok` is true if the IP corresponds to
-the given state. And `ok` is false otherwise.  
+**Returns**: <code>string</code> - A string exported from the generated Buffer using the "hex" format (encode
+each byte as two hexadecimal characters).  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| ip | <code>string</code> | The IP Address to check with. |
-| state | <code>string</code> | The State to check with. |
-
-<a name="module_utils..setState"></a>
-
-### utils~setState(ip) ⇒ <code>object</code>
-A Promise that inputs the given IP into the StateStore, and returns
-it's generated State Hash.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>object</code> - A Server Status Object where if `ok` is true, `content` contains
-the generated state.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| ip | <code>string</code> | The IP to enter into the State Store. |
+| n | <code>string</code> | The number of bytes to generate. |
 
 <a name="module_common_handler"></a>
 
@@ -1520,8 +1532,9 @@ Endpoint Handlers for Authentication URLs
 <a name="module_oauth_handler..getLogin"></a>
 
 ### oauth_handler~getLogin(req, res)
-Endpoint used to direct users to login, directing the user to the
-proper GitHub OAuth Page based on the backends client id.
+Endpoint used to redirect users to login. Users will reach GitHub OAuth Page
+based on the backends client id. A key from crypto module is retrieved and used as
+state parameter for GH authentication.
 
 **Kind**: inner method of [<code>oauth\_handler</code>](#module_oauth_handler)  
 
@@ -2096,7 +2109,7 @@ published.
 
 <a name="verifyAuth"></a>
 
-## verifyAuth()
+## verifyAuth() ⇒ <code>object</code>
 This will be the major function to determine, confirm, and provide user
 details of an authenticated user. This will take a users provided token,
 and use it to check GitHub for the details of whoever owns this token.
@@ -2105,4 +2118,13 @@ If the user exists, then we can confirm that they are both locally and globally
 authenticated, and execute whatever action it is they wanted to.
 
 **Kind**: global function  
-**Params**: <code>object</code> token - The token the user provided.  
+**Returns**: <code>object</code> - A server status object.  
+**Params**: <code>string</code> token - The token the user provided.  
+<a name="getUserDataDevMode"></a>
+
+## getUserDataDevMode() ⇒ <code>object</code>
+An internal util to retrieve the user data object in developer mode only.
+
+**Kind**: global function  
+**Returns**: <code>object</code> - A mocked HTTP return containing the minimum information required to mock the return expected from GitHub.  
+**Params**: <code>string</code> token - The token the user provided.  

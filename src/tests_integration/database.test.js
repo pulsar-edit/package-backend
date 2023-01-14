@@ -418,7 +418,7 @@ describe("Package Lifecycle Tests", () => {
     const createUser = await database.insertNewUser(
       user.userObj.username,
       user.userObj.node_id,
-      user.userObj.avatar,
+      user.userObj.avatar
     );
     expect(createUser.ok).toBeTruthy();
     expect(createUser.content.username).toEqual(user.userObj.username);
@@ -534,7 +534,9 @@ describe("Manage Login State Keys", () => {
     const stateKey = utils.generateRandomString(64);
     const notFoundDbKey = await database.authCheckAndDeleteStateKey(stateKey);
     expect(notFoundDbKey.ok).toBeFalsy();
-    expect(notFoundDbKey.content).toEqual("The provided state key was not set for the auth login.");
+    expect(notFoundDbKey.content).toEqual(
+      "The provided state key was not set for the auth login."
+    );
   });
   test("Fail when an Expired State Key is provided", async () => {
     // === Test an expired State Key when the user takes too long to complete the login stage
@@ -542,8 +544,13 @@ describe("Manage Login State Keys", () => {
     await database.authStoreStateKey(expiredStateKey);
 
     const testTimestamp = Date.now() + 601000; // 10 minutes after now
-    const deleteExpiredDbKey = await database.authCheckAndDeleteStateKey(expiredStateKey, testTimestamp);
+    const deleteExpiredDbKey = await database.authCheckAndDeleteStateKey(
+      expiredStateKey,
+      testTimestamp
+    );
     expect(deleteExpiredDbKey.ok).toBeFalsy();
-    expect(deleteExpiredDbKey.content).toEqual("The provided state key is expired for the auth login.");
+    expect(deleteExpiredDbKey.content).toEqual(
+      "The provided state key is expired for the auth login."
+    );
   });
 });

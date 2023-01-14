@@ -22,24 +22,16 @@ module.exports = {
     ],
     "no-process-exit": "off",
     // Custom Rules as Determined by the maintainers of package-backend
-    "camelcase": [
+    camelcase: [
       "error",
       {
-        "ignoreGlobals": true,
-        "ignoreImports": true,
-      }
+        ignoreGlobals: true,
+        ignoreImports: true,
+      },
     ],
-    "complexity": [
-      "error"
-    ],
-    "eqeqeq": [
-      "error",
-      "smart"
-    ],
-    "max-depth": [
-      "error",
-      4
-    ]
+    complexity: ["error"],
+    eqeqeq: ["error", "smart"],
+    "max-depth": ["error", 4],
   },
   plugins: [],
   globals: {
