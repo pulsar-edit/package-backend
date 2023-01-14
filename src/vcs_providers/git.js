@@ -9,9 +9,22 @@
  const { GH_USERAGENT } = require("../config.js").getConfig();
 
  class Git {
-   constructor(opts) {
-     this.api_url = opts.api_url;
-     this.acceptable_status_codes = opts.ok_status ?? [200];
+   // Public properties:
+   api_url = "";
+   acceptable_status_codes = [200];
+
+   // Setters:
+   set api_url(url) {
+     this.api_url = typeof url === "string" ? url : "";
+   }
+
+   set acceptable_status_codes(codes) {
+     this.api_url = Array.isArray(codes) ? codes : this.acceptable_status_codes;
+   }
+
+   _initializer(opts) {
+     this.api_url = opts.api_url ?? this.api_url;
+     this.acceptable_status_codes = opts.ok_status ?? this.acceptable_status_codes;
    }
 
    async _webRequestAuth(url, token) {

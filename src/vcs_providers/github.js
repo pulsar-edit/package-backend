@@ -13,11 +13,15 @@ const utils = require("../utils.js");
  * expected of a VCS service.
  */
 class GitHub extends Git {
-  constructor(opts) {
+  // Private properties:
+  #defaultApiUrl = "https://api.github.com";
+  #defaultAcceptableStatusCodes = [200, 401];
 
-    super({
-      api_url: opts?.api_url ?? "https://api.github.com",
-      ok_status: [200, 401]
+  constructor(opts) {
+    super();
+    this._initializer({
+      api_url: opts?.api_url ?? this.#defaultApiUrl,
+      ok_status: this.#defaultAcceptableStatusCodes
     });
   }
 
