@@ -19,6 +19,7 @@ class GitHub extends Git {
 
   constructor(opts) {
     super();
+    // Initialize base properties
     this._initializer({
       api_url: opts?.api_url ?? this.#defaultApiUrl,
       ok_status: this.#defaultAcceptableStatusCodes

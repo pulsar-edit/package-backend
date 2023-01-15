@@ -13,20 +13,27 @@
    apiUrl = "";
    acceptableStatusCodes = [200];
 
-   // Setters:
-   set apiUrl(url) {
-     this.apiUrl = typeof url === "string" ? url : this.apiUrl;
-   }
-
-   set acceptableStatusCodes(codes) {
-     this.acceptableStatusCodes = Array.isArray(codes) ? codes : this.acceptableStatusCodes;
-   }
-
+   /**
+    * @function _initializer
+    * @desc Internal util that can be used by derived class to initialize base class properties.
+    * @param {object} opts - An object containing the values to assign to the class properties.
+    */
    _initializer(opts) {
+     /* Expects an opts object like:
+      * { api_url: String, ok_status: Array}
+      */
      this.apiUrl = opts.api_url ?? this.apiUrl;
      this.acceptableStatusCodes = opts.ok_status ?? this.acceptableStatusCodes;
    }
 
+   /**
+    * @async
+    * @function _webRequestAuth
+    * @desc Internal util that makes a request to a URL using the provided token.
+    * @param {string} url - The URL to send the request.
+    * @param {string} token - The token to append in the request header.
+    * @returns {object} A server status object.
+    */
    async _webRequestAuth(url, token) {
      try {
 
