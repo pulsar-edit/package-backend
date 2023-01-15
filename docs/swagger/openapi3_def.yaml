@@ -10,7 +10,7 @@ paths:
   /:
     get:
       summary: Swagger Instance
-      description: Returns the current swagger instance definition
+      description: Returns a webpage containing the server version, a link to this Swagger instance, and a link to Documentation
       responses:
         200:
           description: The server is running
@@ -29,7 +29,7 @@ paths:
       description: Currently not implemented
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -48,7 +48,7 @@ paths:
         - $ref: "#/components/parameters/querySortDir"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -100,7 +100,7 @@ paths:
       description: Returns a maximum of 10 packages
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -124,7 +124,7 @@ paths:
         - $ref: "#/components/parameters/querySortDir"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -146,7 +146,7 @@ paths:
             type: string
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -187,7 +187,7 @@ paths:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -220,7 +220,7 @@ paths:
         - $ref: "#/components/parameters/pathPackageName"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -269,13 +269,13 @@ paths:
   /api/packages/{packageName}/versions/{version}:
     get:
       summary: Retrieve the details of a specified package version
-      description: ""
+      description: "Placeholder"
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - $ref: "#/components/parameters/pathPackageVersion"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -292,7 +292,7 @@ paths:
           $ref: "#/components/responses/500"
     delete:
       summary: Deletes a package version
-      description: ""
+      description: "Placeholder"
       security:
         - GitHub:
             - placeholder
@@ -325,7 +325,7 @@ paths:
           required: false
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -337,13 +337,13 @@ paths:
   /api/packages/{packageName}/versions/{version}/tarball:
     get:
       summary: Download a specified package version
-      description: ""
+      description: "Placeholder"
       parameters:
         - $ref: "#/components/parameters/pathPackageName"
         - $ref: "#/components/parameters/pathPackageVersion"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -352,17 +352,90 @@ paths:
           $ref: "#/components/responses/404"
         500:
           $ref: "#/components/responses/500"
+  /api/pat:
+    get:
+      summary: Personal Access Token (PAT) signup URL
+      description: "Placeholder"
+      responses:
+        200:
+          description: "Placeholder"
+  /api/{packType}:
+    get:
+      summary: Retrieve a paginated list of all packages filtered by package type
+      description: Packages are returned 30 at a time
+      parameters:
+        - $ref: "#/components/parameters/pathPackType"
+        - $ref: "#/components/parameters/queryPageIndex"
+        - $ref: "#/components/parameters/queryFilterType"
+        - $ref: "#/components/parameters/querySortDir"
+      responses:
+        200:
+          description: "Placeholder"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageArray"
+          headers:
+            link:
+              schema:
+                type: string
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+  /api/{packType}/featured:
+    get:
+      summary: Retrieve the currently featured packages filtered by package type
+      description: Returns a maximum of 10 packages
+      parameters:
+        - $ref: "#/components/parameters/pathPackType" 
+      responses:
+        200:
+          description: "Placeholder"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageArray"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"
+  /api/{packType}/search:
+    get:
+      summary: Search for a package filtered by package type
+      description: Primary method of finding packages to install
+      parameters:
+        - $ref: "#/components/parameters/pathPackType"
+        - name: q
+          in: query
+          schema:
+            type: string
+          example: generic-lsp
+        - $ref: "#/components/parameters/queryPageIndex"
+        - $ref: "#/components/parameters/queryFilterType"
+        - $ref: "#/components/parameters/querySortDir"
+      responses:
+        200:
+          description: "Placeholder"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PackageArray"
+        404:
+          $ref: "#/components/responses/404"
+        500:
+          $ref: "#/components/responses/500"        
   /api/stars:
     get:
       summary: Retrieve your starred packages
-      description: ""
+      description: "Placeholder"
       security:
         - GitHub:
             - placeholder
         - GitHubPAT: []
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -371,24 +444,13 @@ paths:
           $ref: "#/components/responses/404"
         500:
           $ref: "#/components/responses/500"
-  /api/themes/featured:
-    get:
-      summary: Retrieve the currently featured themes
-      description: ""
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PackageArray"
   /api/updates:
     get:
       summary: Retrieve latest application version
       description: Currently not implemented
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -402,12 +464,12 @@ paths:
   /api/users/{user}/stars:
     get:
       summary: Retrieve a user's starred packages
-      description: ""
+      description: "Placeholder"
       parameters:
         - $ref: "#/components/parameters/pathUsername"
       responses:
         200:
-          description: ""
+          description: "Placeholder"
           content:
             application/json:
               schema:
@@ -418,6 +480,16 @@ paths:
           $ref: "#/components/responses/500"
 components:
   parameters:
+    pathPackType:
+      name: packType
+      description: The type of package to return
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+          - packages
+          - themes
     pathPackageName:
       name: packageName
       description: The name of the package to use, URL escaped
@@ -524,6 +596,8 @@ components:
         stargazers_count:
           type: number
           nullable: true
+        versions:
+          $ref: "#/components/schemas/PackageVersionArray"
         releases:
           type: object
           properties:
@@ -596,6 +670,8 @@ components:
         $ref: "#/components/schemas/PackageVersion"
     Placeholder:
       description: Hold the place of a yet-to-be-updated schema
+    PlaceholderString:
+      type: string
     User:
       type: object
       required:
