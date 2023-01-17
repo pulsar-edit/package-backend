@@ -324,7 +324,7 @@ class GitHub extends Git {
    */
   async exists(userObj, ownerRepo) {
     try {
-      const = await this._webRequestAuth(`/repos/${ownerRepo}`, userObj.token);
+      const raw = await this._webRequestAuth(`/repos/${ownerRepo}`, userObj.token);
 
       if (!raw.ok) {
         if (raw.short === "Failed Request") {
