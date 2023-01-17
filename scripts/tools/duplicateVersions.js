@@ -18,7 +18,6 @@ sqlStorage = database.setupSQL();
 
 async function checkDuplicates() {
   try {
-
     const command = await sqlStorage`
       SELECT p.pointer, p.name, v.semver_v1, v.semver_v2, v.semver_v3, COUNT(*) AS vcount
       FROM packages p INNER JOIN versions V ON p.pointer = v.package
@@ -45,9 +44,11 @@ async function checkDuplicates() {
       const semver = `${v.semver_v1}.${v.semver_v2}.${v.semver_v3}`;
       const isLatest = semver === latest;
 
-      str += `Version ${semver} of package ${v.name} is ${isLatest ? "" : "NOT "} the latest.\n`;
+      str += `Version ${semver} of package ${v.name} is ${
+        isLatest ? "" : "NOT "
+      } the latest.\n`;
 
-      if(!packs.includes(v.pointer)) {
+      if (!packs.includes(v.pointer)) {
         packs.push(v.pointer);
       }
     }
@@ -55,8 +56,7 @@ async function checkDuplicates() {
     str += `\n${packs.length} packages have duplicated versions.\n`;
 
     return str;
-
-  } catch(err) {
+  } catch (err) {
     return err;
   }
 }
@@ -73,8 +73,7 @@ async function latestVersion(p) {
     return command.count !== 0
       ? `${command[0].semver_v1}.${command[0].semver_v2}.${command[0].semver_v3}`
       : "";
-
-  } catch(err) {
+  } catch (err) {
     return "";
   }
 }
