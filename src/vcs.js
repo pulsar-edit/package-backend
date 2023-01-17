@@ -7,6 +7,7 @@
  */
 
 const GitHub = require("./vcs_providers/github.js");
+const semVerInitRegex = /^\s*v/i;
 
 /**
  * @async
@@ -66,9 +67,139 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
 
 /**
  * NOTE: Replaces createPackage - Intended to retreive the full packages data.
+ * I wish we could have more than ownerRepo here, but we can't due to how this process is started.
+ * Currently the service must be specified. Being one of the valid types returned
+ *   by determineProvider, since we still only support GitHub this can be manually passed through,
+ *   but a better solution must be found.
  */
-async function newPackageData() {
+async function newPackageData(userObj, ownerRepo, service) {
+  try {
 
+    switch(service) {
+      case "git":
+      default:
+        const github = new GitHub();
+
+        let newPack = {}; // We will append the new Package Data to this Object
+
+        let exists = await github.exists(userObj, ownerRepo);
+
+        if (!exists.ok) {
+          // Could be due to an error, or it doesn't exist at all.
+          // For now until we support custom error messages will do a catch all
+          // return.
+          return {
+            ok: false,
+            content: `Failed to get repo: ${ownerRepo} - ${exists.short}`,
+            short: "Bad Repo"
+          };
+        }
+
+        let pack = await github.packageJSON(userObj, ownerRepo);
+
+        if (!pack.ok) {
+          return {
+            ok: false,
+            content: `Failed to get gh package for ${ownerRepo} - ${pack.short}`,
+            short: "Bad Package"
+          };
+        }
+
+        const tags = await github.tags(userObj, ownerRepo);
+
+        if (!tags.ok) {
+          return {
+            ok: false,
+            content: `Failed to get gh tags for ${ownerRepo} - ${tags.short}`,
+            short: "Server Error"
+          };
+        }
+
+        // Build a repo tag object indexed by tag names so we can handle versions
+        // easily, and won't call query.engien() multiple times for a single version.
+        let tagList = {};
+        for (const tag of tags.content) {
+          if (typeof tag.name !== "string") {
+            continue;
+          }
+          const sv = query.engine(tag.name.replace(semVerInitRegex, "").trim());
+          if (sv !== false) {
+            tagList[sv] = tag;
+          }
+        }
+
+        // Now to get our Readme
+        let readme = await github.readme(userObj, ownerRepo);
+
+        if (!readme.ok) {
+          return {
+            ok: false,
+            content: `Failed to get gh readme for ${ownerRepo} - ${readme.short}`,
+            short: "Bad Repo"
+          };
+        }
+
+        // Now we should be ready to create the package.
+        // readme = The text data of the current repo readme
+        // tags = API JSON response for repo tags, including the tags, and their
+        //        sha hash, and tarball_url
+        // pack = the package.json file within the repo, as JSON
+        // And we want to funnel all of this data into newPack and return it.
+
+        const time = Date.now();
+
+        // First we ensure the package name is in the lowercase format.
+        const packName = pack.content.name.toLowerCase();
+
+        newPack.name = packName;
+        newPack.created = time;
+        newPack.updated = time;
+        newPack.creation_method = "User Made Package";
+        newPack.downloads = 0;
+        newPack.stargazers_count = 0;
+        newPack.star_gazers = [];
+        newPack.readme = readme.content;
+        newPack.metadata = pack.content; // The metadata tag is the most recent package.json
+
+        // Then lets add the service used, so we are able to safely find it in the future
+        newPack.repository = determineProvider(pack.content.repository);
+
+        // Now during migration packages will have a `versions` key, but otherwise
+        // the standard package will just have `version`
+        // We build the array of available versions extracted form the package object.
+        let versionList = [];
+        if (pack.content.versions) {
+          for (const v of Object.keys(pack.content.versions)) {
+            versionList.push(v);
+          }
+        } else if (pack.content.verison) {
+          versionList.push(pack.content.version);
+        }
+
+        let versionCount = 0;
+        let latestVersion = null;
+        let latestSemverArr = null;
+        newPack.versions = {};
+        // Now to add the release data of each release within the package
+        for (const v of versionList) {
+          const ver = query.engine(v);
+          if (ver === false) {
+            continue;
+          }
+
+          const tag = tagList[ver];
+          if (tag === undefined) {
+            continue;
+          }
+
+          // They match tag and version, stuff the data into the package
+          // TODO: metadataAppendTarballInfo destructing
+        }
+    }
+
+  } catch(err) {
+
+  }
 }
 
 /**
