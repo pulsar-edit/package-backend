@@ -93,7 +93,6 @@ async function readme(userObj, ownerRepo, service) {
       const github = new GitHub();
       return await github.readme(userObj, ownerRepo);
   }
-  )
 }
 
 /**
