@@ -65,47 +65,19 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
 }
 
 /**
- * @function readme
- * @desc Intended to retreive the ReadMe, or major entry documentation of a package.
- * Will utilize whatever service specified in order to collect it.
- * @param {object} userObj - The Raw Useer Object after verification.
- * @param {string} ownerRepo - The `owner/repo` string combo for the repo.
- * @param {string} service - The name of the service as expected to be returned
- * by vcs.determineProvider(). It's required as a parameter rather than done itself
- * since the situations when a readme is collected don't have the same structured
- * data to request, and as such there is no positive way to know what data will
- * be available for this function to determine the provider.
- */
-async function readme(userObj, ownerRepo, service) {
-  if (
-    process.env.PULSAR_STATUS === "dev" &&
-    process.env.MOCK_GH !== "false"
-  ) {
-    console.log(`git.js.readme() Is returning Dev Only Permissions for ${user.username}`);
-
-  }
-  // Non-dev return.
-
-  switch(service) {
-    // Other services added here
-    case "git":
-    default:
-      const github = new GitHub();
-      return await github.readme(userObj, ownerRepo);
-  }
-}
-
-/**
  * NOTE: Replaces createPackage - Intended to retreive the full packages data.
  */
-async function packageData() {
+async function newPackageData() {
 
 }
 
 /**
  * NOTE: Replaces metadataAppendTarballInfo - Intended to retreive the basics of package data.
+ * While additionally replacing all special handling when publsihing a version
+ * This should instead return an object itself with the required data
+ * So in this way the package_handler doesn't have to do anything special
  */
-async function miniPackageData() {
+async function newVersionData() {
 
 }
 
@@ -195,5 +167,6 @@ function determineProvider(repo) {
 module.exports = {
   determineProvider,
   ownership,
-  readme,
+  newPackageData,
+  newVersionData,
 };
