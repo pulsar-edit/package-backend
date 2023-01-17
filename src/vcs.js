@@ -194,6 +194,10 @@ async function newPackageData(userObj, ownerRepo, service) {
 
           // They match tag and version, stuff the data into the package
           // TODO: metadataAppendTarballInfo destructing
+          // await metadataAppendTarballInfo(pack, tag, user);
+          // function metadataAppendTarballInfo(pack, repo, user) {
+
+          
         }
     }
 
