@@ -227,7 +227,7 @@ async function newPackageData(userObj, ownerRepo, service) {
           }
 
           pack.tarball_url = tag.tarball_url;
-          pack.sha = typeof tag.commit?.sha === "string" ?? tag.commit.sha : "";
+          pack.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
           newPack.versions[ver] = pack;
           versionCount++;
@@ -290,7 +290,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   // all package data fell onto the package_handler itself
   // Including collecting readmes and tags, now this function should encapsulate
   // all that logic into a single place.
-  
+
 }
 
 /**
