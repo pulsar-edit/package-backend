@@ -6,6 +6,8 @@
  * function.
  */
 
+const query = require("./query.js");
+const utils = require("./utils.js");
 const GitHub = require("./vcs_providers/github.js");
 const semVerInitRegex = /^\s*v/i;
 
@@ -62,6 +64,18 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
       // the owner/repo combo as needed.
       return owner;
   }
+
+}
+
+/**
+ * NOTE: This function should be used only during a package publish.
+ * Intends to use a service passed to check ownership, without expecting any package
+ * data to work with. This is because during initial publication, we won't
+ * have the package data locally to build off of.
+ * Proper use of this service variable will be preceeded by support from ppm to
+ * provide it as a query parameter.
+ */
+async function prepublishOwnership(userObj, ownerRepo, service) {
 
 }
 
@@ -187,22 +201,81 @@ async function newPackageData(userObj, ownerRepo, service) {
             continue;
           }
 
-          const tag = tagList[ver];
+          let tag = tagList[ver];
           if (tag === undefined) {
             continue;
           }
 
           // They match tag and version, stuff the data into the package
-          // TODO: metadataAppendTarballInfo destructing
-          // await metadataAppendTarballInfo(pack, tag, user);
-          // function metadataAppendTarballInfo(pack, repo, user) {
 
-          
+          if (typeof tag === "string") {
+            for (const t of tags) {
+              if (typeof t.name !== "string") {
+                continue;
+              }
+              const sv = query.engine(t.name.replace(semVerInitRegex, "").trim());
+              if (sv === tag) {
+                tag = t;
+                break;
+              }
+            }
+          }
+
+          if (!tag.tarball_url) {
+            logger.generic(3, `Cannot retreive metadata info for version ${ver} of packName`);
+            continue;
+          }
+
+          pack.tarball_url = tag.tarball_url;
+          pack.sha = typeof tag.commit?.sha === "string" ?? tag.commit.sha : "";
+
+          newPack.versions[ver] = pack;
+          versionCount++;
+
+          // Check latest version
+          if (latestVersion === null) {
+            // Initialize latest versin
+            latestVersion = ver;
+            latestSemverArr = utils.semverArray(ver);
+            continue;
+          }
+
+          const sva = utils.semverArray(ver);
+          if (utils.semverGt(sva, latestSemverArr)) {
+            latestVersion = ver;
+            latestSemverArr = sva;
+          }
         }
+
+        if (versionCount === 0) {
+          return {
+            ok: false,
+            content: "Failed to retreive package versions.",
+            short: "Server Error"
+          };
+        }
+
+        // Now with all the versions properly filled, we lastly just need the
+        // release data
+        newPack.releases = {
+          latest: latestVersion
+        };
+
+        // For this we just use the most recent tag published to the repo.
+        // and now the object is complete, lets return the pack, as a Server Status Object.
+        return {
+          ok: true,
+          content: newPack
+        };
     }
 
   } catch(err) {
-
+    // An error occured somewhere during package generation
+    return {
+      ok: false,
+      content: err,
+      short: "Server Error"
+    };
   }
 }
 
@@ -212,8 +285,12 @@ async function newPackageData(userObj, ownerRepo, service) {
  * This should instead return an object itself with the required data
  * So in this way the package_handler doesn't have to do anything special
  */
-async function newVersionData() {
-
+async function newVersionData(userObj, ownerRepo, service) {
+  // Originally when publishing a new version the responsibility to collect
+  // all package data fell onto the package_handler itself
+  // Including collecting readmes and tags, now this function should encapsulate
+  // all that logic into a single place.
+  
 }
 
 /**
@@ -304,4 +381,5 @@ module.exports = {
   ownership,
   newPackageData,
   newVersionData,
+  prepublishOwnership,
 };
