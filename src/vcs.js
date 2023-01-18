@@ -209,7 +209,7 @@ async function newPackageData(userObj, ownerRepo, service) {
           // They match tag and version, stuff the data into the package
 
           if (typeof tag === "string") {
-            for (const t of tags) {
+            for (const t of tags.content) {
               if (typeof t.name !== "string") {
                 continue;
               }
@@ -290,7 +290,74 @@ async function newVersionData(userObj, ownerRepo, service) {
   // all package data fell onto the package_handler itself
   // Including collecting readmes and tags, now this function should encapsulate
   // all that logic into a single place.
+  switch(service) {
+    case "git":
+    default:
+      const github = new GitHub();
 
+      let pack = await github.packageJSON(userObj, ownerRepo);
+
+      if (!pack.ok) {
+        return {
+          ok: false,
+          content: `Failed to get gh package for ${ownerRepo} - ${pack.short}`,
+          short: "Bad Package"
+        };
+      }
+
+      // Now we will also need to get the packages data to update on the DB
+      // during version pushes.
+
+      let readme = await github.readme(userObj, ownerRepo);
+
+      if (!readme.ok) {
+        return {
+          ok: false,
+          content: `Failed to get gh readme for ${ownerRepo} - ${readme.short}`,
+          short: "Bad Repo"
+        };
+      }
+
+      // Now time to implment git.metadataAppendTarballInfo(pack, pack.version, user.content)
+      // metadataAppendTarballInfo(pack, repo, user)
+
+      let tag = null;
+
+      if (pack.content.version tag === "object") {
+        tag = pack.content.version;
+      }
+
+      if (typeof pack.content.version === "string") {
+        // Retreive tag object related to
+        const tags = await github.tags(userObj, ownerRepo);
+
+        if (!tags.ok) {
+          return {
+            ok: false,
+            content: `Failed to get gh tags for ${ownerRepo} - ${tags.short}`,
+            short: "Server Error"
+          };
+        }
+
+        for (const t of tags.content) {
+          if (typeof t.name !== "string") {
+            continue;
+          }
+          const sv = query.engine(t.name.replace(semVerInitRegex, "").trim());
+          if (sv === repo) {
+            tag = t;
+            break;
+          }
+        }
+
+        if (!tag.tarball_url) {
+          logger.generic(3, `Cannot retreive metadata infor for version ${ver} of ${ownerRepo}`);
+        }
+
+        pack.content.tarball_url = tag.tarball_url;
+        pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
+      }
+  }
 }
 
 /**
