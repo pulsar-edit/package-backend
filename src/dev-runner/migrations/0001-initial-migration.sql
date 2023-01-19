@@ -47,9 +47,10 @@ EXECUTE PROCEDURE now_on_updated_package();
 
 CREATE TABLE names (
     name VARCHAR(128) NOT NULL PRIMARY KEY,
-    pointer UUID NOT NULL REFERENCES packages(pointer),
+    pointer UUID NULL,
     -- constraints
-    CONSTRAINT lowercase_names CHECK (name = LOWER(name))
+    CONSTRAINT lowercase_names CHECK (name = LOWER(name)),
+    CONSTRAINT package_names_fkey FOREIGN KEY (pointer) REFERENCES packages(pointer) ON DELETE SET NULL
 );
 
 -- Create users Table
