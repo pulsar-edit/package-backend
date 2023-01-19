@@ -218,7 +218,17 @@ class GitHub extends Git {
     }
   }
 
-  async getRepoTags(userObj, ownerRepo) {
+  /**
+   * @async
+   * @function tags
+   * @desc Returns all tags associated with a GitHub repo.
+   * @param {object} useObj - The Full User Object as received after verification.
+   * @param {string} ownerRepo - The String combo of `onwer/repo` for the package.
+   * @returns {object} A Server Status Object, which when successful, whose `content`
+   * is all the tags of the specified repo.
+   * @see https://docs.github.com/en/rest/repos/repos#list-repository-tags
+   */
+  async tags(userObj, ownerRepo) {
     try {
       const raw = this._webRequestAuth(`/repos/${ownerRepo}/tags`, userObj.token);
 
@@ -258,8 +268,45 @@ class GitHub extends Git {
     }
   }
 
-  async getPackageJSON(useerObj, ownerRepo) {
+  /**
+   * @async
+   * @function packageJSON
+   * @desc Returns the JSON Parsed text of the `package.json` on a GitHub repo.
+   * @param {object} userObj - The Full User Object as received after verification.
+   * @param {string} ownerRepo - The String combo of `owner/repo` for the package
+   * @returns {object} A Server Status Object, which when successfully, whose `content`
+   * Is the JSON parsed `package.json` of the repo specified.
+   */
+  async packageJSON(userObj, ownerRepo) {
     try {
+      const raw = await this._webRequestAuth(`/repos/${ownerRepo}/contents/package.json`, userObj.token);
+
+      if (!raw.ok) {
+        if (raw.short === "Failed Request") {
+          switch(raw.content.status) {
+            case 401:
+              return {
+                ok: false,
+                short: "Bad Auth"
+              };
+            default:
+              return {
+                ok: false,
+                short: "Server Error"
+              };
+          }
+        }
+        return {
+          ok: false,
+          short: "Server Error"
+        };
+      }
+
+      // We have valid data, lets return after processing
+      return {
+        ok: true,
+        content: JSON.parse(Buffer.from(raw.body.content, raw.body.encoding).toString())
+      };
 
     } catch(err) {
       return {
@@ -270,6 +317,59 @@ class GitHub extends Git {
     }
   }
 
+  /**
+   * @async
+   * @function exists
+   * @desc This function is used to verify whether a specific package exists on GitHub.
+   * @param {object} userObj - The Full User Object as returned from verification.
+   * @param {string} ownerRepo - The String combo of `owner/repo`
+   * @returns {object} A Server Status Object, whose, when successful, will return
+   * the `full_name` of the package as returned by GitHub. (This could be helpful in
+   * finding a renamed package)
+   */
+  async exists(userObj, ownerRepo) {
+    try {
+      const raw = await this._webRequestAuth(`/repos/${ownerRepo}`, userObj.token);
+
+      if (!raw.ok) {
+        if (raw.short === "Failed Request") {
+          switch(raw.content.status) {
+            case 401:
+              return {
+                ok: false,
+                short: "Bad Auth"
+              };
+            case 404:
+              return {
+                ok: false,
+                short: "Bad Repo"
+              };
+            default:
+              return {
+                ok: false,
+                short: "Server Error"
+              };
+          }
+        }
+        return {
+          ok: false,
+          short: "Server Error"
+        };
+      }
+
+      // We have valid data
+      return {
+        ok: true,
+        content: raw.body.full_name
+      };
+    } catch(err) {
+      return {
+        ok: false,
+        short: "Server Error",
+        content: err
+      };
+    }
+  }
 }
 
 module.exports = GitHub;
