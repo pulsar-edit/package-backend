@@ -160,14 +160,10 @@ async function newPackageData(userObj, ownerRepo, service) {
         // pack = the package.json file within the repo, as JSON
         // And we want to funnel all of this data into newPack and return it.
 
-        const time = Date.now();
-
         // First we ensure the package name is in the lowercase format.
         const packName = pack.content.name.toLowerCase();
 
         newPack.name = packName;
-        newPack.created = time;
-        newPack.updated = time;
         newPack.creation_method = "User Made Package";
         newPack.downloads = 0;
         newPack.stargazers_count = 0;
