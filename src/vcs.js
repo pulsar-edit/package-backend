@@ -57,12 +57,13 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
   switch(repoObj.type) {
     // Additional supported VCS systems go here.
     case "git":
-    default:
+    default: {
       const github = new GitHub();
       let owner = await github.ownership(userObj, packObj);
       // ^^^ Above we pass the full package object since github will decode
       // the owner/repo combo as needed.
       return owner;
+    }
   }
 
 }
@@ -91,7 +92,7 @@ async function newPackageData(userObj, ownerRepo, service) {
 
     switch(service) {
       case "git":
-      default:
+      default: {
         const github = new GitHub();
 
         let newPack = {}; // We will append the new Package Data to this Object
@@ -263,6 +264,7 @@ async function newPackageData(userObj, ownerRepo, service) {
           ok: true,
           content: newPack
         };
+      }
     }
 
   } catch(err) {
@@ -288,7 +290,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   // all that logic into a single place.
   switch(service) {
     case "git":
-    default:
+    default: {
       const github = new GitHub();
 
       let pack = await github.packageJSON(userObj, ownerRepo);
@@ -353,6 +355,7 @@ async function newVersionData(userObj, ownerRepo, service) {
         pack.content.tarball_url = tag.tarball_url;
         pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
       }
+    }
   }
 }
 
