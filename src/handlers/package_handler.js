@@ -726,12 +726,26 @@ async function postPackagesVersion(req, res) {
     const isBanned = await utils.isPackageNameBanned(newName);
 
     if (isBanned.ok) {
-      logger.generic(3, `postPackages Blocked by banned package name: ${repo}`);
+      logger.generic(3, `postPackages Blocked by banned package name: ${newName}`);
       // is banned
       await common.handleError(req, res, {
         ok: false,
         short: "Server Error",
         content: "Package Name is Banned",
+      });
+      // TODO ^^^ Replace with specific error once more are supported.
+      return;
+    }
+
+    const isAvailable = await database.packageNameAvailability(newName);
+
+    if (isAvailable.ok) {
+      logger.generic(3, `postPackages Blocked by new name ${newName} not available`);
+      // is banned
+      await common.handleError(req, res, {
+        ok: false,
+        short: "Server Error",
+        content: "Package Name is Not Available",
       });
       // TODO ^^^ Replace with specific error once more are supported.
       return;
