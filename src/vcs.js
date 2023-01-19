@@ -166,9 +166,6 @@ async function newPackageData(userObj, ownerRepo, service) {
 
         newPack.name = packName;
         newPack.creation_method = "User Made Package";
-        newPack.downloads = 0;
-        newPack.stargazers_count = 0;
-        newPack.star_gazers = [];
         newPack.readme = readme.content;
         newPack.metadata = pack.content; // The metadata tag is the most recent package.json
 
