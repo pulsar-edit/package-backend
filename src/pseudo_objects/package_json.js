@@ -53,7 +53,7 @@ class PackageJSON {
   }
 
   set name(value) {
-    if (this.mode.strict && typeof this.mode.service !== undefined) {
+    if (this.mode.strict && typeof this.mode.service !== "undefined") {
       let valid = this.validateName(this.mode.service);
 
       if (valid.overall) {
@@ -62,7 +62,6 @@ class PackageJSON {
       }
 
       throw new Error(`Name is not valid for ${this.mode.service}: ${valid.invalid}`);
-      return;
     }
 
     // No strict declared
@@ -139,7 +138,7 @@ class PackageJSON {
 
   get bugs() {
     // this.mode.bugs can be Default, Object, or String
-    if (this.mode.bugs === "default" && typeof this.normalizedPack.bugs !== undefined) {
+    if (this.mode.bugs === "default" && typeof this.normalizedPack.bugs !== "undefined") {
       return this.normalizedPack.bugs;
     }
 
@@ -165,7 +164,7 @@ class PackageJSON {
         case "string":
           // Since when Bugs are in string mode we can only define a URL,
           // we will throw away the email part of the object.
-          if (typeof this.rawPack.bugs.url !== undefined) {
+          if (typeof this.rawPack.bugs.url !== "undefined") {
             this.bugs = this.rawPack.bugs.url;
             return this.bugs;
           }
@@ -173,7 +172,7 @@ class PackageJSON {
         case "object":
         case "default":
         default:
-          if (typeof this.rawPack.bugs.url !== undefined && typeof this.rawPack.bugs.email !== undefined) {
+          if (typeof this.rawPack.bugs.url !== "undefined" && typeof this.rawPack.bugs.email !== "undefined") {
             this.bugs = this.rawPack.bugs;
             return this.bugs;
           }
@@ -186,7 +185,7 @@ class PackageJSON {
 
   set bugs(value) {
     if (this.mode.bugs === "object" || typeof value === "object") {
-      if (typeof value.url !== undefined && typeof value.email !== undefined) {
+      if (typeof value.url !== "undefined" && typeof value.email !== "undefined") {
         this.normalizedPack.bugs = value;
         return;
       }
@@ -271,11 +270,11 @@ class PackageJSON {
       // here then have the whole file parsed, if left out the package data passed
       // during class creation will be used. Erroring out if none is provided in either.
 
-      if (typeof pack !== undefined) {
+      if (typeof pack !== "undefined") {
         this.rawPack = pack;
       }
 
-      if (typeof this.rawPack === undefined) {
+      if (typeof this.rawPack === "undefined") {
         throw new Error("Raw PackageJSON Data never provided");
         return;
       }
@@ -287,7 +286,7 @@ class PackageJSON {
 
       for (const key in this.rawPack) {
 
-        if (this[key] !== "function") {
+        if (typeof this[key] !== "function") {
           // We don't have a method that supports the key found in the package.json
           // It should be added arbitraly.
           this.normalizedPack[key] = this.rawpack[key];

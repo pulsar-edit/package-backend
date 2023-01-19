@@ -9,16 +9,36 @@
  const { GH_USERAGENT } = require("../config.js").getConfig();
 
  class Git {
-   constructor(opts) {
-     this.api_url = opts.api_url;
-     this.acceptable_status_codes = opts.ok_status ?? [200];
+   // Public properties:
+   apiUrl = "";
+   acceptableStatusCodes = [200];
+
+   /**
+    * @function _initializer
+    * @desc Internal util that can be used by derived class to initialize base class properties.
+    * @param {object} opts - An object containing the values to assign to the class properties.
+    */
+   _initializer(opts) {
+     /* Expects an opts object like:
+      * { api_url: String, ok_status: Array}
+      */
+     this.apiUrl = opts.api_url ?? this.apiUrl;
+     this.acceptableStatusCodes = opts.ok_status ?? this.acceptableStatusCodes;
    }
 
+   /**
+    * @async
+    * @function _webRequestAuth
+    * @desc Internal util that makes a request to a URL using the provided token.
+    * @param {string} url - The URL to send the request.
+    * @param {string} token - The token to append in the request header.
+    * @returns {object} A server status object.
+    */
    async _webRequestAuth(url, token) {
      try {
 
        const res = await superagent
-        .get(`${this.api_url}${url}`)
+        .get(`${this.apiUrl}${url}`)
         .set({
           Authorization: `Bearer ${token}`,
         })
@@ -26,7 +46,7 @@
         // This last line here, lets the class define what HTTP Status Codes
         // It will not throw an error on.
         // If a status code not present in this array is received, it will throw an error.
-        .ok((res) => this.acceptable_status_codes.includes(res.status));
+        .ok((res) => this.acceptableStatusCodes.includes(res.status));
 
       if (res.status !== 200) {
         // We have not received 200 code: return a failure

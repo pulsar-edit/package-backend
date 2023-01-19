@@ -323,7 +323,7 @@ async function newVersionData(userObj, ownerRepo, service) {
 
       let tag = null;
 
-      if (pack.content.version tag === "object") {
+      if (pack.content.version === "object") {
         tag = pack.content.version;
       }
 

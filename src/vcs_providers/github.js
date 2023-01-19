@@ -13,11 +13,16 @@ const utils = require("../utils.js");
  * expected of a VCS service.
  */
 class GitHub extends Git {
-  constructor(opts) {
+  // Private properties:
+  #defaultApiUrl = "https://api.github.com";
+  #defaultAcceptableStatusCodes = [200, 401];
 
-    super({
-      api_url: opts?.api_url ?? "https://api.github.com",
-      ok_status: [200, 401, 404]
+  constructor(opts) {
+    super();
+    // Initialize base properties
+    this._initializer({
+      api_url: opts?.api_url ?? this.#defaultApiUrl,
+      ok_status: this.#defaultAcceptableStatusCodes
     });
   }
 
@@ -32,9 +37,9 @@ class GitHub extends Git {
    */
   async ownership(user, pack) {
     // expects full userObj, and repoObj
-    let ownerRepo = utils.getOwnerRepoFromPackage(pack.data);
+    const ownerRepo = utils.getOwnerRepoFromPackage(pack.data);
 
-    let owner = await this.doesUserHaveRepo(user, ownerRepo);
+    const owner = await this.doesUserHaveRepo(user, ownerRepo);
 
     if (owner.ok) {
       // We were able to confirm the ownership of the repo just fine and can return.
@@ -79,7 +84,7 @@ class GitHub extends Git {
    */
   async doesUserHaveRepo(user, ownerRepo, page = 1) {
     try {
-      let check = await this._webRequestAuth(`/repos/${ownerRepo}/contributors?page=${page}`, user.token);
+      const check = await this._webRequestAuth(`/repos/${ownerRepo}/contributors?page=${page}`, user.token);
 
       if (!check.ok) {
         if (check.short === "Failed Request") {
