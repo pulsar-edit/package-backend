@@ -270,15 +270,15 @@ async function getPackagesFeatured(req, res) {
  */
 async function getPackagesSearch(req, res) {
   const params = {
-    sort: query.sort(req, "relevance"),
+    sort: query.sort(req),
     page: query.page(req),
     direction: query.dir(req),
     query: query.query(req),
   };
 
   // Because the task of implementing the custom search engine is taking longer
-  // than expected, this will instead use super basic text searching on the DB
-  // side. This is only an effort to get this working quickly and should be changed later.
+  // than expected, this will instead use super basic text searching on the DB side.
+  // This is only an effort to get this working quickly and should be changed later.
   // This also means for now, the default sorting method will be downloads, not relevance.
 
   const packs = await database.simpleSearch(

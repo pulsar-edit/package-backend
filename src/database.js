@@ -521,12 +521,12 @@ async function getPackageByName(name, user = false) {
             } 'status', v.status, 'semver', v.semver,
             'license', v.license, 'engine', v.engine, 'meta', v.meta
           )
-          ORDER BY v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC
+          ORDER BY v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
         ) AS versions
       FROM packages p
         INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
         INNER JOIN versions v ON (p.pointer = v.package AND v.status != 'removed')
-      GROUP BY p.pointer, v.package;
+      GROUP BY p.pointer;
     `;
 
     return command.count !== 0
@@ -632,12 +632,14 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
+      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
       FROM packages p
         INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
           packArray
         )})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
+        INNER JOIN versions v ON (p.pointer = v.package AND v.status != 'removed')
+      ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC;
     `;
 
     return command.count !== 0
@@ -930,7 +932,7 @@ async function removePackageVersion(packName, semVer) {
         SELECT id, semver, status
         FROM versions
         WHERE package = ${pointer} AND status != 'removed'
-        ORDER BY semver_v1 DESC, semver_v2 DESC, semver_v3 DESC;
+        ORDER BY semver_v1 DESC, semver_v2 DESC, semver_v3 DESC, created DESC;
       `;
 
       const versionCount = getVersions.count;
@@ -1440,11 +1442,27 @@ async function getStarringUsersByPointer(pointer) {
  * @function simpleSearch
  * @description The current Fuzzy-Finder implementation of search. Ideally eventually
  * will use a more advanced search method.
+ * @param {string} term - The search term.
+ * @param {string} dir - String flag for asc/desc order.
+ * @param {string} sort - The sort method.
+ * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
  * @returns {object} A server status object containing the results and the pagination object.
  */
 async function simpleSearch(term, page, dir, sort, themes = false) {
   try {
     sqlStorage ??= setupSQL();
+
+    // Parse the sort method
+    const orderType = getOrderField(sort, sqlStorage);
+
+    if (orderType === null) {
+      logger.generic(3, `Unrecognized Sorting Method Provided: ${sort}`);
+      return {
+        ok: false,
+        content: `Unrecognized Sorting Method Provided: ${sort}`,
+        short: "Server Error",
+      };
+    }
 
     // We obtain the lowercase version of term since names should be in
     // lowercase format (see atom-backend issue #86).
@@ -1454,22 +1472,25 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     const offset = page > 1 ? (page - 1) * limit : 0;
 
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-        v.semver, COUNT(*) OVER() AS query_result_count
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name LIKE ${
-          "%" + lcterm + "%"
-        })
-        INNER JOIN versions AS v ON (p.pointer = v.package AND v.status = 'latest')
-      ${
-        themes === true
-          ? sqlStorage`WHERE p.package_type = 'theme'`
-          : sqlStorage``
-      }
-      ORDER BY ${
-        sort === "relevance" ? sqlStorage`downloads` : sqlStorage`${sort}`
-      }
-      ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
+      WITH search_query AS (
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+          (p.stargazers_count + p.original_stargazers) AS stargazers_count,
+          v.semver, p.created, v.updated
+        FROM packages p
+          INNER JOIN names n ON (p.pointer = n.pointer AND n.name LIKE ${
+            "%" + lcterm + "%"
+          }
+          ${
+            themes === true
+              ? sqlStorage`AND p.package_type = 'theme'`
+              : sqlStorage``
+          })
+          INNER JOIN versions AS v ON (p.pointer = v.package AND v.status != 'removed')
+        ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
+      )
+      SELECT *, COUNT(*) OVER() AS query_result_count
+      FROM search_query
+      ORDER BY ${orderType} ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
       LIMIT ${limit}
       OFFSET ${offset};
     `;
@@ -1490,7 +1511,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
         count: resultCount,
         page: page < totalPages ? page : totalPages,
         total: totalPages,
-        limit,
+        limit: limit,
       },
     };
   } catch (err) {
@@ -1543,8 +1564,7 @@ async function getUserCollectionById(ids) {
  * then reconstruct the JSON as needed.
  * @param {int} page - Page number.
  * @param {string} dir - String flag for asc/desc order.
- * @param {string} dir - String flag for asc/desc order.
- * @param {string} method - The column name the results have to be sorted by.
+ * @param {string} method - The sort method.
  * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
  * @returns {object} A server status object containing the results and the pagination object.
  */
@@ -1560,43 +1580,34 @@ async function getSortedPackages(page, dir, method, themes = false) {
   try {
     sqlStorage ??= setupSQL();
 
-    let orderType = null;
+    const orderType = getOrderField(method, sqlStorage);
 
-    switch (method) {
-      case "downloads":
-        orderType = "downloads";
-        break;
-      case "created_at":
-        orderType = "created";
-        break;
-      case "updated_at":
-        orderType = "updated";
-        break;
-      case "stars":
-        orderType = "stargazers_count";
-        break;
-      default:
-        logger.generic(3, `Unrecognized Sorting Method Provided: ${method}`);
-        return {
-          ok: false,
-          content: `Unrecognized Sorting Method Provided: ${method}`,
-          short: "Server Error",
-        };
+    if (orderType === null) {
+      logger.generic(3, `Unrecognized Sorting Method Provided: ${method}`);
+      return {
+        ok: false,
+        content: `Unrecognized Sorting Method Provided: ${method}`,
+        short: "Server Error",
+      };
     }
 
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-        v.semver, COUNT(*) OVER() AS query_result_count
-      FROM packages AS p
-        INNER JOIN versions AS v ON (p.pointer = v.package AND v.status = 'latest')
-      ${
-        themes === true
-          ? sqlStorage`WHERE package_type = 'theme'`
-          : sqlStorage``
-      }
-      ORDER BY ${orderType} ${
-      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
-    }
+      WITH latest_versions AS (
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+          (p.stargazers_count + p.original_stargazers) AS stargazers_count,
+          v.semver, p.created, v.updated
+        FROM packages p
+          INNER JOIN versions AS v ON (p.pointer = v.package AND v.status != 'removed'
+          ${
+            themes === true
+              ? sqlStorage`AND p.package_type = 'theme'`
+              : sqlStorage``
+          })
+        ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
+      )
+      SELECT *, COUNT(*) OVER() AS query_result_count
+      FROM latest_versions
+      ORDER BY ${orderType} ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
       LIMIT ${limit}
       OFFSET ${offset};
     `;
@@ -1623,6 +1634,30 @@ async function getSortedPackages(page, dir, method, themes = false) {
       short: "Server Error",
       error: err,
     };
+  }
+}
+
+/**
+ * @async
+ * @function getOrderField
+ * @description Internal method to parse the sort method and return the related database field/column.
+ * @param {string} method - The sort method.
+ * @param {object} sqlStorage - The database class instance used parse the proper field.
+ * @returns {object|null} The string field associated to the sort method or null if the method is not recognized.
+ */
+function getOrderField(method, sqlStorage) {
+  switch (method) {
+    case "relevance":
+    case "downloads":
+      return sqlStorage`downloads`;
+    case "created_at":
+      return sqlStorage`created`;
+    case "updated_at":
+      return sqlStorage`updated`;
+    case "stars":
+      return sqlStorage`stargazers_count`;
+    default:
+      return null;
   }
 }
 
