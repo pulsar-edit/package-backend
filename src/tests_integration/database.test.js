@@ -267,16 +267,6 @@ describe("Package Lifecycle Tests", () => {
     );
     expect(getOldVerOnly.content.meta.name).toEqual(pack.createPack.name);
 
-    // === Can we get a specific version if the provided semver contains an extension?
-    const getNewVerWithExt = await database.getPackageVersionByNameAndVersion(
-      NEW_NAME,
-      `${v1_0_1.version}-beta`
-    );
-    expect(getNewVerWithExt.ok).toBeTruthy();
-    expect(getNewVerWithExt.content.status).toEqual("latest");
-    expect(getNewVerWithExt.content.semver).toEqual(v1_0_1.version);
-    expect(getNewVerWithExt.content.meta.name).toEqual(pack.createPack.name);
-
     // === Can we add a download to our package?
     const downPack = await database.updatePackageIncrementDownloadByName(
       NEW_NAME
@@ -311,14 +301,13 @@ describe("Package Lifecycle Tests", () => {
 
     // === Can we delete our newest version?
     // === Here we append an extension to test if the version is selected in the same way.
-    const versionWithExt = `${v1_0_1.version}-beta`;
     const delLatestVer = await database.removePackageVersion(
       NEW_NAME,
-      versionWithExt
+      v1_0_1.version
     );
     expect(delLatestVer.ok).toBeTruthy();
     expect(delLatestVer.content).toEqual(
-      `Removed ${versionWithExt} of ${NEW_NAME} and ${pack.createPack.metadata.version} is the new latest version.`
+      `Removed ${v1_0_1.version} of ${NEW_NAME} and ${pack.createPack.metadata.version} is the new latest version.`
     );
 
     // === Is our old version the latest again?
@@ -341,7 +330,7 @@ describe("Package Lifecycle Tests", () => {
     const latestVer = await database.getPackageByName(NEW_NAME);
     expect(reAddNextVersion.ok).toBeFalsy();
     expect(reAddNextVersion.content).toEqual(
-      `Not allowed to publish a version previously deleted for ${v1_0_1.name}`
+      `Not allowed to publish a version already present for ${v1_0_1.name}`
     );
 
     // === Can we delete a version lower than the current latest?
@@ -376,7 +365,7 @@ describe("Package Lifecycle Tests", () => {
       `There's no version ${pack.createPack.metadata.version} to remove for ${NEW_NAME} package`
     );
 
-    // === Can we add an odd yet valid semver using an extension?
+    // === Can we add an odd yet valid semver?
     const oddVer = pack.addVersion("1.2.3-beta.0");
     const oddNewVer = await database.insertNewPackageVersion(
       oddVer,
@@ -538,7 +527,7 @@ describe("Manage Login State Keys", () => {
     expect(deleteDbKey.content).toEqual(stateKey);
   });
   test("Fail when an Unsaved State Key is provided", async () => {
-    // === Test aa State Key that has not been stored
+    // === Test a State Key that has not been stored
     const stateKey = utils.generateRandomString(64);
     const notFoundDbKey = await database.authCheckAndDeleteStateKey(stateKey);
     expect(notFoundDbKey.ok).toBeFalsy();

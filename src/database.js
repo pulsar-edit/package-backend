@@ -349,8 +349,8 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
           RETURNING semver, status;
         `;
       } catch (e) {
-        // This occurs when the (package, semver_vx) unique constraint is violated.
-        throw `Not allowed to publish a version previously deleted for ${packName}`;
+        // This occurs when the (package, semver) unique constraint is violated.
+        throw `Not allowed to publish a version already present for ${packName}`;
       }
 
       if (!addVer?.count) {
@@ -592,23 +592,11 @@ async function getPackageVersionByNameAndVersion(name, version) {
   try {
     sqlStorage ??= setupSQL();
 
-    // We are permissive on the right side of the semver, so if it's stored with an extension
-    // we can still get it retrieving the semverArray and looking by semver_vx generated columns.
-    const svArr = utils.semverArray(version);
-    if (svArr === null) {
-      return {
-        ok: false,
-        content: `Provided version ${version} is not a valid semver.`,
-        short: "Not Found",
-      };
-    }
-
     const command = await sqlStorage`
       SELECT v.semver, v.status, v.license, v.engine, v.meta
       FROM packages p
         INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.semver_v1 = ${svArr[0]} AND
-          v.semver_v2 = ${svArr[1]} AND v.semver_v3 = ${svArr[2]} AND v.status != 'removed');
+        INNER JOIN versions v ON (p.pointer = v.package AND v.semver = ${version} AND v.status != 'removed');
     `;
 
     return command.count !== 0
@@ -937,18 +925,9 @@ async function removePackageVersion(packName, semVer) {
 
       const pointer = packID.content.pointer;
 
-      const svArr = utils.semverArray(semVer);
-      if (svArr === null) {
-        return {
-          ok: false,
-          content: `Provided version ${version} is not a valid semver.`,
-          short: "Not Found",
-        };
-      }
-
       // Retrieve all non-removed versions sorted from latest to older
       const getVersions = await sqlTrans`
-        SELECT id, semver, semver_v1, semver_v2, semver_v3, status
+        SELECT id, semver, status
         FROM versions
         WHERE package = ${pointer} AND status != 'removed'
         ORDER BY semver_v1 DESC, semver_v2 DESC, semver_v3 DESC;
@@ -965,13 +944,7 @@ async function removePackageVersion(packName, semVer) {
       let removeLatest = false;
       let versionId = null;
       for (const v of getVersions) {
-        // Type coercion on the following comparisons because semverArray contains strings
-        // while PostgreSQL returns versions as integer.
-        if (
-          v.semver_v1 == svArr[0] &&
-          v.semver_v2 == svArr[1] &&
-          v.semver_v3 == svArr[2]
-        ) {
+        if (v.semver === semVer) {
           versionId = v.id;
           removeLatest = v.status === "latest";
           break;

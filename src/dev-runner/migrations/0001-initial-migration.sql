@@ -93,7 +93,7 @@ CREATE TABLE versions (
         (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[3] AS INTEGER)) STORED,
     -- constraints
     CONSTRAINT semver2_format CHECK (semver ~ '^\d+\.\d+\.\d+'),
-    CONSTRAINT unique_pack_version UNIQUE(package, semver_v1, semver_v2, semver_v3)
+    CONSTRAINT unique_pack_version UNIQUE(package, semver)
 );
 
 -- Create authstate Table
