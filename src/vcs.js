@@ -57,12 +57,13 @@ async function ownership(userObj, packObj, opts = { dev_override: false }) {
   switch(repoObj.type) {
     // Additional supported VCS systems go here.
     case "git":
-    default:
+    default: {
       const github = new GitHub();
       let owner = await github.ownership(userObj, packObj);
       // ^^^ Above we pass the full package object since github will decode
       // the owner/repo combo as needed.
       return owner;
+    }
   }
 
 }
@@ -91,7 +92,7 @@ async function newPackageData(userObj, ownerRepo, service) {
 
     switch(service) {
       case "git":
-      default:
+      default: {
         const github = new GitHub();
 
         let newPack = {}; // We will append the new Package Data to this Object
@@ -160,18 +161,11 @@ async function newPackageData(userObj, ownerRepo, service) {
         // pack = the package.json file within the repo, as JSON
         // And we want to funnel all of this data into newPack and return it.
 
-        const time = Date.now();
-
         // First we ensure the package name is in the lowercase format.
         const packName = pack.content.name.toLowerCase();
 
         newPack.name = packName;
-        newPack.created = time;
-        newPack.updated = time;
         newPack.creation_method = "User Made Package";
-        newPack.downloads = 0;
-        newPack.stargazers_count = 0;
-        newPack.star_gazers = [];
         newPack.readme = readme.content;
         newPack.metadata = pack.content; // The metadata tag is the most recent package.json
 
@@ -267,6 +261,7 @@ async function newPackageData(userObj, ownerRepo, service) {
           ok: true,
           content: newPack
         };
+      }
     }
 
   } catch(err) {
@@ -292,7 +287,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   // all that logic into a single place.
   switch(service) {
     case "git":
-    default:
+    default: {
       const github = new GitHub();
 
       let pack = await github.packageJSON(userObj, ownerRepo);
@@ -357,6 +352,7 @@ async function newVersionData(userObj, ownerRepo, service) {
         pack.content.tarball_url = tag.tarball_url;
         pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
       }
+    }
   }
 }
 
