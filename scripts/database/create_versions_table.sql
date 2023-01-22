@@ -14,6 +14,7 @@ CREATE TABLE versions (
     created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     meta JSONB,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     -- generated columns
     semver_v1 INTEGER GENERATED ALWAYS AS
         (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[1] AS INTEGER)) STORED,
