@@ -61,23 +61,16 @@ async function constructPackageObjectFull(pack) {
     return retVer;
   };
 
-  const findLatestVersion = (vers) => {
-    for (const v of vers) {
-      if (v.status === "latest") {
-        return v.semver;
-      }
-    }
-    return null;
-  };
+  // database.getPackageByName() sorts the JSON array versions in descending order,
+  // so no need to find the latest, it's the first one.
+  const latestVer = pack.versions.length !== 0 ? pack.versions[0] : [];
 
   let newPack = pack.data;
   newPack.name = pack.name;
   newPack.downloads = pack.downloads;
   newPack.stargazers_count = pack.stargazers_count;
   newPack.versions = parseVersions(pack.versions);
-  newPack.releases = {
-    latest: findLatestVersion(pack.versions),
-  };
+  newPack.releases = { latest: latestVer };
 
   logger.generic(6, "Built Package Object Full without Error");
 
