@@ -229,7 +229,8 @@ async function createPackage(repo, user) {
 
     // Currently there is no purpose to store the type of repo. But for the time being,
     // we will assume this could be used in the future as a way to determine how to interact with a repo.
-    newPack.repository = selectPackageRepository(pack.repository);
+    const packRepo = selectPackageRepository(pack.repository);
+    newPack.repository = packRepo;
 
     // Now during migration packages will have a 'versions' key, but otherwise the standard
     // package will just have a 'version'.
@@ -276,7 +277,12 @@ async function createPackage(repo, user) {
         continue;
       }
 
-      newPack.versions[ver] = versionMetadata;
+      newPack.versions[ver] = {
+        name: packName,
+        repository: packRepo,
+        readme: readme,
+        metadata: versionMetadata,
+      };
       versionCount++;
 
       // Check latest version.

@@ -62,10 +62,10 @@ async function constructPackageObjectFull(pack) {
   };
 
   // database.getPackageByName() sorts the JSON array versions in descending order,
-  // so no need to find the latest, it's the first one.
-  const latestVer = pack.versions.length !== 0 ? pack.versions[0] : [];
+  // so no need to find the latest metadata, it's the first one.
+  const latestVer = pack.versions.length !== 0 ? pack.versions[0] : {};
 
-  let newPack = pack.data;
+  let newPack = latestVer;
   newPack.name = pack.name;
   newPack.downloads = pack.downloads;
   newPack.stargazers_count = pack.stargazers_count;

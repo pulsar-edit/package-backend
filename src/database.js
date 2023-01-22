@@ -232,7 +232,7 @@ async function insertNewPackage(pack) {
  * @param {string|null} oldName - If provided, the old name to be replaced for the renaming of the package.
  * @returns {object} A server status object.
  */
-async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
+async function insertNewPackageVersion(packJSON, oldName = null) {
   sqlStorage ??= setupSQL();
 
   // We are expected to receive a standard `package.json` file.
@@ -320,19 +320,6 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
 
       if (!addVer?.count) {
         throw `Unable to create a new version for ${packName}`;
-      }
-
-      // Then update the package object in the related column of packages table.
-      // TODO: This is deprecated and will removed in the future.
-      const updatePackageData = await sqlTrans`
-        UPDATE packages
-        SET data = ${packageData}
-        WHERE pointer = ${pointer}
-        RETURNING name;
-      `;
-
-      if (updatePackageData.count === 0) {
-        throw `Unable to update the full package object of the new version ${packName}`;
       }
 
       return {
@@ -489,7 +476,7 @@ async function getPackageByName(name, user = false) {
         ${
           user ? sqlStorage`` : sqlStorage`p.pointer,`
         } p.name, p.created, p.updated, p.creation_method, p.downloads,
-        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data,
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count,
         JSONB_AGG(
           JSON_BUILD_OBJECT(
             ${
@@ -610,7 +597,7 @@ async function getPackageCollectionByName(packArray) {
     // we select only the needed columns.
     const command = await sqlStorage`
       SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
-        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.meta AS data
       FROM packages p
         INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
           packArray
@@ -667,7 +654,7 @@ async function getPackageCollectionByID(packArray) {
 /**
  * @async
  * @function updatePackageStargazers
- * @description Uses the package name (or pointer if provided) to update its stargazers count.
+ * @description Internal util that uses the package name (or pointer if provided) to update its stargazers count.
  * @param {string} name - The package name.
  * @param {string} pointer - The package id (if given, the search by name is skipped).
  * @returns {object} The effected server status object.
@@ -698,7 +685,7 @@ async function updatePackageStargazers(name, pointer = null) {
       UPDATE packages
       SET stargazers_count = ${starCount}
       WHERE pointer = ${pointer}
-      RETURNING name, downloads, (stargazers_count + original_stargazers) AS stargazers_count, data;
+      RETURNING name, (stargazers_count + original_stargazers) AS stargazers_count;
     `;
 
     return updateStar.count !== 0
@@ -734,7 +721,7 @@ async function updatePackageIncrementDownloadByName(name) {
       SET downloads = p.downloads + 1
       FROM names n
       WHERE n.pointer = p.pointer AND n.name = ${name}
-      RETURNING p.name, p.downloads, p.data;
+      RETURNING p.name, p.downloads;
     `;
 
     return command.count !== 0
@@ -770,7 +757,7 @@ async function updatePackageDecrementDownloadByName(name) {
       SET downloads = GREATEST(p.downloads - 1, 0)
       FROM names n
       WHERE n.pointer = p.pointer AND n.name = ${name}
-      RETURNING p.name, p.downloads, p.data;
+      RETURNING p.name, p.downloads;
     `;
 
     return command.count !== 0
@@ -1362,7 +1349,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
 
     const command = await sqlStorage`
       WITH search_query AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, v.meta AS data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated
         FROM packages p
@@ -1482,7 +1469,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
 
     const command = await sqlStorage`
       WITH latest_versions AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, v.meta AS data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated
         FROM packages p
@@ -1668,7 +1655,6 @@ module.exports = {
   getPackageVersionByNameAndVersion,
   updatePackageIncrementDownloadByName,
   updatePackageDecrementDownloadByName,
-  updatePackageStargazers,
   getFeaturedThemes,
   simpleSearch,
   updateIncrementStar,
