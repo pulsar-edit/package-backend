@@ -35,15 +35,15 @@ const semVerInitRegex = /^\s*v/i;
  * to the repo or otherwise a failure.
  */
 async function ownership(userObj, packObj, opts = { dev_override: false }) {
-  if (
-    process.env.PULSAR_STATUS === "dev" &&
-    !dev_override &&
-    process.env.MOCK_GH !== "false"
-  ) {
-    console.log(`git.js.ownership() Is returning Dev Only Permissions for ${user.username}`);
+  // if (
+    // process.env.PULSAR_STATUS === "dev" &&
+    // !opts.dev_override &&
+    // process.env.MOCK_GH !== "false"
+  // ) {
+    // console.log(`git.js.ownership() Is returning Dev Only Permissions for ${user.username}`);
 
 
-  }
+  // }
   // Non-dev return.
 
   // Since the package is already on the DB when attempting to determine ownership

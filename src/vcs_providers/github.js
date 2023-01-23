@@ -37,7 +37,7 @@ class GitHub extends Git {
    */
   async ownership(user, pack) {
     // expects full userObj, and repoObj
-    const ownerRepo = utils.getOwnerRepoFromPackage(pack.data);
+    const ownerRepo = utils.getOwnerRepoFromPackage(pack);
 
     const owner = await this.doesUserHaveRepo(user, ownerRepo);
 
@@ -84,7 +84,7 @@ class GitHub extends Git {
    */
   async doesUserHaveRepo(user, ownerRepo, page = 1) {
     try {
-      const check = await this._webRequestAuth(`/repos/${ownerRepo}/contributors?page=${page}`, user.token);
+      const check = await this._webRequestAuth(`/repos/${ownerRepo}/collaborators?page=${page}`, user.token);
 
       if (!check.ok) {
         if (check.short === "Failed Request") {

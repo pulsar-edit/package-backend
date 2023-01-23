@@ -438,7 +438,7 @@ describe("Does newVersionData Return as Expected", () => {
     const tmpMock = webRequestMockHelper(mockData);
 
     const res = await vcs.newVersionData(userDataGeneric, ownerRepo, "git");
-    
+
     expect(res.ok).toBe(true);
     expect(res.content.name).toBe("pulsar");
     expect(res.content.repository.type).toBe("git");
@@ -450,4 +450,56 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.content.metadata.sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
   });
 
+});
+
+describe("Ownership Returns as Expected", () => {
+  test("Returns Successfully", async () => {
+    const ownerRepo = "pulsar-edit/pulsar";
+    const userObj = {
+      token: "123",
+      node_id: "12345"
+    };
+    const packObj = {
+      repository: {
+        type: "git",
+        url: "https://github.com/pulsar-edit/pulsar"
+      },
+      data: {
+      }
+    };
+
+    const mockData = [
+      {
+        url: `/repos/${ownerRepo}/collaborators?page=1`,
+        obj: {
+          ok: true,
+          content: {
+            status: 200,
+            body: [
+              {
+                login: "confused-Techie",
+                node_id: userObj.node_id,
+                permissions: {
+                  admin: true,
+                  maintain: true,
+                  push: true,
+                  triage: true,
+                  pull: true
+                },
+                role_name: "admin"
+              }
+            ]
+          }
+        }
+      }
+    ];
+
+
+    const tmpMock = webRequestMockHelper(mockData);
+
+    const res = await vcs.ownership(userObj, packObj);
+
+    expect(res.ok).toBe(true);
+    expect(res.content).toBe("admin");
+  });
 });
