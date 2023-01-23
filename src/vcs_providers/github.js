@@ -256,7 +256,7 @@ class GitHub extends Git {
       // We have valid tags, lets return.
       return {
         ok: true,
-        content: raw.content
+        content: raw.content.body
       };
 
     } catch(err) {
@@ -305,7 +305,7 @@ class GitHub extends Git {
       // We have valid data, lets return after processing
       return {
         ok: true,
-        content: JSON.parse(Buffer.from(raw.body.content, raw.body.encoding).toString())
+        content: JSON.parse(Buffer.from(raw.content.body.content, raw.content.body.encoding).toString())
       };
 
     } catch(err) {
@@ -360,7 +360,7 @@ class GitHub extends Git {
       // We have valid data
       return {
         ok: true,
-        content: raw.body.full_name
+        content: raw.content.body.full_name
       };
     } catch(err) {
       return {

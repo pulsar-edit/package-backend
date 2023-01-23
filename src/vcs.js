@@ -180,7 +180,7 @@ async function newPackageData(userObj, ownerRepo, service) {
           for (const v of Object.keys(pack.content.versions)) {
             versionList.push(v);
           }
-        } else if (pack.content.verison) {
+        } else if (pack.content.version) {
           versionList.push(pack.content.version);
         }
 
@@ -190,7 +190,7 @@ async function newPackageData(userObj, ownerRepo, service) {
         newPack.versions = {};
         // Now to add the release data of each release within the package
         for (const v of versionList) {
-          const ver = query.engine(v);
+          const ver = query.engine(v.replace(semVerInitRegex, ""));
           if (ver === false) {
             continue;
           }
@@ -223,7 +223,7 @@ async function newPackageData(userObj, ownerRepo, service) {
           pack.tarball_url = tag.tarball_url;
           pack.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
-          newPack.versions[ver] = pack;
+          newPack.versions[ver] = pack.content;
           versionCount++;
 
           // Check latest version

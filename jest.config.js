@@ -15,11 +15,14 @@ const config = {
     },
     {
       displayName: "Unit-Tests",
-      testMatch: ["<rootDir>/src/tests/vcs.test.js"],
+      testMatch: ["<rootDir>/src/tests/*.test.js"],
     },
     {
       displayName: "VCS-Tests",
-      testMatch: ["<rootDir>/src/vcs_providers_tests/**/*.test.js"],
+      testMatch: [
+        //"<rootDir>/src/vcs_providers_tests/**/*.test.js",
+        "<rootDir>/src/vcs_providers_tests/vcs.test.js"
+      ],
     }
   ],
 };
