@@ -34,16 +34,38 @@ const semVerInitRegex = /^\s*v/i;
  * @returns {object} - A Server Status object containing the role of the user according
  * to the repo or otherwise a failure.
  */
-async function ownership(userObj, packObj, opts = { dev_override: false }) {
-  // if (
-    // process.env.PULSAR_STATUS === "dev" &&
-    // !opts.dev_override &&
-    // process.env.MOCK_GH !== "false"
-  // ) {
-    // console.log(`git.js.ownership() Is returning Dev Only Permissions for ${user.username}`);
+async function ownership(userObj, packObj, dev_override = false ) {
+  // TODO: Ideally we don't have any static fake returns.
+  // As we have seen this degrades the accuracy of our tests greatly.
+  // Now that we have the whole new Testing System I'd like to move away and remove this
+  // code whole sale, as well as the `dev_override`. But in the interest in finishing
+  // up this PR, and merging before I become to far off from main, we can keep this system for now.
+  // And hopefully rely on our individual vcs tests.
+  if (
+    process.env.PULSAR_STATUS === "dev" &&
+    !dev_override &&
+    process.env.MOCK_GH !== "false"
+  ) {
+    console.log(`git.js.ownership() Is returning Dev Only Permissions for ${userObj.username}`);
 
+    switch(userObj.username) {
+      case "admin_user":
+        return { ok: true, content: "admin" };
+      case "no_perm_user":
+        return {
+          ok: false,
+          content: "Development NoPerms User",
+          short: "No Repo Access"
+        };
+      default:
+        return {
+          ok: false,
+          content: "Server in Dev Mode passed unhandled user",
+          short: "Server Error"
+        };
+     }
 
-  // }
+   }
   // Non-dev return.
 
   // Since the package is already on the DB when attempting to determine ownership

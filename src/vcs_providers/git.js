@@ -57,7 +57,7 @@
       return { ok: true, content: res };
 
      } catch(err) {
-       return { ok: false, short: "Exception During Web Request", content: res };
+       return { ok: false, short: "Exception During Web Request", content: err };
      }
    }
 
