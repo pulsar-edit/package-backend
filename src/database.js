@@ -7,7 +7,6 @@
 const fs = require("fs");
 const postgres = require("postgres");
 const storage = require("./storage.js");
-const utils = require("./utils.js");
 const logger = require("./logger.js");
 const {
   DB_HOST,
@@ -162,10 +161,6 @@ async function insertNewPackage(pack) {
       if (!insertNewName?.count) {
         throw `Cannot insert ${pack.name} in names table`;
       }
-
-      // git.createPackage() executed before this function ensures
-      // the latest version is correctly selected.
-      const latest = pack.releases.latest;
 
       // Populate versions table
       let versionCount = 0;
