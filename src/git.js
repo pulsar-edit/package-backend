@@ -261,7 +261,12 @@ async function createPackage(repo, user) {
       }
 
       // They match tag and version, stuff the data into the package.
-      const versionMetadata = await metadataAppendTarballInfo(pack, tag, user);
+      // Copy pack so we avoid to append tarball info to the same object
+      const versionMetadata = await metadataAppendTarballInfo(
+        structuredClone(pack),
+        tag,
+        user
+      );
       // TODO::
       // Its worthy to note that the function above assigns the current package.json file within the repo
       // as the version tag. Now this in most cases during a publish should be fine.

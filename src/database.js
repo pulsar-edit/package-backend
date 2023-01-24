@@ -119,12 +119,6 @@ async function insertNewPackage(pack) {
   // All data is committed into the database only if no errors occur.
   return await sqlStorage
     .begin(async (sqlTrans) => {
-      const packData = {
-        name: pack.name,
-        repository: pack.repository,
-        readme: pack.readme,
-        metadata: pack.metadata,
-      };
       const packageType =
         typeof pack.metadata.themes === "string" &&
         pack.metadata.themes.match(/^(?:themes|ui)$/i) !== null
@@ -139,7 +133,7 @@ async function insertNewPackage(pack) {
         // TODO: data column deprecated; to be removed
         insertNewPack = await sqlTrans`
           INSERT INTO packages (name, creation_method, data, package_type)
-          VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
+          VALUES (${pack.name}, ${pack.creation_method}, ${pack}, ${packageType})
           RETURNING pointer;
       `;
       } catch (e) {
@@ -487,9 +481,9 @@ async function getPackageByName(name, user = false) {
           )
           ORDER BY v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
         ) AS versions
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.deleted IS FALSE)
+      FROM packages AS p
+        INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name = ${name})
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
       GROUP BY p.pointer;
     `;
 
@@ -558,9 +552,9 @@ async function getPackageVersionByNameAndVersion(name, version) {
 
     const command = await sqlStorage`
       SELECT v.semver, v.license, v.engine, v.meta
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.semver = ${version} AND v.deleted IS FALSE);
+      FROM packages AS p
+        INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name = ${name})
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.semver = ${version} AND v.deleted IS FALSE);
     `;
 
     return command.count !== 0
@@ -598,11 +592,11 @@ async function getPackageCollectionByName(packArray) {
     const command = await sqlStorage`
       SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
         (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.meta AS data
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
+      FROM packages AS p
+        INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
           packArray
         )})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.deleted IS FALSE)
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
       ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC;
     `;
 
@@ -631,8 +625,9 @@ async function getPackageCollectionByID(packArray) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      SELECT DISTINCT ON (p.name) p.name, v.meta
-      FROM packages p
+      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.meta AS data
+      FROM packages AS p
         INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
       WHERE pointer IN ${sqlStorage(packArray)}
       ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC;
@@ -717,9 +712,9 @@ async function updatePackageIncrementDownloadByName(name) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      UPDATE packages p
+      UPDATE packages AS p
       SET downloads = p.downloads + 1
-      FROM names n
+      FROM names AS n
       WHERE n.pointer = p.pointer AND n.name = ${name}
       RETURNING p.name, p.downloads;
     `;
@@ -753,9 +748,9 @@ async function updatePackageDecrementDownloadByName(name) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      UPDATE packages p
+      UPDATE packages AS p
       SET downloads = GREATEST(p.downloads - 1, 0)
-      FROM names n
+      FROM names AS n
       WHERE n.pointer = p.pointer AND n.name = ${name}
       RETURNING p.name, p.downloads;
     `;
@@ -1352,8 +1347,8 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
         SELECT DISTINCT ON (p.name) p.name, v.meta AS data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated
-        FROM packages p
-          INNER JOIN names n ON (p.pointer = n.pointer AND n.name LIKE ${
+        FROM packages AS p
+          INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name LIKE ${
             "%" + lcterm + "%"
           }
           ${
@@ -1472,7 +1467,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
         SELECT DISTINCT ON (p.name) p.name, v.meta AS data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated
-        FROM packages p
+        FROM packages AS p
           INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE
           ${
             themes === true
