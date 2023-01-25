@@ -11,15 +11,18 @@ const config = {
       globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
       globalTeardown:
         "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
-      testMatch: ["<rootDir>/src/tests_integration/*.test.js"],
+      testMatch: ["<rootDir>/src/tests_integration/main.test.js"],
     },
     {
       displayName: "Unit-Tests",
-      testMatch: ["<rootDir>/src/tests/vcs.test.js"],
+      testMatch: ["<rootDir>/src/tests/*.test.js"],
     },
     {
       displayName: "VCS-Tests",
-      testMatch: ["<rootDir>/src/vcs_providers_tests/**/*.test.js"],
+      testMatch: [
+        "<rootDir>/src/vcs_providers_tests/**/*.test.js",
+        "<rootDir>/src/vcs_providers_tests/*.test.js"
+      ],
     }
   ],
 };

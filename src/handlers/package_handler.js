@@ -14,6 +14,7 @@
 const common = require("./common_handler.js");
 const query = require("../query.js");
 const git = require("../git.js");
+const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
 const utils = require("../utils.js");
@@ -420,9 +421,13 @@ async function deletePackagesName(req, res) {
     return;
   }
 
-  const gitowner = await git.ownership(
+  //const gitowner = await git.ownership(
+  //  user.content,
+  //  utils.getOwnerRepoFromPackage(packageExists.content.data)
+  //);
+  const gitowner = await vcs.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packageExists.content.data)
+    packageExists.content
   );
 
   if (!gitowner.ok) {
@@ -628,61 +633,70 @@ async function postPackagesVersion(req, res) {
   // Get `owner/repo` string format from package.
   let ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
 
+  // Using our new VCS Service
+  // TODO: The "git" Service shouldn't always be hardcoded.
+  let packMetadata = await vcs.newVersionData(user.content, ownerRepo, "git");
+
+  if (!packMetadata.ok) {
+    logger.generic(6, packMetadata.content);
+    await common.handleError(req, res, packMetadata);
+    return;
+  }
   // Now it's important to note, that getPackageJSON was intended to be an internal function.
   // As such does not return a Server Status Object. This may change later, but for now,
   // we will expect `undefined` to not be success.
-  const packJSON = await git.getPackageJSON(ownerRepo, user.content);
+  //const packJSON = await git.getPackageJSON(ownerRepo, user.content);
 
-  if (packJSON === undefined) {
-    logger.generic(6, `Unable to get Package JSON from git with: ${ownerRepo}`);
-    await common.handleError(req, res, {
-      ok: false,
-      short: "Bad Package",
-      content: `Failed to get Package JSON: ${ownerRepo}`,
-    });
-    return;
-  }
+  //if (packJSON === undefined) {
+  //  logger.generic(6, `Unable to get Package JSON from git with: ${ownerRepo}`);
+  //  await common.handleError(req, res, {
+  //    ok: false,
+  //    short: "Bad Package",
+  //    content: `Failed to get Package JSON: ${ownerRepo}`,
+  //  });
+  //  return;
+  //}
 
   // Now we will also need to get the packages data to update on the db
   // during version pushes.
 
-  const packReadme = await git.getRepoReadMe(ownerRepo, user.content);
+  //const packReadme = await git.getRepoReadMe(ownerRepo, user.content);
   // Again important to note, this was intended as an internal function of git
   // As such does not return a Server Status Object, and instead returns the obj or null
-  if (packReadme === undefined) {
-    logger.generic(
-      6,
-      `Unable to Get Package Readme from git with: ${ownerRepo}`
-    );
-    await common.handleError(req, res, {
-      ok: false,
-      short: "Bad Package",
-      content: `Failed to get Package Readme: ${ownerRepo}`,
-    });
-  }
+  //if (packReadme === undefined) {
+  //  logger.generic(
+  //    6,
+  //    `Unable to Get Package Readme from git with: ${ownerRepo}`
+  //  );
+  //  await common.handleError(req, res, {
+  //    ok: false,
+  //    short: "Bad Package",
+  //    content: `Failed to get Package Readme: ${ownerRepo}`,
+  //  });
+  //}
 
-  const packMetadata = await git.metadataAppendTarballInfo(
-    packJSON,
-    packJSON.version,
-    user.content
-  );
-  if (packMetadata === undefined) {
-    await common.handleError(req, res, {
-      ok: false,
-      short: "Bad Package",
-      content: `Failed to get Package metadata info: ${ownerRepo}`,
-    });
-  }
+  //const packMetadata = await git.metadataAppendTarballInfo(
+  //  packJSON,
+  //  packJSON.version,
+  //  user.content
+  //);
+  //if (packMetadata === undefined) {
+  //  await common.handleError(req, res, {
+  //    ok: false,
+  //    short: "Bad Package",
+  //    content: `Failed to get Package metadata info: ${ownerRepo}`,
+  //  });
+  //}
 
   // Now construct the object that will be used to update the `data` column.
-  const packageData = {
-    name: packMetadata.name.toLowerCase(),
-    repository: git.selectPackageRepository(packMetadata.repository),
-    readme: packReadme,
-    metadata: packMetadata,
-  };
+  //const packageData = {
+  //  name: packMetadata.name.toLowerCase(),
+  //  repository: git.selectPackageRepository(packMetadata.repository),
+  //  readme: packReadme,
+  //  metadata: packMetadata,
+  //};
 
-  const newName = packMetadata.name;
+  const newName = packMetadata.content.metadata.name;
   const currentName = packExists.content.name;
   if (newName !== currentName && !params.rename) {
     logger.generic(
@@ -705,9 +719,10 @@ async function postPackagesVersion(req, res) {
   // From the newest updated `package.json` info, just in case it's changed that will be
   // supported here
 
-  ownerRepo = utils.getOwnerRepoFromPackage(packJSON);
+  ownerRepo = utils.getOwnerRepoFromPackage(packMetadata.content.metadata);
 
-  const gitowner = await git.ownership(user.content, ownerRepo);
+  //const gitowner = await git.ownership(user.content, ownerRepo);
+  const gitowner = await vcs.ownership(user.content, packExists.content);
 
   if (!gitowner.ok) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
@@ -740,8 +755,8 @@ async function postPackagesVersion(req, res) {
   // Now add the new Version key.
 
   const addVer = await database.insertNewPackageVersion(
-    packMetadata,
-    packageData,
+    packMetadata.content.metadata,
+    packageMetadata.content,
     rename ? currentName : null
   );
 
