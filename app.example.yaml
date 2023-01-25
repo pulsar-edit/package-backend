@@ -2,7 +2,7 @@
 # Name this file app.yaml, and it will be picked up by the server.
 # app.yaml is in the git ignore to prevent any secrets from leaking.
 
-runtime: nodejs14
+runtime: nodejs18
 service: default
 
 env_variables:
@@ -22,8 +22,6 @@ env_variables:
   GH_CLIENTID: ""
   # The Client Secret to accompany the CLIENT ID
   GH_CLIENTSECRET: ""
-  # The github username associated with the token.
-  GH_USERNAME: ""
   # The User Agent thats used to communicate with GitHub
   GH_USERAGENT: "Pulsar-Edit Bot"
   # The URI that the OAuth instance should redirect to. Should end in `/api/oauth`
@@ -48,3 +46,5 @@ env_variables:
   # Determines how Logs are written. Currently supports the following options:
   # stdout - Writes the console
   LOG_FORMAT: "stdout"
+  RATE_LIMIT_GENERIC: 300
+  RATE_LIMIT_AUTH: 300
