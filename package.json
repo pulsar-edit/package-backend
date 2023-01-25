@@ -4,7 +4,7 @@
   "description": "The Pulsar API Backend for the Community fork of Atom.",
   "main": "src/server.js",
   "engines": {
-    "node": ">=14.0.0 <=16.16.0"
+    "node": ">=14.0.0 <=18.13.0"
   },
   "scripts": {
     "start": "node ./src/server.js",
