@@ -5,8 +5,9 @@
 const PackageJSON = require("./package_json.js");
 
 class PackageObjectFull extends PackageJSON {
-  constructor() {
+  constructor(opts = {}) {
     super();
+    this._initializer(opts);
   }
 }
 

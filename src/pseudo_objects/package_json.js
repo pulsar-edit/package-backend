@@ -12,16 +12,70 @@
 // The setter itself should be in charge of validations, and error throwing.
 // In the case where a getter cannot find anything relevant, -1 should be returned.
 class PackageJSON {
-  constructor(opts) {
-    this.rawPack = opts.pack ?? {};
+  #rawPack = {};
+  #normalizedPack = {};
 
-    this.normalizedPack = {};
-    // normalizedMode will contain certain modes and settings to enforce.
-    this.mode = {
-      strict: opts.mode.strict ?? false, // strict Boolean will enforce strict adherance to specified service
-      service: opts.mode.service ?? "npm", // service is the intended service for the package.json
-      bug: opts.mode.bug ?? "string", // The Bug Mode used. Either Object or String is valid. Default can be used to stick with what's currently used.
-    };
+  // normalizedMode will contain certain modes and settings to enforce.
+  #mode = {
+    // strict Boolean will enforce strict adherance to specified service
+    strict: false,
+    // service is the intended service for the package.json
+    service: "npm",
+    // The Bug Mode used. Either Object or String is valid.
+    // Default can be used to stick with what's currently used.
+    bugs: "string",
+  };
+
+  constructor(opts = {}) {
+    this._initializer(opts)
+  }
+
+  /**
+   * === PROTECTED METHODS ===
+   */
+
+  _initializer(opts) {
+    this.#rawPack = opts?.pack ?? this.#rawPack;
+
+    this.#mode.strict = opts?.mode?.strict ?? this.#mode.strict;
+    this.#mode.service = opts?.mode?.service ?? this.#mode.service;
+    this.#mode.bugs = opts?.mode?.bugs ?? this.#mode.bugs;
+  }
+
+  _setName(value) {
+    if (this.#mode.strict && typeof this.#mode.service !== "undefined") {
+      const valid = this.validateName(this.#mode.service);
+
+      if (valid.overall) {
+        this.#normalizedPack.name = value;
+        return value;
+      }
+
+      throw new Error(`Name is not valid for ${this.#mode.service}: ${valid.invalid}`);
+    }
+
+    // No strict declared
+    this.#normalizedPack.name = value;
+    return value;
+  }
+
+  _setBugs(value) {
+    if (this.#mode.bugs === "object" || typeof value === "object") {
+      if (typeof value.url !== "undefined" && typeof value.email !== "undefined") {
+        this.#normalizedPack.bugs = value;
+        return value;
+      }
+    }
+
+    if (this.#mode.bugs === "string" || typeof value === "string") {
+      if (typeof value === "string") {
+        // Also ensure it is a valid URL
+        this.#normalizedPack.bugs = value;
+        return value;
+      }
+    }
+
+    throw new Error(`Bugs value does't match ${this.#mode.bugs} Bugs Mode`);
   }
 
   // Below we will define the standard Values that are supported as Getters and
@@ -33,18 +87,18 @@ class PackageJSON {
   // any part of the rawPack, in case it's needed again.
 
   /**
-   * === PROPERTIES ===
+   * === PROPERTIES GETTERS AND SETTERS ===
    */
   get name() {
 
     // First lets see if it's in the normalizedPack
-    if (typeof this.normalizedPack.name === "string") {
-      return this.normalizedPack.name;
+    if (typeof this.#normalizedPack.name === "string") {
+      return this.#normalizedPack.name;
     }
 
-    if (typeof this.rawPack.name === "string") {
-      this.name = this.rawPack.name; // Use our setter to assign the value
-      return this.name; // Return the output of our setter
+    if (typeof this.#rawPack.name === "string") {
+      this._name = this._setName(this.#rawPack.name);
+      return this._name;
     }
 
     // If we have reached this point then we know we can't find this value.
@@ -53,128 +107,120 @@ class PackageJSON {
   }
 
   set name(value) {
-    if (this.mode.strict && typeof this.mode.service !== "undefined") {
-      let valid = this.validateName(this.mode.service);
-
-      if (valid.overall) {
-        this.normalizedPack.name = value;
-        return;
-      }
-
-      throw new Error(`Name is not valid for ${this.mode.service}: ${valid.invalid}`);
-    }
-
-    // No strict declared
-    this.normalizedPack.name = value;
+    this._setName(value);
   }
 
   get version() {
-    if (typeof this.normalizedPack.version === "string") {
-      return this.normalizedPack.version;
+    if (typeof this.#normalizedPack.version === "string") {
+      return this.#normalizedPack.version;
     }
 
-    if (typeof this.rawPack.version === "string") {
-      this.version = this.rawPack.version;
-      return this.version;
+    if (typeof this.#rawPack.version === "string") {
+      this.#normalizedPack.version = this.#rawPack.version;
+      this._version = this.#rawPack.version;
+      return this._version;
     }
 
     return undefined;
   }
 
   set version(value) {
-    this.normalizedPack.version = value;
+    this.#normalizedPack.version = value;
   }
 
   get description() {
-    if (typeof this.normalizedPack.description === "string") {
-      return this.normalizedPack.description;
+    if (typeof this.#normalizedPack.description === "string") {
+      return this.#normalizedPack.description;
     }
 
-    if (typeof this.rawPack.description === "string") {
-      this.description = this.rawPack.description;
-      return this.description;
+    if (typeof this.#rawPack.description === "string") {
+      this.#normalizedPack.description = this.#rawPack.description;
+      this._description = this.#rawPack.description;
+      return this._description;
     }
 
     return undefined;
   }
 
   set description(value) {
-    this.normalizedPack.description = value;
+    this.#normalizedPack.description = value;
   }
 
   get keywords() {
-    if (Array.isArray(this.normalizedPack.keywords)) {
-      return this.normalizedPack.keywords;
+    if (Array.isArray(this.#normalizedPack.keywords)) {
+      return this.#normalizedPack.keywords;
     }
 
-    if (Array.isArray(this.rawPack.keywords)) {
-      this.keywords = this.rawPack.keywords;
-      return this.keywords;
+    if (Array.isArray(this.#rawPack.keywords)) {
+      this.#normalizedPack.keywords = this.#rawPack.keywords;
+      this._keywords = this.#rawPack.keywords;
+      return this._keywords;
     }
 
     return undefined;
   }
 
   set keywords(value) {
-    this.normalizedPack.keywords = value;
+    this.#normalizedPack.keywords = Array.isArray(value) ? value : [];
   }
 
   get homepage() {
-    if (typeof this.normalizedPack.homepage === "string") {
-      return this.normalizedPack.homepage;
+    if (typeof this.#normalizedPack.homepage === "string") {
+      return this.#normalizedPack.homepage;
     }
 
-    if (typeof this.rawPack.homepage === "string") {
-      this.homepage = this.rawPack.homepage;
-      return this.homepage;
+    if (typeof this.#rawPack.homepage === "string") {
+      this.#normalizedPack.homepage = this.#rawPack.homepage;
+      this._homepage = this.#rawPack.homepage;
+      return this._homepage;
     }
 
     return undefined;
   }
 
   set homepage(value) {
-    this.normalizedPack = value;
+    this.#normalizedPack.homepage = value;
   }
 
   get bugs() {
-    // this.mode.bugs can be Default, Object, or String
-    if (this.mode.bugs === "default" && typeof this.normalizedPack.bugs !== "undefined") {
-      return this.normalizedPack.bugs;
+    // this.#mode.bugs can be Default, Object, or String
+    if (this.#mode.bugs === "default" && typeof this.#normalizedPack.bugs !== "undefined") {
+      return this.#normalizedPack.bugs;
     }
 
-    if (typeof this.normalizedPack.bugs === this.mode.bugs) {
-      return this.normalizedPack.bugs;
+    if (typeof this.#normalizedPack.bugs === this.#mode.bugs) {
+      return this.#normalizedPack.bugs;
     }
 
     // Because Bugs has two modes, we will attempt to support either.
-    if (typeof this.rawPack.bugs === "string") {
-      switch(this.mode.bugs) {
+    if (typeof this.#rawPack.bugs === "string") {
+      switch(this.#mode.bugs) {
         case "object":
           // we need to figure out if this is a URL or an email
         case "string":
         case "default":
         default:
-          this.bugs = this.rawPack.bugs;
-          return this.bugs;
+          this._bugs = this._setBugs(this.#rawPack.bugs);
+          return this._bugs;
       }
     }
 
-    if (typeof this.rawPack.bugs === "object") {
-      switch(this.mode.bugs) {
+    if (typeof this.#rawPack.bugs === "object") {
+      switch(this.#mode.bugs) {
         case "string":
           // Since when Bugs are in string mode we can only define a URL,
           // we will throw away the email part of the object.
-          if (typeof this.rawPack.bugs.url !== "undefined") {
-            this.bugs = this.rawPack.bugs.url;
-            return this.bugs;
+          if (typeof this.#rawPack.bugs.url !== "undefined") {
+            this._bugs = this._setBugs(this.#rawPack.bugs.url);
+            return this._bugs;
           }
           return undefined;
         case "object":
         case "default":
         default:
-          if (typeof this.rawPack.bugs.url !== "undefined" && typeof this.rawPack.bugs.email !== "undefined") {
-            this.bugs = this.rawPack.bugs;
-            return this.bugs;
+          if (typeof this.#rawPack.bugs.url !== "undefined" && typeof this.#rawPack.bugs.email !== "undefined") {
+            this._bugs = this._setBugs(this.#rawPack.bugs);
+            return this._bugs;
           }
           return undefined;
       }
@@ -184,22 +230,7 @@ class PackageJSON {
   }
 
   set bugs(value) {
-    if (this.mode.bugs === "object" || typeof value === "object") {
-      if (typeof value.url !== "undefined" && typeof value.email !== "undefined") {
-        this.normalizedPack.bugs = value;
-        return;
-      }
-    }
-
-    if (this.mode.bugs === "string" || typeof value === "string") {
-      if (typeof value === "string") {
-        // Also ensure it is a valid URL
-        this.normalizedPack.bugs = value;
-        return;
-      }
-    }
-
-    throw new Error(`Bugs value does't match ${this.mode.bugs} Bugs Mode`);
+    this._setBugs(value);
   }
 
   /**
@@ -210,7 +241,7 @@ class PackageJSON {
        case "npm": {
          // This will ensure the package name meets the criteria of NPMJS
          // https://docs.npmjs.com/cli/v9/configuring-npm/package-json#name
-         let name = this.name;
+         let name = this._name;
          let validArray = [];
          let invalidArray = [];
 
@@ -271,26 +302,25 @@ class PackageJSON {
       // during class creation will be used. Erroring out if none is provided in either.
 
       if (typeof pack !== "undefined") {
-        this.rawPack = pack;
+        this.#rawPack = pack;
       }
 
-      if (typeof this.rawPack === "undefined") {
+      if (typeof this.#rawPack !== "object" || this.#rawPack === null) {
         throw new Error("Raw PackageJSON Data never provided");
         return;
       }
 
-      // Now we know we should have this.rawPack defined properly, lets initiate parsing.
+      // Now we know we should have this.#rawPack defined properly, lets initiate parsing.
 
       // Since the getter will find and assign all values using the setter, we now
       // simply have to get every supported value.
 
-      for (const key in this.rawPack) {
-
+      for (const key in this.#rawPack) {
         if (typeof this[key] !== "function") {
           // We don't have a method that supports the key found in the package.json
           // It should be added arbitraly.
-          this.normalizedPack[key] = this.rawpack[key];
-          break;
+          this.#normalizedPack[key] = this.#rawPack[key];
+          continue;
         }
 
         // We know that the key taken from the package.json has a supported method.
@@ -298,7 +328,7 @@ class PackageJSON {
         this[key]();
       }
 
-      return this.normalizedPack;
+      return this.#normalizedPack;
     }
 
 }

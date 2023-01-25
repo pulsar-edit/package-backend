@@ -17,7 +17,7 @@ class GitHub extends Git {
   #defaultApiUrl = "https://api.github.com";
   #defaultAcceptableStatusCodes = [200, 401];
 
-  constructor(opts) {
+  constructor(opts = {}) {
     super();
     // Initialize base properties
     this._initializer({
