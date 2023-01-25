@@ -19,19 +19,7 @@ const { server_url } = require("../config.js").getConfig();
 const utils = require("../utils.js");
 const database = require("../database.js");
 const auth = require("../auth.js");
-
-/**
- * Once we Drop Support for Node v15.x
- * We can simply use
- * `const { URL } = require("node:url");`
- */
-let URL;
-
-if (process.version.startsWith("v15.")) {
-  { URL } = require("url");
-} else {
-  { URL } = require("node:url");
-}
+const { URL } = require("node:url");
 
 /**
  * @async
