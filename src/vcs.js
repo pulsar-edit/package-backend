@@ -74,8 +74,6 @@ async function ownership(userObj, packObj, dev_override = false ) {
   let repoObj = packObj.repository;
   // TODO: Double check validity of Object, but we should have `.type` & `.url`
 
-  let owner;
-
   switch(repoObj.type) {
     // Additional supported VCS systems go here.
     case "git":
