@@ -540,7 +540,7 @@ async function getRepoExistance(repo, user) {
  * @function getPackageJSON
  * @desc Intends to retrieve the raw text of the GitHub repo package.
  * @param {string} repo - The string of the repo in format `owner/repo`.
- * @returns {string|undefined} Returns a proper string of the readme if successful.
+ * @returns {object|undefined} Returns a proper string of the readme if successful.
  * And returns `undefined` otherwise.
  */
 async function getPackageJSON(repo, user) {

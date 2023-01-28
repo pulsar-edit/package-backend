@@ -156,7 +156,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // Build a repo tag object indexed by tag names so we can handle versions
-    // easily, and won't call query.engien() multiple times for a single version.
+    // easily, and won't call query.engine() multiple times for a single version.
     let tagList = {};
     for (const tag of tags.content) {
       if (typeof tag.name !== "string") {
@@ -169,7 +169,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // Now to get our Readme
-    let readme = await provider.readme(userObj, ownerRepo);
+    const readme = await provider.readme(userObj, ownerRepo);
 
     if (!readme.ok) {
       return {
@@ -195,7 +195,8 @@ async function newPackageData(userObj, ownerRepo, service) {
     newPack.metadata = pack.content; // The metadata tag is the most recent package.json
 
     // Then lets add the service used, so we are able to safely find it in the future
-    newPack.repository = determineProvider(pack.content.repository);
+    const packRepo = determineProvider(pack.content.repository)
+    newPack.repository = packRepo;
 
     // Now during migration packages will have a `versions` key, but otherwise
     // the standard package will just have `version`
@@ -210,8 +211,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     let versionCount = 0;
-    let latestVersion = null;
-    let latestSemverArr = null;
+
     newPack.versions = {};
     // Now to add the release data of each release within the package
     for (const v of versionList) {
@@ -245,25 +245,24 @@ async function newPackageData(userObj, ownerRepo, service) {
         continue;
       }
 
-      pack.content.tarball_url = tag.tarball_url;
-      pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
+      // The package metadata object should be cloned for every version, otherwise we end up
+      // overwriting the tarball info for all previous versions.
+      let packVersionMetadata = structuredClone(pack.content);
+      // Append metadata info to new object.
+      packVersionMetadata.tarball_url = tag.tarball_url;
+      packVersionMetadata.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
-      newPack.versions[ver] = pack.content;
+      newPack.versions[ver] = constructPackageVersionMetadata(
+        packName,
+        packRepo,
+        readme.content,
+        packVersionMetadata,
+      );
+
+      // Previosly we used to check the latest version, bur our database now has its own system
+      // to sort and determine the latest version, so we here just aggregate the versions
+      // in whichever order the provider has sent to us and increase the version count.
       versionCount++;
-
-      // Check latest version
-      if (latestVersion === null) {
-        // Initialize latest versin
-        latestVersion = ver;
-        latestSemverArr = utils.semverArray(ver);
-        continue;
-      }
-
-      const sva = utils.semverArray(ver);
-      if (utils.semverGt(sva, latestSemverArr)) {
-        latestVersion = ver;
-        latestSemverArr = sva;
-      }
     }
 
     if (versionCount === 0) {
@@ -273,12 +272,6 @@ async function newPackageData(userObj, ownerRepo, service) {
         short: "Server Error"
       };
     }
-
-    // Now with all the versions properly filled, we lastly just need the
-    // release data
-    newPack.releases = {
-      latest: latestVersion
-    };
 
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
@@ -299,7 +292,7 @@ async function newPackageData(userObj, ownerRepo, service) {
 
 /**
  * NOTE: Replaces metadataAppendTarballInfo - Intended to retreive the basics of package data.
- * While additionally replacing all special handling when publsihing a version
+ * While additionally replacing all special handling when publishing a version
  * This should instead return an object itself with the required data
  * So in this way the package_handler doesn't have to do anything special
  */
@@ -396,19 +389,19 @@ async function newVersionData(userObj, ownerRepo, service) {
 
   return {
     ok: true,
-    content: {
-      name: pack.content.name.toLowerCase(),
-      repository: determineProvider(pack.content.repository),
-      readme: readme.content,
-      metadata: pack.content
-    }
+    content: constructPackageVersionMetadata(
+      pack.content.name.toLowerCase(),
+      determineProvider(pack.content.repository),
+      readme.content,
+      pack.content,
+    ),
   };
 
 }
 
 /**
  * @function determineProvider
- * @desc Determines the repostiry object by the given argument.
+ * @desc Determines the repository object by the given argument.
  * Takes the `repository` key of a `package.json` and with very little if not no
  * desctructing will attempt to locate the provider service and return an object
  * with it.
@@ -486,6 +479,24 @@ function determineProvider(repo) {
       type: "na",
       url: ""
     };
+  }
+}
+
+/**
+ * @function constructPackageVersionMetadata
+ * @desc Internal util to be used to construct and return a package version metadata objects by the given arguments.
+ * @param {string} name - Package name.
+ * @param {object} repository - Repository object, usually obtained by determineProvider().
+ * @param {string|object} readme - The `readme` of the package.
+ * @param {object} repo - The full metadata object of the version of the package.
+ * @returns {object} The metadata object of the package repository type.
+ */
+function constructPackageVersionMetadata(name, repository, readme, metadata) {
+  return {
+    name,
+    repository,
+    readme,
+    metadata,
   }
 }
 
