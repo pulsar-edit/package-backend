@@ -158,25 +158,23 @@ describe("Get /api/packages", () => {
     const res = await request(app).get(
       "/api/packages?page=2&sort=created_at&direction=asc"
     );
+    expect(res).toHaveHTTPCode(200);
     expect(res.body).toBeArray();
   });
-  test("Should return valid Status Code", async () => {
+  test("Should respond with an array of packages sorted by update date.", async () => {
     const res = await request(app).get(
-      "/api/packages?page=2&sort=created_at&direction=asc"
+      "/api/packages?page=2&sort=updated_at&direction=asc"
     );
     expect(res).toHaveHTTPCode(200);
+    expect(res.body).toBeArray();
   });
   test("Should respond with an array of packages sorted by stars.", async () => {
     const res = await request(app).get(
-      "/api/packages?page=3&sort=stars&direction=desc"
-    );
-    expect(res.body).toBeArray();
-  });
-  test("Should return valid Status Code", async () => {
-    const res = await request(app).get(
-      "/api/packages?page=3&sort=stars&direction=desc"
+      "/api/packages?page=1&sort=stars&direction=desc"
     );
     expect(res).toHaveHTTPCode(200);
+    expect(res.body).toBeArray();
+    expect(res.body[0].name).toEqual("atom-material-ui");
   });
   test("Should return valid Status Code on invalid parameters", async () => {
     const res = await request(app).get(
@@ -336,6 +334,12 @@ describe("GET /api/packages/search", () => {
       .query({ order: "asc" });
     expect(res.body[0].name).toBe("language-css");
   });
+  test("Has the correct order listing by stars", async () => {
+    const res = await request(app)
+      .get("/api/packages/search?q=language")
+      .query({ sort: "start" });
+    expect(res.body[0].name).toBe("language-cpp");
+  });
   test("Ignores invalid 'direction'", async () => {
     const res = await request(app)
       .get("/api/packages/search?q=language")
@@ -386,62 +390,6 @@ describe("GET /api/packages/:packageName", () => {
     const res = await request(app).get("/api/packages/invalid-package");
     expect(res).toHaveHTTPCode(404);
   });
-});
-
-describe("DELETE /api/packages/:packageName", () => {
-  test("No Auth, returns 401", async () => {
-    const res = await request(app).delete("/api/packages/language-css");
-    expect(res).toHaveHTTPCode(401);
-  });
-  test("No Auth, returns 'Bad Auth' with no token", async () => {
-    const res = await request(app).delete("/api/packages/language-css");
-    expect(res.body.message).toEqual(msg.badAuth);
-  });
-  test("Returns 401 with Invalid Token", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css")
-      .set("Authorization", "invalid");
-    expect(res).toHaveHTTPCode(401);
-  });
-  test("Returns Bad Auth Msg with Invalid Token", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css")
-      .set("Authorization", "invalid");
-    expect(res.body.message).toEqual(msg.badAuth);
-  });
-  test("Returns Bad Auth Msg with Valid Token, but no repo access", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css")
-      .set("Authorization", "no-valid-token");
-    expect(res.body.message).toEqual(msg.badAuth);
-  });
-  test("Returns Bad Auth Http with Valid Token, but no repo access", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css")
-      .set("Authorization", "no-valid-token");
-    expect(res).toHaveHTTPCode(401);
-  });
-  test("Returns Success Message & HTTP with Valid Token", async () => {
-    const res = await request(app)
-      .delete("/api/packages/atom-material-ui")
-      .set("Authorization", "admin-token");
-    expect(res).toHaveHTTPCode(204);
-
-    const after = await request(app).get("/api/packages");
-    // This ensures our deleted package is no longer in the full package list.
-    expect(after.body).not.toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          name: "atom-material-ui",
-        }),
-      ])
-    );
-  });
-  // The ^^ above ^^ reads:
-  //  * Expect your Array does NOT Equal
-  //  * An Array that contains
-  //  * An Object that Contains
-  //  * The property { name: "atom-material-ui" }
 });
 
 describe("POST /api/packages/:packageName/star", () => {
@@ -707,64 +655,6 @@ describe("GET /api/packages/:packageName/versions/:versionName/tarball", () => {
   });
 });
 
-describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
-  test.todo("Finish these tests");
-  test("Returns 401 with No Auth", async () => {
-    const res = await request(app).delete(
-      "/api/packages/langauge-css/versions/0.45.7"
-    );
-    expect(res).toHaveHTTPCode(401);
-  });
-  test("Returns Bad Auth Message with No Auth", async () => {
-    const res = await request(app).delete(
-      "/api/packages/langauge-css/versions/0.45.7"
-    );
-    expect(res.body.message).toEqual(msg.badAuth);
-  });
-  test("Returns 401 with Bad Auth", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css/versions/0.45.7")
-      .set("Authorization", "invalid");
-    expect(res).toHaveHTTPCode(401);
-  });
-  test("Returns Bad Auth Message with Bad Auth", async () => {
-    const res = await request(app)
-      .delete("/api/packages/langauge-css/versions/0.45.7")
-      .set("Authorization", "invalid");
-    expect(res.body.message).toEqual(msg.badAuth);
-  });
-  test("Returns 404 with Bad Package", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-golang/versions/1.0.0")
-      .set("Authorization", "admin-token");
-    expect(res).toHaveHTTPCode(404);
-  });
-  test("Returns Not Found Msg with Bad Package", async () => {
-    const res = await request(app)
-      .delete("/api/packages/langauge-golang/versions/1.0.0")
-      .set("Authorization", "admin-token");
-    expect(res.body.message).toEqual(msg.notFound);
-  });
-  test("Returns 404 with Valid Package & Bad Version", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css/versions/1.0.0")
-      .set("Authorization", "admin-token");
-    expect(res).toHaveHTTPCode(404);
-  });
-  test("Returns Not Found Msg with Valid Package & Bad Version", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css/versions/1.0.0")
-      .set("Authorization", "admin-token");
-    expect(res.body.message).toEqual(msg.notFound);
-  });
-  test("Returns 204 on Success", async () => {
-    const res = await request(app)
-      .delete("/api/packages/language-css/versions/0.45.0")
-      .set("Authorization", "admin-token");
-    expect(res).toHaveHTTPCode(204);
-  });
-});
-
 describe("POST /api/packages/:packageName/versions/:versionName/events/uninstall", () => {
   test.todo("Write all of these");
   test("Returns 401 with No Auth", async () => {
@@ -922,6 +812,16 @@ describe("GET /api/themes/search", () => {
     expect(res.headers["link"].length).toBeGreaterThan(0);
     expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
     expect(res.headers["query-limit"].match(/^\d+$/) === null).toBeFalsy();
+  });
+  test("Has the correct default DESC listing", async () => {
+    const res = await request(app).get("/api/themes/search?q=material");
+    expect(res.body[0].name).toBe("atom-material-ui");
+  });
+  test("Sets ASC listing correctly", async () => {
+    const res = await request(app)
+      .get("/api/themes/search?q=material")
+      .query({ direction: "asc" });
+    expect(res.body[0].name).toBe("atom-material-syntax");
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/themes/search?q=not-one-match");
@@ -1272,4 +1172,118 @@ describe("Ensure Options Method Returns as Expected", () => {
     expect(res.headers["x-content-type-options"]).toEqual("nosniff");
     rateLimitHeaderCheck(res);
   });
+});
+
+describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
+  test.todo("Finish these tests");
+  test("Returns 401 with No Auth", async () => {
+    const res = await request(app).delete(
+      "/api/packages/langauge-css/versions/0.45.7"
+    );
+    expect(res).toHaveHTTPCode(401);
+  });
+  test("Returns Bad Auth Message with No Auth", async () => {
+    const res = await request(app).delete(
+      "/api/packages/langauge-css/versions/0.45.7"
+    );
+    expect(res.body.message).toEqual(msg.badAuth);
+  });
+  test("Returns 401 with Bad Auth", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css/versions/0.45.7")
+      .set("Authorization", "invalid");
+    expect(res).toHaveHTTPCode(401);
+  });
+  test("Returns Bad Auth Message with Bad Auth", async () => {
+    const res = await request(app)
+      .delete("/api/packages/langauge-css/versions/0.45.7")
+      .set("Authorization", "invalid");
+    expect(res.body.message).toEqual(msg.badAuth);
+  });
+  test("Returns 404 with Bad Package", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-golang/versions/1.0.0")
+      .set("Authorization", "admin-token");
+    expect(res).toHaveHTTPCode(404);
+  });
+  test("Returns Not Found Msg with Bad Package", async () => {
+    const res = await request(app)
+      .delete("/api/packages/langauge-golang/versions/1.0.0")
+      .set("Authorization", "admin-token");
+    expect(res.body.message).toEqual(msg.notFound);
+  });
+  test("Returns 404 with Valid Package & Bad Version", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css/versions/1.0.0")
+      .set("Authorization", "admin-token");
+    expect(res).toHaveHTTPCode(404);
+  });
+  test("Returns Not Found Msg with Valid Package & Bad Version", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css/versions/1.0.0")
+      .set("Authorization", "admin-token");
+    expect(res.body.message).toEqual(msg.notFound);
+  });
+  test("Returns 204 on Success", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css/versions/0.45.0")
+      .set("Authorization", "admin-token");
+    expect(res).toHaveHTTPCode(204);
+  });
+});
+
+describe("DELETE /api/packages/:packageName", () => {
+  test("No Auth, returns 401", async () => {
+    const res = await request(app).delete("/api/packages/language-css");
+    expect(res).toHaveHTTPCode(401);
+  });
+  test("No Auth, returns 'Bad Auth' with no token", async () => {
+    const res = await request(app).delete("/api/packages/language-css");
+    expect(res.body.message).toEqual(msg.badAuth);
+  });
+  test("Returns 401 with Invalid Token", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css")
+      .set("Authorization", "invalid");
+    expect(res).toHaveHTTPCode(401);
+  });
+  test("Returns Bad Auth Msg with Invalid Token", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css")
+      .set("Authorization", "invalid");
+    expect(res.body.message).toEqual(msg.badAuth);
+  });
+  test("Returns Bad Auth Msg with Valid Token, but no repo access", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css")
+      .set("Authorization", "no-valid-token");
+    expect(res.body.message).toEqual(msg.badAuth);
+  });
+  test("Returns Bad Auth Http with Valid Token, but no repo access", async () => {
+    const res = await request(app)
+      .delete("/api/packages/language-css")
+      .set("Authorization", "no-valid-token");
+    expect(res).toHaveHTTPCode(401);
+  });
+  test("Returns Success Message & HTTP with Valid Token", async () => {
+    const res = await request(app)
+      .delete("/api/packages/atom-material-ui")
+      .set("Authorization", "admin-token");
+    expect(res).toHaveHTTPCode(204);
+
+    const after = await request(app).get("/api/packages");
+    // This ensures our deleted package is no longer in the full package list.
+    expect(after.body).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          name: "atom-material-ui",
+        }),
+      ])
+    );
+  });
+  // The ^^ above ^^ reads:
+  //  * Expect your Array does NOT Equal
+  //  * An Array that contains
+  //  * An Object that Contains
+  //  * The property { name: "atom-material-ui" }
 });

@@ -61,23 +61,16 @@ async function constructPackageObjectFull(pack) {
     return retVer;
   };
 
-  const findLatestVersion = (vers) => {
-    for (const v of vers) {
-      if (v.status === "latest") {
-        return v.semver;
-      }
-    }
-    return null;
-  };
-
-  let newPack = pack.data;
+  // We need to copy the metadata of the latest version in order to avoid an
+  // auto-reference in the versions array that leads to a freeze in JSON stringify stage.
+  let newPack = structuredClone(pack?.versions[0]?.meta ?? {});
   newPack.name = pack.name;
   newPack.downloads = pack.downloads;
   newPack.stargazers_count = pack.stargazers_count;
   newPack.versions = parseVersions(pack.versions);
-  newPack.releases = {
-    latest: findLatestVersion(pack.versions),
-  };
+  // database.getPackageByName() sorts the JSON array versions in descending order,
+  // so no need to find the latest semver, it's the first one (index 0).
+  newPack.releases = { latest: pack?.versions[0]?.semver ?? "" };
 
   logger.generic(6, "Built Package Object Full without Error");
 
@@ -97,13 +90,12 @@ async function constructPackageObjectFull(pack) {
  */
 async function constructPackageObjectShort(pack) {
   const parsePackageObject = (p) => {
-    let newPack = p.data;
-    newPack.downloads = p.downloads;
-    newPack.stargazers_count = p.stargazers_count;
-    newPack.releases = {
-      latest: p.semver,
+    return {
+      ...p.data,
+      downloads: p.downloads,
+      stargazers_count: p.stargazers_count,
+      releases: { latest: p.semver },
     };
-    return newPack;
   };
 
   if (Array.isArray(pack)) {
@@ -114,7 +106,6 @@ async function constructPackageObjectShort(pack) {
         5,
         "Package Object Short Constructor Protected against 0 Length Array"
       );
-
       return pack;
     }
 
@@ -138,7 +129,6 @@ async function constructPackageObjectShort(pack) {
       5,
       "Package Object Short Constructor Protected against Undefined Required Values"
     );
-
     return {};
   }
 
@@ -158,13 +148,17 @@ async function constructPackageObjectShort(pack) {
  */
 async function constructPackageObjectJSON(pack) {
   const parseVersionObject = (v) => {
-    let newPack = v.meta;
-    if (newPack.sha) {
-      delete newPack.sha;
+    const dist = v.meta?.dist ?? {};
+    let newPack = {
+      ...v.meta,
+      dist: {
+        ...dist,
+        tarball: `${server_url}/api/packages/${v.meta.name}/versions/${v.semver}/tarball`,
+        engines: v.engine,
+      },
     }
-    newPack.dist ??= {};
-    newPack.dist.tarball = `${server_url}/api/packages/${v.meta.name}/versions/${v.semver}/tarball`;
-    newPack.engines = v.engine;
+    delete newPack.sha;
+
     logger.generic(6, "Single Package Object JSON finished without Error");
     return newPack;
   };
@@ -172,7 +166,6 @@ async function constructPackageObjectJSON(pack) {
   if (!Array.isArray(pack)) {
     const newPack = parseVersionObject(pack);
 
-    logger.generic(6, "Single Package Object JSON finished without Error");
     return newPack;
   }
 
