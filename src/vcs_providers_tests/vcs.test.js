@@ -132,6 +132,8 @@ describe("Does NewPackageData Return as expected", () => {
 
   test("Readme Error on Bad Web Request", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
+
+    const ver = "1.101.0-beta";
     const mockData = [
       {
         url: `/repos/${ownerRepo}`,
@@ -164,8 +166,8 @@ describe("Does NewPackageData Return as expected", () => {
             status: 200,
             body: [
               {
-                name: "v1.101.0-beta",
-                tarball_url: "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta"
+                name: `v${ver}`,
+                tarball_url: `https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v${ver}`
               }
             ]
           }
@@ -195,6 +197,7 @@ describe("Does NewPackageData Return as expected", () => {
   test("Returns Valid New Package Data with successful Requests", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
 
+    const ver = "1.101.0-beta";
     const mockData = [
       {
         url: `/repos/${ownerRepo}`,
@@ -227,8 +230,8 @@ describe("Does NewPackageData Return as expected", () => {
             status: 200,
             body: [
               {
-                name: "v1.101.0-beta",
-                tarball_url: "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+                name: `v${ver}`,
+                tarball_url: `https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v${ver}`,
                 commit: {
                   sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
                 }
@@ -260,17 +263,16 @@ describe("Does NewPackageData Return as expected", () => {
     expect(res.content.creation_method).toBe("User Made Package");
     expect(res.content.readme).toBe("This is a readme");
     expect(res.content.metadata.name).toBe("pulsar");
-    expect(res.content.metadata.version).toBe("v1.101.0-beta");
+    expect(res.content.metadata.version).toBe(`v${ver}`);
     expect(res.content.metadata.repository).toBe("https://github.com/pulsar-edit/pulsar");
     expect(res.content.repository.type).toBe("git");
     expect(res.content.repository.url).toBe("https://github.com/pulsar-edit/pulsar");
-    expect(res.content.versions["1.101.0-beta"]).toBeDefined();
-    expect(res.content.versions["1.101.0-beta"].name).toBe("pulsar");
-    expect(res.content.versions["1.101.0-beta"].version).toBe("v1.101.0-beta");
-    expect(res.content.versions["1.101.0-beta"].repository).toBe("https://github.com/pulsar-edit/pulsar");
-    expect(res.content.versions["1.101.0-beta"].tarball_url).toBe("https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta");
-    expect(res.content.versions["1.101.0-beta"].sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
-    expect(res.content.releases.latest).toBe("1.101.0-beta");
+    expect(res.content.versions[ver]).toBeDefined();
+    expect(res.content.versions[ver].name).toBe("pulsar");
+    expect(res.content.versions[ver].repository).toBe("https://github.com/pulsar-edit/pulsar");
+    expect(res.content.versions[ver].tarball_url).toBe(`https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v${ver}`);
+    expect(res.content.versions[ver].sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
+    expect(res.content.releases.latest).toBe(ver);
   });
 });
 
@@ -389,6 +391,7 @@ describe("Does newVersionData Return as Expected", () => {
   test("Returns Valid New Version Data with successful Requests", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
 
+    const ver = "1.101.0-beta";
     const mockData = [
       {
         url: `/repos/${ownerRepo}/tags`,
@@ -398,8 +401,8 @@ describe("Does newVersionData Return as Expected", () => {
             status: 200,
             body: [
               {
-                name: "v1.101.0-beta",
-                tarball_url: "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+                name: `v${ver}`,
+                tarball_url: `https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v${ver}`,
                 commit: {
                   sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
                 }
@@ -445,8 +448,8 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.content.repository.url).toBe("https://github.com/pulsar-edit/pulsar");
     expect(res.content.readme).toBe("This is a readme");
     expect(res.content.metadata.name).toBe("pulsar");
-    expect(res.content.metadata.version).toBe("v1.101.0-beta");
-    expect(res.content.metadata.tarball_url).toBe("https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta");
+    expect(res.content.metadata.version).toBe(`v${ver}`);
+    expect(res.content.metadata.tarball_url).toBe(`https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v${ver}`);
     expect(res.content.metadata.sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
   });
 
