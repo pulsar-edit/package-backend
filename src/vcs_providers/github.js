@@ -302,10 +302,14 @@ class GitHub extends Git {
         };
       }
 
+      let pack = JSON.parse(Buffer.from(raw.content.body.content, raw.content.body.encoding).toString());
+      // Ensure the package name is lower case.
+      pack.name = pack.name.toLowerCase();
+
       // We have valid data, lets return after processing
       return {
         ok: true,
-        content: JSON.parse(Buffer.from(raw.content.body.content, raw.content.body.encoding).toString())
+        content: pack;
       };
 
     } catch(err) {

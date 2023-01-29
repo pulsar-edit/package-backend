@@ -186,8 +186,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     // pack = the package.json file within the repo, as JSON
     // And we want to funnel all of this data into newPack and return it.
 
-    // First we ensure the package name is in the lowercase format.
-    const packName = pack.content.name.toLowerCase();
+    const packName = pack.content.name;
 
     newPack.name = packName;
     newPack.creation_method = "User Made Package";
@@ -241,7 +240,7 @@ async function newPackageData(userObj, ownerRepo, service) {
       }
 
       if (!tag.tarball_url) {
-        logger.generic(3, `Cannot retreive metadata info for version ${ver} of packName`);
+        logger.generic(3, `Cannot retreive metadata info for version ${ver} of ${packName}`);
         continue;
       }
 
@@ -390,7 +389,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   return {
     ok: true,
     content: constructPackageVersionMetadata(
-      pack.content.name.toLowerCase(),
+      pack.content.name,
       determineProvider(pack.content.repository),
       readme.content,
       pack.content,
