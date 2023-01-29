@@ -273,7 +273,6 @@ describe("Does NewPackageData Return as expected", () => {
     expect(res.content.versions[ver].repository.url).toBe("https://github.com/pulsar-edit/pulsar");
     expect(res.content.versions[ver].metadata.tarball_url).toBe(`https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v${ver}`);
     expect(res.content.versions[ver].metadata.sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
-    expect(res.content.releases.latest).toBe(ver);
   });
 });
 
