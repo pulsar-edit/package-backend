@@ -459,6 +459,7 @@ describe("Ownership Returns as Expected", () => {
   test("Returns Successfully", async () => {
     const ownerRepo = "pulsar-edit/pulsar";
     const userObj = {
+      username: "admin_user",
       token: "123",
       node_id: "12345"
     };
@@ -500,6 +501,8 @@ describe("Ownership Returns as Expected", () => {
 
     const tmpMock = webRequestMockHelper(mockData);
 
+    // vcs ownership expects a custom predefined username in dev mode,
+    // so we will have to find another way to test it more deeply.
     const res = await vcs.ownership(userObj, packObj);
 
     expect(res.ok).toBe(true);
