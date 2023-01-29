@@ -168,8 +168,9 @@ async function postPackages(req, res) {
     return;
   }
 
-  // Now we know the package doesn't exist. And we want to check that the user owns this repo on git.
-  const gitowner = await git.ownership(user.content, params.repository);
+  // Now we know the package doesn't exist. And we want to check that the user owns this repo on the provider
+  //const gitowner = await git.ownership(user.content, params.repository);
+  const gitowner = await vcs.ownership(user.content, params.repository);
 
   if (!gitowner.ok) {
     logger.generic(3, `postPackages-ownership Not OK: ${gitowner.content}`);
@@ -178,7 +179,9 @@ async function postPackages(req, res) {
   }
 
   // Now knowing they own the git repo, and it doesn't exist here, lets publish.
-  const newPack = await git.createPackage(params.repository, user.content);
+  //const newPack = await git.createPackage(params.repository, user.content);
+  const newPack = await vcs.newPackageData(user.content, params.repository);
+
 
   if (!newPack.ok) {
     logger.generic(3, `postPackages-createPackage Not OK: ${newPack.content}`);
@@ -696,7 +699,7 @@ async function postPackagesVersion(req, res) {
   //  metadata: packMetadata,
   //};
 
-  const newName = packMetadata.content.metadata.name;
+  const newName = packMetadata.content.name;
   const currentName = packExists.content.name;
   if (newName !== currentName && !params.rename) {
     logger.generic(
@@ -952,9 +955,13 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
-  const gitowner = await git.ownership(
+  /*const gitowner = await git.ownership(
     user.content,
     utils.getOwnerRepoFromPackage(packageExists.content.data)
+  );*/
+  const gitowner = await vcs.ownership(
+    user.content,
+    packageExists.content
   );
 
   if (!gitowner.ok) {

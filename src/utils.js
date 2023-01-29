@@ -439,6 +439,7 @@ function semverLt(a1, a2) {
  * @param {object} pack - The Github package.
  * @returns {string} The `owner/repo` string from the URL. Or an empty string if unable to parse.
  */
+// TODO: This should be moved inside VCS along with getOwnerRepoFromUrlString
 function getOwnerRepoFromPackage(pack) {
   // pack.repository.url should be enough, but in case GitHub in the future decides to change it,
   // we use other properties to have chances to still extract the owner/repo string.
