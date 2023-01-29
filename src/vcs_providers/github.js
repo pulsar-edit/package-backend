@@ -309,7 +309,7 @@ class GitHub extends Git {
       // We have valid data, lets return after processing
       return {
         ok: true,
-        content: pack;
+        content: pack,
       };
 
     } catch(err) {
