@@ -92,7 +92,9 @@ describe("Package Lifecycle Tests", () => {
     const pack = require("./fixtures/lifetime/package-a.js");
 
     // === Is the package name available?
-    const nameIsAvailable = await database.packageNameAvailability(pack.createPack.name);
+    const nameIsAvailable = await database.packageNameAvailability(
+      pack.createPack.name
+    );
     expect(nameIsAvailable.ok).toBeTruthy();
 
     // === Let's publish our package
@@ -388,7 +390,9 @@ describe("Package Lifecycle Tests", () => {
     expect(ghostPack.short).toEqual("Not Found");
 
     // === Is the name of the deleted package available?
-    const deletedNameAvailable = await database.packageNameAvailability(pack.createPack.name);
+    const deletedNameAvailable = await database.packageNameAvailability(
+      pack.createPack.name
+    );
     expect(deletedNameAvailable.ok).toBeFalsy();
   });
   test("User A Lifecycle Test", async () => {

@@ -150,7 +150,10 @@ async function postPackages(req, res) {
   const nameAvailable = await database.packageNameAvailability(repo);
 
   if (!nameAvailable.ok) {
-    logger.generic(6, "The name for the package is not available: aborting publish");
+    logger.generic(
+      6,
+      "The name for the package is not available: aborting publish"
+    );
     // The package exists.
     await common.packageExists(req, res);
     return;
@@ -433,7 +436,7 @@ async function deletePackagesName(req, res) {
 
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packMetadata),
+    utils.getOwnerRepoFromPackage(packMetadata)
   );
 
   if (!gitowner.ok) {
@@ -746,7 +749,10 @@ async function postPackagesVersion(req, res) {
     const isBanned = await utils.isPackageNameBanned(newName);
 
     if (isBanned.ok) {
-      logger.generic(3, `postPackages Blocked by banned package name: ${newName}`);
+      logger.generic(
+        3,
+        `postPackages Blocked by banned package name: ${newName}`
+      );
       // is banned
       await common.handleError(req, res, {
         ok: false,
@@ -760,7 +766,10 @@ async function postPackagesVersion(req, res) {
     const isAvailable = await database.packageNameAvailability(newName);
 
     if (isAvailable.ok) {
-      logger.generic(3, `postPackages Blocked by new name ${newName} not available`);
+      logger.generic(
+        3,
+        `postPackages Blocked by new name ${newName} not available`
+      );
       // is banned
       await common.handleError(req, res, {
         ok: false,
