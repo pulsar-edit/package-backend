@@ -91,13 +91,17 @@ describe("Package Lifecycle Tests", () => {
   test("Package A Lifecycle", async () => {
     const pack = require("./fixtures/lifetime/package-a.js");
 
+    // === Is the package name available?
+    const nameIsAvailable = await database.packageNameAvailability("package-a-lifetime");
+    expect(nameIsAvailable.ok).toBeTruthy();
+
     // === Let's publish our package
     const publish = await database.insertNewPackage(pack.createPack);
     expect(publish.ok).toBeTruthy();
     expect(typeof publish.content === "string").toBeTruthy();
     // this endpoint only returns a pointer on success.
 
-    // === Do we get all the right data back when asking for our package
+    // === Do we get all the right data back when asking for our package?
     const getAfterPublish = await database.getPackageByName(
       pack.createPack.name
     );
@@ -405,6 +409,10 @@ describe("Package Lifecycle Tests", () => {
     const ghostPack = await database.getPackageByName(NEW_NAME);
     expect(ghostPack.ok).toBeFalsy();
     expect(ghostPack.short).toEqual("Not Found");
+
+    // === Is the name of the deleted package available?
+    const deletedNameAvailable = await database.packageNameAvailability("package-a-lifetime");
+    expect(deletedNameAvailable.ok).toBeFalsy();
   });
   test("User A Lifecycle Test", async () => {
     const user = require("./fixtures/lifetime/user-a.js");

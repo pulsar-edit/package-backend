@@ -47,28 +47,29 @@ EXECUTE PROCEDURE now_on_updated_package();
 
 CREATE TABLE names (
     name VARCHAR(128) NOT NULL PRIMARY KEY,
-    pointer UUID NOT NULL REFERENCES packages(pointer),
+    pointer UUID NULL,
     -- constraints
-    CONSTRAINT lowercase_names CHECK (name = LOWER(name))
+    CONSTRAINT lowercase_names CHECK (name = LOWER(name)),
+    CONSTRAINT package_names_fkey FOREIGN KEY (pointer) REFERENCES packages(pointer) ON DELETE SET NULL
 );
 
 -- Create users Table
 
 CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  username VARCHAR(256) NOT NULL UNIQUE,
-  node_id VARCHAR(256) UNIQUE,
-  avatar VARCHAR(100),
-  data JSONB
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    username VARCHAR(256) NOT NULL UNIQUE,
+    node_id VARCHAR(256) UNIQUE,
+    avatar VARCHAR(100),
+    data JSONB
 );
 
 -- Create stars Table
 
 CREATE TABLE stars (
-  package UUID NOT NULL REFERENCES packages(pointer),
-  userid INTEGER NOT NULL REFERENCES users(id),
-  PRIMARY KEY (package, userid)
+    package UUID NOT NULL REFERENCES packages(pointer),
+    userid INTEGER NOT NULL REFERENCES users(id),
+    PRIMARY KEY (package, userid)
 );
 
 -- Create versions Table

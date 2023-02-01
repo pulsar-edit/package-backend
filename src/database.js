@@ -68,6 +68,44 @@ async function shutdownSQL() {
 
 /**
  * @async
+ * @function packageNameAvailability
+ * @desc Determines if a name is ready to be used for a new package. Useful in the stage of the publication
+ * of a new package where checking if the package exists is not enough because a name could be not
+ * available if a deleted package was using it in the past.
+ * Useful also to check if a name is available for the renaming of a published package.
+ * This function simply checks if the provided name is present in "names" table.
+ * @param {string} name - The candidate name for a new package.
+ * @returns {object} A Server Status Object.
+ */
+async function packageNameAvailability(name) {
+  try {
+    sqlStorage ??= setupSQL();
+
+    const command = await sqlStorage`
+      SELECT name FROM names
+      WHERE name = ${name};
+    `;
+
+    return command.count === 0
+      ? { ok: true, content: `${name} is available to be used for a new package.` }
+      : {
+          ok: false,
+          content: `${name} is not available to be used for a new package.`,
+          short: "Not Found",
+        };
+  } catch (err) {
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
+  }
+}
+
+
+/**
+ * @async
  * @function insertNewPackage
  * @desc Insert a new package inside the DB taking a `Server Object Full` as argument.
  * @param {object} pack - The `Server Object Full` package.
@@ -829,7 +867,7 @@ async function removePackageByName(name) {
         // No check on deleted stars because the package could also have 0 stars.
       }*/
 
-      // Remove names related to the package
+      /* We do not remove the package names to avoid supply chain attacks.
       const commandName = await sqlTrans`
         DELETE FROM names
         WHERE pointer = ${pointer}
@@ -839,6 +877,7 @@ async function removePackageByName(name) {
       if (commandName.count === 0) {
         throw `Failed to delete names for: ${name}`;
       }
+      */
 
       const commandPack = await sqlTrans`
         DELETE FROM packages
@@ -1714,6 +1753,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
 
 module.exports = {
   shutdownSQL,
+  packageNameAvailability,
   insertNewPackage,
   getPackageByName,
   getPackageCollectionByName,
