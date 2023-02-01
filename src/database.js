@@ -86,7 +86,10 @@ async function packageNameAvailability(name) {
     `;
 
     return command.count === 0
-      ? { ok: true, content: `${name} is available to be used for a new package.` }
+      ? {
+          ok: true,
+          content: `${name} is available to be used for a new package.`,
+        }
       : {
           ok: false,
           content: `${name} is not available to be used for a new package.`,
@@ -101,7 +104,6 @@ async function packageNameAvailability(name) {
     };
   }
 }
-
 
 /**
  * @async
@@ -168,7 +170,6 @@ async function insertNewPackage(pack) {
       // TODO: status column deprecated; to be removed.
       const status = "published";
       for (const ver of Object.keys(pv)) {
-
         // Since many packages don't define an engine field,
         // we will do it for them if not present,
         // following suit with what Atom internal packages do.
@@ -464,7 +465,7 @@ async function getPackageByName(name, user = false) {
       SELECT
         ${
           user ? sqlStorage`` : sqlStorage`p.pointer,`
-        } p.name, p.created, p.updated, p.creation_method, p.downloads,
+        } p.name, p.created, p.updated, p.creation_method, p.downloads, p.data,
         (p.stargazers_count + p.original_stargazers) AS stargazers_count,
         JSONB_AGG(
           JSON_BUILD_OBJECT(
@@ -1356,7 +1357,9 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       )
       SELECT *, COUNT(*) OVER() AS query_result_count
       FROM search_query
-      ORDER BY ${orderType} ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
+      ORDER BY ${orderType} ${
+      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
+    }
       LIMIT ${limit}
       OFFSET ${offset};
     `;
@@ -1459,7 +1462,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
 
     const command = await sqlStorage`
       WITH latest_versions AS (
-        SELECT DISTINCT ON (p.name) p.name, v.meta AS data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated
         FROM packages AS p
@@ -1473,7 +1476,9 @@ async function getSortedPackages(page, dir, method, themes = false) {
       )
       SELECT *, COUNT(*) OVER() AS query_result_count
       FROM latest_versions
-      ORDER BY ${orderType} ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
+      ORDER BY ${orderType} ${
+      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
+    }
       LIMIT ${limit}
       OFFSET ${offset};
     `;

@@ -162,6 +162,7 @@ with and retrieve data from the cloud hosted database instance.
 * [database](#module_database)
     * [~setupSQL()](#module_database..setupSQL) ⇒ <code>object</code>
     * [~shutdownSQL()](#module_database..shutdownSQL)
+    * [~packageNameAvailability(name)](#module_database..packageNameAvailability) ⇒ <code>object</code>
     * [~insertNewPackage(pack)](#module_database..insertNewPackage) ⇒ <code>object</code>
     * [~insertNewPackageVersion(packJSON, oldName)](#module_database..insertNewPackageVersion) ⇒ <code>object</code>
     * [~insertNewPackageName(newName, oldName)](#module_database..insertNewPackageName) ⇒ <code>object</code>
@@ -185,9 +186,10 @@ with and retrieve data from the cloud hosted database instance.
     * [~updateDecrementStar(user, pack)](#module_database..updateDecrementStar) ⇒ <code>object</code>
     * [~getStarredPointersByUserID(userid)](#module_database..getStarredPointersByUserID) ⇒ <code>object</code>
     * [~getStarringUsersByPointer(pointer)](#module_database..getStarringUsersByPointer) ⇒ <code>object</code>
-    * [~simpleSearch()](#module_database..simpleSearch) ⇒ <code>object</code>
+    * [~simpleSearch(term, dir, sort, [themes])](#module_database..simpleSearch) ⇒ <code>object</code>
     * [~getUserCollectionById(ids)](#module_database..getUserCollectionById) ⇒ <code>object</code>
-    * [~getSortedPackages(page, dir, dir, method, [themes])](#module_database..getSortedPackages) ⇒ <code>object</code>
+    * [~getSortedPackages(page, dir, method, [themes])](#module_database..getSortedPackages) ⇒ <code>object</code>
+    * [~getOrderField(method, sqlStorage)](#module_database..getOrderField) ⇒ <code>object</code> \| <code>null</code>
     * [~authStoreStateKey(stateKey)](#module_database..authStoreStateKey) ⇒ <code>object</code>
     * [~authCheckAndDeleteStateKey(stateKey, timestamp)](#module_database..authCheckAndDeleteStateKey) ⇒ <code>object</code>
 
@@ -207,6 +209,22 @@ Exceptions thrown here should be caught and handled in the caller.
 Ensures any Database connection is properly, and safely closed before exiting.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
+<a name="module_database..packageNameAvailability"></a>
+
+### database~packageNameAvailability(name) ⇒ <code>object</code>
+Determines if a name is ready to be used for a new package. Useful in the stage of the publication
+of a new package where checking if the package exists is not enough because a name could be not
+available if a deleted package was using it in the past.
+Useful also to check if a name is available for the renaming of a published package.
+This function simply checks if the provided name is present in "names" table.
+
+**Kind**: inner method of [<code>database</code>](#module_database)  
+**Returns**: <code>object</code> - A Server Status Object.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| name | <code>string</code> | The candidate name for a new package. |
+
 <a name="module_database..insertNewPackage"></a>
 
 ### database~insertNewPackage(pack) ⇒ <code>object</code>
@@ -336,7 +354,7 @@ Takes a package pointer array, and returns an array of the package objects.
 <a name="module_database..updatePackageStargazers"></a>
 
 ### database~updatePackageStargazers(name, pointer) ⇒ <code>object</code>
-Uses the package name (or pointer if provided) to update its stargazers count.
+Internal util that uses the package name (or pointer if provided) to update its stargazers count.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - The effected server status object.  
@@ -385,8 +403,8 @@ Given a package name, removes its record alongside its names, versions, stars.
 <a name="module_database..removePackageVersion"></a>
 
 ### database~removePackageVersion(packName, semVer) ⇒ <code>object</code>
-Mark a version of a specific package as removed. This does not delete the record,
-just mark the status as removed, but only if one published version remain available.
+Mark a version of a specific package as deleted. This does not delete the record,
+just mark the boolean deleted flag as true, but only if one published version remains available.
 This also makes sure that a new latest version is selected in case the previous one is removed.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -503,12 +521,20 @@ Use the pointer of a package to collect all users that have starred it.
 
 <a name="module_database..simpleSearch"></a>
 
-### database~simpleSearch() ⇒ <code>object</code>
+### database~simpleSearch(term, dir, sort, [themes]) ⇒ <code>object</code>
 The current Fuzzy-Finder implementation of search. Ideally eventually
 will use a more advanced search method.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
 **Returns**: <code>object</code> - A server status object containing the results and the pagination object.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| term | <code>string</code> |  | The search term. |
+| dir | <code>string</code> |  | String flag for asc/desc order. |
+| sort | <code>string</code> |  | The sort method. |
+| [themes] | <code>boolean</code> | <code>false</code> | Optional Parameter to specify if this should only return themes. |
+
 <a name="module_database..getUserCollectionById"></a>
 
 ### database~getUserCollectionById(ids) ⇒ <code>object</code>
@@ -523,7 +549,7 @@ Returns an array of Users and their associated data via the ids.
 
 <a name="module_database..getSortedPackages"></a>
 
-### database~getSortedPackages(page, dir, dir, method, [themes]) ⇒ <code>object</code>
+### database~getSortedPackages(page, dir, method, [themes]) ⇒ <code>object</code>
 Takes the page, direction, and sort method returning the raw sql package
 data for each. This monolithic function handles trunication of the packages,
 and sorting, aiming to provide back the raw data, and allow later functions to
@@ -536,9 +562,21 @@ then reconstruct the JSON as needed.
 | --- | --- | --- | --- |
 | page | <code>int</code> |  | Page number. |
 | dir | <code>string</code> |  | String flag for asc/desc order. |
-| dir | <code>string</code> |  | String flag for asc/desc order. |
-| method | <code>string</code> |  | The column name the results have to be sorted by. |
+| method | <code>string</code> |  | The sort method. |
 | [themes] | <code>boolean</code> | <code>false</code> | Optional Parameter to specify if this should only return themes. |
+
+<a name="module_database..getOrderField"></a>
+
+### database~getOrderField(method, sqlStorage) ⇒ <code>object</code> \| <code>null</code>
+Internal method to parse the sort method and return the related database field/column.
+
+**Kind**: inner method of [<code>database</code>](#module_database)  
+**Returns**: <code>object</code> \| <code>null</code> - The string field associated to the sort method or null if the method is not recognized.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| method | <code>string</code> | The sort method. |
+| sqlStorage | <code>object</code> | The database class instance used parse the proper field. |
 
 <a name="module_database..authStoreStateKey"></a>
 
