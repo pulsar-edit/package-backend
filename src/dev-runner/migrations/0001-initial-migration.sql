@@ -19,17 +19,6 @@ CREATE TABLE packages (
     CONSTRAINT lowercase_names CHECK (name = LOWER(name))
 );
 
--- While the following commands have been used in production, they are excluded here
--- Because there is no need to modify existing data during server startup
-
--- UPDATE packages
--- SET package_type = 'theme'
--- WHERE LOWER(data ->> 'theme') = 'syntax' OR LOWER(data ->> 'theme') = 'ui';
-
--- UPDATE packages
--- SET package_type = 'package'
--- WHERE package_type != 'theme';
-
 CREATE FUNCTION now_on_updated_package()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -82,6 +71,8 @@ CREATE TABLE versions (
     status versionStatus NOT NULL,
     semver VARCHAR(256) NOT NULL,
     license VARCHAR(128) NOT NULL,
+    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     engine JSONB NOT NULL,
     meta JSONB,
     -- generated columns
@@ -93,8 +84,13 @@ CREATE TABLE versions (
         (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[3] AS INTEGER)) STORED,
     -- constraints
     CONSTRAINT semver2_format CHECK (semver ~ '^\d+\.\d+\.\d+'),
-    CONSTRAINT unique_pack_version UNIQUE(package, semver_v1, semver_v2, semver_v3)
+    CONSTRAINT unique_pack_version UNIQUE(package, semver)
 );
+
+CREATE TRIGGER trigger_now_on_updated_versions
+    BEFORE UPDATE ON versions
+    FOR EACH ROW
+EXECUTE PROCEDURE now_on_updated_package();
 
 -- Create authstate Table
 

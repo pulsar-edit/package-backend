@@ -112,7 +112,7 @@ async function getThemes(req, res) {
  */
 async function getThemesSearch(req, res) {
   const params = {
-    sort: query.sort(req, "relevance"),
+    sort: query.sort(req),
     page: query.page(req),
     direction: query.dir(req),
     query: query.query(req),
