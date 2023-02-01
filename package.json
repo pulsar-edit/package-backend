@@ -43,7 +43,7 @@
     "express-rate-limit": "^6.7.0",
     "js-yaml": "^4.1.0",
     "postgres": "^3.3.3",
-    "superagent": "^8.0.8"
+    "superagent": "^8.0.9"
   },
   "devDependencies": {
     "@confused-techie/quick-webserver-docs": "^0.1.6",
