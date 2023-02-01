@@ -1,6 +1,6 @@
 {
   "name": "atom-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Pulsar API Backend for the Community fork of Atom.",
   "main": "src/server.js",
   "engines": {
