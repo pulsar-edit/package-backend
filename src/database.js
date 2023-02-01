@@ -587,7 +587,7 @@ async function getPackageCollectionByName(packArray) {
     // we select only the needed columns.
     const command = await sqlStorage`
       SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
-        (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.meta AS data
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
       FROM packages AS p
         INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
           packArray
@@ -622,7 +622,7 @@ async function getPackageCollectionByID(packArray) {
 
     const command = await sqlStorage`
       SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
-        (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.meta AS data
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
       FROM packages AS p
         INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
       WHERE pointer IN ${sqlStorage(packArray)}
@@ -1340,7 +1340,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
 
     const command = await sqlStorage`
       WITH search_query AS (
-        SELECT DISTINCT ON (p.name) p.name, v.meta AS data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated
         FROM packages AS p
