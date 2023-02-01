@@ -421,9 +421,19 @@ async function deletePackagesName(req, res) {
     return;
   }
 
+  const packMetadata = packageExists.content?.versions[0]?.meta;
+
+  if (packMetadata === null) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Not Found",
+      content: `Cannot retrieve metadata for ${params.packageName} package`,
+    });
+  }
+
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packageExists.content.data)
+    utils.getOwnerRepoFromPackage(packMetadata),
   );
 
   if (!gitowner.ok) {
@@ -626,8 +636,18 @@ async function postPackagesVersion(req, res) {
     return;
   }
 
+  const meta = packExists.content?.versions[0]?.meta;
+
+  if (meta === null) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Not Found",
+      content: `Cannot retrieve metadata for ${params.packageName} package`,
+    });
+  }
+
   // Get `owner/repo` string format from package.
-  let ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+  let ownerRepo = utils.getOwnerRepoFromPackage(meta);
 
   // Now it's important to note, that getPackageJSON was intended to be an internal function.
   // As such does not return a Server Status Object. This may change later, but for now,
@@ -683,7 +703,7 @@ async function postPackagesVersion(req, res) {
     metadata: packMetadata,
   };
 
-  const newName = packMetadata.name;
+  const newName = packageData.name;
   const currentName = packExists.content.name;
   if (newName !== currentName && !params.rename) {
     logger.generic(
@@ -755,7 +775,6 @@ async function postPackagesVersion(req, res) {
   // Now add the new Version key.
 
   const addVer = await database.insertNewPackageVersion(
-    packMetadata,
     packageData,
     rename ? currentName : null
   );
@@ -866,7 +885,7 @@ async function getPackagesVersionTarball(req, res) {
   // the download to take place from their servers.
 
   // But right before, lets do a couple simple checks to make sure we are sending to a legit site.
-  const tarballURL = pack.content.meta.tarball_url ?? "";
+  const tarballURL = pack.content.meta?.tarball_url ?? "";
   let hostname = "";
 
   // Try to extract the hostname
@@ -952,9 +971,19 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
+  const packMetadata = packageExists.content?.versions[0]?.meta;
+
+  if (packMetadata === null) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Not Found",
+      content: `Cannot retrieve metadata for ${params.packageName} package`,
+    });
+  }
+
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packageExists.content.data)
+    utils.getOwnerRepoFromPackage(packMetadata)
   );
 
   if (!gitowner.ok) {

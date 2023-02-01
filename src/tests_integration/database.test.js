@@ -92,7 +92,7 @@ describe("Package Lifecycle Tests", () => {
     const pack = require("./fixtures/lifetime/package-a.js");
 
     // === Is the package name available?
-    const nameIsAvailable = await database.packageNameAvailability("package-a-lifetime");
+    const nameIsAvailable = await database.packageNameAvailability(pack.createPack.name);
     expect(nameIsAvailable.ok).toBeTruthy();
 
     // === Let's publish our package
@@ -117,19 +117,10 @@ describe("Package Lifecycle Tests", () => {
     expect(getAfterPublish.content.downloads).toEqual("0");
     // Original stargazers already added to stargazers count
     expect(getAfterPublish.content.stargazers_count).toEqual("0");
-    expect(getAfterPublish.content.data.name).toEqual(pack.createPack.name);
-    expect(getAfterPublish.content.data.readme).toEqual(pack.createPack.readme);
-    expect(getAfterPublish.content.data.repository).toEqual(
-      pack.createPack.repository
-    );
-    expect(getAfterPublish.content.data.metadata).toEqual(
-      pack.createPack.metadata
-    );
     expect(getAfterPublish.content.versions.length).toEqual(1); // Only 1 ver was provided
     expect(getAfterPublish.content.versions[0].semver).toEqual(
       pack.createPack.metadata.version
     );
-    expect(getAfterPublish.content.versions[0].status).toEqual("latest");
     expect(getAfterPublish.content.versions[0].license).toEqual("NONE");
     expect(getAfterPublish.content.versions[0].package).toBeDefined();
 
@@ -138,7 +129,7 @@ describe("Package Lifecycle Tests", () => {
     expect(dupPublish.ok).toBeFalsy();
 
     // === Let's rename our package
-    const NEW_NAME = "package-a-lifetime-rename";
+    const NEW_NAME = `${pack.createPack.name}-rename`;
     const newName = await database.insertNewPackageName(
       NEW_NAME,
       pack.createPack.name
@@ -201,7 +192,7 @@ describe("Package Lifecycle Tests", () => {
     );
     expect(removeOnlyVersion.ok).toBeFalsy();
     expect(removeOnlyVersion.content).toEqual(
-      `It's not possible to leave the ${NEW_NAME} without at least one published version`
+      `${NEW_NAME} package has less than 2 published versions: deletion not allowed.`
     );
 
     // === Now let's add a version
@@ -225,7 +216,6 @@ describe("Package Lifecycle Tests", () => {
     expect(getAfterVer.ok).toBeTruthy();
     expect(getAfterVer.content.versions.length).toEqual(2);
     expect(getAfterVer.content.versions[0].semver).toEqual(v1_0_1.version);
-    expect(getAfterVer.content.versions[0].status).toEqual("latest");
     expect(getAfterVer.content.versions[0].license).toEqual(v1_0_1.license);
     expect(getAfterVer.content.versions[0].meta.name).toEqual(v1_0_1.name);
     expect(getAfterVer.content.versions[0].meta.version).toEqual(
@@ -242,7 +232,7 @@ describe("Package Lifecycle Tests", () => {
     );
     expect(dupVer.ok).toBeFalsy();
     expect(dupVer.content).toEqual(
-      "Cannot publish a new version with semver lower or equal than the current latest one."
+      `Not allowed to publish a version already present for ${pack.createPack.name}`
     );
 
     // === Can we get this specific version with the new name
@@ -251,7 +241,6 @@ describe("Package Lifecycle Tests", () => {
       v1_0_1.version
     );
     expect(getNewVerOnly.ok).toBeTruthy();
-    expect(getNewVerOnly.content.status).toEqual("latest");
     expect(getNewVerOnly.content.semver).toEqual(v1_0_1.version);
     expect(getNewVerOnly.content.meta.name).toEqual(pack.createPack.name);
 
@@ -261,7 +250,6 @@ describe("Package Lifecycle Tests", () => {
       pack.createPack.metadata.version
     );
     expect(getOldVerOnly.ok).toBeTruthy();
-    expect(getOldVerOnly.content.status).toEqual("published");
     expect(getOldVerOnly.content.semver).toEqual(
       pack.createPack.metadata.version
     );
@@ -299,6 +287,17 @@ describe("Package Lifecycle Tests", () => {
     expect(downPackOld.content.name).toEqual(NEW_NAME);
     expect(downPackOld.content.downloads).toEqual("1");
 
+    // === Can we remove a non-existing version?
+    const noPubVer = "3.3.3";
+    const removeNonExistingVersion = await database.removePackageVersion(
+      NEW_NAME,
+      noPubVer
+    );
+    expect(removeNonExistingVersion.ok).toBeFalsy();
+    expect(removeNonExistingVersion.content).toEqual(
+      `Unable to remove ${noPubVer} version of ${NEW_NAME} package.`
+    );
+
     // === Can we delete our newest version?
     // === Here we append an extension to test if the version is selected in the same way.
     const delLatestVer = await database.removePackageVersion(
@@ -307,7 +306,7 @@ describe("Package Lifecycle Tests", () => {
     );
     expect(delLatestVer.ok).toBeTruthy();
     expect(delLatestVer.content).toEqual(
-      `Removed ${v1_0_1.version} of ${NEW_NAME} and ${pack.createPack.metadata.version} is the new latest version.`
+      `Successfully removed ${v1_0_1.version} version of ${NEW_NAME} package.`
     );
 
     // === Is our old version the latest again?
@@ -318,7 +317,6 @@ describe("Package Lifecycle Tests", () => {
     expect(newLatestVer.content.versions[0].semver).toEqual(
       pack.createPack.metadata.version
     );
-    expect(newLatestVer.content.versions[0].status).toEqual("latest");
 
     // === Can we reinsert a previous deleted version?
     // This is intentionally unsupported because we want a new package to be always
@@ -353,16 +351,6 @@ describe("Package Lifecycle Tests", () => {
     expect(removeOldestVersion.ok).toBeTruthy();
     expect(removeOldestVersion.content).toEqual(
       `Successfully removed ${pack.createPack.metadata.version} version of ${NEW_NAME} package.`
-    );
-
-    // === Can we remove a non-existing version?
-    const removeNonExistingVersion = await database.removePackageVersion(
-      NEW_NAME,
-      pack.createPack.metadata.version
-    );
-    expect(removeNonExistingVersion.ok).toBeFalsy();
-    expect(removeNonExistingVersion.content).toEqual(
-      `There's no version ${pack.createPack.metadata.version} to remove for ${NEW_NAME} package`
     );
 
     // === Can we add an odd yet valid semver?
@@ -400,7 +388,7 @@ describe("Package Lifecycle Tests", () => {
     expect(ghostPack.short).toEqual("Not Found");
 
     // === Is the name of the deleted package available?
-    const deletedNameAvailable = await database.packageNameAvailability("package-a-lifetime");
+    const deletedNameAvailable = await database.packageNameAvailability(pack.createPack.name);
     expect(deletedNameAvailable.ok).toBeFalsy();
   });
   test("User A Lifecycle Test", async () => {

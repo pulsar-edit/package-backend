@@ -229,7 +229,8 @@ async function createPackage(repo, user) {
 
     // Currently there is no purpose to store the type of repo. But for the time being,
     // we will assume this could be used in the future as a way to determine how to interact with a repo.
-    newPack.repository = selectPackageRepository(pack.repository);
+    const packRepo = selectPackageRepository(pack.repository);
+    newPack.repository = packRepo;
 
     // Now during migration packages will have a 'versions' key, but otherwise the standard
     // package will just have a 'version'.
@@ -260,7 +261,12 @@ async function createPackage(repo, user) {
       }
 
       // They match tag and version, stuff the data into the package.
-      const versionMetadata = await metadataAppendTarballInfo(pack, tag, user);
+      // Copy pack so we avoid to append tarball info to the same object
+      const versionMetadata = await metadataAppendTarballInfo(
+        structuredClone(pack),
+        tag,
+        user
+      );
       // TODO::
       // Its worthy to note that the function above assigns the current package.json file within the repo
       // as the version tag. Now this in most cases during a publish should be fine.
@@ -276,7 +282,12 @@ async function createPackage(repo, user) {
         continue;
       }
 
-      newPack.versions[ver] = versionMetadata;
+      newPack.versions[ver] = {
+        name: packName,
+        repository: packRepo,
+        readme: readme,
+        metadata: versionMetadata,
+      };
       versionCount++;
 
       // Check latest version.

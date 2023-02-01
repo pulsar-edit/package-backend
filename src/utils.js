@@ -61,23 +61,16 @@ async function constructPackageObjectFull(pack) {
     return retVer;
   };
 
-  const findLatestVersion = (vers) => {
-    for (const v of vers) {
-      if (v.status === "latest") {
-        return v.semver;
-      }
-    }
-    return null;
-  };
-
-  let newPack = pack.data;
+  // We need to copy the metadata of the latest version in order to avoid an
+  // auto-reference in the versions array that leads to a freeze in JSON stringify stage.
+  let newPack = structuredClone(pack?.versions[0]?.meta ?? {});
   newPack.name = pack.name;
   newPack.downloads = pack.downloads;
   newPack.stargazers_count = pack.stargazers_count;
   newPack.versions = parseVersions(pack.versions);
-  newPack.releases = {
-    latest: findLatestVersion(pack.versions),
-  };
+  // database.getPackageByName() sorts the JSON array versions in descending order,
+  // so no need to find the latest semver, it's the first one (index 0).
+  newPack.releases = { latest: pack?.versions[0]?.semver ?? "" };
 
   logger.generic(6, "Built Package Object Full without Error");
 
