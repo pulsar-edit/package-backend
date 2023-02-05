@@ -173,7 +173,7 @@ async function postPackages(req, res) {
   }
 
   // Now we know the package doesn't exist. And we want to check that the user owns this repo on git.
-  const gitowner = await git.ownership(user.content, params.repository);
+  const gitowner = await vcs.ownership(user.content, params.repository);
 
   if (!gitowner.ok) {
     logger.generic(3, `postPackages-ownership Not OK: ${gitowner.content}`);

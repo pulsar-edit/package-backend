@@ -33,11 +33,9 @@ class GitHub extends Git {
    * relegate off to `this.doesUserHaveRepo()` to determine the access level the user
    * has over the repo, and will return accordingly. Mostly processing errors.
    * @param {object} user - The User Object as retreived during verification.
-   * @param {object} pack - The Package Object, as retreived from the Database.
+   * @param {object} ownerRepo - The Owner/Repo Combo 
    */
-  async ownership(user, pack) {
-    // expects full userObj, and repoObj
-    const ownerRepo = utils.getOwnerRepoFromPackage(pack);
+  async ownership(user, ownerRepo) {
 
     const owner = await this.doesUserHaveRepo(user, ownerRepo);
 

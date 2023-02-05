@@ -23,7 +23,11 @@ const semVerInitRegex = /^\s*v/i;
  * specificity available within the `short` key.
  * @param {object} userObj - The Full User Object, as returned by the backend,
  * and appended to with authorization data.
- * @param {object} packObj - The full Package objects data from the backend.
+ * @param {object|string} packObj - The full Package objects data from the backend.
+ * Although, can also contain a string, this string would directly be
+ * an Owner/Repo combo, but it is recommended to use the Package Object when
+ * possible. The string variant is intended to be used when first publishing
+ * a package, and there is no package object to use.
  * @param {object} [opts] - An optional configuration object, that allows the
  * definition of non-standard options to change the fucntionality of this function.
  * `opts` can accept the following parameters:
@@ -71,17 +75,29 @@ async function ownership(userObj, packObj, dev_override = false ) {
   // Since the package is already on the DB when attempting to determine ownership
   // (Or is at least formatted correctly, as if it was) We can directly access the
   // repository object provided by determineProvider
-  let repoObj = packObj.repository;
+
+  // Below we check for object because if packObj is an object then we were given
+  // a full packages object, and we need to extract an owner/repo combo.
+  // But if we were passed a string then we instead would use it directly.
+  // Since a string should only be passed when there was no package object
+  // to provide such as during package publish.
+  // Which if we are getting a string, then we will fallback to the default
+  // which is GitHub, which will work for now.
+  const repoObj = (typeof packObj === "object") ? packObj.repository.type : packObj;
   // TODO: Double check validity of Object, but we should have `.type` & `.url`
 
-  let owner;
-
-  switch(repoObj.type) {
+  switch(repoObj) {
     // Additional supported VCS systems go here.
     case "git":
     default: {
       const github = new GitHub();
-      let owner = await github.ownership(userObj, packObj);
+
+      // Here we check if we were handed an owner/repo combo directly by checking
+      // for a string. Otherwise we assume it's a package object where we need to
+      // find the owner/repo combo.
+      const ownerRepo = (typeof packObj === "string") ? packObj : utils.getOwnerRepoFromPackage(packObj);
+
+      const owner = await github.ownership(userObj, ownerRepo);
       // ^^^ Above we pass the full package object since github will decode
       // the owner/repo combo as needed.
       return owner;
@@ -91,23 +107,20 @@ async function ownership(userObj, packObj, dev_override = false ) {
 }
 
 /**
- * NOTE: This function should be used only during a package publish.
- * Intends to use a service passed to check ownership, without expecting any package
- * data to work with. This is because during initial publication, we won't
- * have the package data locally to build off of.
- * Proper use of this service variable will be preceeded by support from ppm to
- * provide it as a query parameter.
- */
-async function prepublishOwnership(userObj, ownerRepo, service) {
-
-}
-
-/**
- * NOTE: Replaces createPackage - Intended to retreive the full packages data.
- * I wish we could have more than ownerRepo here, but we can't due to how this process is started.
- * Currently the service must be specified. Being one of the valid types returned
- *   by determineProvider, since we still only support GitHub this can be manually passed through,
- *   but a better solution must be found.
+ * @async
+ * @function newPackageData
+ * @desc Replaces the previous git.createPackage().
+ * Intended to retreive the full packages data. The data which will contain
+ * all information needed to create a new package entry onto the DB.
+ * @param {object} userObj - The Full User Object as returned by auth.verifyAuth()
+ * @param {string} ownerRepo - The Owner Repo Combo for the package such as `pulsar-edit/pulsar`
+ * @param {string} service - The Service this package is intended for.
+ * Matching a valid return type from `vcs.determineProvider()` Eventually
+ * this service will be detected by the package handler or moved here, but for now
+ * is intended to be hardcoded as "git"
+ * @returns {object} - Returns a Server Status Object, which when `ok: true`
+ * Contains the full package data. This includes the Readme, the package.json, and all version data.
+ * @todo Stop hardcoding the service that is passed here.
  */
 async function newPackageData(userObj, ownerRepo, service) {
   try {
@@ -305,6 +318,22 @@ async function newPackageData(userObj, ownerRepo, service) {
  * This should instead return an object itself with the required data
  * So in this way the package_handler doesn't have to do anything special
  */
+/**
+ * @async
+ * @function newVersionData
+ * @desc Replaces the previously used `git.metadataAppendTarballInfo()`
+ * Intended to retreive the most basic of a package's data.
+ * Bundles all the special handling of crafting such an object into this single
+ * function to reduce usage elsewhere.
+ * @param {object} userObj - The Full User Object as returned by `auth.verifyAuth()`
+ * @param {string} ownerRepo - The Owner Repo Combo of the package affected.
+ * Such as `pulsar-edit/pulsar`
+ * @param {string} service - The service to use as expected to be returned
+ * by `vcs.determineProvider()`. Currently should be hardcoded to "git"
+ * @returns {SSO_VCS_newVersionData} A Server Status Object, which when `ok: true`
+ * returns all data that would be needed to update a package on the DB, and
+ * upload a new version.
+ */
 async function newVersionData(userObj, ownerRepo, service) {
   // Originally when publishing a new version the responsibility to collect
   // all package data fell onto the package_handler itself
@@ -496,5 +525,4 @@ module.exports = {
   ownership,
   newPackageData,
   newVersionData,
-  prepublishOwnership,
 };
