@@ -13,7 +13,6 @@
 
 const common = require("./common_handler.js");
 const query = require("../query.js");
-const git = require("../git.js");
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
@@ -182,7 +181,8 @@ async function postPackages(req, res) {
   }
 
   // Now knowing they own the git repo, and it doesn't exist here, lets publish.
-  const newPack = await git.createPackage(params.repository, user.content);
+  // TODO: Stop hardcoding `git` as service
+  const newPack = await vcs.newPackageData(user.content, params.repository, "git");
 
   if (!newPack.ok) {
     logger.generic(3, `postPackages-createPackage Not OK: ${newPack.content}`);

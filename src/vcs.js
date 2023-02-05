@@ -314,12 +314,6 @@ async function newPackageData(userObj, ownerRepo, service) {
 }
 
 /**
- * NOTE: Replaces metadataAppendTarballInfo - Intended to retreive the basics of package data.
- * While additionally replacing all special handling when publsihing a version
- * This should instead return an object itself with the required data
- * So in this way the package_handler doesn't have to do anything special
- */
-/**
  * @async
  * @function newVersionData
  * @desc Replaces the previously used `git.metadataAppendTarballInfo()`
