@@ -630,18 +630,8 @@ async function postPackagesVersion(req, res) {
     return;
   }
 
-  const meta = packExists.content?.versions[0]?.meta;
-
-  if (meta === null) {
-    await common.handleError(req, res, {
-      ok: false,
-      short: "Not Found",
-      content: `Cannot retrieve metadata for ${params.packageName} package`,
-    });
-  }
-
   // Get `owner/repo` string format from package.
-  let ownerRepo = utils.getOwnerRepoFromPackage(meta);
+  let ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
 
   // Using our new VCS Service
   // TODO: The "git" Service shouldn't always be hardcoded.
@@ -706,7 +696,7 @@ async function postPackagesVersion(req, res) {
   //  metadata: packMetadata,
   //};
 
-  const newName = packageData.name;
+  const newName = packMetadata.content.name;
 
   const currentName = packExists.content.name;
   if (newName !== currentName && !params.rename) {
@@ -786,7 +776,7 @@ async function postPackagesVersion(req, res) {
   // Now add the new Version key.
 
   const addVer = await database.insertNewPackageVersion(
-    packageData,
+    packMetadata.content.metadata,
     rename ? currentName : null
   );
 
@@ -795,6 +785,8 @@ async function postPackagesVersion(req, res) {
     await common.handleError(req, res, addVer);
     return;
   }
+
+  // TODO: Additionally update things like the readme on the package here
 
   res.status(201).json(addVer.content);
   logger.httpLog(req, res);
@@ -982,19 +974,23 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
-  const packMetadata = packageExists.content?.versions[0]?.meta;
+  //const packMetadata = packageExists.content?.versions[0]?.meta;
 
-  if (packMetadata === null) {
-    await common.handleError(req, res, {
-      ok: false,
-      short: "Not Found",
-      content: `Cannot retrieve metadata for ${params.packageName} package`,
-    });
-  }
+  //if (packMetadata === null) {
+  //  await common.handleError(req, res, {
+  //    ok: false,
+  //    short: "Not Found",
+  //    content: `Cannot retrieve metadata for ${params.packageName} package`,
+  //  });
+  //}
 
-  const gitowner = await git.ownership(
+  //const gitowner = await git.ownership(
+  //  user.content,
+  //  utils.getOwnerRepoFromPackage(packMetadata)
+  //);
+  const gitowner = await vcs.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packMetadata)
+    packageExists.content
   );
 
   if (!gitowner.ok) {
