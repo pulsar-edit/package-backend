@@ -1,10 +1,10 @@
 {
   "name": "atom-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The Pulsar API Backend for the Community fork of Atom.",
   "main": "src/server.js",
   "engines": {
-    "node": ">=14.0.0 <=16.16.0"
+    "node": ">=17.9.1 <=18.13.0"
   },
   "scripts": {
     "start": "node ./src/server.js",
@@ -38,13 +38,13 @@
     }
   },
   "dependencies": {
-    "@google-cloud/storage": "^6.9.0",
+    "@google-cloud/storage": "^6.9.1",
     "crypto": "^1.0.1",
     "express": "^4.18.1",
     "express-rate-limit": "^6.7.0",
     "js-yaml": "^4.1.0",
     "postgres": "^3.3.3",
-    "superagent": "^8.0.6"
+    "superagent": "^8.0.9"
   },
   "devDependencies": {
     "@confused-techie/quick-webserver-docs": "^0.1.6",
@@ -53,11 +53,11 @@
     "all-contributors-cli": "^6.20.0",
     "complexity-report": "^2.0.0-alpha",
     "cross-env": "^7.0.3",
-    "eslint": "^8.31.0",
+    "eslint": "^8.33.0",
     "eslint-plugin-node": "^11.1.0",
-    "jest": "^29.3.1",
+    "jest": "^29.4.1",
     "jsdoc-to-markdown": "^8.0.0",
-    "prettier": "^2.8.2",
+    "prettier": "^2.8.3",
     "supertest": "^6.3.3"
   }
 }

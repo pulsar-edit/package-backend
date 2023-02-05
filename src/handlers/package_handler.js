@@ -118,13 +118,10 @@ async function postPackages(req, res) {
     return;
   }
 
-  // Check the package does NOT exists.
-  // We will utilize our database.getPackageByName to see if it returns an error,
-  // which means the package doesn't exist.
   // Currently though the repository is in `owner/repo` format,
-  // meanwhile getPackageByName expects just `repo`
+  // meanwhile needed functions expects just `repo`
 
-  const repo = params.repository.split("/")[1];
+  const repo = params.repository.split("/")[1]?.toLowerCase();
 
   if (repo === undefined) {
     logger.generic(6, "Repository determined invalid after failed split");
@@ -148,23 +145,30 @@ async function postPackages(req, res) {
     return;
   }
 
-  const exists = await database.getPackageByName(repo, true);
+  // Check the package does NOT exists.
+  // We will utilize our database.packageNameAvailability to see if the name is available.
 
-  if (exists.ok) {
-    logger.generic(6, "Seems Package Already exists, aborting publish");
+  const nameAvailable = await database.packageNameAvailability(repo);
+
+  if (!nameAvailable.ok) {
+    logger.generic(
+      6,
+      "The name for the package is not available: aborting publish"
+    );
     // The package exists.
     await common.packageExists(req, res);
     return;
   }
 
-  // Even further though we need to check that the error is not found, since errors here can bubble.
-  if (exists.short !== "Not Found") {
+  // Even further though we need to check that the error is not "Not Found",
+  // since an exception could have been caught.
+  if (nameAvailable.short !== "Not Found") {
     logger.generic(
       3,
-      `postPackages-getPackageByName Not OK: ${exists.content}`
+      `postPackages-getPackageByName Not OK: ${nameAvailable.content}`
     );
     // The server failed for some other bubbled reason, and is now encountering an error.
-    await common.handleError(req, res, exists);
+    await common.handleError(req, res, nameAvailable);
     return;
   }
 
@@ -270,15 +274,15 @@ async function getPackagesFeatured(req, res) {
  */
 async function getPackagesSearch(req, res) {
   const params = {
-    sort: query.sort(req, "relevance"),
+    sort: query.sort(req),
     page: query.page(req),
     direction: query.dir(req),
     query: query.query(req),
   };
 
   // Because the task of implementing the custom search engine is taking longer
-  // than expected, this will instead use super basic text searching on the DB
-  // side. This is only an effort to get this working quickly and should be changed later.
+  // than expected, this will instead use super basic text searching on the DB side.
+  // This is only an effort to get this working quickly and should be changed later.
   // This also means for now, the default sorting method will be downloads, not relevance.
 
   const packs = await database.simpleSearch(
@@ -421,13 +425,19 @@ async function deletePackagesName(req, res) {
     return;
   }
 
-  //const gitowner = await git.ownership(
-  //  user.content,
-  //  utils.getOwnerRepoFromPackage(packageExists.content.data)
-  //);
-  const gitowner = await vcs.ownership(
+  const packMetadata = packageExists.content?.versions[0]?.meta;
+
+  if (packMetadata === null) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Not Found",
+      content: `Cannot retrieve metadata for ${params.packageName} package`,
+    });
+  }
+
+  const gitowner = await git.ownership(
     user.content,
-    packageExists.content
+    utils.getOwnerRepoFromPackage(packMetadata)
   );
 
   if (!gitowner.ok) {
@@ -624,14 +634,24 @@ async function postPackagesVersion(req, res) {
   if (!packExists.ok) {
     logger.generic(
       6,
-      "Seems Package exists when trying to publish new version"
+      "Seems Package does not exist when trying to publish new version"
     );
     await common.handleError(req, res, packExists);
     return;
   }
 
+  const meta = packExists.content?.versions[0]?.meta;
+
+  if (meta === null) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Not Found",
+      content: `Cannot retrieve metadata for ${params.packageName} package`,
+    });
+  }
+
   // Get `owner/repo` string format from package.
-  let ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+  let ownerRepo = utils.getOwnerRepoFromPackage(meta);
 
   // Using our new VCS Service
   // TODO: The "git" Service shouldn't always be hardcoded.
@@ -696,7 +716,8 @@ async function postPackagesVersion(req, res) {
   //  metadata: packMetadata,
   //};
 
-  const newName = packMetadata.content.metadata.name;
+  const newName = packageData.name;
+
   const currentName = packExists.content.name;
   if (newName !== currentName && !params.rename) {
     logger.generic(
@@ -740,7 +761,10 @@ async function postPackagesVersion(req, res) {
     const isBanned = await utils.isPackageNameBanned(newName);
 
     if (isBanned.ok) {
-      logger.generic(3, `postPackages Blocked by banned package name: ${repo}`);
+      logger.generic(
+        3,
+        `postPackages Blocked by banned package name: ${newName}`
+      );
       // is banned
       await common.handleError(req, res, {
         ok: false,
@@ -750,13 +774,29 @@ async function postPackagesVersion(req, res) {
       // TODO ^^^ Replace with specific error once more are supported.
       return;
     }
+
+    const isAvailable = await database.packageNameAvailability(newName);
+
+    if (isAvailable.ok) {
+      logger.generic(
+        3,
+        `postPackages Blocked by new name ${newName} not available`
+      );
+      // is banned
+      await common.handleError(req, res, {
+        ok: false,
+        short: "Server Error",
+        content: "Package Name is Not Available",
+      });
+      // TODO ^^^ Replace with specific error once more are supported.
+      return;
+    }
   }
 
   // Now add the new Version key.
 
   const addVer = await database.insertNewPackageVersion(
-    packMetadata.content.metadata,
-    packageMetadata.content,
+    packageData,
     rename ? currentName : null
   );
 
@@ -866,7 +906,7 @@ async function getPackagesVersionTarball(req, res) {
   // the download to take place from their servers.
 
   // But right before, lets do a couple simple checks to make sure we are sending to a legit site.
-  const tarballURL = pack.content.meta.tarball_url ?? "";
+  const tarballURL = pack.content.meta?.tarball_url ?? "";
   let hostname = "";
 
   // Try to extract the hostname
@@ -952,9 +992,19 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
+  const packMetadata = packageExists.content?.versions[0]?.meta;
+
+  if (packMetadata === null) {
+    await common.handleError(req, res, {
+      ok: false,
+      short: "Not Found",
+      content: `Cannot retrieve metadata for ${params.packageName} package`,
+    });
+  }
+
   const gitowner = await git.ownership(
     user.content,
-    utils.getOwnerRepoFromPackage(packageExists.content.data)
+    utils.getOwnerRepoFromPackage(packMetadata)
   );
 
   if (!gitowner.ok) {

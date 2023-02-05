@@ -7,7 +7,6 @@
 const fs = require("fs");
 const postgres = require("postgres");
 const storage = require("./storage.js");
-const utils = require("./utils.js");
 const logger = require("./logger.js");
 const {
   DB_HOST,
@@ -68,6 +67,46 @@ async function shutdownSQL() {
 
 /**
  * @async
+ * @function packageNameAvailability
+ * @desc Determines if a name is ready to be used for a new package. Useful in the stage of the publication
+ * of a new package where checking if the package exists is not enough because a name could be not
+ * available if a deleted package was using it in the past.
+ * Useful also to check if a name is available for the renaming of a published package.
+ * This function simply checks if the provided name is present in "names" table.
+ * @param {string} name - The candidate name for a new package.
+ * @returns {object} A Server Status Object.
+ */
+async function packageNameAvailability(name) {
+  try {
+    sqlStorage ??= setupSQL();
+
+    const command = await sqlStorage`
+      SELECT name FROM names
+      WHERE name = ${name};
+    `;
+
+    return command.count === 0
+      ? {
+          ok: true,
+          content: `${name} is available to be used for a new package.`,
+        }
+      : {
+          ok: false,
+          content: `${name} is not available to be used for a new package.`,
+          short: "Not Found",
+        };
+  } catch (err) {
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err,
+    };
+  }
+}
+
+/**
+ * @async
  * @function insertNewPackage
  * @desc Insert a new package inside the DB taking a `Server Object Full` as argument.
  * @param {object} pack - The `Server Object Full` package.
@@ -81,12 +120,6 @@ async function insertNewPackage(pack) {
   // All data is committed into the database only if no errors occur.
   return await sqlStorage
     .begin(async (sqlTrans) => {
-      const packData = {
-        name: pack.name,
-        repository: pack.repository,
-        readme: pack.readme,
-        metadata: pack.metadata,
-      };
       const packageType =
         typeof pack.metadata.themes === "string" &&
         pack.metadata.themes.match(/^(?:themes|ui)$/i) !== null
@@ -98,9 +131,10 @@ async function insertNewPackage(pack) {
       let insertNewPack = {};
       try {
         // No need to specify downloads and stargazers. They default at 0 on creation.
+        // TODO: data column deprecated; to be removed
         insertNewPack = await sqlTrans`
           INSERT INTO packages (name, creation_method, data, package_type)
-          VALUES (${pack.name}, ${pack.creation_method}, ${packData}, ${packageType})
+          VALUES (${pack.name}, ${pack.creation_method}, ${pack}, ${packageType})
           RETURNING pointer;
       `;
       } catch (e) {
@@ -130,16 +164,12 @@ async function insertNewPackage(pack) {
         throw `Cannot insert ${pack.name} in names table`;
       }
 
-      // git.createPackage() executed before this function ensures
-      // the latest version is correctly selected.
-      const latest = pack.releases.latest;
-
       // Populate versions table
       let versionCount = 0;
       const pv = pack.versions;
+      // TODO: status column deprecated; to be removed.
+      const status = "published";
       for (const ver of Object.keys(pv)) {
-        const status = ver === latest ? "latest" : "published";
-
         // Since many packages don't define an engine field,
         // we will do it for them if not present,
         // following suit with what Atom internal packages do.
@@ -192,7 +222,7 @@ async function insertNewPackage(pack) {
  * @param {string|null} oldName - If provided, the old name to be replaced for the renaming of the package.
  * @returns {object} A server status object.
  */
-async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
+async function insertNewPackageVersion(packJSON, oldName = null) {
   sqlStorage ??= setupSQL();
 
   // We are expected to receive a standard `package.json` file.
@@ -255,64 +285,27 @@ async function insertNewPackageVersion(packJSON, packageData, oldName = null) {
         packName = packJSON.name;
       }
 
-      // Here we need to check if the current latest version is lower than the new one
-      // which we want to publish.
-      const latestVersion = await sqlTrans`
-        SELECT id, status, semver
-        FROM versions
-        WHERE package = ${pointer} AND status = 'latest';
-      `;
+      // We used to check if the new version was higher than the latest, but this is
+      // too cumbersome to do and the publisher has the responsibility to push an
+      // higher version to be signaled in Pulsar for the update, so we just try to
+      // insert whatever we got.
+      // The only requirement is that the provided semver is not already present
+      // in the database for the targeted package.
 
-      if (latestVersion.count === 0) {
-        throw `There is no current latest version for ${packName}. The package is broken.`;
-      }
-
-      const higherSemver = utils.semverGt(
-        utils.semverArray(packJSON.version),
-        utils.semverArray(latestVersion[0].semver)
-      );
-      if (!higherSemver) {
-        throw `Cannot publish a new version with semver lower or equal than the current latest one.`;
-      }
-
-      // The new version can be published. First switch the current "latest" to "published".
-      const updateLastVer = await sqlTrans`
-        UPDATE versions
-        SET status = 'published'
-        WHERE id = ${latestVersion[0].id}
-        RETURNING semver, status;
-      `;
-
-      if (updateLastVer.count === 0) {
-        throw `Unable to modify last published version ${packName}`;
-      }
-
-      // Then update the package object in the related column of packages table.
-      const updatePackageData = await sqlTrans`
-        UPDATE packages
-        SET data = ${packageData}
-        WHERE pointer = ${pointer}
-        RETURNING name;
-      `;
-
-      if (updatePackageData.count === 0) {
-        throw `Unable to update the full package object of the new version ${packName}`;
-      }
-
-      // We can finally insert the new latest version.
       const license = packJSON.license ?? defaultLicense;
       const engine = packJSON.engines ?? defaultEngine;
 
       let addVer = {};
       try {
+        // TODO: status column deprecated; to be removed
         addVer = await sqlTrans`
           INSERT INTO versions (package, status, semver, license, engine, meta)
-          VALUES(${pointer}, 'latest', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
+          VALUES(${pointer}, 'published', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
           RETURNING semver, status;
         `;
       } catch (e) {
-        // This occurs when the (package, semver_vx) unique constraint is violated.
-        throw `Not allowed to publish a version previously deleted for ${packName}`;
+        // This occurs when the (package, semver) unique constraint is violated.
+        throw `Not allowed to publish a version already present for ${packName}`;
       }
 
       if (!addVer?.count) {
@@ -472,23 +465,22 @@ async function getPackageByName(name, user = false) {
       SELECT
         ${
           user ? sqlStorage`` : sqlStorage`p.pointer,`
-        } p.name, p.created, p.updated, p.creation_method, p.downloads,
-        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data,
+        } p.name, p.created, p.updated, p.creation_method, p.downloads, p.data,
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count,
         JSONB_AGG(
           JSON_BUILD_OBJECT(
             ${
               user
                 ? sqlStorage``
                 : sqlStorage`'id', v.id, 'package', v.package,`
-            } 'status', v.status, 'semver', v.semver,
-            'license', v.license, 'engine', v.engine, 'meta', v.meta
+            } 'semver', v.semver, 'license', v.license, 'engine', v.engine, 'meta', v.meta
           )
-          ORDER BY v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC
+          ORDER BY v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
         ) AS versions
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.status != 'removed')
-      GROUP BY p.pointer, v.package;
+      FROM packages AS p
+        INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name = ${name})
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
+      GROUP BY p.pointer;
     `;
 
     return command.count !== 0
@@ -554,23 +546,11 @@ async function getPackageVersionByNameAndVersion(name, version) {
   try {
     sqlStorage ??= setupSQL();
 
-    // We are permissive on the right side of the semver, so if it's stored with an extension
-    // we can still get it retrieving the semverArray and looking by semver_vx generated columns.
-    const svArr = utils.semverArray(version);
-    if (svArr === null) {
-      return {
-        ok: false,
-        content: `Provided version ${version} is not a valid semver.`,
-        short: "Not Found",
-      };
-    }
-
     const command = await sqlStorage`
-      SELECT v.semver, v.status, v.license, v.engine, v.meta
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name = ${name})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.semver_v1 = ${svArr[0]} AND
-          v.semver_v2 = ${svArr[1]} AND v.semver_v3 = ${svArr[2]} AND v.status != 'removed');
+      SELECT v.semver, v.license, v.engine, v.meta
+      FROM packages AS p
+        INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name = ${name})
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.semver = ${version} AND v.deleted IS FALSE);
     `;
 
     return command.count !== 0
@@ -606,12 +586,14 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count, v.semver
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
+      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
+      FROM packages AS p
+        INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
           packArray
         )})
-        INNER JOIN versions v ON (p.pointer = v.package AND v.status = 'latest');
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
+      ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC;
     `;
 
     return command.count !== 0
@@ -639,10 +621,12 @@ async function getPackageCollectionByID(packArray) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      SELECT data
+      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
+        (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
       FROM packages AS p
-        INNER JOIN versions AS v ON (p.pointer = v.package AND v.status = 'latest')
+        INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
       WHERE pointer IN ${sqlStorage(packArray)}
+      ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC;
     `;
 
     return command.count !== 0
@@ -661,7 +645,7 @@ async function getPackageCollectionByID(packArray) {
 /**
  * @async
  * @function updatePackageStargazers
- * @description Uses the package name (or pointer if provided) to update its stargazers count.
+ * @description Internal util that uses the package name (or pointer if provided) to update its stargazers count.
  * @param {string} name - The package name.
  * @param {string} pointer - The package id (if given, the search by name is skipped).
  * @returns {object} The effected server status object.
@@ -692,7 +676,7 @@ async function updatePackageStargazers(name, pointer = null) {
       UPDATE packages
       SET stargazers_count = ${starCount}
       WHERE pointer = ${pointer}
-      RETURNING name, downloads, (stargazers_count + original_stargazers) AS stargazers_count, data;
+      RETURNING name, (stargazers_count + original_stargazers) AS stargazers_count;
     `;
 
     return updateStar.count !== 0
@@ -724,11 +708,11 @@ async function updatePackageIncrementDownloadByName(name) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      UPDATE packages p
+      UPDATE packages AS p
       SET downloads = p.downloads + 1
-      FROM names n
+      FROM names AS n
       WHERE n.pointer = p.pointer AND n.name = ${name}
-      RETURNING p.name, p.downloads, p.data;
+      RETURNING p.name, p.downloads;
     `;
 
     return command.count !== 0
@@ -760,11 +744,11 @@ async function updatePackageDecrementDownloadByName(name) {
     sqlStorage ??= setupSQL();
 
     const command = await sqlStorage`
-      UPDATE packages p
+      UPDATE packages AS p
       SET downloads = GREATEST(p.downloads - 1, 0)
-      FROM names n
+      FROM names AS n
       WHERE n.pointer = p.pointer AND n.name = ${name}
-      RETURNING p.name, p.downloads, p.data;
+      RETURNING p.name, p.downloads;
     `;
 
     return command.count !== 0
@@ -829,7 +813,7 @@ async function removePackageByName(name) {
         // No check on deleted stars because the package could also have 0 stars.
       }*/
 
-      // Remove names related to the package
+      /* We do not remove the package names to avoid supply chain attacks.
       const commandName = await sqlTrans`
         DELETE FROM names
         WHERE pointer = ${pointer}
@@ -839,6 +823,7 @@ async function removePackageByName(name) {
       if (commandName.count === 0) {
         throw `Failed to delete names for: ${name}`;
       }
+      */
 
       const commandPack = await sqlTrans`
         DELETE FROM packages
@@ -872,8 +857,8 @@ async function removePackageByName(name) {
 /**
  * @async
  * @function removePackageVersion
- * @description Mark a version of a specific package as removed. This does not delete the record,
- * just mark the status as removed, but only if one published version remain available.
+ * @description Mark a version of a specific package as deleted. This does not delete the record,
+ * just mark the boolean deleted flag as true, but only if one published version remains available.
  * This also makes sure that a new latest version is selected in case the previous one is removed.
  * @param {string} packName - The package name.
  * @param {string} semVer - The version to remove.
@@ -898,142 +883,38 @@ async function removePackageVersion(packName, semVer) {
 
       const pointer = packID.content.pointer;
 
-      const svArr = utils.semverArray(semVer);
-      if (svArr === null) {
-        return {
-          ok: false,
-          content: `Provided version ${version} is not a valid semver.`,
-          short: "Not Found",
-        };
-      }
-
-      // Retrieve all non-removed versions sorted from latest to older
+      // Retrieve all non-removed versions to count them
       const getVersions = await sqlTrans`
-        SELECT id, semver, semver_v1, semver_v2, semver_v3, status
+        SELECT id
         FROM versions
-        WHERE package = ${pointer} AND status != 'removed'
-        ORDER BY semver_v1 DESC, semver_v2 DESC, semver_v3 DESC;
+        WHERE package = ${pointer} AND deleted IS FALSE;
       `;
 
       const versionCount = getVersions.count;
-      if (versionCount === 0) {
-        throw `No published version available for ${packName} package`;
+      if (versionCount < 2) {
+        throw `${packName} package has less than 2 published versions: deletion not allowed.`;
       }
 
-      // Having all versions, we loop them to find:
-      // - the id of the version to remove
-      // - if its status is "latest"
-      let removeLatest = false;
-      let versionId = null;
-      for (const v of getVersions) {
-        // Type coercion on the following comparisons because semverArray contains strings
-        // while PostgreSQL returns versions as integer.
-        if (
-          v.semver_v1 == svArr[0] &&
-          v.semver_v2 == svArr[1] &&
-          v.semver_v3 == svArr[2]
-        ) {
-          versionId = v.id;
-          removeLatest = v.status === "latest";
-          break;
-        }
-      }
-
-      if (versionId === null) {
-        // Do not use throw here because we specify Not Found reason.
-        return {
-          ok: false,
-          content: `There's no version ${semVer} to remove for ${packName} package`,
-          short: "Not Found",
-        };
-      }
-
-      // We have the version to remove, but for the package integrity we have to make sure that
-      // at least one published version is still available after the removal.
-      // This is not possible if the version count is only 1.
-      if (versionCount === 1) {
-        throw `It's not possible to leave the ${packName} without at least one published version`;
-      }
-
-      // The package will have published versions, so we can remove the targeted semVer.
-      const updateRemovedStatus = await sqlTrans`
+      // We can remove the targeted semVer.
+      const markDeletedVersion = await sqlTrans`
         UPDATE versions
-        SET status = 'removed'
-        WHERE id = ${versionId}
+        SET DELETED = TRUE
+        WHERE package = ${pointer} AND semver = ${semVer}
         RETURNING id;
       `;
 
-      if (updateRemovedStatus.count === 0) {
+      if (markDeletedVersion.count === 0) {
         // Do not use throw here because we specify Not Found reason.
         return {
           ok: false,
           content: `Unable to remove ${semVer} version of ${packName} package.`,
           short: "Not Found",
         };
-      }
-
-      if (!removeLatest) {
-        // We have removed a published versions and the latest one is still available.
-        return {
-          ok: true,
-          content: `Successfully removed ${semVer} version of ${packName} package.`,
-        };
-      }
-
-      // We have removed the version with the "latest" status, so now we have to select
-      // a new version between the remaining ones which will obtain "latest" status.
-      // No need to compare versions here. We have an array ordered from latest to older,
-      // just pick the first one not equal to semVer
-      let latestVersionId = null;
-      let latestSemver = null;
-      for (const v of getVersions) {
-        if (v.id === versionId) {
-          // Skip the removed version
-          continue;
-        }
-        latestVersionId = v.id;
-        latestSemver = v.semver;
-      }
-
-      if (latestVersionId === null) {
-        throw `An error occurred while selecting the highest versions of ${packName}`;
-      }
-
-      // Mark the targeted highest version as latest.
-      const commandLatest = await sqlTrans`
-        UPDATE versions
-        SET status = 'latest'
-        WHERE id = ${latestVersionId}
-        RETURNING id, meta;
-      `;
-
-      if (commandLatest.count === 0) {
-        return {
-          ok: false,
-          content: `Unable to remove ${semVer} version of ${packName} package.`,
-          short: "Not Found",
-        };
-      }
-
-      // Let's save the meta data object of the new latest version so
-      // we can update it inside the packages table since we use the
-      // packages.data column to report the full object of the lastest version.
-      const latestDataObject = commandLatest[0].meta;
-
-      const updatePackageData = await sqlTrans`
-        UPDATE packages
-        SET data = ${latestDataObject}
-        WHERE pointer = ${pointer}
-        RETURNING name;
-      `;
-
-      if (updatePackageData.count === 0) {
-        throw `Unable to update the full package object of the new version ${latestSemver}`;
       }
 
       return {
         ok: true,
-        content: `Removed ${semVer} of ${packName} and ${latestSemver} is the new latest version.`,
+        content: `Successfully removed ${semVer} version of ${packName} package.`,
       };
     })
     .catch((err) => {
@@ -1428,11 +1309,27 @@ async function getStarringUsersByPointer(pointer) {
  * @function simpleSearch
  * @description The current Fuzzy-Finder implementation of search. Ideally eventually
  * will use a more advanced search method.
+ * @param {string} term - The search term.
+ * @param {string} dir - String flag for asc/desc order.
+ * @param {string} sort - The sort method.
+ * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
  * @returns {object} A server status object containing the results and the pagination object.
  */
 async function simpleSearch(term, page, dir, sort, themes = false) {
   try {
     sqlStorage ??= setupSQL();
+
+    // Parse the sort method
+    const orderType = getOrderField(sort, sqlStorage);
+
+    if (orderType === null) {
+      logger.generic(3, `Unrecognized Sorting Method Provided: ${sort}`);
+      return {
+        ok: false,
+        content: `Unrecognized Sorting Method Provided: ${sort}`,
+        short: "Server Error",
+      };
+    }
 
     // We obtain the lowercase version of term since names should be in
     // lowercase format (see atom-backend issue #86).
@@ -1442,22 +1339,27 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     const offset = page > 1 ? (page - 1) * limit : 0;
 
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-        v.semver, COUNT(*) OVER() AS query_result_count
-      FROM packages p
-        INNER JOIN names n ON (p.pointer = n.pointer AND n.name LIKE ${
-          "%" + lcterm + "%"
-        })
-        INNER JOIN versions AS v ON (p.pointer = v.package AND v.status = 'latest')
-      ${
-        themes === true
-          ? sqlStorage`WHERE p.package_type = 'theme'`
-          : sqlStorage``
-      }
-      ORDER BY ${
-        sort === "relevance" ? sqlStorage`downloads` : sqlStorage`${sort}`
-      }
-      ${dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`}
+      WITH search_query AS (
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+          (p.stargazers_count + p.original_stargazers) AS stargazers_count,
+          v.semver, p.created, v.updated
+        FROM packages AS p
+          INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name LIKE ${
+            "%" + lcterm + "%"
+          }
+          ${
+            themes === true
+              ? sqlStorage`AND p.package_type = 'theme'`
+              : sqlStorage``
+          })
+          INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
+        ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
+      )
+      SELECT *, COUNT(*) OVER() AS query_result_count
+      FROM search_query
+      ORDER BY ${orderType} ${
+      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
+    }
       LIMIT ${limit}
       OFFSET ${offset};
     `;
@@ -1478,7 +1380,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
         count: resultCount,
         page: page < totalPages ? page : totalPages,
         total: totalPages,
-        limit,
+        limit: limit,
       },
     };
   } catch (err) {
@@ -1531,8 +1433,7 @@ async function getUserCollectionById(ids) {
  * then reconstruct the JSON as needed.
  * @param {int} page - Page number.
  * @param {string} dir - String flag for asc/desc order.
- * @param {string} dir - String flag for asc/desc order.
- * @param {string} method - The column name the results have to be sorted by.
+ * @param {string} method - The sort method.
  * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
  * @returns {object} A server status object containing the results and the pagination object.
  */
@@ -1548,40 +1449,33 @@ async function getSortedPackages(page, dir, method, themes = false) {
   try {
     sqlStorage ??= setupSQL();
 
-    let orderType = null;
+    const orderType = getOrderField(method, sqlStorage);
 
-    switch (method) {
-      case "downloads":
-        orderType = "downloads";
-        break;
-      case "created_at":
-        orderType = "created";
-        break;
-      case "updated_at":
-        orderType = "updated";
-        break;
-      case "stars":
-        orderType = "stargazers_count";
-        break;
-      default:
-        logger.generic(3, `Unrecognized Sorting Method Provided: ${method}`);
-        return {
-          ok: false,
-          content: `Unrecognized Sorting Method Provided: ${method}`,
-          short: "Server Error",
-        };
+    if (orderType === null) {
+      logger.generic(3, `Unrecognized Sorting Method Provided: ${method}`);
+      return {
+        ok: false,
+        content: `Unrecognized Sorting Method Provided: ${method}`,
+        short: "Server Error",
+      };
     }
 
     const command = await sqlStorage`
-      SELECT p.data, p.downloads, (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-        v.semver, COUNT(*) OVER() AS query_result_count
-      FROM packages AS p
-        INNER JOIN versions AS v ON (p.pointer = v.package AND v.status = 'latest')
-      ${
-        themes === true
-          ? sqlStorage`WHERE package_type = 'theme'`
-          : sqlStorage``
-      }
+      WITH latest_versions AS (
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+          (p.stargazers_count + p.original_stargazers) AS stargazers_count,
+          v.semver, p.created, v.updated
+        FROM packages AS p
+          INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE
+          ${
+            themes === true
+              ? sqlStorage`AND p.package_type = 'theme'`
+              : sqlStorage``
+          })
+        ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
+      )
+      SELECT *, COUNT(*) OVER() AS query_result_count
+      FROM latest_versions
       ORDER BY ${orderType} ${
       dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
     }
@@ -1611,6 +1505,30 @@ async function getSortedPackages(page, dir, method, themes = false) {
       short: "Server Error",
       error: err,
     };
+  }
+}
+
+/**
+ * @async
+ * @function getOrderField
+ * @description Internal method to parse the sort method and return the related database field/column.
+ * @param {string} method - The sort method.
+ * @param {object} sqlStorage - The database class instance used parse the proper field.
+ * @returns {object|null} The string field associated to the sort method or null if the method is not recognized.
+ */
+function getOrderField(method, sqlStorage) {
+  switch (method) {
+    case "relevance":
+    case "downloads":
+      return sqlStorage`downloads`;
+    case "created_at":
+      return sqlStorage`created`;
+    case "updated_at":
+      return sqlStorage`updated`;
+    case "stars":
+      return sqlStorage`stargazers_count`;
+    default:
+      return null;
   }
 }
 
@@ -1714,6 +1632,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
 
 module.exports = {
   shutdownSQL,
+  packageNameAvailability,
   insertNewPackage,
   getPackageByName,
   getPackageCollectionByName,
@@ -1731,7 +1650,6 @@ module.exports = {
   getPackageVersionByNameAndVersion,
   updatePackageIncrementDownloadByName,
   updatePackageDecrementDownloadByName,
-  updatePackageStargazers,
   getFeaturedThemes,
   simpleSearch,
   updateIncrementStar,

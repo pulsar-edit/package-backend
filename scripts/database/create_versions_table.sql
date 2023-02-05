@@ -11,7 +11,10 @@ CREATE TABLE versions (
     semver VARCHAR(256) NOT NULL,
     license VARCHAR(128) NOT NULL,
     engine JSONB NOT NULL,
+    created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     meta JSONB,
+    deleted BOOLEAN NOT NULL DEFAULT FALSE,
     -- generated columns
     semver_v1 INTEGER GENERATED ALWAYS AS
         (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[1] AS INTEGER)) STORED,
@@ -21,5 +24,15 @@ CREATE TABLE versions (
         (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[3] AS INTEGER)) STORED,
     -- constraints
     CONSTRAINT semver2_format CHECK (semver ~ '^\d+\.\d+\.\d+'),
-    CONSTRAINT unique_pack_version UNIQUE(package, semver_v1, semver_v2, semver_v3)
+    CONSTRAINT unique_pack_version UNIQUE(package, semver)
 );
+
+-- Create a function and a trigger to set the current timestamp
+-- in the `updated` column of the updated row.
+-- The function now_on_updated_package() is the same defined in
+-- the script for the `packages` table.
+
+CREATE TRIGGER trigger_now_on_updated_versions
+    BEFORE UPDATE ON versions
+    FOR EACH ROW
+EXECUTE PROCEDURE now_on_updated_package();
