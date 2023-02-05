@@ -171,7 +171,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // Build a repo tag object indexed by tag names so we can handle versions
-    // easily, and won't call query.engien() multiple times for a single version.
+    // easily, and won't call query.engine() multiple times for a single version.
     let tagList = {};
     for (const tag of tags.content) {
       if (typeof tag.name !== "string") {
@@ -184,7 +184,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // Now to get our Readme
-    let readme = await provider.readme(userObj, ownerRepo);
+    const readme = await provider.readme(userObj, ownerRepo);
 
     if (!readme.ok) {
       return {
@@ -210,7 +210,8 @@ async function newPackageData(userObj, ownerRepo, service) {
     newPack.metadata = pack.content; // The metadata tag is the most recent package.json
 
     // Then lets add the service used, so we are able to safely find it in the future
-    newPack.repository = determineProvider(pack.content.repository);
+    const packRepoObj = determineProvider(pack.content.repository);
+    newPack.repository = packRepoObj;
 
     // Now during migration packages will have a `versions` key, but otherwise
     // the standard package will just have `version`
