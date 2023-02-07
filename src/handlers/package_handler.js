@@ -182,7 +182,11 @@ async function postPackages(req, res) {
 
   // Now knowing they own the git repo, and it doesn't exist here, lets publish.
   // TODO: Stop hardcoding `git` as service
-  const newPack = await vcs.newPackageData(user.content, params.repository, "git");
+  const newPack = await vcs.newPackageData(
+    user.content,
+    params.repository,
+    "git"
+  );
 
   if (!newPack.ok) {
     logger.generic(3, `postPackages-createPackage Not OK: ${newPack.content}`);
@@ -425,10 +429,7 @@ async function deletePackagesName(req, res) {
     return;
   }
 
-  const gitowner = await vcs.ownership(
-    user.content,
-    packageExists.content
-  );
+  const gitowner = await vcs.ownership(user.content, packageExists.content);
 
   if (!gitowner.ok) {
     await common.handleError(req, res, gitowner, 4001);
@@ -988,10 +989,7 @@ async function deletePackageVersion(req, res) {
   //  user.content,
   //  utils.getOwnerRepoFromPackage(packMetadata)
   //);
-  const gitowner = await vcs.ownership(
-    user.content,
-    packageExists.content
-  );
+  const gitowner = await vcs.ownership(user.content, packageExists.content);
 
   if (!gitowner.ok) {
     await common.handleError(req, res, gitowner);

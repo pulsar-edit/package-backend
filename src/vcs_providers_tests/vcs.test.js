@@ -16,12 +16,11 @@ const webRequestMockHelper = (data) => {
 
 const userDataGeneric = {
   token: "123",
-  node_id: "456"
+  node_id: "456",
 };
 
 describe("Does NewPackageData Return as expected", () => {
   test("Repo Exists Error on Bad WebRequest", async () => {
-
     const ownerRepo = "confused-Techie/pulsar-backend";
     const mockData = [
       {
@@ -30,10 +29,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 404
-          }
-        }
-      }
+            status: 404,
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -46,7 +45,6 @@ describe("Does NewPackageData Return as expected", () => {
   });
 
   test("Package Error on Bad WebRequest", async () => {
-
     const ownerRepo = "confused-Techie/pulsar-backend";
     const mockData = [
       {
@@ -55,10 +53,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: true,
           content: {
             body: {
-              full_name: ownerRepo
-            }
-          }
-        }
+              full_name: ownerRepo,
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -66,10 +64,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 500
-          }
-        }
-      }
+            status: 500,
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -78,11 +76,12 @@ describe("Does NewPackageData Return as expected", () => {
 
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Package");
-    expect(res.content).toBe(`Failed to get gh package for ${ownerRepo} - Server Error`);
+    expect(res.content).toBe(
+      `Failed to get gh package for ${ownerRepo} - Server Error`
+    );
   });
 
   test("Tags Error Response on Bad WebRequest", async () => {
-
     const ownerRepo = "confused-Techie/pulsar-backend";
     const mockData = [
       {
@@ -91,10 +90,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: true,
           content: {
             body: {
-              full_name: ownerRepo
-            }
-          }
-        }
+              full_name: ownerRepo,
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -103,10 +102,10 @@ describe("Does NewPackageData Return as expected", () => {
           content: {
             body: {
               content: "eyAibmFtZSI6ICJoZWxsbyB3b3JsZCIgfQ==",
-              encoding: "base64"
-            }
-          }
-        }
+              encoding: "base64",
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/tags`,
@@ -114,10 +113,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 500
-          }
-        }
-      }
+            status: 500,
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -126,8 +125,9 @@ describe("Does NewPackageData Return as expected", () => {
 
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Server Error");
-    expect(res.content).toBe(`Failed to get gh tags for ${ownerRepo} - Server Error`);
-
+    expect(res.content).toBe(
+      `Failed to get gh tags for ${ownerRepo} - Server Error`
+    );
   });
 
   test("Readme Error on Bad Web Request", async () => {
@@ -139,10 +139,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: true,
           content: {
             body: {
-              full_name: ownerRepo
-            }
-          }
-        }
+              full_name: ownerRepo,
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -151,10 +151,10 @@ describe("Does NewPackageData Return as expected", () => {
           content: {
             body: {
               content: "eyAibmFtZSI6ICJoZWxsbyB3b3JsZCIgfQ==",
-              encoding: "base64"
-            }
-          }
-        }
+              encoding: "base64",
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/tags`,
@@ -165,11 +165,12 @@ describe("Does NewPackageData Return as expected", () => {
             body: [
               {
                 name: "v1.101.0-beta",
-                tarball_url: "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta"
-              }
-            ]
-          }
-        }
+                tarball_url:
+                  "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+              },
+            ],
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/readme`,
@@ -177,10 +178,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 500
-          }
-        }
-      }
+            status: 500,
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -189,7 +190,9 @@ describe("Does NewPackageData Return as expected", () => {
 
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Repo");
-    expect(res.content).toBe(`Failed to get gh readme for ${ownerRepo} - Server Error`);
+    expect(res.content).toBe(
+      `Failed to get gh readme for ${ownerRepo} - Server Error`
+    );
   });
 
   test("Returns Valid New Package Data with successful Requests", async () => {
@@ -202,10 +205,10 @@ describe("Does NewPackageData Return as expected", () => {
           ok: true,
           content: {
             body: {
-              full_name: ownerRepo
-            }
-          }
-        }
+              full_name: ownerRepo,
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -213,11 +216,12 @@ describe("Does NewPackageData Return as expected", () => {
           ok: true,
           content: {
             body: {
-              content: "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
-              encoding: "base64"
-            }
-          }
-        }
+              content:
+                "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
+              encoding: "base64",
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/tags`,
@@ -228,14 +232,15 @@ describe("Does NewPackageData Return as expected", () => {
             body: [
               {
                 name: "v1.101.0-beta",
-                tarball_url: "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+                tarball_url:
+                  "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
                 commit: {
-                  sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
-                }
-              }
-            ]
-          }
-        }
+                  sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f",
+                },
+              },
+            ],
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/readme`,
@@ -245,11 +250,11 @@ describe("Does NewPackageData Return as expected", () => {
             status: 200,
             body: {
               content: "VGhpcyBpcyBhIHJlYWRtZQ==",
-              encoding: "base64"
-            }
-          }
-        }
-      }
+              encoding: "base64",
+            },
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -261,22 +266,31 @@ describe("Does NewPackageData Return as expected", () => {
     expect(res.content.readme).toBe("This is a readme");
     expect(res.content.metadata.name).toBe("pulsar");
     expect(res.content.metadata.version).toBe("v1.101.0-beta");
-    expect(res.content.metadata.repository).toBe("https://github.com/pulsar-edit/pulsar");
+    expect(res.content.metadata.repository).toBe(
+      "https://github.com/pulsar-edit/pulsar"
+    );
     expect(res.content.repository.type).toBe("git");
-    expect(res.content.repository.url).toBe("https://github.com/pulsar-edit/pulsar");
+    expect(res.content.repository.url).toBe(
+      "https://github.com/pulsar-edit/pulsar"
+    );
     expect(res.content.versions["1.101.0-beta"]).toBeDefined();
     expect(res.content.versions["1.101.0-beta"].name).toBe("pulsar");
     expect(res.content.versions["1.101.0-beta"].version).toBe("v1.101.0-beta");
-    expect(res.content.versions["1.101.0-beta"].repository).toBe("https://github.com/pulsar-edit/pulsar");
-    expect(res.content.versions["1.101.0-beta"].tarball_url).toBe("https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta");
-    expect(res.content.versions["1.101.0-beta"].sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
+    expect(res.content.versions["1.101.0-beta"].repository).toBe(
+      "https://github.com/pulsar-edit/pulsar"
+    );
+    expect(res.content.versions["1.101.0-beta"].tarball_url).toBe(
+      "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta"
+    );
+    expect(res.content.versions["1.101.0-beta"].sha).toBe(
+      "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
+    );
     expect(res.content.releases.latest).toBe("1.101.0-beta");
   });
 });
 
 describe("Does newVersionData Return as Expected", () => {
   test("Package Error on Bad WebRequest", async () => {
-
     const ownerRepo = "confused-Techie/pulsar-backend";
     const mockData = [
       {
@@ -285,10 +299,10 @@ describe("Does newVersionData Return as Expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 500
-          }
-        }
-      }
+            status: 500,
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -297,7 +311,9 @@ describe("Does newVersionData Return as Expected", () => {
 
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Package");
-    expect(res.content).toBe(`Failed to get gh package for ${ownerRepo} - Server Error`);
+    expect(res.content).toBe(
+      `Failed to get gh package for ${ownerRepo} - Server Error`
+    );
   });
 
   test("Readme Error on Bad Web Request", async () => {
@@ -309,9 +325,9 @@ describe("Does newVersionData Return as Expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 500
-          }
-        }
+            status: 500,
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -321,11 +337,11 @@ describe("Does newVersionData Return as Expected", () => {
             status: 200,
             body: {
               content: "eyAibmFtZSI6ICJoZWxsbyB3b3JsZCIgfQ==",
-              encoding: "base64"
-            }
-          }
-        }
-      }
+              encoding: "base64",
+            },
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -334,7 +350,9 @@ describe("Does newVersionData Return as Expected", () => {
 
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Repo");
-    expect(res.content).toBe(`Failed to get gh readme for ${ownerRepo} - Server Error`);
+    expect(res.content).toBe(
+      `Failed to get gh readme for ${ownerRepo} - Server Error`
+    );
   });
 
   test("Tags Error on Bad Web Request", async () => {
@@ -346,9 +364,9 @@ describe("Does newVersionData Return as Expected", () => {
           ok: false,
           short: "Failed Request",
           content: {
-            status: 500
-          }
-        }
+            status: 500,
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -356,11 +374,12 @@ describe("Does newVersionData Return as Expected", () => {
           ok: true,
           content: {
             body: {
-              content: "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
-              encoding: "base64"
-            }
-          }
-        }
+              content:
+                "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
+              encoding: "base64",
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/readme`,
@@ -370,11 +389,11 @@ describe("Does newVersionData Return as Expected", () => {
             status: 200,
             body: {
               content: "VGhpcyBpcyBhIHJlYWRtZQ==",
-              encoding: "base64"
-            }
-          }
-        }
-      }
+              encoding: "base64",
+            },
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -383,7 +402,9 @@ describe("Does newVersionData Return as Expected", () => {
 
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Server Error");
-    expect(res.content).toBe(`Failed to get gh tags for ${ownerRepo} - Server Error`);
+    expect(res.content).toBe(
+      `Failed to get gh tags for ${ownerRepo} - Server Error`
+    );
   });
 
   test("Returns Valid New Version Data with successful Requests", async () => {
@@ -399,14 +420,15 @@ describe("Does newVersionData Return as Expected", () => {
             body: [
               {
                 name: "v1.101.0-beta",
-                tarball_url: "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+                tarball_url:
+                  "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
                 commit: {
-                  sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
-                }
-              }
-            ]
-          }
-        }
+                  sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f",
+                },
+              },
+            ],
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/package.json`,
@@ -414,11 +436,12 @@ describe("Does newVersionData Return as Expected", () => {
           ok: true,
           content: {
             body: {
-              content: "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
-              encoding: "base64"
-            }
-          }
-        }
+              content:
+                "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
+              encoding: "base64",
+            },
+          },
+        },
       },
       {
         url: `/repos/${ownerRepo}/contents/readme`,
@@ -428,11 +451,11 @@ describe("Does newVersionData Return as Expected", () => {
             status: 200,
             body: {
               content: "VGhpcyBpcyBhIHJlYWRtZQ==",
-              encoding: "base64"
-            }
-          }
-        }
-      }
+              encoding: "base64",
+            },
+          },
+        },
+      },
     ];
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -442,14 +465,19 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.ok).toBe(true);
     expect(res.content.name).toBe("pulsar");
     expect(res.content.repository.type).toBe("git");
-    expect(res.content.repository.url).toBe("https://github.com/pulsar-edit/pulsar");
+    expect(res.content.repository.url).toBe(
+      "https://github.com/pulsar-edit/pulsar"
+    );
     expect(res.content.readme).toBe("This is a readme");
     expect(res.content.metadata.name).toBe("pulsar");
     expect(res.content.metadata.version).toBe("v1.101.0-beta");
-    expect(res.content.metadata.tarball_url).toBe("https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta");
-    expect(res.content.metadata.sha).toBe("dca05a3fccdc7d202e4ce00a5a2d3edef50a640f");
+    expect(res.content.metadata.tarball_url).toBe(
+      "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta"
+    );
+    expect(res.content.metadata.sha).toBe(
+      "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
+    );
   });
-
 });
 
 describe("Ownership Returns as Expected", () => {
@@ -457,15 +485,14 @@ describe("Ownership Returns as Expected", () => {
     const ownerRepo = "pulsar-edit/pulsar";
     const userObj = {
       token: "123",
-      node_id: "12345"
+      node_id: "12345",
     };
     const packObj = {
       repository: {
         type: "git",
-        url: "https://github.com/pulsar-edit/pulsar"
+        url: "https://github.com/pulsar-edit/pulsar",
       },
-      data: {
-      }
+      data: {},
     };
 
     const mockData = [
@@ -484,16 +511,15 @@ describe("Ownership Returns as Expected", () => {
                   maintain: true,
                   push: true,
                   triage: true,
-                  pull: true
+                  pull: true,
                 },
-                role_name: "admin"
-              }
-            ]
-          }
-        }
-      }
+                role_name: "admin",
+              },
+            ],
+          },
+        },
+      },
     ];
-
 
     const tmpMock = webRequestMockHelper(mockData);
 

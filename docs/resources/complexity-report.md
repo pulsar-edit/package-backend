@@ -1,22 +1,22 @@
-# Complexity report, 2/4/2023
+# Complexity report, 2/7/2023
 
-* Mean per-function logical LOC: 16.142857142857142
-* Mean per-function parameter count: 0.3392857142857143
-* Mean per-function cyclomatic complexity: 1.5357142857142858
-* Mean per-function Halstead effort: 4700.0443239763135
-* Mean per-module maintainability index: 66.47867811210027
-* First-order density: 0.5102040816326531%
-* Change cost: 7.653061224489796%
+* Mean per-function logical LOC: 14.375
+* Mean per-function parameter count: 0.296875
+* Mean per-function cyclomatic complexity: 1.46875
+* Mean per-function Halstead effort: 4138.382703893132
+* Mean per-module maintainability index: 69.66937781356495
+* First-order density: 0.390625%
+* Change cost: 6.640625%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
 
-* Physical LOC: 23
-* Logical LOC: 12
+* Physical LOC: 30
+* Logical LOC: 14
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 8.333333333333332%
-* Maintainability index: 62.36361563140606
+* Cyclomatic complexity density: 7.142857142857142%
+* Maintainability index: 60.341428527308
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/jsdoc.conf.js
@@ -68,6 +68,16 @@
     * Halstead difficulty: 18.857142857142858
     * Halstead volume: 475.6861996976024
     * Halstead effort: 8970.082622869073
+
+## /home/runner/work/package-backend/package-backend/docs/resources/jsdoc_typedef.js
+
+* Physical LOC: 1
+* Logical LOC: 0
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: Infinity%
+* Maintainability index: 100
+* Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/scripts/deprecated/search.js
 
@@ -227,6 +237,16 @@
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 1.282051282051282%
 * Maintainability index: 37.68731830500316
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/tests/vcs.test.js
+
+* Physical LOC: 66
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
 * Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/src/tests_integration/fixtures/git.createPackage_returns/valid_multi_version.js

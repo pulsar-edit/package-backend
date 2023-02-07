@@ -12,7 +12,10 @@ describe("determineProvider Returns as expected", () => {
     expect(res.url).toBe("");
   });
   test("Returns proper object, when object is passed", () => {
-    const tmp = { type: "git", url: "https://github.com/confused-Techie/atom-backend" };
+    const tmp = {
+      type: "git",
+      url: "https://github.com/confused-Techie/atom-backend",
+    };
     const res = vcs.determineProvider(tmp);
     expect(res.type).toBe(tmp.type);
     expect(res.url).toBe(tmp.url);
@@ -48,7 +51,8 @@ describe("determineProvider Returns as expected", () => {
     expect(res.url).toBe(tmp);
   });
   test("Returns proper Bitbucket Object, when passed Bitbucket string", () => {
-    const tmp = "https://bitbucket.org/docker_alpine/alpine-jellyfin/src/master/";
+    const tmp =
+      "https://bitbucket.org/docker_alpine/alpine-jellyfin/src/master/";
     const res = vcs.determineProvider(tmp);
     expect(res.type).toBe("bit");
     expect(res.url).toBe(tmp);

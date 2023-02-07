@@ -21,9 +21,9 @@ const config = {
       displayName: "VCS-Tests",
       testMatch: [
         "<rootDir>/src/vcs_providers_tests/**/*.test.js",
-        "<rootDir>/src/vcs_providers_tests/*.test.js"
+        "<rootDir>/src/vcs_providers_tests/*.test.js",
       ],
-    }
+    },
   ],
 };
 

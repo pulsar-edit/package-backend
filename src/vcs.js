@@ -38,7 +38,7 @@ const semVerInitRegex = /^\s*v/i;
  * @returns {object} - A Server Status object containing the role of the user according
  * to the repo or otherwise a failure.
  */
-async function ownership(userObj, packObj, dev_override = false ) {
+async function ownership(userObj, packObj, dev_override = false) {
   // TODO: Ideally we don't have any static fake returns.
   // As we have seen this degrades the accuracy of our tests greatly.
   // Now that we have the whole new Testing System I'd like to move away and remove this
@@ -50,26 +50,27 @@ async function ownership(userObj, packObj, dev_override = false ) {
     !dev_override &&
     process.env.MOCK_GH !== "false"
   ) {
-    console.log(`git.js.ownership() Is returning Dev Only Permissions for ${userObj.username}`);
+    console.log(
+      `git.js.ownership() Is returning Dev Only Permissions for ${userObj.username}`
+    );
 
-    switch(userObj.username) {
+    switch (userObj.username) {
       case "admin_user":
         return { ok: true, content: "admin" };
       case "no_perm_user":
         return {
           ok: false,
           content: "Development NoPerms User",
-          short: "No Repo Access"
+          short: "No Repo Access",
         };
       default:
         return {
           ok: false,
           content: "Server in Dev Mode passed unhandled user",
-          short: "Server Error"
+          short: "Server Error",
         };
-     }
-
-   }
+    }
+  }
   // Non-dev return.
 
   // Since the package is already on the DB when attempting to determine ownership
@@ -83,10 +84,11 @@ async function ownership(userObj, packObj, dev_override = false ) {
   // to provide such as during package publish.
   // Which if we are getting a string, then we will fallback to the default
   // which is GitHub, which will work for now.
-  const repoObj = (typeof packObj === "object") ? packObj.repository.type : packObj;
+  const repoObj =
+    typeof packObj === "object" ? packObj.repository.type : packObj;
   // TODO: Double check validity of Object, but we should have `.type` & `.url`
 
-  switch(repoObj) {
+  switch (repoObj) {
     // Additional supported VCS systems go here.
     case "git":
     default: {
@@ -95,7 +97,10 @@ async function ownership(userObj, packObj, dev_override = false ) {
       // Here we check if we were handed an owner/repo combo directly by checking
       // for a string. Otherwise we assume it's a package object where we need to
       // find the owner/repo combo.
-      const ownerRepo = (typeof packObj === "string") ? packObj : utils.getOwnerRepoFromPackage(packObj);
+      const ownerRepo =
+        typeof packObj === "string"
+          ? packObj
+          : utils.getOwnerRepoFromPackage(packObj);
 
       const owner = await github.ownership(userObj, ownerRepo);
       // ^^^ Above we pass the full package object since github will decode
@@ -103,7 +108,6 @@ async function ownership(userObj, packObj, dev_override = false ) {
       return owner;
     }
   }
-
 }
 
 /**
@@ -124,12 +128,11 @@ async function ownership(userObj, packObj, dev_override = false ) {
  */
 async function newPackageData(userObj, ownerRepo, service) {
   try {
-
     let provider = null;
     // Provider above, is the provider that should be assigned to allow interaction
     // with our specific VCS service
 
-    switch(service) {
+    switch (service) {
       case "git":
       default:
         provider = new GitHub();
@@ -146,7 +149,7 @@ async function newPackageData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: `Failed to get repo: ${ownerRepo} - ${exists.short}`,
-        short: "Bad Repo"
+        short: "Bad Repo",
       };
     }
 
@@ -156,7 +159,7 @@ async function newPackageData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: `Failed to get gh package for ${ownerRepo} - ${pack.short}`,
-        short: "Bad Package"
+        short: "Bad Package",
       };
     }
 
@@ -166,7 +169,7 @@ async function newPackageData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: `Failed to get gh tags for ${ownerRepo} - ${tags.short}`,
-        short: "Server Error"
+        short: "Server Error",
       };
     }
 
@@ -190,7 +193,7 @@ async function newPackageData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: `Failed to get gh readme for ${ownerRepo} - ${readme.short}`,
-        short: "Bad Repo"
+        short: "Bad Repo",
       };
     }
 
@@ -257,12 +260,16 @@ async function newPackageData(userObj, ownerRepo, service) {
       }
 
       if (!tag.tarball_url) {
-        logger.generic(3, `Cannot retreive metadata info for version ${ver} of packName`);
+        logger.generic(
+          3,
+          `Cannot retreive metadata info for version ${ver} of packName`
+        );
         continue;
       }
 
       pack.content.tarball_url = tag.tarball_url;
-      pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
+      pack.content.sha =
+        typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
       newPack.versions[ver] = pack.content;
       versionCount++;
@@ -286,29 +293,28 @@ async function newPackageData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: "Failed to retreive package versions.",
-        short: "Server Error"
+        short: "Server Error",
       };
     }
 
     // Now with all the versions properly filled, we lastly just need the
     // release data
     newPack.releases = {
-      latest: latestVersion
+      latest: latestVersion,
     };
 
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
     return {
       ok: true,
-      content: newPack
+      content: newPack,
     };
-
-  } catch(err) {
+  } catch (err) {
     // An error occured somewhere during package generation
     return {
       ok: false,
       content: err,
-      short: "Server Error"
+      short: "Server Error",
     };
   }
 }
@@ -339,7 +345,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   // Provider above, is the provider that should be assigned to allow interaction
   // with our specific VCS service
 
-  switch(service) {
+  switch (service) {
     case "git":
     default:
       provider = new GitHub();
@@ -351,7 +357,7 @@ async function newVersionData(userObj, ownerRepo, service) {
     return {
       ok: false,
       content: `Failed to get gh package for ${ownerRepo} - ${pack.short}`,
-      short: "Bad Package"
+      short: "Bad Package",
     };
   }
 
@@ -364,7 +370,7 @@ async function newVersionData(userObj, ownerRepo, service) {
     return {
       ok: false,
       content: `Failed to get gh readme for ${ownerRepo} - ${readme.short}`,
-      short: "Bad Repo"
+      short: "Bad Repo",
     };
   }
 
@@ -382,7 +388,7 @@ async function newVersionData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: `Failed to get gh tags for ${ownerRepo} - ${tags.short}`,
-        short: "Server Error"
+        short: "Server Error",
       };
     }
 
@@ -403,17 +409,20 @@ async function newVersionData(userObj, ownerRepo, service) {
       return {
         ok: false,
         content: `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`,
-        short: "Server Error"
+        short: "Server Error",
       };
     }
   }
 
   if (!tag.tarball_url) {
-    logger.generic(3, `Cannot retreive metadata information for version ${ver} of ${ownerRepo}`);
+    logger.generic(
+      3,
+      `Cannot retreive metadata information for version ${ver} of ${ownerRepo}`
+    );
     return {
       ok: false,
       content: `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`,
-      short: "Server Error"
+      short: "Server Error",
     };
   }
 
@@ -426,10 +435,9 @@ async function newVersionData(userObj, ownerRepo, service) {
       name: pack.content.name.toLowerCase(),
       repository: determineProvider(pack.content.repository),
       readme: readme.content,
-      metadata: pack.content
-    }
+      metadata: pack.content,
+    },
   };
-
 }
 
 /**
@@ -448,7 +456,7 @@ function determineProvider(repo) {
     if (repo === null || repo === undefined) {
       return {
         type: "na",
-        url: ""
+        url: "",
       };
     }
 
@@ -461,14 +469,14 @@ function determineProvider(repo) {
     if (typeof repo !== "string") {
       return {
         type: "unknown",
-        url: repo
+        url: repo,
       };
     }
 
     // The repo is a string, and we need to determine who the provider is.
     const lcRepo = repo.toLowerCase();
 
-    switch(true) {
+    switch (true) {
       case lcRepo.includes("github"):
         return {
           type: "git",
@@ -496,7 +504,7 @@ function determineProvider(repo) {
       case lcRepo.includes("codeberg"):
         return {
           type: "berg",
-          url: repo
+          url: repo,
         };
 
       default:
@@ -506,11 +514,10 @@ function determineProvider(repo) {
           url: repo,
         };
     }
-
-  } catch(err) {
+  } catch (err) {
     return {
       type: "na",
-      url: ""
+      url: "",
     };
   }
 }

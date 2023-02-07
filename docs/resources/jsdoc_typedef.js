@@ -1,17 +1,17 @@
 /**
-* This Document is intended to house all `typedef` comments used within
-* the codebase.
-* It's existance and location serves two purposes:
-*   - Having this located within docs lets it be properly discoverable as
-*     documentation about the object structures we use.
-*   - But having it as a JavaScript file means it can be included into our
-*     JSDoc Source Code Documentation - ../reference/Source_Documentation.md
-*/
+ * This Document is intended to house all `typedef` comments used within
+ * the codebase.
+ * It's existance and location serves two purposes:
+ *   - Having this located within docs lets it be properly discoverable as
+ *     documentation about the object structures we use.
+ *   - But having it as a JavaScript file means it can be included into our
+ *     JSDoc Source Code Documentation - ../reference/Source_Documentation.md
+ */
 
 /**
-  * The Generic Object that should be returned by nearly every function
-  * within every module. Allows ease of bubbling errors to the HTTP Handler.
-  * @see {@link docs/reference/bubbled_errors.md}
+ * The Generic Object that should be returned by nearly every function
+ * within every module. Allows ease of bubbling errors to the HTTP Handler.
+ * @see {@link docs/reference/bubbled_errors.md}
  * @typedef {object} ServerStatusObject
  * @property {boolean} ok - Indicates if the overall function was successful.
  * @property {*} content - The returned data of the request. Can be anything.

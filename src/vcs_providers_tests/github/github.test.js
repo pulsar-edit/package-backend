@@ -2,7 +2,7 @@ const GitHub = require("../../vcs_providers/github.js");
 
 const webRequestMockHelper = (data) => {
   const tmpMock = jest
-    .spyOn(GitHub.prototype, '_webRequestAuth')
+    .spyOn(GitHub.prototype, "_webRequestAuth")
     .mockImplementation(() => {
       return data;
     });
@@ -11,26 +11,26 @@ const webRequestMockHelper = (data) => {
 
 describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
   test("Returns No ownership with bad auth return of server", async () => {
-      const mockData = {
-        ok: false,
-        short: "Failed Request",
-        content: {
-          status: 401
-        }
-      };
-      const tmpMock = webRequestMockHelper(mockData);
+    const mockData = {
+      ok: false,
+      short: "Failed Request",
+      content: {
+        status: 401,
+      },
+    };
+    const tmpMock = webRequestMockHelper(mockData);
 
-      const userData = {
-        token: "123",
-        node_id: "456"
-      };
+    const userData = {
+      token: "123",
+      node_id: "456",
+    };
 
-      let tmp = new GitHub();
-      let res = await tmp.doesUserHaveRepo(userData, "owner/repo");
-      tmpMock.mockClear();
+    let tmp = new GitHub();
+    let res = await tmp.doesUserHaveRepo(userData, "owner/repo");
+    tmpMock.mockClear();
 
-      expect(res.ok).toBe(false);
-      expect(res.short).toBe("Bad Auth");
+    expect(res.ok).toBe(false);
+    expect(res.short).toBe("Bad Auth");
   });
   test("Returns Successful Ownership", async () => {
     const mockData = {
@@ -41,17 +41,17 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
           {
             node_id: "456",
             permissions: {
-              admin: true
+              admin: true,
             },
-            role_name: "admin"
-          }
-        ]
-      }
+            role_name: "admin",
+          },
+        ],
+      },
     };
     const tmpMock = webRequestMockHelper(mockData);
     const userData = {
       token: "123",
-      node_id: "456"
+      node_id: "456",
     };
 
     let tmp = new GitHub();
@@ -67,23 +67,23 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
       content: {
         status: 200,
         headers: {
-          link: ""
+          link: "",
         },
         body: [
           {
             node_id: "789",
             permissions: {
-              admin: true
+              admin: true,
             },
-            role_name: "admin"
-          }
-        ]
-      }
+            role_name: "admin",
+          },
+        ],
+      },
     };
     const tmpMock = webRequestMockHelper(mockData);
     const userData = {
       token: "123",
-      node_id: "456"
+      node_id: "456",
     };
 
     let tmp = new GitHub();
@@ -99,7 +99,7 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
       content: {
         status: 200,
         headers: {
-          link: ""
+          link: "",
         },
         body: [
           {
@@ -109,18 +109,18 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
               maintain: false,
               push: false,
               triage: false,
-              pull: true
+              pull: true,
             },
-            role_name: "pull"
-          }
-        ]
-      }
+            role_name: "pull",
+          },
+        ],
+      },
     };
 
     const tmpMock = webRequestMockHelper(mockData);
     const userData = {
       token: "456",
-      node_id: "123"
+      node_id: "123",
     };
 
     let tmp = new GitHub();
@@ -138,8 +138,8 @@ describe("vcs_providers/github.readme() MOCK", () => {
       ok: false,
       short: "Failed Request",
       content: {
-        status: 401
-      }
+        status: 401,
+      },
     };
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -156,8 +156,8 @@ describe("vcs_providers/github.readme() MOCK", () => {
       ok: false,
       short: "Failed Request",
       content: {
-        status: 404
-      }
+        status: 404,
+      },
     };
 
     const tmpMock = webRequestMockHelper(mockData);
@@ -169,5 +169,4 @@ describe("vcs_providers/github.readme() MOCK", () => {
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Server Error");
   });
-
 });

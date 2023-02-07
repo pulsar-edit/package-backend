@@ -21,7 +21,7 @@ class GitHub extends Git {
     // Initialize base properties
     this._initializer({
       api_url: opts?.api_url ?? this.#defaultApiUrl,
-      ok_status: this.#defaultAcceptableStatusCodes
+      ok_status: this.#defaultAcceptableStatusCodes,
     });
   }
 
@@ -35,7 +35,6 @@ class GitHub extends Git {
    * @param {object} ownerRepo - The Owner/Repo Combo
    */
   async ownership(user, ownerRepo) {
-
     const owner = await this.doesUserHaveRepo(user, ownerRepo);
 
     if (owner.ok) {
@@ -43,7 +42,7 @@ class GitHub extends Git {
       return owner;
     }
 
-    switch(owner.short) {
+    switch (owner.short) {
       case "No Access":
         // The user does not have any access to the repo.
         return { ok: false, short: "No Repo Access" };
@@ -58,7 +57,7 @@ class GitHub extends Git {
         return {
           ok: false,
           short: "Server Error",
-          content: owner.short
+          content: owner.short,
         };
     }
   }
@@ -81,22 +80,25 @@ class GitHub extends Git {
    */
   async doesUserHaveRepo(user, ownerRepo, page = 1) {
     try {
-      const check = await this._webRequestAuth(`/repos/${ownerRepo}/collaborators?page=${page}`, user.token);
+      const check = await this._webRequestAuth(
+        `/repos/${ownerRepo}/collaborators?page=${page}`,
+        user.token
+      );
 
       if (!check.ok) {
         if (check.short === "Failed Request") {
           // This means the request failed with a non 200 HTTP Status Code.
           // Looking into the error could tell us if the token is expired or etc.
-          switch(check.content.status) {
+          switch (check.content.status) {
             case 401:
               return {
                 ok: false,
-                short: "Bad Auth"
+                short: "Bad Auth",
               };
             default:
               return {
                 ok: false,
-                short: "Server Error"
+                short: "Server Error",
               };
           }
         }
@@ -104,7 +106,7 @@ class GitHub extends Git {
         // we will want to return a server error.
         return {
           ok: false,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
 
@@ -113,16 +115,18 @@ class GitHub extends Git {
           // We have now found the user in the list of all users
           // with access to this repo.
           // Now we just want to ensure that they have the proper permissions.
-          if (check.content.body[i].permissions.admin === true ||
-              check.content.body[i].permissions.maintain === true ||
-              check.content.body[i].permissions.push === true) {
+          if (
+            check.content.body[i].permissions.admin === true ||
+            check.content.body[i].permissions.maintain === true ||
+            check.content.body[i].permissions.push === true
+          ) {
             // We will associate a user as having ownership of a repo if they
             // are able to make writable changes. So as such, with any of the above
             // permissions.
 
             return {
               ok: true,
-              content: check.content.body[i].role_name
+              content: check.content.body[i].role_name,
             };
           } else {
             // Since we have confirmed we have found the user, but they do not have
@@ -130,7 +134,7 @@ class GitHub extends Git {
             return {
               ok: false,
               short: "No Access",
-              content: "The User does not have permission to this repo."
+              content: "The User does not have permission to this repo.",
             };
           }
         }
@@ -148,15 +152,14 @@ class GitHub extends Git {
       // There are no additional pages. Return that we don't have access
       return {
         ok: false,
-        short: "No Access"
+        short: "No Access",
       };
-
-    } catch(err) {
+    } catch (err) {
       // We encounted an exception that's not related to the webrequest.
       return {
         ok: false,
         short: "Server Error",
-        content: err
+        content: err,
       };
     }
   }
@@ -172,30 +175,32 @@ class GitHub extends Git {
    */
   async readme(userObj, ownerRepo) {
     try {
-
-      const readmeRaw = await this._webRequestAuth(`/repos/${ownerRepo}/contents/readme`, userObj.token);
+      const readmeRaw = await this._webRequestAuth(
+        `/repos/${ownerRepo}/contents/readme`,
+        userObj.token
+      );
       // Using just `/readme` will let GitHub attempt to get the repos prefferred readme file,
       // so we don't have to check mutliple times.
       // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-a-repository-readme
       if (!readmeRaw.ok) {
         if (readmeRaw.short === "Failed Request") {
-          switch(readmeRaw.content.status) {
+          switch (readmeRaw.content.status) {
             case 401:
               return {
                 ok: false,
-                short: "Bad Auth"
+                short: "Bad Auth",
               };
             default:
               return {
                 ok: false,
-                short: "Server Error"
+                short: "Server Error",
               };
           }
         }
         // The HTTP error is not accounted for, so lets return a server error.
         return {
           ok: false,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
 
@@ -203,14 +208,16 @@ class GitHub extends Git {
       // So lets go ahead and return the Readme
       return {
         ok: true,
-        content: Buffer.from(readmeRaw.content.body.content, readmeRaw.content.body.encoding).toString()
+        content: Buffer.from(
+          readmeRaw.content.body.content,
+          readmeRaw.content.body.encoding
+        ).toString(),
       };
-
-    } catch(err) {
+    } catch (err) {
       return {
         ok: false,
         short: "Server Error",
-        content: err
+        content: err,
       };
     }
   }
@@ -227,40 +234,42 @@ class GitHub extends Git {
    */
   async tags(userObj, ownerRepo) {
     try {
-      const raw = this._webRequestAuth(`/repos/${ownerRepo}/tags`, userObj.token);
+      const raw = this._webRequestAuth(
+        `/repos/${ownerRepo}/tags`,
+        userObj.token
+      );
 
       if (!raw.ok) {
         if (raw.short === "Failed Request") {
-          switch(raw.content.status) {
+          switch (raw.content.status) {
             case 401:
               return {
                 ok: false,
-                short: "Bad Auth"
+                short: "Bad Auth",
               };
             default:
               return {
                 ok: false,
-                short: "Server Error"
+                short: "Server Error",
               };
           }
         }
         return {
           ok: false,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
 
       // We have valid tags, lets return.
       return {
         ok: true,
-        content: raw.content.body
+        content: raw.content.body,
       };
-
-    } catch(err) {
+    } catch (err) {
       return {
         ok: false,
         short: "Server Error",
-        content: err
+        content: err,
       };
     }
   }
@@ -276,40 +285,47 @@ class GitHub extends Git {
    */
   async packageJSON(userObj, ownerRepo) {
     try {
-      const raw = await this._webRequestAuth(`/repos/${ownerRepo}/contents/package.json`, userObj.token);
+      const raw = await this._webRequestAuth(
+        `/repos/${ownerRepo}/contents/package.json`,
+        userObj.token
+      );
 
       if (!raw.ok) {
         if (raw.short === "Failed Request") {
-          switch(raw.content.status) {
+          switch (raw.content.status) {
             case 401:
               return {
                 ok: false,
-                short: "Bad Auth"
+                short: "Bad Auth",
               };
             default:
               return {
                 ok: false,
-                short: "Server Error"
+                short: "Server Error",
               };
           }
         }
         return {
           ok: false,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
 
       // We have valid data, lets return after processing
       return {
         ok: true,
-        content: JSON.parse(Buffer.from(raw.content.body.content, raw.content.body.encoding).toString())
+        content: JSON.parse(
+          Buffer.from(
+            raw.content.body.content,
+            raw.content.body.encoding
+          ).toString()
+        ),
       };
-
-    } catch(err) {
+    } catch (err) {
       return {
         ok: false,
         short: "Server Error",
-        content: err
+        content: err,
       };
     }
   }
@@ -326,44 +342,47 @@ class GitHub extends Git {
    */
   async exists(userObj, ownerRepo) {
     try {
-      const raw = await this._webRequestAuth(`/repos/${ownerRepo}`, userObj.token);
+      const raw = await this._webRequestAuth(
+        `/repos/${ownerRepo}`,
+        userObj.token
+      );
 
       if (!raw.ok) {
         if (raw.short === "Failed Request") {
-          switch(raw.content.status) {
+          switch (raw.content.status) {
             case 401:
               return {
                 ok: false,
-                short: "Bad Auth"
+                short: "Bad Auth",
               };
             case 404:
               return {
                 ok: false,
-                short: "Bad Repo"
+                short: "Bad Repo",
               };
             default:
               return {
                 ok: false,
-                short: "Server Error"
+                short: "Server Error",
               };
           }
         }
         return {
           ok: false,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
 
       // We have valid data
       return {
         ok: true,
-        content: raw.content.body.full_name
+        content: raw.content.body.full_name,
       };
-    } catch(err) {
+    } catch (err) {
       return {
         ok: false,
         short: "Server Error",
-        content: err
+        content: err,
       };
     }
   }
