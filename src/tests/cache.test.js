@@ -13,15 +13,16 @@ describe("Cache Objects Have the Functions and Variables Expected", () => {
   let newCache = new cache.CacheObject("test-contents", "test-name");
 
   test("Cache Object Contains Object Values Expected", async () => {
-
-    const schema = Joi.object().keys({
-      birth: Joi.number().integer().required(),
-      data: Joi.string().required(),
-      invalidated: Joi.boolean().required(),
-      last_validate: Joi.number().integer().required(),
-      cache_time: Joi.number().integer().required(),
-      name: Joi.string().required()
-    }).required();
+    const schema = Joi.object()
+      .keys({
+        birth: Joi.number().integer().required(),
+        data: Joi.string().required(),
+        invalidated: Joi.boolean().required(),
+        last_validate: Joi.number().integer().required(),
+        cache_time: Joi.number().integer().required(),
+        name: Joi.string().required(),
+      })
+      .required();
 
     expect(newCache).toMatchSchema(schema);
   });

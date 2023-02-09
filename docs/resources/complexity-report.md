@@ -1,12 +1,12 @@
 # Complexity report, 2/9/2023
 
-* Mean per-function logical LOC: 14.375
-* Mean per-function parameter count: 0.296875
-* Mean per-function cyclomatic complexity: 1.46875
-* Mean per-function Halstead effort: 4138.382703893132
-* Mean per-module maintainability index: 69.66937781356495
-* First-order density: 0.390625%
-* Change cost: 6.640625%
+* Mean per-function logical LOC: 15.2
+* Mean per-function parameter count: 0.31666666666666665
+* Mean per-function cyclomatic complexity: 1.5
+* Mean per-function Halstead effort: 4411.574884152675
+* Mean per-module maintainability index: 68.57862043102038
+* First-order density: 0.4444444444444444%
+* Change cost: 7.111111111111111%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
@@ -198,16 +198,6 @@
     * Halstead difficulty: 2.0454545454545454
     * Halstead volume: 91.37651812938249
     * Halstead effort: 186.9065143555551
-
-## /home/runner/work/package-backend/package-backend/src/tests/config.test.js
-
-* Physical LOC: 63
-* Logical LOC: 2
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 50%
-* Maintainability index: 86.03073855173344
-* Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/src/tests/debug_utils.test.js
 
