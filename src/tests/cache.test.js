@@ -1,4 +1,8 @@
 const cache = require("../cache.js");
+const Joi = require("joi");
+const jestJoi = require("jest-joi");
+
+expect.extend(jestJoi.matchers);
 
 test("Cache Creates Object As Expected", async () => {
   let newCache = new cache.CacheObject("test-contents");
@@ -8,8 +12,18 @@ test("Cache Creates Object As Expected", async () => {
 describe("Cache Objects Have the Functions and Variables Expected", () => {
   let newCache = new cache.CacheObject("test-contents", "test-name");
 
-  test("Cache Object Contains Birth", async () => {
-    expect(newCache.birth).toBeDefined();
+  test("Cache Object Contains Object Values Expected", async () => {
+
+    const schema = Joi.object().keys({
+      birth: Joi.number().integer().required(),
+      data: Joi.string().required(),
+      invalidated: Joi.boolean().required(),
+      last_validate: Joi.number().integer().required(),
+      cache_time: Joi.number().integer().required(),
+      name: Joi.string().required()
+    }).required();
+
+    expect(newCache).toMatchSchema(schema);
   });
 
   test("Cache Object Contains Contents as Instantiated", async () => {
@@ -18,14 +32,6 @@ describe("Cache Objects Have the Functions and Variables Expected", () => {
 
   test("Cache Object Data is not Invalidated Via Variable", async () => {
     expect(newCache.invalidated).toEqual(false);
-  });
-
-  test("Cache Object last_validate Exists", async () => {
-    expect(newCache.last_validate).toBeDefined();
-  });
-
-  test("Cache Object cache_time Exists", async () => {
-    expect(newCache.cache_time).toBeDefined();
   });
 
   test("Cache Object contains Name as Instantiated", async () => {

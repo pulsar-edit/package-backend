@@ -56,6 +56,8 @@
     "eslint": "^8.33.0",
     "eslint-plugin-node": "^11.1.0",
     "jest": "^29.4.2",
+    "jest-joi": "^1.1.17",
+    "joi": "^17.7.0",
     "jsdoc-to-markdown": "^8.0.0",
     "prettier": "^2.8.3",
     "supertest": "^6.3.3"
