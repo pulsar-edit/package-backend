@@ -153,6 +153,8 @@ VALUES (
   'atom-material-ui', 'a0ef01cb-720e-4c0d-80c5-f0ed441f31fc'
 ), (
   'atom-material-syntax', '28952de5-ddbf-41a8-8d87-5d7e9d7ad7ac'
+), (
+  'atom-dark-material-ui', '504cd079-a6a4-4435-aa06-daab631b1243'
 );
 
 INSERT INTO versions (package, status, semver, license, engine, meta)
@@ -187,6 +189,9 @@ VALUES (
 ), (
   '28952de5-ddbf-41a8-8d87-5d7e9d7ad7ac', 'latest', '1.0.8', 'MIT', '{"atom":"*"}',
   '{"name": "atom-material-syntax", "dist": {"tarball":"https://www.atom/io/api/packages/atom-material-syntax/version/1.0.8/tarball"}}'
+), (
+  '504cd079-a6a4-4435-aa06-daab631b1243', 'latest', '1.0.0', 'MIT', '{"atom": "*"}',
+  '{"name":"atom-dark-material-ui", "dist": {"tarball": "https://www.atom.io/api/packages/atom-dark-material-ui/versions/1.0.0/tarball"}}'
 );
 
 INSERT INTO users (username, node_id, avatar)
