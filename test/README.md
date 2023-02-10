@@ -25,3 +25,17 @@ Examples and Explanations:
 - handlers.setup.jest.js: Contains setup functions to run before any *.handler tests
 - login.handler.integration.test.js: This is an integration test, that is testing a handler. Specifically the `login` slug of the backend.
 - packages.handler.integration.test.js: This is an integration test, that is testing a handler. Specifically the `packages` slug of the backend.
+
+
+How to run:
+
+There are several options available to run tests, some options will include tests that are more directly specified by other tests.
+
+This is intended to make it easier to run the tests you care about only, while allowing some more generic options for our CI.
+
+* `npm run test:integration` will run all files ending in `*.integration.test.js`
+  - Includes all `*.handler.integration.test.js` files
+  - Includes all Package Handler Tests
+  - Includes all Database Tests
+* `npm run test:handlers` will run all package handler tests, or files ending in `*.handler.integration.test.js`
+  - These tests are included in the `test:integration` script.

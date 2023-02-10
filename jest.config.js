@@ -7,6 +7,7 @@ const config = {
   coverageReporters: ["text", "clover"],
   coveragePathIgnorePatterns: [
     "<rootDir>/src/tests_integration/fixtures/**",
+    "<rootDir>/test/fixtures/**",
     "<rootDir>/node_modules/**",
   ],
   projects: [
@@ -15,7 +16,11 @@ const config = {
       globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
       globalTeardown:
         "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
-      testMatch: ["<rootDir>/src/tests_integration/main.test.js"],
+      setupFilesAfterEnv: [
+        "<rootDir>/test/handlers.setup.jest.js",
+        "<rootDir>/test/global.setup.jest.js",
+      ],
+      testMatch: ["<rootDir>/test/*.integration.test.js"],
     },
     {
       displayName: "Unit-Tests",
