@@ -133,6 +133,9 @@ VALUES (
 ), (
   '28952de5-ddbf-41a8-8d87-5d7e9d7ad7ac', 'theme', 'atom-material-syntax', 'Migrated from Atom.io', 1743927, 1,
   '{"name": "atom-material-syntax"}', 1309
+), (
+  '504cd079-a6a4-4435-aa06-daab631b1243', 'theme', 'atom-dark-material-ui', 'Migrated from Atom.io', 300, 1,
+  '{"name": "atom-dark-material-ui"}', 2
 );
 
 INSERT INTO names (name, pointer)
