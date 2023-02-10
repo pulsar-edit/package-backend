@@ -1,8 +1,5 @@
-const cache = require("../cache.js");
+const cache = require("../src/cache.js");
 const Joi = require("joi");
-const jestJoi = require("jest-joi");
-
-expect.extend(jestJoi.matchers);
 
 test("Cache Creates Object As Expected", async () => {
   let newCache = new cache.CacheObject("test-contents");

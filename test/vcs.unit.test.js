@@ -1,4 +1,4 @@
-const vcs = require("../vcs.js");
+const vcs = require("../src/vcs.js");
 
 describe("determineProvider Returns as expected", () => {
   test("Returns null when no input is passed", () => {

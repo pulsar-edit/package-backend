@@ -1,4 +1,4 @@
-const storage = require("../storage.js");
+const storage = require("../src/storage.js");
 
 describe("Functions Return Proper Values", () => {
   test("getBanList Returns Array", async () => {

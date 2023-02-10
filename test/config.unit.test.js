@@ -1,8 +1,5 @@
-const config = require("../config.js");
+const config = require("../src/config.js");
 const Joi = require("joi");
-const jestJoi = require("jest-joi");
-
-expect.extend(jestJoi.matchers);
 
 describe("Config Returns all Expected Values", () => {
   let con = config.getConfig();
