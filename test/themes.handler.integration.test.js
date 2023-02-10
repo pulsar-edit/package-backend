@@ -83,7 +83,7 @@ describe("GET /api/themes/search", () => {
   });
   test("Has the correct default DESC listing", async () => {
     const res = await request(app).get("/api/themes/search?q=material");
-    expect(res.body[0].name).toBe("atom-material-ui");
+    expect(parseInt(res.body[0].downloads, 10) > parseInt(res.body[1].downloads, 10)).toBeTruthy();
   });
   test("Sets ASC listing correctly", async () => {
     const res = await request(app)
