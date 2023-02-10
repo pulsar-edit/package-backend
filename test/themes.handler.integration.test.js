@@ -89,7 +89,7 @@ describe("GET /api/themes/search", () => {
     const res = await request(app)
       .get("/api/themes/search?q=material")
       .query({ direction: "asc" });
-    expect(res.body[0].name).toBe("atom-material-syntax");
+    expect(parseInt(res.body[0].downloads, 10) < parseInt(res.body[1].downloads, 10)).toBeTruthy();
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/themes/search?q=not-one-match");
