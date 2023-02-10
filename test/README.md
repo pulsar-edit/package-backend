@@ -40,3 +40,4 @@ This is intended to make it easier to run the tests you care about only, while a
 * `npm run test:handlers` will run all package handler tests, or files ending in `*.handler.integration.test.js`
   - These tests are included in the `test:integration` script.
 * `npm run test:unit` will run all files ending in `*.unit.test.js`
+* `npm run test:vcs` will run all files ending in `*.vcs.test.js`
