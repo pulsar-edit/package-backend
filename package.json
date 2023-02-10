@@ -13,6 +13,7 @@
     "start:dev": "cross-env PULSAR_STATUS=dev node ./src/dev_server.js",
     "test": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest",
     "test:vcs": "cross-env NODE_ENV=test PULSAR_STATUS=dev MOCK_GH=false jest --selectProjects VCS-Tests",
+    "test:handlers": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Handler-Tests",
     "api-docs": "quick-webserver-docs -i ./src/main.js -o ./docs/reference/API_Definition.md",
     "lint": "prettier --check -u -w .",
     "complex": "cr --newmi --config .complexrc .",

@@ -19,3 +19,9 @@ Tests within this location will still be colloquially classified into different 
 The test type should be specified within the test file name itself, such as if testing the `cache.js` file and is to be classified as a `unit` test it's filename should be: `cache.unit.test.js`.
 
 It's good to know that `global.setup.jest.js` contains some special setup functions for our tests. Namely extending the built-in `expect` to provide additional features to our tests for ease.
+
+Examples and Explanations:
+
+- handlers.setup.jest.js: Contains setup functions to run before any *.handler tests
+- login.handler.integration.test.js: This is an integration test, that is testing a handler. Specifically the `login` slug of the backend.
+- packages.handler.integration.test.js: This is an integration test, that is testing a handler. Specifically the `packages` slug of the backend.
