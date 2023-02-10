@@ -33,9 +33,11 @@ const config = {
     },
     {
       displayName: "VCS-Tests",
+      setupFilesAfterEnv: [
+        "<rootDir>/test/global.setup.jest.js"
+      ],
       testMatch: [
-        "<rootDir>/src/vcs_providers_tests/**/*.test.js",
-        "<rootDir>/src/vcs_providers_tests/*.test.js",
+        "<rootDir>/test/*.vcs.test.js"
       ],
     },
     {
