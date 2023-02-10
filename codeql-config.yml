@@ -5,6 +5,7 @@ queries:
   - uses: security-and-quality
 
 paths-ignore:
+  - ./test
   - ./src/tests
   - ./src/tests_integration
   - ./src/vcs_providers_tests
