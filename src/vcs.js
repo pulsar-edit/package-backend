@@ -9,6 +9,7 @@
 const query = require("./query.js");
 const utils = require("./utils.js");
 const GitHub = require("./vcs_providers/github.js");
+const ServerStatus = require("./ServerStatusObject.js");
 const semVerInitRegex = /^\s*v/i;
 
 /**
@@ -56,19 +57,22 @@ async function ownership(userObj, packObj, dev_override = false) {
 
     switch (userObj.username) {
       case "admin_user":
-        return { ok: true, content: "admin" };
+        return new ServerStatus()
+          .isOk()
+          .setContent("admin")
+          .build();
       case "no_perm_user":
-        return {
-          ok: false,
-          content: "Development NoPerms User",
-          short: "No Repo Access",
-        };
+        return new ServerStatus()
+          .notOk()
+          .setContent("Development NoPerms User")
+          .setShort("No Repo Access")
+          .build();
       default:
-        return {
-          ok: false,
-          content: "Server in Dev Mode passed unhandled user",
-          short: "Server Error",
-        };
+        return new ServerStatus()
+          .notOk()
+          .setContent("Server in Dev Mode passed unhandled user")
+          .setShort("Server Error")
+          .build();
     }
   }
   // Non-dev return.
@@ -146,31 +150,31 @@ async function newPackageData(userObj, ownerRepo, service) {
       // Could be due to an error, or it doesn't exist at all.
       // For now until we support custom error messages will do a catch all
       // return.
-      return {
-        ok: false,
-        content: `Failed to get repo: ${ownerRepo} - ${exists.short}`,
-        short: "Bad Repo",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get repo: ${ownerRepo} - ${exists.short}`)
+        .setShort("Bad Repo")
+        .build();
     }
 
     let pack = await provider.packageJSON(userObj, ownerRepo);
 
     if (!pack.ok) {
-      return {
-        ok: false,
-        content: `Failed to get gh package for ${ownerRepo} - ${pack.short}`,
-        short: "Bad Package",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
+        .setShort("Bad Package")
+        .build();
     }
 
     const tags = await provider.tags(userObj, ownerRepo);
 
     if (!tags.ok) {
-      return {
-        ok: false,
-        content: `Failed to get gh tags for ${ownerRepo} - ${tags.short}`,
-        short: "Server Error",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get gh tags for ${ownerRepo} - ${tags.short}`)
+        .setShort("Server Error")
+        .build();
     }
 
     // Build a repo tag object indexed by tag names so we can handle versions
@@ -190,11 +194,11 @@ async function newPackageData(userObj, ownerRepo, service) {
     const readme = await provider.readme(userObj, ownerRepo);
 
     if (!readme.ok) {
-      return {
-        ok: false,
-        content: `Failed to get gh readme for ${ownerRepo} - ${readme.short}`,
-        short: "Bad Repo",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get gh readme for ${ownerRepo} - ${readme.short}`)
+        .setShort("Bad Repo")
+        .build();
     }
 
     // Now we should be ready to create the package.
@@ -290,11 +294,11 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     if (versionCount === 0) {
-      return {
-        ok: false,
-        content: "Failed to retreive package versions.",
-        short: "Server Error",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent("Failed to retrieve package versions.")
+        .setShort("Server Error")
+        .build();
     }
 
     // Now with all the versions properly filled, we lastly just need the
@@ -305,17 +309,17 @@ async function newPackageData(userObj, ownerRepo, service) {
 
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
-    return {
-      ok: true,
-      content: newPack,
-    };
+    return new ServerStatus()
+      .isOk()
+      .setContent(newPack)
+      .build();
   } catch (err) {
     // An error occured somewhere during package generation
-    return {
-      ok: false,
-      content: err,
-      short: "Server Error",
-    };
+    return new ServerStatus()
+      .notOk()
+      .setContent(err)
+      .setShort("Server Error")
+      .build();
   }
 }
 
@@ -354,11 +358,11 @@ async function newVersionData(userObj, ownerRepo, service) {
   let pack = await provider.packageJSON(userObj, ownerRepo);
 
   if (!pack.ok) {
-    return {
-      ok: false,
-      content: `Failed to get gh package for ${ownerRepo} - ${pack.short}`,
-      short: "Bad Package",
-    };
+    return new ServerStatus()
+      .notOk()
+      .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
+      .setShort("Bad Package")
+      .build();
   }
 
   // Now we will also need to get the packages data to update on the DB
@@ -367,11 +371,11 @@ async function newVersionData(userObj, ownerRepo, service) {
   let readme = await provider.readme(userObj, ownerRepo);
 
   if (!readme.ok) {
-    return {
-      ok: false,
-      content: `Failed to get gh readme for ${ownerRepo} - ${readme.short}`,
-      short: "Bad Repo",
-    };
+    return new ServerStatus()
+      .notOk()
+      .setContent(`Failed to get gh readme for ${ownerRepo} - ${readme.short}`)
+      .setShort("Bad Repo")
+      .build();
   }
 
   let tag = null;
@@ -385,11 +389,11 @@ async function newVersionData(userObj, ownerRepo, service) {
     const tags = await provider.tags(userObj, ownerRepo);
 
     if (!tags.ok) {
-      return {
-        ok: false,
-        content: `Failed to get gh tags for ${ownerRepo} - ${tags.short}`,
-        short: "Server Error",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get gh tags for ${ownerRepo} - ${tags.short}`)
+        .setShort("Server Error")
+        .build();
     }
 
     for (const t of tags.content) {
@@ -406,11 +410,11 @@ async function newVersionData(userObj, ownerRepo, service) {
     if (tag === null) {
       // If we couldn't find any valid tags that match the tag currently available
       // on the remote package.json
-      return {
-        ok: false,
-        content: `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`,
-        short: "Server Error",
-      };
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`)
+        .setShort("Server Error")
+        .build();
     }
   }
 
@@ -419,25 +423,25 @@ async function newVersionData(userObj, ownerRepo, service) {
       3,
       `Cannot retreive metadata information for version ${ver} of ${ownerRepo}`
     );
-    return {
-      ok: false,
-      content: `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`,
-      short: "Server Error",
-    };
+    return new ServerStatus()
+      .notOk()
+      .setContent(`Failed to find any valid tag data for: ${ownerRepo} - ${tag}`)
+      .setShort("Server Error")
+      .build();
   }
 
   pack.content.tarball_url = tag.tarball_url;
   pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
-  return {
-    ok: true,
-    content: {
+  return new ServerStatus()
+    .isOk()
+    .setContent({
       name: pack.content.name.toLowerCase(),
       repository: determineProvider(pack.content.repository),
       readme: readme.content,
       metadata: pack.content,
-    },
-  };
+    })
+    .build();
 }
 
 /**
