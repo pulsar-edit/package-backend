@@ -1,5 +1,5 @@
-const Git = require("../vcs_providers/git.js");
-const vcs = require("../vcs.js");
+const Git = require("../src/vcs_providers/git.js");
+const vcs = require("../src/vcs.js");
 
 const webRequestMockHelper = (data) => {
   const tmpMock = jest

@@ -5,7 +5,5 @@ queries:
   - uses: security-and-quality
 
 paths-ignore:
-  - ./src/tests
-  - ./src/tests_integration
-  - ./src/vcs_providers_tests
+  - ./test
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors

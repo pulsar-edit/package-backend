@@ -6,26 +6,8 @@
 // Or at the very least that if there is a failure within these, it will not result in
 // bad data being entered into the database in production.
 
-let database = null;
-let utils = null;
-
-jest.setTimeout(300000);
-
-beforeAll(async () => {
-  const dbUrl = process.env.DATABASE_URL;
-  // This returns: postgres://test-user@localhost:5432/test-db
-  const dbUrlReg = /postgres:\/\/([\/\S]+)@([\/\S]+):(\d+)\/([\/\S]+)/;
-  const dbUrlParsed = dbUrlReg.exec(dbUrl);
-
-  // set the parsed URL as proper env for the db module
-  process.env.DB_HOST = dbUrlParsed[2];
-  process.env.DB_USER = dbUrlParsed[1];
-  process.env.DB_DB = dbUrlParsed[4];
-  process.env.DB_PORT = dbUrlParsed[3];
-
-  database = require("../database.js");
-  utils = require("../utils.js");
-});
+let database = require("../src/database.js");
+let utils = require("../src/utils.js");
 
 afterAll(async () => {
   await database.shutdownSQL();

@@ -1,4 +1,4 @@
-const common = require("../handlers/common_handler.js");
+const common = require("../src/handlers/common_handler.js");
 
 // This is an impersonator of the ExpressJS Response Object.
 // Whose goal is to very simply test the exact features we care about. Without

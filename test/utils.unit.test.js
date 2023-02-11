@@ -1,7 +1,7 @@
-jest.mock("../storage.js");
-const getBanList = require("../storage.js").getBanList;
+jest.mock("../src/storage.js");
+const getBanList = require("../src/storage.js").getBanList;
 
-const utils = require("../utils.js");
+const utils = require("../src/utils.js");
 
 describe("isPackageNameBanned Tests", () => {
   test("Returns true correctly for banned item", async () => {
