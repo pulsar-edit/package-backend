@@ -83,13 +83,17 @@ describe("GET /api/themes/search", () => {
   });
   test("Has the correct default DESC listing", async () => {
     const res = await request(app).get("/api/themes/search?q=material");
-    expect(parseInt(res.body[0].downloads, 10) > parseInt(res.body[1].downloads, 10)).toBeTruthy();
+    expect(
+      parseInt(res.body[0].downloads, 10) > parseInt(res.body[1].downloads, 10)
+    ).toBeTruthy();
   });
   test("Sets ASC listing correctly", async () => {
     const res = await request(app)
       .get("/api/themes/search?q=material")
       .query({ direction: "asc" });
-    expect(parseInt(res.body[0].downloads, 10) < parseInt(res.body[1].downloads, 10)).toBeTruthy();
+    expect(
+      parseInt(res.body[0].downloads, 10) < parseInt(res.body[1].downloads, 10)
+    ).toBeTruthy();
   });
   test("Invalid Search Returns Array", async () => {
     const res = await request(app).get("/api/themes/search?q=not-one-match");

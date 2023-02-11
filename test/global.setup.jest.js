@@ -1,4 +1,3 @@
-
 // Add `expect().toMatchSchema()` to Jest, for matching against Joi Schemas
 
 const jestJoi = require("jest-joi");

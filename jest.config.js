@@ -1,7 +1,5 @@
 const config = {
-  setupFilesAfterEnv: [
-    "<rootDir>/test/global.setup.jest.js",
-  ],
+  setupFilesAfterEnv: ["<rootDir>/test/global.setup.jest.js"],
   verbose: true,
   collectCoverage: true,
   coverageReporters: ["text", "clover"],
@@ -24,33 +22,24 @@ const config = {
     },
     {
       displayName: "Unit-Tests",
-      setupFilesAfterEnv: [
-        "<rootDir>/test/global.setup.jest.js"
-      ],
-      testMatch: [
-        "<rootDir>/test/*.unit.test.js",
-      ],
+      setupFilesAfterEnv: ["<rootDir>/test/global.setup.jest.js"],
+      testMatch: ["<rootDir>/test/*.unit.test.js"],
     },
     {
       displayName: "VCS-Tests",
-      setupFilesAfterEnv: [
-        "<rootDir>/test/global.setup.jest.js"
-      ],
-      testMatch: [
-        "<rootDir>/test/*.vcs.test.js"
-      ],
+      setupFilesAfterEnv: ["<rootDir>/test/global.setup.jest.js"],
+      testMatch: ["<rootDir>/test/*.vcs.test.js"],
     },
     {
       displayName: "Handler-Tests",
       globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
-      globalTeardown: "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
+      globalTeardown:
+        "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
       setupFilesAfterEnv: [
         "<rootDir>/test/handlers.setup.jest.js",
         "<rootDir>/test/global.setup.jest.js",
       ],
-      testMatch: [
-        "<rootDir>/test/*.handler.integration.test.js",
-      ]
+      testMatch: ["<rootDir>/test/*.handler.integration.test.js"],
     },
   ],
 };

@@ -23,7 +23,6 @@ process.env.PORT = 8080;
 // Now any tests that have this called prior to the test being run can `require("../main.js")`
 // without any issue
 
-
 // But now lets setup some global objects for tests to rely on
 
 global.msg = {
