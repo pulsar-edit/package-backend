@@ -24,7 +24,7 @@ describe("Building Objects with ServerStatus Return as Expected", () => {
     const obj = new ServerStatus()
       .notOk()
       .setContent("Hello World")
-      .setShort("We had an error");
+      .setShort("We had an error")
       .build();
 
     const schema = Joi.object()
