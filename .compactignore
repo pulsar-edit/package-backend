@@ -14,6 +14,11 @@ coverage/
 >   gcloudignore
 .gcloudignore
 test/
+docs/reference
+docs/resources/
+docs/build.md
+docs/host_your_own.md
+docs/writingIntegrationTests.md
 # Git Tooling / NPM Tooling
 .git/
 .github/
