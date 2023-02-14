@@ -70,7 +70,7 @@ class PackageObject {
   }
 
   setReadme(readmeString) {
-    if (typeof readmeString !=== "string") {
+    if (typeof readmeString !== "string") {
       logger.generic(3, `PackageObject.setReadme() called with invalid argument type ${readmeString}::${typeof readmeString}. Ignoring assignment.`);
       return this;
     }
