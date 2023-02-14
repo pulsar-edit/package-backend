@@ -2,7 +2,7 @@
  * @module PackageObject
  * @desc
  */
- 
+
 const logger = require("./logger.js");
 const utils = require("./utils.js");
 
@@ -204,7 +204,7 @@ class Version {
     return this;
   }
 
-  addSHA(semver, sha) {
+  addSha(semver, sha) {
     // Takes a valid existing semver to add the sha too
     if (!this.versions[semver]) {
       logger.generic(3, `Version.addSHA() called with semver outside known range! ${semver}`);
