@@ -20,7 +20,8 @@
     "js-docs": "jsdoc2md -c ./jsdoc.conf.js ./src/*.js ./src/handlers/*.js ./docs/resources/jsdoc_typedef.js > ./docs/reference/Source_Documentation.md",
     "contributors:add": "all-contributors add",
     "test_search": "node ./scripts/tools/search.js",
-    "migrations": "pg-migrations apply --directory ./scripts/migrations"
+    "migrations": "pg-migrations apply --directory ./scripts/migrations",
+    "ignore": "compactignore"
   },
   "author": "confused-Techie",
   "license": "MIT",
@@ -48,6 +49,7 @@
     "superagent": "^8.0.9"
   },
   "devDependencies": {
+    "@confused-techie/compactignore": "^2.0.3",
     "@confused-techie/quick-webserver-docs": "^0.1.6",
     "@databases/pg-migrations": "^5.0.1",
     "@databases/pg-test": "^3.1.2",

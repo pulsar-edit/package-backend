@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+* Refactored the existing testing platform
+* Refactored all interactions with GitHub, Git, and provided the base system to support multiple VCS services in the future.
+
+## [v1.0.1](https://github.com/pulsar-edit/package-backend/releases/tag/v1.0.1)
+
 * Improved Documentation
 * Improved Version management
 * Replaced StateStore with more secure version
