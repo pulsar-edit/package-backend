@@ -22,7 +22,6 @@ class ServerStatus {
       this.short = params.short ?? undefined;
       this.ok = params.ok ?? undefined;
     }
-
   }
 
   /**
@@ -83,7 +82,6 @@ class ServerStatus {
       };
     }
   }
-
 }
 
 module.exports = ServerStatus;

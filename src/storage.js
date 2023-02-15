@@ -52,10 +52,7 @@ async function getBanList() {
       let list = ["slothoki", "slot-pulsa", "slot-dana", "hoki-slot"];
       cachedBanlist = new CacheObject(list);
       cachedBanlist.last_validate = Date.now();
-      return new ServerStatus()
-        .isOk()
-        .setContent(cachedBanlist.data)
-        .build();
+      return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
     }
 
     try {
@@ -65,10 +62,7 @@ async function getBanList() {
         .download();
       cachedBanlist = new CacheObject(JSON.parse(contents));
       cachedBanlist.last_validate = Date.now();
-      return new ServerStatus()
-        .isOk()
-        .setContent(cachedBanlist.data)
-        .build();
+      return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
     } catch (err) {
       return new ServerStatus()
         .notOk()
@@ -85,10 +79,7 @@ async function getBanList() {
 
   if (!cachedBanlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return new ServerStatus()
-      .isOk()
-      .setContent(cachedBanlist.data)
-      .build();
+    return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -189,10 +180,7 @@ async function getFeaturedThemes() {
       let list = ["atom-material-ui", "atom-material-syntax"];
       cachedThemelist = new CacheObject(list);
       cachedThemelist.last_validate = Date.now();
-      return new ServerStatus()
-        .isOk()
-        .setContent(cachedThemelist.data)
-        .build();
+      return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
     }
 
     try {
@@ -202,10 +190,7 @@ async function getFeaturedThemes() {
         .download();
       cachedThemelist = new CacheObject(JSON.parse(contents));
       cachedThemelist.last_validate = Date.now();
-      return new ServerStatus()
-        .isOk()
-        .setContent(cachedThemelist.data)
-        .build();
+      return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
     } catch (err) {
       return new ServerStatus()
         .notOk()
@@ -222,10 +207,7 @@ async function getFeaturedThemes() {
 
   if (!cachedThemelist.Expired) {
     logger.generic(5, "Theme List Cache NOT Expired.");
-    return new ServerStatus()
-      .isOk()
-      .setContent(cachedThemelist.data)
-      .build();
+    return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
   }
 
   logger.generic(5, "Theme List Cache IS Expired.");

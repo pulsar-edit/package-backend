@@ -57,10 +57,7 @@ async function ownership(userObj, packObj, dev_override = false) {
 
     switch (userObj.username) {
       case "admin_user":
-        return new ServerStatus()
-          .isOk()
-          .setContent("admin")
-          .build();
+        return new ServerStatus().isOk().setContent("admin").build();
       case "no_perm_user":
         return new ServerStatus()
           .notOk()
@@ -196,7 +193,9 @@ async function newPackageData(userObj, ownerRepo, service) {
     if (!readme.ok) {
       return new ServerStatus()
         .notOk()
-        .setContent(`Failed to get gh readme for ${ownerRepo} - ${readme.short}`)
+        .setContent(
+          `Failed to get gh readme for ${ownerRepo} - ${readme.short}`
+        )
         .setShort("Bad Repo")
         .build();
     }
@@ -309,10 +308,7 @@ async function newPackageData(userObj, ownerRepo, service) {
 
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
-    return new ServerStatus()
-      .isOk()
-      .setContent(newPack)
-      .build();
+    return new ServerStatus().isOk().setContent(newPack).build();
   } catch (err) {
     // An error occured somewhere during package generation
     return new ServerStatus()
@@ -412,7 +408,9 @@ async function newVersionData(userObj, ownerRepo, service) {
       // on the remote package.json
       return new ServerStatus()
         .notOk()
-        .setContent(`Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`)
+        .setContent(
+          `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`
+        )
         .setShort("Server Error")
         .build();
     }
@@ -425,7 +423,9 @@ async function newVersionData(userObj, ownerRepo, service) {
     );
     return new ServerStatus()
       .notOk()
-      .setContent(`Failed to find any valid tag data for: ${ownerRepo} - ${tag}`)
+      .setContent(
+        `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`
+      )
       .setShort("Server Error")
       .build();
   }
