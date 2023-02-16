@@ -58,7 +58,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.34.0",
     "eslint-plugin-node": "^11.1.0",
-    "jest": "^29.4.2",
+    "jest": "^29.4.3",
     "jest-joi": "^1.1.17",
     "joi": "^17.7.1",
     "jsdoc-to-markdown": "^8.0.0",
