@@ -167,6 +167,9 @@ describe("Does NewPackageData Return as expected", () => {
                 name: "v1.101.0-beta",
                 tarball_url:
                   "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+                commit: {
+                  sha: "1234"
+                },
               },
             ],
           },
@@ -260,6 +263,7 @@ describe("Does NewPackageData Return as expected", () => {
     const tmpMock = webRequestMockHelper(mockData);
 
     const res = await vcs.newPackageData(userDataGeneric, ownerRepo, "git");
+    console.log(res.content.versions);
     expect(res.ok).toBe(true);
     expect(res.content.name).toBe("pulsar");
     expect(res.content.creation_method).toBe("User Made Package");
@@ -279,10 +283,10 @@ describe("Does NewPackageData Return as expected", () => {
     expect(res.content.versions["1.101.0-beta"].repository).toBe(
       "https://github.com/pulsar-edit/pulsar"
     );
-    expect(res.content.versions["1.101.0-beta"].tarball_url).toBe(
+    expect(res.content.versions["1.101.0-beta"].dist.tarball).toBe(
       "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta"
     );
-    expect(res.content.versions["1.101.0-beta"].sha).toBe(
+    expect(res.content.versions["1.101.0-beta"].dist.sha).toBe(
       "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f"
     );
     expect(res.content.releases.latest).toBe("1.101.0-beta");

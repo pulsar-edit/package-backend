@@ -59,7 +59,7 @@ class PackageObject {
     return this;
   }
 
-  setStargazers(stagazerCount) {
+  setStargazers(stargazerCount) {
     if (Number.isNaN(parseInt(stargazerCount))) {
       logger.generic(3, `PackageObject.setStargazers() called with invalid argument ${stagazerCount}. Ignoring assignment.`);
       return this;
@@ -119,10 +119,10 @@ class PackageObject {
       downloads: this.downloads,
       stargazers_count: this.stargazers_count,
       releases: {
-        latest: this.Versions.getLatestVersionSemver()
+        latest: this.Version.getLatestVersionSemver()
       },
       readme: this.readme,
-      metadata: this.Versions.getLatestVersionPackageJSON()
+      metadata: this.Version.getLatestVersionPackageJSON()
     };
 
     // Here we could use Joi to validate the values within our data structure
@@ -139,12 +139,13 @@ class PackageObject {
       repository: this.repository,
       downloads: this.downloads,
       stargazers_count: this.stargazers_count,
+      creation_method: this.creationMethod,
       releases: {
-        latest: this.Versions.getLatestVersionSemver()
+        latest: this.Version.getLatestVersionSemver()
       },
       readme: this.readme,
-      metadata: this.Versions.getLatestVersionPackageJSON(),
-      versions: this.Versions.buildFullVersions()
+      metadata: this.Version.getLatestVersionPackageJSON(),
+      versions: this.Version.buildFullVersions()
     };
 
     // Again would likely in the future want to use Joi to validate our object
@@ -155,7 +156,7 @@ class PackageObject {
 
 class Version {
   constructor() {
-    this.latestSemver = null;
+    this.latestSemver = undefined;
     this.versions = {};
     this.semverInitRegex = /^\s*v/i;
   }
@@ -173,56 +174,72 @@ class Version {
 
   addSemver(semver) {
     // Allows adding a standalone semver to the version list.
-    if (this.versions[semver]) {
+    let cleanSemver = this.cleanSemver(semver);
+
+    if (cleanSemver === "") {
+      logger.generic(3, `Version.addSemver() called with invalid semver ${semver}! Ignoring assignment`);
+      return this;
+    }
+
+    if (this.versions[cleanSemver]) {
       logger.generic(3, `Version.addSemver() called with semver already within range! ${semver}`);
       return this;
     }
 
-    this.versions[semver] = {};
+    this.versions[cleanSemver] = {};
 
     // Now to determine if our newer semver is larger than the current latestSemver
-    if (this.latestSemver === null) {
-      this.latestSemver = semver;
+    if (typeof this.latestSemver === "undefined") {
+      this.latestSemver = cleanSemver;
     } else {
-      if (utils.semverGt(utils.semverArray(semver.replace(this.semverInitRegex, "").trim()), utils.semverArray(this.latestSemver.replace(this.semverInitRegex, "").trim()))) {
+      console.log(`Latest semver: ${this.latestSemver} - Typeof: ${typeof this.latestSemver}`);
+      if (utils.semverGt(utils.semverArray(cleanSemver), utils.semverArray(this.latestSemver))) {
         // The provided semver is greater than our current latest
-        this.latestSemver = semver;
+        this.latestSemver = cleanSemver;
       }
     }
 
     return this;
   }
 
+  cleanSemver(semver) {
+    if (typeof semver !== "string") {
+      return "";
+    }
+
+    return semver.replace(this.semverInitRegex, "").trim();
+  }
+
   addTarball(semver, tarballURL) {
     // Takes a valid existing semver to add the url too
-    if (!this.versions[semver]) {
+    if (!this.versions[this.cleanSemver(semver)]) {
       logger.generic(3, `Version.addTarball() called with semver outside known range! ${semver}`);
       return this;
     }
 
-    this.versions[semver].tarball_url = tarballURL;
+    this.versions[this.cleanSemver(semver)].tarball_url = tarballURL;
     return this;
   }
 
   addSha(semver, sha) {
     // Takes a valid existing semver to add the sha too
-    if (!this.versions[semver]) {
+    if (!this.versions[this.cleanSemver(semver)]) {
       logger.generic(3, `Version.addSHA() called with semver outside known range! ${semver}`);
       return this;
     }
 
-    this.versions[semver].sha = sha;
+    this.versions[this.cleanSemver(semver)].sha = sha;
     return this;
   }
 
   addPackageJSON(semver, pack) {
     // Takes a valid existing semver to add the package data to
-    if (!this.versions[semver]) {
+    if (!this.versions[this.cleanSemver(semver)]) {
       logger.generic(3, `Version.addPackageJSON() called with semver outside known range! ${semver}`);
       return this;
     }
 
-    this.versions[semver].package = pack;
+    this.versions[this.cleanSemver(semver)].package = pack;
     return this;
   }
 
@@ -252,7 +269,7 @@ class Version {
 
     // this.versions === this.versions.package | this.versions.sha | this.versions.tarball_url
     for (const ver in this.versions) {
-      obj[ver] = this.versions[ver].pack;
+      obj[ver] = this.versions[ver].package;
       obj[ver].dist = {
         tarball: this.versions[ver].tarball_url,
         sha: this.versions[ver].sha
