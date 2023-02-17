@@ -1,6 +1,13 @@
 ## Modules
 
 <dl>
+<dt><a href="#module_ServerStatusObject">ServerStatusObject</a></dt>
+<dd><p>This Module is used to aide in building a Server Status Object.
+This data structure is somewhat ubiquitous within this codebase.
+A builder allows the actual data structure to be obscurred
+with less concern over creating the object properly and more concerned
+with providing the correct values.</p>
+</dd>
 <dt><a href="#module_cache">cache</a></dt>
 <dd><p>Provides an interface for helpful caching mechanisms.
 Originally created after some circular dependency issues arouse during
@@ -110,6 +117,70 @@ the data needed to update a packages version.</p>
 </dd>
 </dl>
 
+<a name="module_ServerStatusObject"></a>
+
+## ServerStatusObject
+This Module is used to aide in building a Server Status Object.
+This data structure is somewhat ubiquitous within this codebase.
+A builder allows the actual data structure to be obscurred
+with less concern over creating the object properly and more concerned
+with providing the correct values.
+
+
+* [ServerStatusObject](#module_ServerStatusObject)
+    * [~ServerStatus](#module_ServerStatusObject..ServerStatus)
+    * [~isOk()](#module_ServerStatusObject..isOk)
+    * [~notOk()](#module_ServerStatusObject..notOk)
+    * [~setShort(value)](#module_ServerStatusObject..setShort)
+    * [~setContent(value)](#module_ServerStatusObject..setContent)
+    * [~build()](#module_ServerStatusObject..build)
+
+<a name="module_ServerStatusObject..ServerStatus"></a>
+
+### ServerStatusObject~ServerStatus
+The ServerStatus Object Builder
+
+**Kind**: inner class of [<code>ServerStatusObject</code>](#module_ServerStatusObject)  
+<a name="module_ServerStatusObject..isOk"></a>
+
+### ServerStatusObject~isOk()
+When called sets the SSO's `ok` to true.
+
+**Kind**: inner method of [<code>ServerStatusObject</code>](#module_ServerStatusObject)  
+<a name="module_ServerStatusObject..notOk"></a>
+
+### ServerStatusObject~notOk()
+When called sets the SSO's `ok` to false.
+
+**Kind**: inner method of [<code>ServerStatusObject</code>](#module_ServerStatusObject)  
+<a name="module_ServerStatusObject..setShort"></a>
+
+### ServerStatusObject~setShort(value)
+Allows quick setting of the `short` value.
+
+**Kind**: inner method of [<code>ServerStatusObject</code>](#module_ServerStatusObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>\*</code> | The contents of the value. |
+
+<a name="module_ServerStatusObject..setContent"></a>
+
+### ServerStatusObject~setContent(value)
+Allows quick setting of the `content` value.
+
+**Kind**: inner method of [<code>ServerStatusObject</code>](#module_ServerStatusObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>\*</code> | The contents of the value. |
+
+<a name="module_ServerStatusObject..build"></a>
+
+### ServerStatusObject~build()
+Builds a proper JavaScript Object for the current values.
+
+**Kind**: inner method of [<code>ServerStatusObject</code>](#module_ServerStatusObject)  
 <a name="module_cache"></a>
 
 ## cache

@@ -8,6 +8,7 @@
 const { Storage } = require("@google-cloud/storage");
 const logger = require("./logger.js");
 const { CacheObject } = require("./cache.js");
+const ServerStatus = require("./ServerStatusObject.js");
 const { GCLOUD_STORAGE_BUCKET, GOOGLE_APPLICATION_CREDENTIALS } =
   require("./config.js").getConfig();
 
@@ -51,7 +52,7 @@ async function getBanList() {
       let list = ["slothoki", "slot-pulsa", "slot-dana", "hoki-slot"];
       cachedBanlist = new CacheObject(list);
       cachedBanlist.last_validate = Date.now();
-      return { ok: true, content: cachedBanlist.data };
+      return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
     }
 
     try {
@@ -61,9 +62,13 @@ async function getBanList() {
         .download();
       cachedBanlist = new CacheObject(JSON.parse(contents));
       cachedBanlist.last_validate = Date.now();
-      return { ok: true, content: cachedBanlist.data };
+      return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
     } catch (err) {
-      return { ok: false, content: err, short: "Server Error" };
+      return new ServerStatus()
+        .notOk()
+        .setShort("Server Error")
+        .setContent(err)
+        .build();
     }
   };
 
@@ -74,7 +79,7 @@ async function getBanList() {
 
   if (!cachedBanlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return { ok: true, content: cachedBanlist.data };
+    return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -107,7 +112,10 @@ async function getFeaturedPackages() {
       let list = ["hydrogen", "atom-clock", "hey-pane"];
       cachedFeaturedlist = new CacheObject(list);
       cachedFeaturedlist.last_validate = Date.now();
-      return { ok: true, content: cachedFeaturedlist.data };
+      return new ServerStatus()
+        .isOk()
+        .setContent(cachedFeaturedlist.data)
+        .build();
     }
 
     try {
@@ -117,9 +125,16 @@ async function getFeaturedPackages() {
         .download();
       cachedFeaturedlist = new CacheObject(JSON.parse(contents));
       cachedFeaturedlist.last_validate = Date.now();
-      return { ok: true, content: cachedFeaturedlist.data };
+      return new ServerStatus()
+        .isOk()
+        .setContent(cachedFeaturedlist.data)
+        .build();
     } catch (err) {
-      return { ok: false, content: err, short: "Server Error" };
+      return new ServerStatus()
+        .notOk()
+        .setShort("Server Error")
+        .setContent(err)
+        .build();
     }
   };
 
@@ -130,7 +145,10 @@ async function getFeaturedPackages() {
 
   if (!cachedFeaturedlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return { ok: true, content: cachedFeaturedlist.data };
+    return new ServerStatus()
+      .isOk()
+      .setContent(cachedFeaturedlist.data)
+      .build();
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -162,7 +180,7 @@ async function getFeaturedThemes() {
       let list = ["atom-material-ui", "atom-material-syntax"];
       cachedThemelist = new CacheObject(list);
       cachedThemelist.last_validate = Date.now();
-      return { ok: true, content: cachedThemelist.data };
+      return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
     }
 
     try {
@@ -172,9 +190,13 @@ async function getFeaturedThemes() {
         .download();
       cachedThemelist = new CacheObject(JSON.parse(contents));
       cachedThemelist.last_validate = Date.now();
-      return { ok: true, content: cachedThemelist.data };
+      return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
     } catch (err) {
-      return { ok: false, content: err, short: "Server Error" };
+      return new ServerStatus()
+        .notOk()
+        .setShort("Server Error")
+        .setContent(err)
+        .build();
     }
   };
 
@@ -185,7 +207,7 @@ async function getFeaturedThemes() {
 
   if (!cachedThemelist.Expired) {
     logger.generic(5, "Theme List Cache NOT Expired.");
-    return { ok: true, content: cachedThemelist.data };
+    return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
   }
 
   logger.generic(5, "Theme List Cache IS Expired.");
