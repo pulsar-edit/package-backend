@@ -269,7 +269,13 @@ class Version {
 
     // this.versions === this.versions.package | this.versions.sha | this.versions.tarball_url
     for (const ver in this.versions) {
-      obj[ver] = this.versions[ver].package;
+      if (typeof this.versions[ver].package !== "object") {
+        // Ensure we are always inserting base package data, even if using
+        // the current latest as a fallback
+        obj[ver] = this.versions[this.latestSemver].package;
+      } else {
+        obj[ver] = this.versions[ver].package;
+      }
       obj[ver].dist = {
         tarball: this.versions[ver].tarball_url,
         sha: this.versions[ver].sha

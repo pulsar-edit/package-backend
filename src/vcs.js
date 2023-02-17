@@ -141,8 +141,6 @@ async function newPackageData(userObj, ownerRepo, service) {
 
     let newPack = new PackageObject().setOwnerRepo(ownerRepo);
 
-    //let newPack = {}; // We will append the new Package Data to this Object
-
     let exists = await provider.exists(userObj, ownerRepo);
 
     if (!exists.ok) {
@@ -167,7 +165,6 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // We need to ensure we add the semver prior to adding it's data
-    console.log(`Adding semver with ${pack.content.version}`);
     newPack.Version.addSemver(pack.content.version);
     newPack.Version.addPackageJSON(pack.content.version, pack.content);
 
@@ -187,19 +184,6 @@ async function newPackageData(userObj, ownerRepo, service) {
       newPack.Version.addSha(tag.name, tag.commit.sha);
     }
 
-    // Build a repo tag object indexed by tag names so we can handle versions
-    // easily, and won't call query.engine() multiple times for a single version.
-    //let tagList = {};
-    //for (const tag of tags.content) {
-    //  if (typeof tag.name !== "string") {
-    //    continue;
-    //  }
-    //  const sv = query.engine(tag.name.replace(semVerInitRegex, "").trim());
-    //  if (sv !== false) {
-    //    tagList[sv] = tag;
-    //  }
-    //}
-
     // Now to get our Readme
     const readme = await provider.readme(userObj, ownerRepo);
 
@@ -211,116 +195,23 @@ async function newPackageData(userObj, ownerRepo, service) {
       };
     }
 
-    newPack.setReadme(readme.content);
     // Now we should be ready to create the package.
     // readme = The text data of the current repo readme
     // tags = API JSON response for repo tags, including the tags, and their
     //        sha hash, and tarball_url
     // pack = the package.json file within the repo, as JSON
     // And we want to funnel all of this data into newPack and return it.
-
-    // First we ensure the package name is in the lowercase format.
-    newPack.setName(pack.content.name.toLowerCase());
-    newPack.setCreationMethod("User Made Package");
-    //const packName = pack.content.name.toLowerCase();
-
-    //newPack.name = packName;
-    //newPack.creation_method = "User Made Package";
-    //newPack.readme = readme.content;
-    //newPack.metadata = pack.content; // The metadata tag is the most recent package.json
+    // This is left for historic research purposes but we now should only use
+    // the PackageObject Builder to handle this
 
     // Then lets add the service used, so we are able to safely find it in the future
     const packRepoObj = determineProvider(pack.content.repository);
-    newPack.setRepositoryType(packRepoObj.type);
-    newPack.setRepositoryURL(packRepoObj.url);
-    //newPack.repository = packRepoObj;
 
-    // Now during migration packages will have a `versions` key, but otherwise
-    // the standard package will just have `version`
-    // We build the array of available versions extracted form the package object.
-    //let versionList = [];
-    //if (pack.content.versions) {
-    //  for (const v of Object.keys(pack.content.versions)) {
-    //    versionList.push(v);
-    //  }
-    //} else if (pack.content.version) {
-    //  versionList.push(pack.content.version);
-    //}
-
-    //let versionCount = 0;
-    //let latestVersion = null;
-    //let latestSemverArr = null;
-    //newPack.versions = {};
-    // Now to add the release data of each release within the package
-    //for (const v of versionList) {
-    //  const ver = query.engine(v.replace(semVerInitRegex, ""));
-    //  if (ver === false) {
-    //    continue;
-    //  }
-
-    //  let tag = tagList[ver];
-    //  if (tag === undefined) {
-    //    continue;
-    //  }
-
-      // They match tag and version, stuff the data into the package
-
-    //  if (typeof tag === "string") {
-    //    for (const t of tags.content) {
-    //      if (typeof t.name !== "string") {
-    //        continue;
-    //      }
-    //      const sv = query.engine(t.name.replace(semVerInitRegex, "").trim());
-    //      if (sv === tag) {
-    //        tag = t;
-    //        break;
-    //      }
-    //    }
-    //  }
-
-    //  if (!tag.tarball_url) {
-    //    logger.generic(
-    //      3,
-    //      `Cannot retreive metadata info for version ${ver} of packName`
-    //    );
-    //    continue;
-    //  }
-
-    //  pack.content.tarball_url = tag.tarball_url;
-    //  pack.content.sha =
-    //    typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
-
-    //  newPack.versions[ver] = pack.content;
-    //  versionCount++;
-
-      // Check latest version
-    //  if (latestVersion === null) {
-        // Initialize latest versin
-    //    latestVersion = ver;
-    //    latestSemverArr = utils.semverArray(ver);
-    //    continue;
-    //  }
-
-    //  const sva = utils.semverArray(ver);
-    //  if (utils.semverGt(sva, latestSemverArr)) {
-    //    latestVersion = ver;
-    //    latestSemverArr = sva;
-    //  }
-    //}
-
-    //if (versionCount === 0) {
-    //  return {
-    //    ok: false,
-    //    content: "Failed to retreive package versions.",
-    //    short: "Server Error",
-    //  };
-    //}
-
-    // Now with all the versions properly filled, we lastly just need the
-    // release data
-    //newPack.releases = {
-    //  latest: latestVersion,
-    //};
+    newPack.setReadme(readme.content)
+      .setName(pack.content.name.toLowerCase())
+      .setCreationMethod("User Made Package")
+      .setRepositoryType(packRepoObj.type)
+      .setRepositoryURL(packRepoObj.url);
 
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
