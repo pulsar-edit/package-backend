@@ -26,6 +26,8 @@ describe("Config Returns all Expected Values", () => {
         DB_SSL_CERT: Joi.string().allow("").required(),
         LOG_LEVEL: Joi.number().integer().required(),
         LOG_FORMAT: Joi.string().allow("").required(),
+        RATE_LIMIT_GENERIC: Joi.number().integer().required(),
+        RATE_LIMIT_AUTH: Joi.number().integer().required(),
       })
       .required();
 
