@@ -176,7 +176,7 @@ class GitHub extends Git {
   async readme(userObj, ownerRepo) {
     try {
       const readmeRaw = await this._webRequestAuth(
-        `/repos/${ownerRepo}/contents/readme`,
+        `/repos/${ownerRepo}/readme`,
         userObj.token
       );
       // Using just `/readme` will let GitHub attempt to get the repos prefferred readme file,
