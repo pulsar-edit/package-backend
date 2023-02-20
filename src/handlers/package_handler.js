@@ -724,7 +724,7 @@ async function postPackagesVersion(req, res) {
   ownerRepo = utils.getOwnerRepoFromPackage(packMetadata.content.metadata);
 
   //const gitowner = await git.ownership(user.content, ownerRepo);
-  const gitowner = await vcs.ownership(user.content, packExists.content);
+  const gitowner = await vcs.ownership(user.content, packMetadata.content);
 
   if (!gitowner.ok) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
