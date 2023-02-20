@@ -234,7 +234,7 @@ class GitHub extends Git {
    */
   async tags(userObj, ownerRepo) {
     try {
-      const raw = this._webRequestAuth(
+      const raw = await this._webRequestAuth(
         `/repos/${ownerRepo}/tags`,
         userObj.token
       );
