@@ -61,7 +61,7 @@ class PackageObject {
 
   setStargazers(stargazerCount) {
     if (Number.isNaN(parseInt(stargazerCount))) {
-      logger.generic(3, `PackageObject.setStargazers() called with invalid argument ${stagazerCount}. Ignoring assignment.`);
+      logger.generic(3, `PackageObject.setStargazers() called with invalid argument ${stargazerCount}. Ignoring assignment.`);
       return this;
     }
 
