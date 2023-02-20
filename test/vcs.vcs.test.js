@@ -176,7 +176,7 @@ describe("Does NewPackageData Return as expected", () => {
         },
       },
       {
-        url: `/repos/${ownerRepo}/contents/readme`,
+        url: `/repos/${ownerRepo}/readme`,
         obj: {
           ok: false,
           short: "Failed Request",
@@ -246,7 +246,7 @@ describe("Does NewPackageData Return as expected", () => {
         },
       },
       {
-        url: `/repos/${ownerRepo}/contents/readme`,
+        url: `/repos/${ownerRepo}/readme`,
         obj: {
           ok: true,
           content: {
@@ -324,7 +324,7 @@ describe("Does newVersionData Return as Expected", () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
     const mockData = [
       {
-        url: `/repos/${ownerRepo}/contents/readme`,
+        url: `/repos/${ownerRepo}/readme`,
         obj: {
           ok: false,
           short: "Failed Request",
@@ -386,7 +386,7 @@ describe("Does newVersionData Return as Expected", () => {
         },
       },
       {
-        url: `/repos/${ownerRepo}/contents/readme`,
+        url: `/repos/${ownerRepo}/readme`,
         obj: {
           ok: true,
           content: {
@@ -448,7 +448,7 @@ describe("Does newVersionData Return as Expected", () => {
         },
       },
       {
-        url: `/repos/${ownerRepo}/contents/readme`,
+        url: `/repos/${ownerRepo}/readme`,
         obj: {
           ok: true,
           content: {
