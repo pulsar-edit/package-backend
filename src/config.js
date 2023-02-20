@@ -85,6 +85,8 @@ function getConfig() {
     DB_SSL_CERT: process.env.DB_SSL_CERT ?? data.env_variables.DB_SSL_CERT,
     LOG_LEVEL: process.env.LOG_LEVEL ?? data.env_variables.LOG_LEVEL,
     LOG_FORMAT: process.env.LOG_FORMAT ?? data.env_variables.LOG_FORMAT,
+    RATE_LIMIT_GENERIC: process.env.RATE_LIMIT_GENERIC ?? data.env_variables.RATE_LIMIT_GENERIC,
+    RATE_LIMIT_AUTH: process.env.RATE_LIMIT_AUTH ?? data.env_variables.RATE_LIMIT_AUTH,
   };
 }
 
