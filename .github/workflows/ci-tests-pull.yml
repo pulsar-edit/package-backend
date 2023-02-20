@@ -29,6 +29,8 @@ env:
   # This helps some modules know they are in a test environment
   NODE_ENV: "test"
   PULSAR_STATUS: "dev"
+  RATE_LIMIT_GENERIC: 0
+  RATE_LIMIT_AUTH: 0
 
 
 jobs:

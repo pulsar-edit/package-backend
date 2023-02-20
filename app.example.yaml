@@ -46,5 +46,5 @@ env_variables:
   # Determines how Logs are written. Currently supports the following options:
   # stdout - Writes the console
   LOG_FORMAT: "stdout"
-  RATE_LIMIT_GENERIC: 300
+  RATE_LIMIT_GENERIC: 600
   RATE_LIMIT_AUTH: 300
