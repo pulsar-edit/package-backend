@@ -81,6 +81,17 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "savetheclocktower",
+      "name": "Andrew Dupont",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3450?v=4",
+      "profile": "https://andrewdupont.net/",
+      "contributions": [
+        "bug",
+        "code",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7
