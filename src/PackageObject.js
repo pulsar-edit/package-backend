@@ -163,7 +163,7 @@ class PackageObject {
    * @function parse
    * @param {object} pack - N/A
    * @desc Unimplemented function.
-   * @todo
+   * @todo Implement generic parse()
    */
   parse(pack) {
     // Parse can take a packages data and destructure accordingly
@@ -239,7 +239,7 @@ class Version {
    * @function addVersion
    * @param {object} value - N/A
    * @desc Unimplemented function.
-   * @todo
+   * @todo Implement Agnostic `addVersion()`
    */
   addVersion(value) {
     throw new Error("Not Implmented! ~ Version.addVersion()");
@@ -249,7 +249,7 @@ class Version {
    * @function addVersions
    * @param {object[]} values - N/A
    * @desc An array handling variant that relies on the the unimplmented `addVersion`
-   * @todo
+   * @todo Implement Agnostic `addVersion()`
    */
   addVersions(values) {
     for (const value in values) {
