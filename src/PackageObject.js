@@ -1,11 +1,18 @@
 /**
  * @module PackageObject
- * @desc
+ * @desc This Module is used to aide in building Package Objects.
+ * Allowing a singular location for the proper data structure of a package object.
+ * And allowing an easy interface to add, modify, or retreive data about a
+ * package object.
  */
 
 const logger = require("./logger.js");
 const utils = require("./utils.js");
 
+/**
+ * The PackageObject Object Builder
+ * @class
+ */
 class PackageObject {
   constructor() {
     this.Version = new Version();
@@ -21,6 +28,11 @@ class PackageObject {
     this.creationMethod = undefined;
   }
 
+  /**
+   * @function setName
+   * @param {string} packNameString - The Name of the package to set
+   * @desc Allows setting the name of the package.
+   */
   setName(packNameString) {
     if (typeof packNameString !== "string") {
       logger.generic(3, `PackageObject.setName() called wtih ${packNameString}::${typeof packNameString}. Ignoring assignment.`);
@@ -31,6 +43,11 @@ class PackageObject {
     return this;
   }
 
+  /**
+   * @function setOwnerRepo
+   * @param {string} ownerRepoString - The `owner/repo` string combo to set for the package.
+   * @desc Allows setting the `owner/repo` of the package.
+   */
   setOwnerRepo(ownerRepoString) {
     if (typeof ownerRepoString !== "string") {
       logger.generic(3, `PackageObject.setOwnerRepo() called with ${ownerRepoString}::${typeof ownerRepoString}. Ignoring assignment.`);
@@ -49,6 +66,11 @@ class PackageObject {
     return this;
   }
 
+  /**
+   * @function setDownloads
+   * @param {number|string} downloadCount - The Download count to add.
+   * @desc Allows setting the packages download count.
+   */
   setDownloads(downloadCount) {
     if (Number.isNaN(parseInt(downloadCount))) {
       logger.generic(3, `PackageObject.setDownloads() called with invalid argument ${downloadCount}. Ignoring assignment.`);
@@ -59,6 +81,11 @@ class PackageObject {
     return this;
   }
 
+  /**
+   * @function setStargazers
+   * @param {number|string} stargazerCount - The Stargazers count to add.
+   * @desc Allows setting the packages stargazer count.
+   */
   setStargazers(stargazerCount) {
     if (Number.isNaN(parseInt(stargazerCount))) {
       logger.generic(3, `PackageObject.setStargazers() called with invalid argument ${stargazerCount}. Ignoring assignment.`);
@@ -69,6 +96,11 @@ class PackageObject {
     return this;
   }
 
+  /**
+   * @function setReadme
+   * @param {string} readmeString - The Full text based readme.
+   * @desc Allows setting the packages readme data.
+   */
   setReadme(readmeString) {
     if (typeof readmeString !== "string") {
       logger.generic(3, `PackageObject.setReadme() called with invalid argument type ${readmeString}::${typeof readmeString}. Ignoring assignment.`);
@@ -79,6 +111,12 @@ class PackageObject {
     return this;
   }
 
+  /**
+   * @function setRepository
+   * @param {object} repoObject - The repo object containing `type` and `url` keys.
+   * @desc Allows setting the repository object of a package. As returned by
+   * `VCS.determineProvider()`.
+   */
   setRepository(repoObject) {
     if (!repoObject.type || !repoObject.url) {
       logger.generic(3, `PackageObject.setRepository() called with invalid object ${repoObject}. Ignoring assignment.`);
@@ -90,26 +128,52 @@ class PackageObject {
     return this;
   }
 
+  /**
+   * @function setRepositoryType
+   * @param {string} repoType - The type of repo.
+   * @desc Allows setting the repo type of the package. As returned by `VCS.determineProvider().type`
+   */
   setRepositoryType(repoType) {
     this.repository.type = repoType;
     return this;
   }
 
+  /**
+   * @function setRepositoryURL
+   * @param {string} repoURL - The URL of the repo.
+   * @desc Allows setting the repo URL of the package. As returned
+   * by `VCS.determineProvider().url`
+   */
   setRepositoryURL(repoURL) {
     this.repository.url = repoURL;
     return this;
   }
 
+  /**
+   * @function setCreationMethod
+   * @param {string} method - The creation method of the package.
+   * @desc Allows setting a creation method for the package.
+   */
   setCreationMethod(method) {
     this.creationMethod = method;
     return this;
   }
 
+  /**
+   * @function parse
+   * @param {object} pack - N/A
+   * @desc Unimplemented function.
+   * @todo
+   */
   parse(pack) {
     // Parse can take a packages data and destructure accordingly
     throw new Error("Not Implemented! ~ PackageObject.parse()");
   }
 
+  /**
+   * @function buildShort
+   * @desc Returns an object matching the `Package Object Short` format, using provided data.
+   */
   buildShort() {
     // The structure of this object is based off `./docs/resources/package_object_short.json`
     // And should be considered our master reference for the Package Object Short Data Structure
@@ -131,6 +195,11 @@ class PackageObject {
     return obj;
   }
 
+  /**
+   * @function buildFull
+   * @desc Returns an object matching the `Package Object Full` format.
+   * Using the provided data.
+   */
   buildFull() {
     // This object structure is modeled directly off of `./docs/resources/package_object_full.json`
     // Should be considered the master Package Object Full data structure
@@ -154,6 +223,11 @@ class PackageObject {
 
 }
 
+/**
+ * A version object to help build package objects `Version` data. Accessible
+ * from the PackageObject via `PackageObject.Version`
+ * @class
+ */
 class Version {
   constructor() {
     this.latestSemver = undefined;
@@ -161,10 +235,22 @@ class Version {
     this.semverInitRegex = /^\s*v/i;
   }
 
+  /**
+   * @function addVersion
+   * @param {object} value - N/A
+   * @desc Unimplemented function.
+   * @todo
+   */
   addVersion(value) {
     throw new Error("Not Implmented! ~ Version.addVersion()");
   }
 
+  /**
+   * @function addVersions
+   * @param {object[]} values - N/A
+   * @desc An array handling variant that relies on the the unimplmented `addVersion`
+   * @todo
+   */
   addVersions(values) {
     for (const value in values) {
       this.addVersion(value);
@@ -172,6 +258,11 @@ class Version {
     return this;
   }
 
+  /**
+   * @function addSemver
+   * @param {string} semver - The Semver to add to the package.
+   * @desc Handles adding a new semver value.
+   */
   addSemver(semver) {
     // Allows adding a standalone semver to the version list.
     let cleanSemver = this.cleanSemver(semver);
@@ -202,6 +293,12 @@ class Version {
     return this;
   }
 
+  /**
+   * @function cleanSemver
+   * @param {string} semver - The Semver to clean.
+   * @desc A utility function that will parse and process a `semver` string
+   * to remove special characters, and remove any leading `v`s
+   */
   cleanSemver(semver) {
     if (typeof semver !== "string") {
       return "";
@@ -210,6 +307,12 @@ class Version {
     return semver.replace(this.semverInitRegex, "").trim();
   }
 
+  /**
+   * @function addTarball
+   * @param {string} semver - The `semver` to add it to.
+   * @param {string} tarballURL - The url of the `tarball` to add.
+   * @desc Adds a `tarball` to the version specified.
+   */
   addTarball(semver, tarballURL) {
     // Takes a valid existing semver to add the url too
     if (!this.versions[this.cleanSemver(semver)]) {
@@ -221,6 +324,12 @@ class Version {
     return this;
   }
 
+  /**
+   * @function addSha
+   * @param {string} semver - The `semver` to add it to.
+   * @param {string} sha - The SHA to add.
+   * @desc Adds a `sha` to the `version` specified.
+   */
   addSha(semver, sha) {
     // Takes a valid existing semver to add the sha too
     if (!this.versions[this.cleanSemver(semver)]) {
@@ -232,6 +341,12 @@ class Version {
     return this;
   }
 
+  /**
+   * @function addPackageJSON
+   * @param {string} semver - The `semver` to add it to.
+   * @param {object} pack - The `package.json` to add.
+   * @desc Adds a `package.json` to a specific version.
+   */
   addPackageJSON(semver, pack) {
     // Takes a valid existing semver to add the package data to
     if (!this.versions[this.cleanSemver(semver)]) {
@@ -243,26 +358,51 @@ class Version {
     return this;
   }
 
+  /**
+   * @function getLatestVersion
+   * @desc Returns the full data of the `latest` version. As stored locally.
+   * This likely is not suited for using as any kind of package data.
+   */
   getLatestVersion() {
     return this.versions[this.latestSemver];
   }
 
+  /**
+   * @function getLatestVersionSemver
+   * @desc Returns the `semver` of the `latest` version.
+   */
   getLatestVersionSemver() {
     return this.latestSemver;
   }
 
+  /**
+   * @function getLatestVersionTarball
+   * @desc Returns the `tarball` of the `latest` version.
+   */
   getLatestVersionTarball() {
     return this.versions[this.latestSemver].tarball_url;
   }
 
+  /**
+   * @function getLatestVersionSha
+   * @desc Returns the `sha` of the `latest` version.
+   */
   getLatestVersionSha() {
     return this.versions[this.latestSemver].sha;
   }
 
+  /**
+   * @function getLatestVersionPackageJSON
+   * @desc Returns the `package.json` data for the `latest` semver.
+   */
   getLatestVersionPackageJSON() {
     return this.versions[this.latestSemver].package;
   }
 
+  /**
+   * @function buildFullVersions
+   * @desc Returns an object of the full version object for the versions provided.
+   */
   buildFullVersions() {
 
     let obj = {};
