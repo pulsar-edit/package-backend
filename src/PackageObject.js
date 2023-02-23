@@ -20,7 +20,7 @@ class PackageObject {
     this.ownerRepo = undefined;
     this.repository = {
       type: undefined,
-      url: undefined
+      url: undefined,
     };
     this.downloads = undefined;
     this.stargazers_count = undefined;
@@ -35,7 +35,10 @@ class PackageObject {
    */
   setName(packNameString) {
     if (typeof packNameString !== "string") {
-      logger.generic(3, `PackageObject.setName() called wtih ${packNameString}::${typeof packNameString}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setName() called wtih ${packNameString}::${typeof packNameString}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -50,7 +53,10 @@ class PackageObject {
    */
   setOwnerRepo(ownerRepoString) {
     if (typeof ownerRepoString !== "string") {
-      logger.generic(3, `PackageObject.setOwnerRepo() called with ${ownerRepoString}::${typeof ownerRepoString}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setOwnerRepo() called with ${ownerRepoString}::${typeof ownerRepoString}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -58,7 +64,10 @@ class PackageObject {
 
     if (testValidation.length !== 2) {
       // If the name is longer than 2, then it is not owner/repo
-      logger.generic(3, `PackageObject.setOwnerRepo() called with invalid split length value ${ownerRepoString}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setOwnerRepo() called with invalid split length value ${ownerRepoString}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -73,7 +82,10 @@ class PackageObject {
    */
   setDownloads(downloadCount) {
     if (Number.isNaN(parseInt(downloadCount))) {
-      logger.generic(3, `PackageObject.setDownloads() called with invalid argument ${downloadCount}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setDownloads() called with invalid argument ${downloadCount}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -88,7 +100,10 @@ class PackageObject {
    */
   setStargazers(stargazerCount) {
     if (Number.isNaN(parseInt(stargazerCount))) {
-      logger.generic(3, `PackageObject.setStargazers() called with invalid argument ${stargazerCount}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setStargazers() called with invalid argument ${stargazerCount}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -103,7 +118,10 @@ class PackageObject {
    */
   setReadme(readmeString) {
     if (typeof readmeString !== "string") {
-      logger.generic(3, `PackageObject.setReadme() called with invalid argument type ${readmeString}::${typeof readmeString}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setReadme() called with invalid argument type ${readmeString}::${typeof readmeString}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -119,7 +137,10 @@ class PackageObject {
    */
   setRepository(repoObject) {
     if (!repoObject.type || !repoObject.url) {
-      logger.generic(3, `PackageObject.setRepository() called with invalid object ${repoObject}. Ignoring assignment.`);
+      logger.generic(
+        3,
+        `PackageObject.setRepository() called with invalid object ${repoObject}. Ignoring assignment.`
+      );
       return this;
     }
 
@@ -183,10 +204,10 @@ class PackageObject {
       downloads: this.downloads,
       stargazers_count: this.stargazers_count,
       releases: {
-        latest: this.Version.getLatestVersionSemver()
+        latest: this.Version.getLatestVersionSemver(),
       },
       readme: this.readme,
-      metadata: this.Version.getLatestVersionPackageJSON()
+      metadata: this.Version.getLatestVersionPackageJSON(),
     };
 
     // Here we could use Joi to validate the values within our data structure
@@ -210,17 +231,16 @@ class PackageObject {
       stargazers_count: this.stargazers_count,
       creation_method: this.creationMethod,
       releases: {
-        latest: this.Version.getLatestVersionSemver()
+        latest: this.Version.getLatestVersionSemver(),
       },
       readme: this.readme,
       metadata: this.Version.getLatestVersionPackageJSON(),
-      versions: this.Version.buildFullVersions()
+      versions: this.Version.buildFullVersions(),
     };
 
     // Again would likely in the future want to use Joi to validate our object
     return obj;
   }
-
 }
 
 /**
@@ -268,12 +288,18 @@ class Version {
     let cleanSemver = this.cleanSemver(semver);
 
     if (cleanSemver === "") {
-      logger.generic(3, `Version.addSemver() called with invalid semver ${semver}! Ignoring assignment`);
+      logger.generic(
+        3,
+        `Version.addSemver() called with invalid semver ${semver}! Ignoring assignment`
+      );
       return this;
     }
 
     if (this.versions[cleanSemver]) {
-      logger.generic(3, `Version.addSemver() called with semver already within range! ${semver}`);
+      logger.generic(
+        3,
+        `Version.addSemver() called with semver already within range! ${semver}`
+      );
       return this;
     }
 
@@ -283,8 +309,16 @@ class Version {
     if (typeof this.latestSemver === "undefined") {
       this.latestSemver = cleanSemver;
     } else {
-      console.log(`Latest semver: ${this.latestSemver} - Typeof: ${typeof this.latestSemver}`);
-      if (utils.semverGt(utils.semverArray(cleanSemver), utils.semverArray(this.latestSemver))) {
+      console.log(
+        `Latest semver: ${this.latestSemver} - Typeof: ${typeof this
+          .latestSemver}`
+      );
+      if (
+        utils.semverGt(
+          utils.semverArray(cleanSemver),
+          utils.semverArray(this.latestSemver)
+        )
+      ) {
         // The provided semver is greater than our current latest
         this.latestSemver = cleanSemver;
       }
@@ -316,7 +350,10 @@ class Version {
   addTarball(semver, tarballURL) {
     // Takes a valid existing semver to add the url too
     if (!this.versions[this.cleanSemver(semver)]) {
-      logger.generic(3, `Version.addTarball() called with semver outside known range! ${semver}`);
+      logger.generic(
+        3,
+        `Version.addTarball() called with semver outside known range! ${semver}`
+      );
       return this;
     }
 
@@ -333,7 +370,10 @@ class Version {
   addSha(semver, sha) {
     // Takes a valid existing semver to add the sha too
     if (!this.versions[this.cleanSemver(semver)]) {
-      logger.generic(3, `Version.addSHA() called with semver outside known range! ${semver}`);
+      logger.generic(
+        3,
+        `Version.addSHA() called with semver outside known range! ${semver}`
+      );
       return this;
     }
 
@@ -350,7 +390,10 @@ class Version {
   addPackageJSON(semver, pack) {
     // Takes a valid existing semver to add the package data to
     if (!this.versions[this.cleanSemver(semver)]) {
-      logger.generic(3, `Version.addPackageJSON() called with semver outside known range! ${semver}`);
+      logger.generic(
+        3,
+        `Version.addPackageJSON() called with semver outside known range! ${semver}`
+      );
       return this;
     }
 
@@ -404,7 +447,6 @@ class Version {
    * @desc Returns an object of the full version object for the versions provided.
    */
   buildFullVersions() {
-
     let obj = {};
 
     // this.versions === this.versions.package | this.versions.sha | this.versions.tarball_url
@@ -418,7 +460,7 @@ class Version {
       }
       obj[ver].dist = {
         tarball: this.versions[ver].tarball_url,
-        sha: this.versions[ver].sha
+        sha: this.versions[ver].sha,
       };
     }
 
@@ -429,7 +471,6 @@ class Version {
     // This is likely where in the future we want to use Joi to validate our object
     return obj;
   }
-
 }
 
 module.exports = PackageObject;

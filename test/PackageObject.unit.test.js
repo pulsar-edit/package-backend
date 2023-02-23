@@ -1,10 +1,8 @@
 const PackageObject = require("../src/PackageObject.js");
 
 describe("Building Objects with PackageObject Return as Expected", () => {
-
   test("Formal Usage", () => {
-    const obj = new PackageObject()
-      .setName("hello");
+    const obj = new PackageObject().setName("hello");
 
     expect(obj.name).toBe("hello");
   });
@@ -19,8 +17,7 @@ describe("Building Objects with PackageObject Return as Expected", () => {
       .setRepositoryURL("https://github.com/pulsar-edit/hello")
       .setRepositoryType("git");
 
-    obj.Version
-      .addSemver("v1.101.0-beta")
+    obj.Version.addSemver("v1.101.0-beta")
       .addTarball("v1.101.0-beta", "https://nowhere.com")
       .addSha("v1.101.0-beta", "123")
       .addSemver("v1.101.1-beta")
@@ -41,5 +38,4 @@ describe("Building Objects with PackageObject Return as Expected", () => {
 
     expect(obj.Version.getLatestVersionSemver()).toBe("3.444.1-beta");
   });
-
 });

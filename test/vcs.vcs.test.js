@@ -168,7 +168,7 @@ describe("Does NewPackageData Return as expected", () => {
                 tarball_url:
                   "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
                 commit: {
-                  sha: "1234"
+                  sha: "1234",
                 },
               },
             ],

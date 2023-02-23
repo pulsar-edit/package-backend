@@ -18,7 +18,8 @@ const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
-const { RATE_LIMIT_AUTH, RATE_LIMIT_GENERIC } = require("./config.js").getConfig();
+const { RATE_LIMIT_AUTH, RATE_LIMIT_GENERIC } =
+  require("./config.js").getConfig();
 
 // Define our Basic Rate Limiters
 const genericLimit = rateLimit({

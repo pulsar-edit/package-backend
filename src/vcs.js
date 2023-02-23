@@ -87,7 +87,9 @@ async function ownership(userObj, packObj, dev_override = false) {
   // Which if we are getting a string, then we will fallback to the default
   // which is GitHub, which will work for now.
   const repoObj =
-    typeof packObj.repository === "object" ? packObj.repository.type : packObj.repository;
+    typeof packObj.repository === "object"
+      ? packObj.repository.type
+      : packObj.repository;
   // TODO: Double check validity of Object, but we should have `.type` & `.url`
   // But if this check fails we will assume that repository is a string.
   // We should likely add better protections and validation in the future TODO
@@ -212,7 +214,8 @@ async function newPackageData(userObj, ownerRepo, service) {
     // Then lets add the service used, so we are able to safely find it in the future
     const packRepoObj = determineProvider(pack.content.repository);
 
-    newPack.setReadme(readme.content)
+    newPack
+      .setReadme(readme.content)
       .setName(pack.content.name.toLowerCase())
       .setCreationMethod("User Made Package")
       .setRepositoryType(packRepoObj.type)
@@ -221,7 +224,6 @@ async function newPackageData(userObj, ownerRepo, service) {
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
     return new ServerStatus().isOk().setContent(newPack.buildFull()).build();
-
   } catch (err) {
     // An error occured somewhere during package generation
     return new ServerStatus()

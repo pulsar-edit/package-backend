@@ -1,6 +1,12 @@
 ## Modules
 
 <dl>
+<dt><a href="#module_PackageObject">PackageObject</a></dt>
+<dd><p>This Module is used to aide in building Package Objects.
+Allowing a singular location for the proper data structure of a package object.
+And allowing an easy interface to add, modify, or retreive data about a
+package object.</p>
+</dd>
 <dt><a href="#module_ServerStatusObject">ServerStatusObject</a></dt>
 <dd><p>This Module is used to aide in building a Server Status Object.
 This data structure is somewhat ubiquitous within this codebase.
@@ -117,6 +123,312 @@ the data needed to update a packages version.</p>
 </dd>
 </dl>
 
+<a name="module_PackageObject"></a>
+
+## PackageObject
+This Module is used to aide in building Package Objects.
+Allowing a singular location for the proper data structure of a package object.
+And allowing an easy interface to add, modify, or retreive data about a
+package object.
+
+
+* [PackageObject](#module_PackageObject)
+    * [~PackageObject](#module_PackageObject..PackageObject)
+    * [~Version](#module_PackageObject..Version)
+    * [~setName(packNameString)](#module_PackageObject..setName)
+    * [~setOwnerRepo(ownerRepoString)](#module_PackageObject..setOwnerRepo)
+    * [~setDownloads(downloadCount)](#module_PackageObject..setDownloads)
+    * [~setStargazers(stargazerCount)](#module_PackageObject..setStargazers)
+    * [~setReadme(readmeString)](#module_PackageObject..setReadme)
+    * [~setRepository(repoObject)](#module_PackageObject..setRepository)
+    * [~setRepositoryType(repoType)](#module_PackageObject..setRepositoryType)
+    * [~setRepositoryURL(repoURL)](#module_PackageObject..setRepositoryURL)
+    * [~setCreationMethod(method)](#module_PackageObject..setCreationMethod)
+    * [~parse(pack)](#module_PackageObject..parse)
+    * [~buildShort()](#module_PackageObject..buildShort)
+    * [~buildFull()](#module_PackageObject..buildFull)
+    * [~addVersion(value)](#module_PackageObject..addVersion)
+    * [~addVersions(values)](#module_PackageObject..addVersions)
+    * [~addSemver(semver)](#module_PackageObject..addSemver)
+    * [~cleanSemver(semver)](#module_PackageObject..cleanSemver)
+    * [~addTarball(semver, tarballURL)](#module_PackageObject..addTarball)
+    * [~addSha(semver, sha)](#module_PackageObject..addSha)
+    * [~addPackageJSON(semver, pack)](#module_PackageObject..addPackageJSON)
+    * [~getLatestVersion()](#module_PackageObject..getLatestVersion)
+    * [~getLatestVersionSemver()](#module_PackageObject..getLatestVersionSemver)
+    * [~getLatestVersionTarball()](#module_PackageObject..getLatestVersionTarball)
+    * [~getLatestVersionSha()](#module_PackageObject..getLatestVersionSha)
+    * [~getLatestVersionPackageJSON()](#module_PackageObject..getLatestVersionPackageJSON)
+    * [~buildFullVersions()](#module_PackageObject..buildFullVersions)
+
+<a name="module_PackageObject..PackageObject"></a>
+
+### PackageObject~PackageObject
+The PackageObject Object Builder
+
+**Kind**: inner class of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..Version"></a>
+
+### PackageObject~Version
+A version object to help build package objects `Version` data. Accessible
+from the PackageObject via `PackageObject.Version`
+
+**Kind**: inner class of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..setName"></a>
+
+### PackageObject~setName(packNameString)
+Allows setting the name of the package.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| packNameString | <code>string</code> | The Name of the package to set |
+
+<a name="module_PackageObject..setOwnerRepo"></a>
+
+### PackageObject~setOwnerRepo(ownerRepoString)
+Allows setting the `owner/repo` of the package.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| ownerRepoString | <code>string</code> | The `owner/repo` string combo to set for the package. |
+
+<a name="module_PackageObject..setDownloads"></a>
+
+### PackageObject~setDownloads(downloadCount)
+Allows setting the packages download count.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| downloadCount | <code>number</code> \| <code>string</code> | The Download count to add. |
+
+<a name="module_PackageObject..setStargazers"></a>
+
+### PackageObject~setStargazers(stargazerCount)
+Allows setting the packages stargazer count.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stargazerCount | <code>number</code> \| <code>string</code> | The Stargazers count to add. |
+
+<a name="module_PackageObject..setReadme"></a>
+
+### PackageObject~setReadme(readmeString)
+Allows setting the packages readme data.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| readmeString | <code>string</code> | The Full text based readme. |
+
+<a name="module_PackageObject..setRepository"></a>
+
+### PackageObject~setRepository(repoObject)
+Allows setting the repository object of a package. As returned by
+`VCS.determineProvider()`.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| repoObject | <code>object</code> | The repo object containing `type` and `url` keys. |
+
+<a name="module_PackageObject..setRepositoryType"></a>
+
+### PackageObject~setRepositoryType(repoType)
+Allows setting the repo type of the package. As returned by `VCS.determineProvider().type`
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| repoType | <code>string</code> | The type of repo. |
+
+<a name="module_PackageObject..setRepositoryURL"></a>
+
+### PackageObject~setRepositoryURL(repoURL)
+Allows setting the repo URL of the package. As returned
+by `VCS.determineProvider().url`
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| repoURL | <code>string</code> | The URL of the repo. |
+
+<a name="module_PackageObject..setCreationMethod"></a>
+
+### PackageObject~setCreationMethod(method)
+Allows setting a creation method for the package.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| method | <code>string</code> | The creation method of the package. |
+
+<a name="module_PackageObject..parse"></a>
+
+### PackageObject~parse(pack)
+Unimplemented function.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+**Todo**
+
+- [ ] Implement generic parse()
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pack | <code>object</code> | N/A |
+
+<a name="module_PackageObject..buildShort"></a>
+
+### PackageObject~buildShort()
+Returns an object matching the `Package Object Short` format, using provided data.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..buildFull"></a>
+
+### PackageObject~buildFull()
+Returns an object matching the `Package Object Full` format.
+Using the provided data.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..addVersion"></a>
+
+### PackageObject~addVersion(value)
+Unimplemented function.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+**Todo**
+
+- [ ] Implement Agnostic `addVersion()`
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>object</code> | N/A |
+
+<a name="module_PackageObject..addVersions"></a>
+
+### PackageObject~addVersions(values)
+An array handling variant that relies on the the unimplmented `addVersion`
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+**Todo**
+
+- [ ] Implement Agnostic `addVersion()`
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| values | <code>Array.&lt;object&gt;</code> | N/A |
+
+<a name="module_PackageObject..addSemver"></a>
+
+### PackageObject~addSemver(semver)
+Handles adding a new semver value.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| semver | <code>string</code> | The Semver to add to the package. |
+
+<a name="module_PackageObject..cleanSemver"></a>
+
+### PackageObject~cleanSemver(semver)
+A utility function that will parse and process a `semver` string
+to remove special characters, and remove any leading `v`s
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| semver | <code>string</code> | The Semver to clean. |
+
+<a name="module_PackageObject..addTarball"></a>
+
+### PackageObject~addTarball(semver, tarballURL)
+Adds a `tarball` to the version specified.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| semver | <code>string</code> | The `semver` to add it to. |
+| tarballURL | <code>string</code> | The url of the `tarball` to add. |
+
+<a name="module_PackageObject..addSha"></a>
+
+### PackageObject~addSha(semver, sha)
+Adds a `sha` to the `version` specified.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| semver | <code>string</code> | The `semver` to add it to. |
+| sha | <code>string</code> | The SHA to add. |
+
+<a name="module_PackageObject..addPackageJSON"></a>
+
+### PackageObject~addPackageJSON(semver, pack)
+Adds a `package.json` to a specific version.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| semver | <code>string</code> | The `semver` to add it to. |
+| pack | <code>object</code> | The `package.json` to add. |
+
+<a name="module_PackageObject..getLatestVersion"></a>
+
+### PackageObject~getLatestVersion()
+Returns the full data of the `latest` version. As stored locally.
+This likely is not suited for using as any kind of package data.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..getLatestVersionSemver"></a>
+
+### PackageObject~getLatestVersionSemver()
+Returns the `semver` of the `latest` version.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..getLatestVersionTarball"></a>
+
+### PackageObject~getLatestVersionTarball()
+Returns the `tarball` of the `latest` version.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..getLatestVersionSha"></a>
+
+### PackageObject~getLatestVersionSha()
+Returns the `sha` of the `latest` version.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..getLatestVersionPackageJSON"></a>
+
+### PackageObject~getLatestVersionPackageJSON()
+Returns the `package.json` data for the `latest` semver.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
+<a name="module_PackageObject..buildFullVersions"></a>
+
+### PackageObject~buildFullVersions()
+Returns an object of the full version object for the versions provided.
+
+**Kind**: inner method of [<code>PackageObject</code>](#module_PackageObject)  
 <a name="module_ServerStatusObject"></a>
 
 ## ServerStatusObject
