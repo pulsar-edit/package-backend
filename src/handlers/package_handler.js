@@ -1017,7 +1017,10 @@ async function deletePackageVersion(req, res) {
  * @desc Used when a package is uninstalled, decreases the download count by 1.
  * And saves this data, Originally an undocumented endpoint.
  * The decision to return a '201' was based on how other POST endpoints return,
- * during a successful event.
+ * during a successful event. This endpoint has now been deprecated, as it serves
+ * no useful features, and on further examination may have been intended as a way
+ * to collect data on users, which is not something we implement.
+ * @deprecated since v 1.0.2
  * @see {@link https://github.com/atom/apm/blob/master/src/uninstall.coffee}
  * @param {object} req - The `Request` object inherited from the Express endpoint.
  * @param {object} res - The `Response` object inherited from the Express endpoint.
@@ -1025,39 +1028,6 @@ async function deletePackageVersion(req, res) {
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName/events/uninstall
  */
 async function postPackagesEventUninstall(req, res) {
-  const params = {
-    auth: query.auth(req),
-    packageName: query.packageName(req),
-    // TODO: versionName unused parameter. On the roadmap to be removed.
-    // See https://github.com/confused-Techie/atom-backend/pull/88#issuecomment-1331809594
-    versionName: query.engine(req.params.versionName),
-  };
-
-  const user = await auth.verifyAuth(params.auth);
-
-  if (!user.ok) {
-    await common.handleError(req, res, user);
-    return;
-  }
-
-  // TODO: How does this impact performance? Wonder if we could return
-  // the next command with more intelligence to know the pack doesn't exist.
-  const packExists = await database.getPackageByName(params.packageName, true);
-
-  if (!packExists.ok) {
-    await common.handleError(req, res, packExists);
-    return;
-  }
-
-  const write = await database.updatePackageDecrementDownloadByName(
-    params.packageName
-  );
-
-  if (!write.ok) {
-    await common.handleError(req, res, write);
-    return;
-  }
-
   res.status(200).json({ ok: true });
   logger.httpLog(req, res);
 }
