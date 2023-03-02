@@ -1963,7 +1963,7 @@ Endpoint Handlers in all relating to the packages themselves.
     * [~getPackagesVersion(req, res)](#module_package_handler..getPackagesVersion)
     * [~getPackagesVersionTarball(req, res)](#module_package_handler..getPackagesVersionTarball)
     * [~deletePackageVersion(req, res)](#module_package_handler..deletePackageVersion)
-    * [~postPackagesEventUninstall(req, res)](#module_package_handler..postPackagesEventUninstall)
+    * ~~[~postPackagesEventUninstall(req, res)](#module_package_handler..postPackagesEventUninstall)~~
 
 <a name="module_package_handler..getPackages"></a>
 
@@ -2238,11 +2238,15 @@ Allows a user to delete a specific version of their package.
 
 <a name="module_package_handler..postPackagesEventUninstall"></a>
 
-### package_handler~postPackagesEventUninstall(req, res)
+### ~~package_handler~postPackagesEventUninstall(req, res)~~
+***Deprecated***
+
 Used when a package is uninstalled, decreases the download count by 1.
 And saves this data, Originally an undocumented endpoint.
 The decision to return a '201' was based on how other POST endpoints return,
-during a successful event.
+during a successful event. This endpoint has now been deprecated, as it serves
+no useful features, and on further examination may have been intended as a way
+to collect data on users, which is not something we implement.
 
 **Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
 **See**: [https://github.com/atom/apm/blob/master/src/uninstall.coffee](https://github.com/atom/apm/blob/master/src/uninstall.coffee)  

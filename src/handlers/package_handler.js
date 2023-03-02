@@ -153,7 +153,10 @@ async function postPackages(req, res) {
     // Even further though we need to check that the error is not "Not Found",
     // since an exception could have been caught.
     if (nameAvailable.short !== "Not Found") {
-      logger.generic(3, `postPackages-getPackageByName Not OK: ${nameAvailable.content}`);
+      logger.generic(
+        3,
+        `postPackages-getPackageByName Not OK: ${nameAvailable.content}`
+      );
       // The server failed for some other bubbled reason, and is now encountering an error
       await common.handleError(req, res, nameAvailable);
       return;
