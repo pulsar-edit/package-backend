@@ -1337,7 +1337,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
 
     const wordSeparators = /[-. ]/g; // Word Separators: - . SPACE
 
-    const searchTerm = lcterm.split(wordSeparators).join("_");
+    const searchTerm = lcterm.replace(wordSeparators, "_");
     // Replaces all word separators with '_' which matches any single character
 
     const limit = paginated_amount;
