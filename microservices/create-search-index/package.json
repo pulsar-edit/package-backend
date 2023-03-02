@@ -1,0 +1,9 @@
+{
+  "name": "package-backend/create-search-index",
+  "version": "0.0.1",
+  "description": "Creates the search index to be consumed by package-backend/search.",
+  "main": "index.js",
+  "scripts": {
+    
+  }
+}
