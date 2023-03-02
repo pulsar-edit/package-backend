@@ -946,6 +946,7 @@ app.options(
  * @ignore
  * @path /api/packages/:packageName/versions/:versionName/events/uninstall
  * @desc Previously undocumented endpoint. BETA: Decreases the packages download count, by one. Indicating an uninstall.
+ * v1.0.2 - Now has no effect. Being deprecated, but presents no change to end users.
  * @method POST
  * @auth true
  * @param
