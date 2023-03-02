@@ -150,24 +150,21 @@ async function postPackages(req, res) {
   const nameAvailable = await database.packageNameAvailability(repo);
 
   if (!nameAvailable.ok) {
+    // Even further though we need to check that the error is not "Not Found",
+    // since an exception could have been caught.
+    if (nameAvailable.short !== "Not Found") {
+      logger.generic(3, `postPackages-getPackageByName Not OK: ${nameAvailable.content}`);
+      // The server failed for some other bubbled reason, and is now encountering an error
+      await common.handleError(req, res, nameAvailable);
+      return;
+    }
+    // But if the short is then only "Not Found" we can report it as not being available
     logger.generic(
       6,
       "The name for the package is not available: aborting publish"
     );
     // The package exists.
     await common.packageExists(req, res);
-    return;
-  }
-
-  // Even further though we need to check that the error is not "Not Found",
-  // since an exception could have been caught.
-  if (nameAvailable.short !== "Not Found") {
-    logger.generic(
-      3,
-      `postPackages-getPackageByName Not OK: ${nameAvailable.content}`
-    );
-    // The server failed for some other bubbled reason, and is now encountering an error.
-    await common.handleError(req, res, nameAvailable);
     return;
   }
 
