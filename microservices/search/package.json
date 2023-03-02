@@ -1,0 +1,9 @@
+{
+  "name": "package-backend/search",
+  "version": "0.0.1",
+  "description": "Search Microservice for the Pulsar Package Backend",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node ./src/server.js"
+  }
+}
