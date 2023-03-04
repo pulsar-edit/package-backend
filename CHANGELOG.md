@@ -6,6 +6,8 @@
 ## [Unreleased]
 
 * Fixed an issue that would stop the `rename` query parameter from being handled correctly.
+* Fixed issue that could cause package download URL's to not resolve properly.
+* Improved search handling to support spaces among other stop words to still resolve the expected search query.
 * Deprecate `/api/packages/:packageName/versions/:versionName/events/uninstall`. This endpoint no longer has any effect, but will still return a successful query to avoid user impact.
 * Refactored the existing testing platform
 * Refactored all interactions with GitHub, Git, and provided the base system to support multiple VCS services in the future.
