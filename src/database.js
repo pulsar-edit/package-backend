@@ -1335,6 +1335,11 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     // lowercase format (see atom-backend issue #86).
     const lcterm = term.toLowerCase();
 
+    const wordSeparators = /[-. ]/g; // Word Separators: - . SPACE
+
+    const searchTerm = lcterm.replace(wordSeparators, "_");
+    // Replaces all word separators with '_' which matches any single character
+
     const limit = paginated_amount;
     const offset = page > 1 ? (page - 1) * limit : 0;
 
@@ -1345,7 +1350,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
           v.semver, p.created, v.updated
         FROM packages AS p
           INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name LIKE ${
-            "%" + lcterm + "%"
+            "%" + searchTerm + "%"
           }
           ${
             themes === true
