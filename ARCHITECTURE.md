@@ -53,19 +53,15 @@ This folder you likely won't find of much use, unless you plan to stand up your 
 
 - `database`: Contains the SQL scripts needed to get every single table and column that the production Database for the Pulsar Package Backend has, and can directly be used to create a new database that will match what's being used within the code.
 - `deprecated`: There is a ReadMe within this folder that provides more detail, but this folder contains code that was in one time used, now being deprecated, but still has plans to be reused when possible.
+- `migrations`: Contains an SQL migration script which is used to setup a temporary Database to test our code against. This is the data that's used during tests to ensure we never have to test against production.
 - `tools`: This folder contains some smaller pieces of code that served extracurricular tasks for the backend repo. Such as generating badges, or running tests.
 
 ### `src`
 
 As you might assume this is now the folder that contains the actual code of the application. If you plan on writing actual sections of code this is the place you'll want to pay the most attention to.
 
-- `dev-runner`: This folder contains any code that is only ever intended to be used during testing of the `package-backend`.
-  * `migrations`: Contains an SQL migration script which is used to setup a temporary Database to test our code against. This is the data that's used during tests to ensure we never have to test against production.
-  * `github_mock.js`: This file is a Mock GitHub API server, that is stood up with ExpressJS during testing, to allow us to more thoroughly test our code by letting it hit an actual API, instead of mocked functions.
 - `handlers`: Every single endpoint of the API, will pass its Request and Response objects to a handler within this folder. Generally each file within the folder's name will begin with the slug of the API endpoint following `/api`. Such as for endpoints hitting `https://api.pulsar-edit.dev/api/packages` are all routed to the `package_handler.js`. There is also a `common_handler.js` which has shared HTTP utility functions for all handler files.
-- `tests`: This folder contains all Unit-Tests for the `package-backend`. That is tests that don't require any communication with any external service. There is additionally a [ReadMe](/src/tests/README.md) within that details this further.
-- `tests_integration`: This folder contains all Integration-Tests for the `package-backend` (Like you might've guessed). These are the tests that require some type of outside service interaction, but generally the test files themselves are burdened with creating a mock service to interact with. Such as creating a Mock GitHub Server, or a Mock Local Database. But there is again a [ReadMe](/src/tests_integration/README.md) containing more details.
-- `tests_integration/fixtures`: This contains files used to supply our integration tests with data that may be needed more than once. Such as Modules that export `package.json` examples, or other relevant data to conduct testing.
+- `vcs_providers`: This folder contains the VCS (Version Control System) Classes that enable blind interaction with any VCS System. Allowing `vcs.js` (Which is the module that interacts with Git Systems) to integrate with GitHub, Codeberg, and more.
 
 From here there are a collection of files to aide in everything else for the `package-backend` which will be quickly detailed here. (Note this information is easy to become out of date, and should be crossed checked when reading for accuracy, as new files may exist, or files may deleted.) But if needed every single file should contain JSDoc comments at the very top detailing its purpose and rough behavior.
   * `auth.js`: Contains functions used to handle authentication the same way across all endpoints.
@@ -81,6 +77,39 @@ From here there are a collection of files to aide in everything else for the `pa
   * `server.js`: This is the file that starts up our ExpressJS Server in production. Whereas `dev_server.js` starts up the ExpressJS server when testing.
   * `storage.js`: This file contains all interactions with Google Cloud Storage.
   * `utils.js`: This file contains utility functions for the rest of the codebase to utilize.
+
+## `test`
+
+This folder contains all tests for the `package-backend`. There is additionally a [ReadMe](/test/README.md) within that details this further.
+
+Within this folder are many types of tests, all given some type of classifier. Some of these tests types are inclusive of each other, as they are all eventually classified as Unit or Integration tests, even if missing that label in their filename. To review what is classified as what look in `jest.config.js` for details.
+* `unit`: A simple unit test that does not require any external services, and rarely requires additional modules.
+* `integration`: A test that either uses external resources or may import additional modules to carry out it's tasks.
+* `vcs`: A test that targets a part of the VCS System.
+* `handler`: A test that targets one of the endpoint handlers, or a file within `./src/handlers/` directory.
+* `setup`: This file helps to run setup steps for the tests that utilize it.
+
+Some special files within this folder:
+* `global.setup.jest.js`: Does setup for the tests that effect every single test that is run. Such as adding additional matches to jest.
+* `handlers.setup.jest.js`: Setup steps for test of `*.handler.integration.test.js`. Handling setup of the development database, setting specific jest settings, or adding global variables for tests to utilize.
+
+The general structure of a filename within this folder follows:
+
+```
+testFileName.testType.test.js
+```
+
+Although can also be:
+
+```
+testFileName.testType.testBooleanUnitOrIntegration.test.js
+```
+
+Such as:
+- `cache.unit.test.js`
+- `login.handler.integration.test.js`
+
+- `fixtures`: This contains files used to supply our tests with data that may be needed more than once. Such as Modules that export `package.json` examples, or other relevant data to conduct testing.
 
 ## `root`
 
