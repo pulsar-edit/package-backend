@@ -7,7 +7,6 @@ const common = require("./common_handler.js");
 const query = require("../query.js");
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
-const utils = require("../utils.js");
 const database = require("../database.js");
 const auth = require("../auth.js");
 
