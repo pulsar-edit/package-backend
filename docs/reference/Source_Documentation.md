@@ -1702,6 +1702,7 @@ verbosity, and duplication within the codebase.
 
 * [common_handler](#module_common_handler)
     * [~handleError(req, res, obj)](#module_common_handler..handleError)
+    * [~handleDetailedError(req, res, obj)](#module_common_handler..handleDetailedError)
     * [~authFail(req, res, user)](#module_common_handler..authFail)
     * [~serverError(req, res, err)](#module_common_handler..serverError)
     * [~notFound(req, res)](#module_common_handler..notFound)
@@ -1726,6 +1727,26 @@ Note that it's designed to be called as the last async function before the retur
 | req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
 | res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
 | obj | <code>object</code> | the Raw Status Object of the User, expected to return from `VerifyAuth`. |
+
+<a name="module_common_handler..handleDetailedError"></a>
+
+### common_handler~handleDetailedError(req, res, obj)
+Less generic error handler than `handleError()`. Used for returned the
+improved error messages to users. Where instead of only returning an error
+`message` it will return `message` and `details`. Providing better insight into
+what has gone wrong with the server.
+Additionally this will aim to simplify error handling by not handing off the
+handling to additional functions.
+
+**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| obj | <code>object</code> | The Object provided to return the error message. |
+| obj.short | <code>string</code> | The recognized Short Code string for error handling. |
+| obj.content | <code>string</code> | The detailed user friendly content of what's gone wrong. |
 
 <a name="module_common_handler..authFail"></a>
 

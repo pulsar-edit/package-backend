@@ -61,33 +61,35 @@ async function handleError(req, res, obj, num) {
  * @param {string} obj.content - The detailed user friendly content of what's gone wrong.
  */
 async function handleDetailedError(req, res, obj) {
-  switch(obj.short) {
+  switch (obj.short) {
     case "Not Found":
       res.status(404).json({
         message: "Not Found",
-        details: obj.content
+        details: obj.content,
       });
       logger.httpLog(req, res);
       break;
     case "Bad Repo":
       res.status(400).json({
-        message: "That repo does not exist, isn't a Pulsar package, or pulsarbot does not have access.",
-        details: obj.content
+        message:
+          "That repo does not exist, isn't a Pulsar package, or pulsarbot does not have access.",
+        details: obj.content,
       });
       logger.httpLog(req, res);
       break;
     case "Bad Package":
       res.status(400).json({
         message: "The package.json at owner/repo isn't valid.",
-        details: obj.content
+        details: obj.content,
       });
       logger.httpLog(req, res);
       break;
     case "No Repo Access":
     case "Bad Auth":
       res.status(401).json({
-        message: "Requires authentication. Please update your token if you haven't done so recently.",
-        details: obj.content
+        message:
+          "Requires authentication. Please update your token if you haven't done so recently.",
+        details: obj.content,
       });
       logger.httpLog(req, res);
       break;
@@ -96,7 +98,7 @@ async function handleDetailedError(req, res, obj) {
     default:
       res.status(500).json({
         message: "Application Error",
-        details: obj.content
+        details: obj.content,
       });
       logger.httpLog(req, res);
       break;

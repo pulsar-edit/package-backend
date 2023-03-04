@@ -750,7 +750,7 @@ async function postPackagesVersion(req, res) {
       await common.handleDetailedError(req, res, {
         ok: false,
         short: "Server Error",
-        content: "This Package Name is Banned on the Pulsar Registry."
+        content: "This Package Name is Banned on the Pulsar Registry.",
       });
       return;
     }
@@ -766,7 +766,7 @@ async function postPackagesVersion(req, res) {
       await common.handleDetailedError(req, res, {
         ok: false,
         short: "Server Error",
-        content: `The Package Name: ${newName} is not available.`
+        content: `The Package Name: ${newName} is not available.`,
       });
       return;
     }
@@ -784,7 +784,7 @@ async function postPackagesVersion(req, res) {
     await common.handleDetailedError(req, res, {
       ok: addVer.ok,
       short: addVer.short,
-      content: "Failed to add the new package version to the database."
+      content: "Failed to add the new package version to the database.",
     });
     return;
   }
