@@ -5,6 +5,7 @@
 
 ## [Unreleased]
 
+* Fixed an issue that would stop the `rename` query parameter from being handled correctly.
 * Deprecate `/api/packages/:packageName/versions/:versionName/events/uninstall`. This endpoint no longer has any effect, but will still return a successful query to avoid user impact.
 * Refactored the existing testing platform
 * Refactored all interactions with GitHub, Git, and provided the base system to support multiple VCS services in the future.
