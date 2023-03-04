@@ -85,7 +85,6 @@ async function handleDetailedError(req, res, obj) {
       break;
     case "No Repo Access":
     case "Bad Auth":
-    case "No Repo Access":
       res.status(401).json({
         message: "Requires authentication. Please update your token if you haven't done so recently.",
         details: obj.content
