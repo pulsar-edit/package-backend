@@ -128,12 +128,10 @@ describe("Verify Tag Query Returns", () => {
 });
 
 const renameCases = [
-  [{ query: { rename: "true" } }, true],
-  [{ query: { rename: "false" } }, false],
+  [{ query: { rename: "new-package-name" } }, true],
+  [{ query: { rename: "" } }, false],
   [{ query: {} }, false],
-  [{ query: { rename: "Schrodinger" } }, false],
-  [{ query: { rename: "TRUE" } }, true],
-  [{ query: { rename: "FALSE" } }, false],
+  [{ query: { rename: "a" } }, true],
 ];
 
 describe("Verify Rename Query Returns", () => {

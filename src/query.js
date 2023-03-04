@@ -170,18 +170,21 @@ function rename(req) {
   const prov = req.query.rename;
 
   if (prov === undefined) {
-    // since this is supposed to be a boolean value, return false as the defaulting behavior
+    // Originally it was believed that this query parameter should be handled as
+    // if it was a text passed boolean. But appears to actually provide the string
+    // of text the package should be renamed too.
     return false;
   }
 
-  switch (prov.toLowerCase()) {
-    case "true":
-      return true;
-    case "false":
-      return false;
-    default:
-      return false;
+  // Due to the backend already being built in such a way that it will rename
+  // a package by finding the rename value on it's own, we will still return a
+  // boolean, but TODO:: this should be fixed in the future.
+
+  if (typeof prov === "string" && prov.length > 0) {
+    return true;
   }
+
+  return false;
 }
 
 /**
