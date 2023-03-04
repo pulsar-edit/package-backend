@@ -889,7 +889,8 @@ async function getPackagesVersionTarball(req, res) {
   // the download to take place from their servers.
 
   // But right before, lets do a couple simple checks to make sure we are sending to a legit site.
-  const tarballURL = pack.content.meta?.tarball_url ?? pack.content.meta?.dist?.tarball ?? "";
+  const tarballURL =
+    pack.content.meta?.tarball_url ?? pack.content.meta?.dist?.tarball ?? "";
   let hostname = "";
 
   // Try to extract the hostname
