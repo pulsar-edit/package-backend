@@ -5,6 +5,7 @@
 
 ## [Unreleased]
 
+* Improved errors returned in some situations to increase transparancy on the server's logic.
 * Fixed an issue that would stop the `rename` query parameter from being handled correctly.
 * Fixed issue that could cause package download URL's to not resolve properly.
 * Improved search handling to support spaces among other stop words to still resolve the expected search query.
