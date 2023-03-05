@@ -548,7 +548,6 @@ describe("GET /api/packages/:packageName/versions/:versionName", () => {
 });
 
 describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
-  test.todo("Finish these tests");
   test("Returns 401 with No Auth", async () => {
     const res = await request(app).delete(
       "/api/packages/langauge-css/versions/0.45.7"

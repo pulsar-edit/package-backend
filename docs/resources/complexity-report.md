@@ -1,10 +1,10 @@
 # Complexity report, 3/4/2023
 
-* Mean per-function logical LOC: 13.6
+* Mean per-function logical LOC: 13.4
 * Mean per-function parameter count: 0.3125
 * Mean per-function cyclomatic complexity: 1.425
-* Mean per-function Halstead effort: 3575.6551679213917
-* Mean per-module maintainability index: 69.65324725251114
+* Mean per-function Halstead effort: 3455.111145850824
+* Mean per-module maintainability index: 69.68491727149676
 * First-order density: 0.5%
 * Change cost: 5.5%
 * Core size: 100%
@@ -161,12 +161,12 @@
 
 ## /home/runner/work/package-backend/package-backend/test/query.unit.test.js
 
-* Physical LOC: 143
-* Logical LOC: 78
+* Physical LOC: 141
+* Logical LOC: 74
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 1.282051282051282%
-* Maintainability index: 37.68731830500316
+* Cyclomatic complexity density: 1.3513513513513513%
+* Maintainability index: 38.32071868471528
 * Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/test/vcs.unit.test.js

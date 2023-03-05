@@ -380,13 +380,11 @@ async function postPackagesVersion(req, res) {
         3,
         `postPackages Blocked by banned package name: ${newName}`
       );
-      // is banned
-      await common.handleError(req, res, {
+      await common.handleDetailedError(req, res, {
         ok: false,
         short: "Server Error",
-        content: "Package Name is Banned",
+        content: "This Package Name is Banned on the Pulsar Registry.",
       });
-      // TODO ^^^ Replace with specific error once more are supported.
       return;
     }
 
@@ -397,13 +395,11 @@ async function postPackagesVersion(req, res) {
         3,
         `postPackages Blocked by new name ${newName} not available`
       );
-      // is banned
-      await common.handleError(req, res, {
+      await common.handleDetailedError(req, res, {
         ok: false,
         short: "Server Error",
-        content: "Package Name is Not Available",
+        content: `The Package Name: ${newName} is not available.`,
       });
-      // TODO ^^^ Replace with specific error once more are supported.
       return;
     }
   }
@@ -416,8 +412,13 @@ async function postPackagesVersion(req, res) {
   );
 
   if (!addVer.ok) {
-    logger.generic(6, "Failed to add the new package version to the db");
-    await common.handleError(req, res, addVer);
+    // TODO: Use hardcoded message until we can verify messages from the db are safe
+    // to pass directly to end users.
+    await common.handleDetailedError(req, res, {
+      ok: addVer.ok,
+      short: addVer.short,
+      content: "Failed to add the new package version to the database.",
+    });
     return;
   }
 
