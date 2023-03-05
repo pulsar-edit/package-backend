@@ -74,11 +74,20 @@ function.</p>
 So these can be called as an async function without more complex functions, reducing
 verbosity, and duplication within the codebase.</p>
 </dd>
+<dt><a href="#module_delete_package_handler">delete_package_handler</a></dt>
+<dd><p>Endpoint Handlers for every DELETE Request that relates to packages themselves</p>
+</dd>
+<dt><a href="#module_get_package_handler">get_package_handler</a></dt>
+<dd><p>Endpoint Handlers for every GET Request that relates to packages themselves</p>
+</dd>
 <dt><a href="#module_oauth_handler">oauth_handler</a></dt>
 <dd><p>Endpoint Handlers for Authentication URLs</p>
 </dd>
 <dt><a href="#module_package_handler">package_handler</a></dt>
-<dd><p>Endpoint Handlers in all relating to the packages themselves.</p>
+<dd><p>Exports individual files handling endpoints relating to Packages</p>
+</dd>
+<dt><a href="#module_post_package_handler">post_package_handler</a></dt>
+<dd><p>Endpoint Handlers for every POST Request that relates to packages themselves</p>
 </dd>
 <dt><a href="#module_star_handler">star_handler</a></dt>
 <dd><p>Handler for any endpoints whose slug after <code>/api/</code> is <code>star</code>.</p>
@@ -1892,6 +1901,241 @@ Returns the MissingAuth message to the user.
 | req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
 | res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
 
+<a name="module_delete_package_handler"></a>
+
+## delete\_package\_handler
+Endpoint Handlers for every DELETE Request that relates to packages themselves
+
+
+* [delete_package_handler](#module_delete_package_handler)
+    * [~deletePackagesName(req, res)](#module_delete_package_handler..deletePackagesName)
+    * [~deletePackageStar(req, res)](#module_delete_package_handler..deletePackageStar)
+    * [~deletePackageVersion(req, res)](#module_delete_package_handler..deletePackageVersion)
+
+<a name="module_delete_package_handler..deletePackagesName"></a>
+
+### delete_package_handler~deletePackagesName(req, res)
+Allows the user to delete a repo they have ownership of.
+
+**Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | DELETE |
+| <code>http\_endpoint</code> | /api/packages/:packageName |
+
+<a name="module_delete_package_handler..deletePackageStar"></a>
+
+### delete_package_handler~deletePackageStar(req, res)
+Used to remove a star from a specific package for the authenticated usesr.
+
+**Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | DELETE |
+| <code>http\_endpoint</code> | /api/packages/:packageName/star |
+
+<a name="module_delete_package_handler..deletePackageVersion"></a>
+
+### delete_package_handler~deletePackageVersion(req, res)
+Allows a user to delete a specific version of their package.
+
+**Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | DELETE |
+| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName |
+
+<a name="module_get_package_handler"></a>
+
+## get\_package\_handler
+Endpoint Handlers for every GET Request that relates to packages themselves
+
+
+* [get_package_handler](#module_get_package_handler)
+    * [~getPackages(req, res)](#module_get_package_handler..getPackages)
+    * [~getPackagesFeatured(req, res)](#module_get_package_handler..getPackagesFeatured)
+    * [~getPackagesSearch(req, res)](#module_get_package_handler..getPackagesSearch)
+    * [~getPackagesDetails(req, res)](#module_get_package_handler..getPackagesDetails)
+    * [~getPackagesStargazers(req, res)](#module_get_package_handler..getPackagesStargazers)
+    * [~getPackagesVersion(req, res)](#module_get_package_handler..getPackagesVersion)
+    * [~getPackagesVersionTarball(req, res)](#module_get_package_handler..getPackagesVersionTarball)
+
+<a name="module_get_package_handler..getPackages"></a>
+
+### get_package_handler~getPackages(req, res)
+Endpoint to return all packages to the user. Based on any filtering
+theyved applied via query parameters.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages |
+
+<a name="module_get_package_handler..getPackagesFeatured"></a>
+
+### get_package_handler~getPackagesFeatured(req, res)
+Allows the user to retrieve the featured packages, as package object shorts.
+This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
+Additionally for the time being this list is created manually, the same method used
+on Atom.io for now. Although there are plans to have this become automatic later on.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+**See**
+
+- [Source Code](https://github.com/atom/apm/blob/master/src/featured.coffee)
+- [Discussion](https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23)
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages/featured |
+
+<a name="module_get_package_handler..getPackagesSearch"></a>
+
+### get_package_handler~getPackagesSearch(req, res)
+Allows user to search through all packages. Using their specified
+query parameter.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+**Todo**
+
+- [ ] Note: This **has** been migrated to the new DB, and is fully functional.
+The TODO here is to eventually move this to use the custom built in LCS search,
+rather than simple search.
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages/search |
+
+<a name="module_get_package_handler..getPackagesDetails"></a>
+
+### get_package_handler~getPackagesDetails(req, res)
+Allows the user to request a single package object full, depending
+on the package included in the path parameter.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages/:packageName |
+
+<a name="module_get_package_handler..getPackagesStargazers"></a>
+
+### get_package_handler~getPackagesStargazers(req, res)
+Endpoint returns the array of `star_gazers` from a specified package.
+Taking only the package wanted, and returning it directly.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages/:packageName/stargazers |
+
+<a name="module_get_package_handler..getPackagesVersion"></a>
+
+### get_package_handler~getPackagesVersion(req, res)
+Used to retrieve a specific version from a package.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName |
+
+<a name="module_get_package_handler..getPackagesVersionTarball"></a>
+
+### get_package_handler~getPackagesVersionTarball(req, res)
+Allows the user to get the tarball for a specific package version.
+Which should initiate a download of said tarball on their end.
+
+**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+
+**Properties**
+
+| Type | Description |
+| --- | --- |
+| <code>http\_method</code> | GET |
+| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName/tarball |
+
 <a name="module_oauth_handler"></a>
 
 ## oauth\_handler
@@ -1966,54 +2210,28 @@ Endpoint intended to Allow users to sign up with a Pat Token.
 <a name="module_package_handler"></a>
 
 ## package\_handler
-Endpoint Handlers in all relating to the packages themselves.
+Exports individual files handling endpoints relating to Packages
 
-**Implements**: <code>common\_handler</code>, <code>users</code>, <code>data</code>, <code>query</code>, <code>git</code>, <code>logger</code>, <code>error</code>, <code>config</code>  
+<a name="module_post_package_handler"></a>
 
-* [package_handler](#module_package_handler)
-    * [~getPackages(req, res)](#module_package_handler..getPackages)
-    * [~postPackages(req, res)](#module_package_handler..postPackages) ⇒ <code>string</code>
-    * [~getPackagesFeatured(req, res)](#module_package_handler..getPackagesFeatured)
-    * [~getPackagesSearch(req, res)](#module_package_handler..getPackagesSearch)
-    * [~getPackagesDetails(req, res)](#module_package_handler..getPackagesDetails)
-    * [~deletePackagesName(req, res)](#module_package_handler..deletePackagesName)
-    * [~postPackagesStar(req, res)](#module_package_handler..postPackagesStar)
-    * [~deletePackageStar(req, res)](#module_package_handler..deletePackageStar)
-    * [~getPackagesStargazers(req, res)](#module_package_handler..getPackagesStargazers)
-    * [~postPackagesVersion(req, res)](#module_package_handler..postPackagesVersion)
-    * [~getPackagesVersion(req, res)](#module_package_handler..getPackagesVersion)
-    * [~getPackagesVersionTarball(req, res)](#module_package_handler..getPackagesVersionTarball)
-    * [~deletePackageVersion(req, res)](#module_package_handler..deletePackageVersion)
-    * ~~[~postPackagesEventUninstall(req, res)](#module_package_handler..postPackagesEventUninstall)~~
+## post\_package\_handler
+Endpoint Handlers for every POST Request that relates to packages themselves
 
-<a name="module_package_handler..getPackages"></a>
 
-### package_handler~getPackages(req, res)
-Endpoint to return all packages to the user. Based on any filtering
-theyved applied via query parameters.
+* [post_package_handler](#module_post_package_handler)
+    * [~postPackages(req, res)](#module_post_package_handler..postPackages) ⇒ <code>string</code>
+    * [~postPackagesStar(req, res)](#module_post_package_handler..postPackagesStar)
+    * [~postPackagesVersion(req, res)](#module_post_package_handler..postPackagesVersion)
+    * ~~[~postPackagesEventUninstall(req, res)](#module_post_package_handler..postPackagesEventUninstall)~~
 
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
+<a name="module_post_package_handler..postPackages"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages |
-
-<a name="module_package_handler..postPackages"></a>
-
-### package_handler~postPackages(req, res) ⇒ <code>string</code>
+### post_package_handler~postPackages(req, res) ⇒ <code>string</code>
 This endpoint is used to publish a new package to the backend server.
 Taking the repo, and your authentication for it, determines if it can be published,
 then goes about doing so.
 
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
+**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
 **Returns**: <code>string</code> - JSON object of new data pushed into the database, but stripped of
 sensitive informations like primary and foreign keys.  
 
@@ -2029,104 +2247,12 @@ sensitive informations like primary and foreign keys.
 | <code>http\_method</code> | POST |
 | <code>http\_endpoint</code> | /api/packages |
 
-<a name="module_package_handler..getPackagesFeatured"></a>
+<a name="module_post_package_handler..postPackagesStar"></a>
 
-### package_handler~getPackagesFeatured(req, res)
-Allows the user to retrieve the featured packages, as package object shorts.
-This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
-Additionally for the time being this list is created manually, the same method used
-on Atom.io for now. Although there are plans to have this become automatic later on.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-**See**
-
-- [Source Code](https://github.com/atom/apm/blob/master/src/featured.coffee)
-- [Discussion](https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23)
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/featured |
-
-<a name="module_package_handler..getPackagesSearch"></a>
-
-### package_handler~getPackagesSearch(req, res)
-Allows user to search through all packages. Using their specified
-query parameter.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-**Todo**
-
-- [ ] Note: This **has** been migrated to the new DB, and is fully functional.
-The TODO here is to eventually move this to use the custom built in LCS search,
-rather than simple search.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/search |
-
-<a name="module_package_handler..getPackagesDetails"></a>
-
-### package_handler~getPackagesDetails(req, res)
-Allows the user to request a single package object full, depending
-on the package included in the path parameter.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName |
-
-<a name="module_package_handler..deletePackagesName"></a>
-
-### package_handler~deletePackagesName(req, res)
-Allows the user to delete a repo they have ownership of.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | DELETE |
-| <code>http\_endpoint</code> | /api/packages/:packageName |
-
-<a name="module_package_handler..postPackagesStar"></a>
-
-### package_handler~postPackagesStar(req, res)
+### post_package_handler~postPackagesStar(req, res)
 Used to submit a new star to a package from the authenticated user.
 
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
+**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -2140,52 +2266,13 @@ Used to submit a new star to a package from the authenticated user.
 | <code>http\_method</code> | POST |
 | <code>http\_endpoint</code> | /api/packages/:packageName/star |
 
-<a name="module_package_handler..deletePackageStar"></a>
+<a name="module_post_package_handler..postPackagesVersion"></a>
 
-### package_handler~deletePackageStar(req, res)
-Used to remove a star from a specific package for the authenticated usesr.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | DELETE |
-| <code>http\_endpoint</code> | /api/packages/:packageName/star |
-
-<a name="module_package_handler..getPackagesStargazers"></a>
-
-### package_handler~getPackagesStargazers(req, res)
-Endpoint returns the array of `star_gazers` from a specified package.
-Taking only the package wanted, and returning it directly.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName/stargazers |
-
-<a name="module_package_handler..postPackagesVersion"></a>
-
-### package_handler~postPackagesVersion(req, res)
+### post_package_handler~postPackagesVersion(req, res)
 Allows a new version of a package to be published. But also can allow
 a user to rename their application during this process.
 
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
+**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -2199,67 +2286,9 @@ a user to rename their application during this process.
 | <code>http\_method</code> | POST |
 | <code>http\_endpoint</code> | /api/packages/:packageName/versions |
 
-<a name="module_package_handler..getPackagesVersion"></a>
+<a name="module_post_package_handler..postPackagesEventUninstall"></a>
 
-### package_handler~getPackagesVersion(req, res)
-Used to retrieve a specific version from a package.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName |
-
-<a name="module_package_handler..getPackagesVersionTarball"></a>
-
-### package_handler~getPackagesVersionTarball(req, res)
-Allows the user to get the tarball for a specific package version.
-Which should initiate a download of said tarball on their end.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName/tarball |
-
-<a name="module_package_handler..deletePackageVersion"></a>
-
-### package_handler~deletePackageVersion(req, res)
-Allows a user to delete a specific version of their package.
-
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | DELETE |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName |
-
-<a name="module_package_handler..postPackagesEventUninstall"></a>
-
-### ~~package_handler~postPackagesEventUninstall(req, res)~~
+### ~~post_package_handler~postPackagesEventUninstall(req, res)~~
 ***Deprecated***
 
 Used when a package is uninstalled, decreases the download count by 1.
@@ -2269,7 +2298,7 @@ during a successful event. This endpoint has now been deprecated, as it serves
 no useful features, and on further examination may have been intended as a way
 to collect data on users, which is not something we implement.
 
-**Kind**: inner method of [<code>package\_handler</code>](#module_package_handler)  
+**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
 **See**: [https://github.com/atom/apm/blob/master/src/uninstall.coffee](https://github.com/atom/apm/blob/master/src/uninstall.coffee)  
 
 | Param | Type | Description |
