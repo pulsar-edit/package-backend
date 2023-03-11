@@ -4,6 +4,17 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - March 10
+
+The community package `simplified-russian-menu` was reported by a user of Pulsar as being uninstallable.
+
+The repository it was linked to had been deleted or made private on GitHub.
+As well as using Web Archive it was discovered the user had changed their account name, and had removed the package entirely from their account.
+
+After confirming this behavior wasn't because of a technical error the package was removed from the Pulsar Package Registry.
+
+- `LexBacker/simplified-russian-menu:cffefb9f-e11a-4447-9f79-ce93a62f35c9`
+
 ## 2022 - December 14
 
 ### Blocked Access to a specific Set of IP Addresses
@@ -14,7 +25,7 @@ This user had requested the two endpoints over 6,000 times over 4 days. This beh
 
 Considering this their access was completely cut off from the backend, to prevent this abuse of our systems.
 
-### 2022 - December 9
+## 2022 - December 9
 
 Modified some packages data on the backend database, due to incompatibility with the new database constraints.
 
@@ -23,4 +34,4 @@ Modified some packages data on the backend database, due to incompatibility with
 - `Cronos87/atom-laravel` - Removed `0.1`
 - `ReeSilva/atom-homestead` - Removed `v0.10.0`
 - `kraih/atom-perltidy` - Removed `0.1`, `0.2`, `0.3`
-- `swdotcom/swdc-atom` - Removed Package 
+- `swdotcom/swdc-atom` - Removed Package
