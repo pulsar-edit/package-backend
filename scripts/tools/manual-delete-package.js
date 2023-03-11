@@ -13,14 +13,8 @@ Notes:
 
 const fs = require("fs");
 const postgres = require("postgres");
-const {
-  DB_HOST,
-  DB_USER,
-  DB_PASS,
-  DB_DB,
-  DB_PORT,
-  DB_SSL_CERT
-} = require("../../src/config.js").getConfig();
+const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
+  require("../../src/config.js").getConfig();
 
 let sqlStorage;
 
@@ -41,7 +35,6 @@ async function main(params) {
   }
 
   try {
-
     // Setup our SQL Connection
     sqlStorage = postgres({
       host: DB_HOST,
@@ -79,11 +72,12 @@ async function main(params) {
       process.exit(1);
     }
 
-    console.log(`Removed ${name}:${pointer} successfully and permenantly from the DB`);
+    console.log(
+      `Removed ${name}:${pointer} successfully and permenantly from the DB`
+    );
     await sqlEnd();
     process.exit(1);
-
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     console.log("Something has gone wrong!");
 
@@ -104,7 +98,6 @@ async function sqlEnd() {
 async function removePackage(pointer, name) {
   return await sqlStorage
     .begin(async (sqlTrans) => {
-
       // Remove versions of the package
       const commandVers = await sqlTrans`
         DELETE FROM versions
@@ -142,14 +135,12 @@ async function removePackage(pointer, name) {
       // Now we have successfully deleted the package
       return {
         ok: true,
-        content: ""
+        content: "",
       };
-
     })
     .catch((err) => {
       return { ok: false, content: err };
     });
 }
-
 
 main(process.argv.slice(2));
