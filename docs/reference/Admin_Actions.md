@@ -4,6 +4,15 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - March 17
+
+Removed some community packages during our effort to ensure we only keep packages with Licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thourough attempt to contact the publishers we had resolved to remove the packages.
+
+* [`mstest2`](https://github.com/mstest1/mstest2)
+* [`latex-online`](https://github.com/Spijkervet/atom-latex-online)
+* [`language-wex5`](https://github.com/ranforce/language-wex5)
+* [`hotdog-tabs`](https://github.com/kmh11/hotdog-tabs)
+
 ## 2023 - March 10
 
 The community package `simplified-russian-menu` was reported by a user of Pulsar as being uninstallable.

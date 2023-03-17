@@ -17,7 +17,9 @@ Notes:
 
 */
 
-const MULTIPLE_DELETIONS = [];
+const MULTIPLE_DELETIONS = [
+
+];
 
 const fs = require("fs");
 const postgres = require("postgres");
@@ -63,8 +65,8 @@ async function init(params) {
       process.exit(1);
     }
 
-    for (let i = 0; i < MULTIPLE_DELETIONS.length; i++) {
-      await main(MULTIPLE_DELETIONS[i]);
+    for (const deletion of MULTIPLE_DELETIONS) {
+      await main(deletion);
     }
 
     await sqlEnd();
@@ -74,15 +76,8 @@ async function init(params) {
   process.exit(1);
 }
 
-async function main(params) {
-  let name;
+async function main(name) {
   let pointer;
-
-  for (const param of params) {
-    if (param.startsWith("name=")) {
-      name = param.replace("name=", "");
-    }
-  }
 
   if (typeof name !== "string") {
     console.log(`Unexpected parameter: ${name} of ${typeof name}!`);
