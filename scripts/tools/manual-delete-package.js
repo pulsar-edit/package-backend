@@ -31,7 +31,7 @@ async function init(params) {
 
   let config = {
     single: false,
-    multiple: false
+    multiple: false,
   };
 
   for (const param of params) {
@@ -132,7 +132,6 @@ async function main(params) {
       `Removed ${name}:${pointer} successfully and permenantly from the DB`
     );
     return;
-
   } catch (err) {
     console.log(err);
     console.log("Something has gone wrong!");
