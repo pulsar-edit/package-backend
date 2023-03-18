@@ -30,6 +30,7 @@ const addVersion = (v) => {
     version: v,
     description: "A package.json description",
     license: "MIT",
+    engines: { atom: "*" }
   };
 };
 
