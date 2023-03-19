@@ -166,6 +166,7 @@ async function init(params) {
     for (const res of results) {
       console.log(res);
     }
+    console.log(`A total of ${results.length} packages have issues.`);
 
     if (config.saveJSON) {
       fs.writeFileSync("./health-check-output.json", JSON.stringify(results, null, 2));
