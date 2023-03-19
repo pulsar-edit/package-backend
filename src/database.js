@@ -292,15 +292,15 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
       // The only requirement is that the provided semver is not already present
       // in the database for the targeted package.
 
-      const license = packJSON.license ?? defaultLicense;
-      const engine = packJSON.engines ?? defaultEngine;
+      const license = packJSON.metadata.license ?? defaultLicense;
+      const engine = packJSON.metadata.engines ?? defaultEngine;
 
       let addVer = {};
       try {
         // TODO: status column deprecated; to be removed
         addVer = await sqlTrans`
           INSERT INTO versions (package, status, semver, license, engine, meta)
-          VALUES(${pointer}, 'published', ${packJSON.version}, ${license}, ${engine}, ${packJSON})
+          VALUES(${pointer}, 'published', ${packJSON.metadata.version}, ${license}, ${engine}, ${packJSON.metadata})
           RETURNING semver, status;
         `;
       } catch (e) {
@@ -312,9 +312,27 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
         throw `Unable to create a new version for ${packName}`;
       }
 
+      // Now to update the data field for the package, to update the readme and
+      // latest version
+      let addPackMeta = {};
+      try {
+        addPackMeta = await sqlTrans`
+          UPDATE packages
+          SET data = ${packJSON}
+          WHERE pointer = ${pointer}
+          RETURNING name;
+        `;
+      } catch(e) {
+        throw `Unable to update the package's metadata for ${packName}`;
+      }
+
+      if (!addPackMeta?.count) {
+        throw `Failed to update the package's metadata for ${packName}`;
+      }
+
       return {
         ok: true,
-        content: `Successfully added new version: ${packName}@${packJSON.version}`,
+        content: `Successfully added new version: ${packName}@${packJSON.metadata.version}`,
       };
     })
     .catch((err) => {
