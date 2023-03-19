@@ -25,10 +25,13 @@ Arguments:
                       - none : Outputs nothing.
   * packageMetadata : Runs this health check.
   * versionTagExists : Runs this health check.
+  * latestVersionIsAssigned: Runs this health check.
 
 Health Checks:
   * versionTagExists: Checks that the tarball of a packages version is available on GitHub.
   * packageMetadata: Checks that the `data` field of a package is valid.
+  * latestVersionIsAssigned: Checks that the latest version showing on the package's `data`
+                              field is the latest on the DB.
 
 Notes:
   - This script does rely on `./src/config.js` to collect db connection configuration
@@ -54,6 +57,7 @@ let config = {
   githubContactBuffer: 10000, // The milliseconds to wait before contacting GitHub again.
   packageMetadata: false,
   versionTagExists: false,
+  latestVersionIsAssigned: false,
 };
 
 async function init(params) {
@@ -85,6 +89,9 @@ async function init(params) {
     }
     if (param === "versionTagExists") {
       config.versionTagExists = true;
+    }
+    if (param === "latestVersionIsAssigned") {
+      config.latestVersionIsAssigned = true;
     }
   }
 
@@ -126,6 +133,14 @@ async function init(params) {
       }
     }
 
+    if (config.latestVersionIsAssigned) {
+      let tmp = await latestVersionIsAssigned(pointer);
+
+      if (typeof tmp === "string") {
+        results.push(tmp);
+      }
+    }
+
   }
 
   // Now to log the results
@@ -142,6 +157,7 @@ async function init(params) {
     console.log("Everything here is healthy!");
   }
 
+  await sqlEnd();
   process.exit(0);
 }
 
@@ -224,6 +240,21 @@ async function getVersions(pointer) {
 
   if (command.count === 0) {
     return { ok: false, content: `Failed to get version data of ${pointer}` };
+  }
+
+  return { ok: true, content: command };
+}
+
+async function getLatestVersion(pointer) {
+  sqlStorage ??= setupSQL();
+
+  const command = await sqlStorage`
+    SELECT * FROM versions
+    WHERE package = ${pointer} AND status = 'latest'
+  `;
+
+  if (command.count === 0) {
+    return { ok: false, content: `Failed to get latest version data of ${pointer}` };
   }
 
   return { ok: true, content: command };
@@ -332,6 +363,24 @@ async function versionTagExists(pointer) {
     return false;
   }
 
+}
+
+async function latestVersionIsAssigned(pointer) {
+  let package = await getPackageData(pointer.pointer);
+  let version = await getLatestVersion(pointer.pointer);
+
+  if (!package.ok) {
+    return package.content;
+  }
+  if (!version.ok) {
+    return version.content;
+  }
+
+  if (package.content?.metadata?.version !== version.content?.semver) {
+    return `The package ${pointer.name}::${pointer.pointer} has ${package.content?.metadata?.version} as the latest when it's really ${version.content?.semver}!`;
+  }
+
+  return false;
 }
 
 init(process.argv.slice(2));
