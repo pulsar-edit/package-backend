@@ -17,7 +17,9 @@ Notes:
 
 */
 
-const MULTIPLE_DELETIONS = [];
+const MULTIPLE_DELETIONS = [
+  
+];
 
 const fs = require("fs");
 const postgres = require("postgres");
