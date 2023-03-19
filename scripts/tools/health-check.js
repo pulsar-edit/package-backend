@@ -22,7 +22,7 @@ Arguments:
   * loading=<value> : Sets the loading animation to use. When verbose is set, a loading
                       appear instead. Valid values:
                       - dots : Displays a dot for each package being checked.
-                      - count: Displays a count of the packages being checked.
+                      - count: Displays a count of the packages being checked. The default
                       - none : Outputs nothing.
   * packageMetadata : Runs this health check.
   * versionTagExists : Runs this health check.
@@ -54,7 +54,7 @@ let config = {
   verbose: false,
   useLimit: false,
   limit: 0,
-  loading: 'dots',
+  loading: 'count',
   githubContactBuffer: 10000, // The milliseconds to wait before contacting GitHub again.
   packageMetadata: false,
   versionTagExists: false,
