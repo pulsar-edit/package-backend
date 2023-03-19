@@ -22,7 +22,8 @@
     "test_search": "node ./scripts/tools/search.js",
     "migrations": "pg-migrations apply --directory ./scripts/migrations",
     "ignore": "compactignore",
-    "tool:delete": "node ./scripts/tools/manual-delete-package.js"
+    "tool:delete": "node ./scripts/tools/manual-delete-package.js",
+    "tool:health": "node ./scripts/tools/health-check.js"
   },
   "author": "confused-Techie",
   "license": "MIT",
