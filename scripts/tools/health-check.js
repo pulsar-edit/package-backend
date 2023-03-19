@@ -23,7 +23,12 @@ Arguments:
                       appear instead. Valid values:
                       - dots : Displays a dot for each package being checked.
                       - none : Outputs nothing.
-  * packageMetadata : Runs the checks to validate the package's `data` field.
+  * packageMetadata : Runs this health check.
+  * versionTagExists : Runs this health check.
+
+Health Checks:
+  * versionTagExists: Checks that the tarball of a packages version is available on GitHub.
+  * packageMetadata: Checks that the `data` field of a package is valid.
 
 Notes:
   - This script does rely on `./src/config.js` to collect db connection configuration
@@ -31,9 +36,13 @@ Notes:
 
 const fs = require("fs");
 const postgres = require("postgres");
+const superagent = require("superagent");
 const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../../src/config.js").getConfig();
 
 let sqlStorage;
+
+let lastGithubContact = 0; // Measured in epoch date
+let waitingOnGithubBuffer = false;
 
 let config = {
   read: true,
@@ -42,7 +51,9 @@ let config = {
   useLimit: false,
   limit: 0,
   loading: 'dots',
+  githubContactBuffer: 10000, // The milliseconds to wait before contacting GitHub again.
   packageMetadata: false,
+  versionTagExists: false,
 };
 
 async function init(params) {
@@ -72,6 +83,9 @@ async function init(params) {
     if (param === "packageMetadata") {
       config.packageMetadata = true;
     }
+    if (param === "versionTagExists") {
+      config.versionTagExists = true;
+    }
   }
 
 
@@ -85,17 +99,27 @@ async function init(params) {
 
   for (const pointer of allPointers) {
     // Provides the function the { name: '', pointer: '' }
-    if (config.packageMetadata) {
-      if (config.verbose) {
-        console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
-      } else {
-        // Since this can be a long running task, we will output a loading bar.
-        if (config.loading === "dots") {
-          process.stdout.write(".");
-        }
+    if (config.verbose) {
+      console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
+    } else {
+      // Since this can be a long running task, we will output a loading bar.
+      if (config.loading === "dots") {
+        process.stdout.write(".");
       }
+    }
+
+    if (config.packageMetadata) {
 
       let tmp = await validatePackageMetadata(pointer);
+
+      if (typeof tmp === "string") {
+        results.push(tmp);
+      }
+    }
+
+    if (config.versionTagExists) {
+
+      let tmp = await versionTagExists(pointer);
 
       if (typeof tmp === "string") {
         results.push(tmp);
@@ -186,6 +210,73 @@ async function getPackageData(pointer) {
   return { ok: true, content: command[0] };
 }
 
+async function getVersions(pointer) {
+  sqlStorage ??= setupSQL();
+
+  const command = await sqlStorage`
+    SELECT * from versions
+    WHERE package = ${pointer}
+  `;
+
+  if (command.count === 0) {
+    return { ok: false, content: `Failed to get version data of ${pointer}` };
+  }
+
+  return { ok: true, content: command[0] };
+}
+
+async function contactGitHub(url) {
+  const acceptableStatusCodes = [ 200, 404 ];
+  return new Promise(async (resolve, reject) => {
+    const now = Date.now();
+
+    if (config.verbose) {
+      console.log(`Now: ${now} - Last Contact: ${lastGithubContact} - Buffer: ${config.githubContactBuffer}`);
+      console.log(`Can contact: ${now - lastGithubContact > config.githubContactBuffer}`);
+    }
+
+    if (now - lastGithubContact > config.githubContactBuffer) {
+      // lets contact github
+      lastGithubContact = now;
+      waitingOnGithubBuffer = false;
+
+      try {
+        const res = await superagent
+          .get(url)
+          .set({
+            "User-Agent": "Pulsar-Edit Health Check Bot"
+          })
+          .ok((res) => acceptableStatusCodes.includes(res.status));
+
+        resolve(res);
+
+      } catch(err) {
+        reject(err);
+      }
+
+    } else {
+      // we have to wait our full timeout
+      setTimeout(() => {
+        resolve(contactGitHub(url));
+      }, config.githubContactBuffer);
+      waitingOnGithubBuffer = true;
+      twirlTimer(waitingOnGithubBuffer);
+    }
+  });
+}
+
+function twirlTimer(control) {
+  console.log("\n");
+  const icon = [ "\\", "|", "/", "-" ];
+  let x = 0;
+  setInterval(() => {
+    if (control) {
+      process.stdout.write("\r" + icon[x++] + " Waiting on GitHub API Buffer");
+      x &= 3;
+    }
+  }, 250);
+}
+
 async function validatePackageMetadata(pointer) {
   let packData = await getPackageData(pointer.pointer);
 
@@ -208,6 +299,32 @@ async function validatePackageMetadata(pointer) {
     return `The package ${pointer.name}::${pointer.pointer} has invalid Package Metadata!`;
   }
 
+}
+
+async function versionTagExists(pointer) {
+  let versions = await getVersions(pointer.pointer);
+
+  if (!versions.ok) {
+    return versions.content;
+  }
+
+  if (typeof versions.content?.meta?.tarball_url !== "string") {
+    return `The package ${pointer.name}::${pointer.pointer}@${versions.content.semver} Has no valid tarball_url!`;
+  }
+
+  let gitData = await contactGitHub(versions.content.meta.tarball_url);
+
+  if (gitData.status === 404) {
+    return `The package ${pointer.name}::${pointer.pointer}@${versions.content.semver} does not exist on GitHub!`;
+  }
+
+  if (gitData.status !== 200) {
+    console.log(gitData);
+    console.log(`The above applies to the package ${pointer.name}::${pointer.pointer}@${versions.content.semver}`);
+    return `Got ${gitData.status} from GitHub on package ${pointer.name}::${pointer.pointer}@${versions.content.semver}`;
+  }
+
+  return false;
 }
 
 init(process.argv.slice(2));
