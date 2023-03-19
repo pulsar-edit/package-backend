@@ -115,6 +115,15 @@ async function init(params) {
       }
     }
 
+    if (typeof pointer.name !== "string") {
+      results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
+      continue;
+    }
+    if (typeof pointer.pointer !== "string") {
+      results.push(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
+      continue;
+    }
+
     if (config.packageMetadata) {
 
       let tmp = await validatePackageMetadata(pointer);
