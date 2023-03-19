@@ -12,13 +12,12 @@ or you can provide a single package when calling the script via the CLI.
 
 */
 
-const MULTIPLE_PACKAGES = [
-
-];
+const MULTIPLE_PACKAGES = [];
 
 const fs = require("fs");
 const postgres = require("postgres");
-const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../../src/config.js").getConfig();
+const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
+  require("../../src/config.js").getConfig();
 
 let sqlStorage;
 
@@ -114,8 +113,7 @@ async function main(name) {
 
     console.log(`${name}::${pointer} - ${license.content}`);
     return;
-
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     console.log("Something has gone wrong!");
     await sqlEnd();
@@ -138,7 +136,10 @@ async function getLicense(pointer, name) {
   `;
 
   if (command.count === 0) {
-    return { ok: false, content: `Failed to get license of ${name}::${pointer}` };
+    return {
+      ok: false,
+      content: `Failed to get license of ${name}::${pointer}`,
+    };
   }
 
   return { ok: true, content: command[0].license };
