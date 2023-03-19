@@ -1,4 +1,4 @@
-# Complexity report, 3/17/2023
+# Complexity report, 3/19/2023
 
 * Mean per-function logical LOC: 13.619047619047619
 * Mean per-function parameter count: 0.2976190476190476
@@ -341,7 +341,7 @@
 
 ## /home/runner/work/package-backend/package-backend/test/fixtures/lifetime/package-a.js
 
-* Physical LOC: 52
+* Physical LOC: 53
 * Logical LOC: 25
 * Mean parameter count: 0
 * Cyclomatic complexity: 1

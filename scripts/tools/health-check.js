@@ -41,7 +41,8 @@ Notes:
 const fs = require("fs");
 const postgres = require("postgres");
 const superagent = require("superagent");
-const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../../src/config.js").getConfig();
+const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
+  require("../../src/config.js").getConfig();
 
 let sqlStorage;
 
@@ -54,7 +55,7 @@ let config = {
   verbose: false,
   useLimit: false,
   limit: 0,
-  loading: 'count',
+  loading: "count",
   githubContactBuffer: 10000, // The milliseconds to wait before contacting GitHub again.
   packageMetadata: false,
   versionTagExists: false,
@@ -62,7 +63,6 @@ let config = {
 };
 
 async function init(params) {
-
   let results = [];
 
   for (const param of params) {
@@ -96,7 +96,6 @@ async function init(params) {
     }
   }
 
-
   if (config.read) {
     console.log("Health Check running in readonly mode.");
   } else {
@@ -118,21 +117,26 @@ async function init(params) {
         process.stdout.write(".");
       }
       if (config.loading === "count") {
-        process.stdout.write(`\r[${pointerCount}/${totalPointers}] Packages Checked`);
+        process.stdout.write(
+          `\r[${pointerCount}/${totalPointers}] Packages Checked`
+        );
       }
     }
 
     if (typeof pointer.name !== "string") {
-      results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
+      results.push(
+        `The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`
+      );
       continue;
     }
     if (typeof pointer.pointer !== "string") {
-      results.push(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
+      results.push(
+        `The package ${pointer.name}::${pointer.pointer} likely has been deleted.`
+      );
       continue;
     }
 
     if (config.packageMetadata) {
-
       let tmp = await validatePackageMetadata(pointer);
 
       if (typeof tmp === "string") {
@@ -141,7 +145,6 @@ async function init(params) {
     }
 
     if (config.versionTagExists) {
-
       let tmp = await versionTagExists(pointer);
 
       if (typeof tmp === "string") {
@@ -169,7 +172,10 @@ async function init(params) {
     console.log(`A total of ${results.length} packages have issues.`);
 
     if (config.saveJSON) {
-      fs.writeFileSync("./health-check-output.json", JSON.stringify(results, null, 2));
+      fs.writeFileSync(
+        "./health-check-output.json",
+        JSON.stringify(results, null, 2)
+      );
     }
   } else {
     console.log("Everything here is healthy!");
@@ -194,8 +200,7 @@ function setupSQL() {
     });
 
     return sqlStorage;
-
-  } catch(err) {
+  } catch (err) {
     console.log(err);
     process.exit(100);
   }
@@ -272,20 +277,27 @@ async function getLatestVersion(pointer) {
   `;
 
   if (command.count === 0) {
-    return { ok: false, content: `Failed to get latest version data of ${pointer}` };
+    return {
+      ok: false,
+      content: `Failed to get latest version data of ${pointer}`,
+    };
   }
 
   return { ok: true, content: command };
 }
 
 async function contactGitHub(url) {
-  const acceptableStatusCodes = [ 200, 404 ];
+  const acceptableStatusCodes = [200, 404];
   return new Promise(async (resolve, reject) => {
     const now = Date.now();
 
     if (config.verbose) {
-      console.log(`Now: ${now} - Last Contact: ${lastGithubContact} - Buffer: ${config.githubContactBuffer}`);
-      console.log(`Can contact: ${now - lastGithubContact > config.githubContactBuffer}`);
+      console.log(
+        `Now: ${now} - Last Contact: ${lastGithubContact} - Buffer: ${config.githubContactBuffer}`
+      );
+      console.log(
+        `Can contact: ${now - lastGithubContact > config.githubContactBuffer}`
+      );
     }
 
     if (now - lastGithubContact > config.githubContactBuffer) {
@@ -297,16 +309,14 @@ async function contactGitHub(url) {
         const res = await superagent
           .get(url)
           .set({
-            "User-Agent": "Pulsar-Edit Health Check Bot"
+            "User-Agent": "Pulsar-Edit Health Check Bot",
           })
           .ok((res) => acceptableStatusCodes.includes(res.status));
 
         resolve(res);
-
-      } catch(err) {
+      } catch (err) {
         reject(err);
       }
-
     } else {
       // we have to wait our full timeout
       setTimeout(() => {
@@ -320,7 +330,7 @@ async function contactGitHub(url) {
 
 function twirlTimer(control) {
   console.log("\n");
-  const icon = [ "\\", "|", "/", "-" ];
+  const icon = ["\\", "|", "/", "-"];
   let x = 0;
   setInterval(() => {
     if (control) {
@@ -351,7 +361,6 @@ async function validatePackageMetadata(pointer) {
   } else {
     return `The package ${pointer.name}::${pointer.pointer} has invalid Package Metadata!`;
   }
-
 }
 
 async function versionTagExists(pointer) {
@@ -374,13 +383,14 @@ async function versionTagExists(pointer) {
 
     if (gitData.status !== 200) {
       console.log(gitData);
-      console.log(`The above applies to the package ${pointer.name}::${pointer.pointer}@${ver.semver}`);
+      console.log(
+        `The above applies to the package ${pointer.name}::${pointer.pointer}@${ver.semver}`
+      );
       return `Got ${gitData.status} from GitHub on package ${pointer.name}::${pointer.pointer}@${ver.semver}`;
     }
 
     return false;
   }
-
 }
 
 async function latestVersionIsAssigned(pointer) {

@@ -322,7 +322,7 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
           WHERE pointer = ${pointer}
           RETURNING name;
         `;
-      } catch(e) {
+      } catch (e) {
         throw `Unable to update the package's metadata for ${packName}`;
       }
 
