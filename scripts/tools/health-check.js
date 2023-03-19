@@ -130,12 +130,16 @@ async function init(params) {
 
   // Now to log the results
   console.log("\n"); // Newline to ensure the loading doesn't appear
-  for (const res of results) {
-    console.log(res);
-  }
+  if (results.length > 0) {
+    for (const res of results) {
+      console.log(res);
+    }
 
-  if (config.saveJSON) {
-    fs.writeFileSync("./health-check-output.json", JSON.stringify(results, null, 2));
+    if (config.saveJSON) {
+      fs.writeFileSync("./health-check-output.json", JSON.stringify(results, null, 2));
+    }
+  } else {
+    console.log("Everything here is healthy!");
   }
 
   process.exit(0);
@@ -222,7 +226,7 @@ async function getVersions(pointer) {
     return { ok: false, content: `Failed to get version data of ${pointer}` };
   }
 
-  return { ok: true, content: command[0] };
+  return { ok: true, content: command };
 }
 
 async function contactGitHub(url) {
@@ -308,23 +312,26 @@ async function versionTagExists(pointer) {
     return versions.content;
   }
 
-  if (typeof versions.content?.meta?.tarball_url !== "string") {
-    return `The package ${pointer.name}::${pointer.pointer}@${versions.content.semver} Has no valid tarball_url!`;
+  for (const ver of versions.content) {
+    if (typeof ver?.meta?.tarball_url !== "string") {
+      return `The package ${pointer.name}::${pointer.pointer}@${ver.semver} Has no valid tarball_url!`;
+    }
+
+    let gitData = await contactGitHub(ver.meta.tarball_url);
+
+    if (gitData.status === 404) {
+      return `The package ${pointer.name}::${pointer.pointer}@${ver.semver} does not exist on GitHub!`;
+    }
+
+    if (gitData.status !== 200) {
+      console.log(gitData);
+      console.log(`The above applies to the package ${pointer.name}::${pointer.pointer}@${ver.semver}`);
+      return `Got ${gitData.status} from GitHub on package ${pointer.name}::${pointer.pointer}@${ver.semver}`;
+    }
+
+    return false;
   }
 
-  let gitData = await contactGitHub(versions.content.meta.tarball_url);
-
-  if (gitData.status === 404) {
-    return `The package ${pointer.name}::${pointer.pointer}@${versions.content.semver} does not exist on GitHub!`;
-  }
-
-  if (gitData.status !== 200) {
-    console.log(gitData);
-    console.log(`The above applies to the package ${pointer.name}::${pointer.pointer}@${versions.content.semver}`);
-    return `Got ${gitData.status} from GitHub on package ${pointer.name}::${pointer.pointer}@${versions.content.semver}`;
-  }
-
-  return false;
 }
 
 init(process.argv.slice(2));
