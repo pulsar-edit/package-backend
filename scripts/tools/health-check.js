@@ -22,6 +22,7 @@ Arguments:
   * loading=<value> : Sets the loading animation to use. When verbose is set, a loading
                       appear instead. Valid values:
                       - dots : Displays a dot for each package being checked.
+                      - count: Displays a count of the packages being checked.
                       - none : Outputs nothing.
   * packageMetadata : Runs this health check.
   * versionTagExists : Runs this health check.
@@ -104,6 +105,9 @@ async function init(params) {
 
   const allPointers = await getPointers();
 
+  const totalPointers = allPointers.length;
+  let pointerCount = 0;
+
   for (const pointer of allPointers) {
     // Provides the function the { name: '', pointer: '' }
     if (config.verbose) {
@@ -112,6 +116,9 @@ async function init(params) {
       // Since this can be a long running task, we will output a loading bar.
       if (config.loading === "dots") {
         process.stdout.write(".");
+      }
+      if (config.loading === "count") {
+        process.stdout.write(`\r[${pointerCount}/${totalPointers}] Packages Checked`);
       }
     }
 
@@ -150,6 +157,7 @@ async function init(params) {
       }
     }
 
+    pointerCount++;
   }
 
   // Now to log the results
