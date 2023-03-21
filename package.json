@@ -65,7 +65,7 @@
     "jest-joi": "^1.1.17",
     "joi": "^17.8.4",
     "jsdoc-to-markdown": "^8.0.0",
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.5",
     "supertest": "^6.3.3"
   }
 }
