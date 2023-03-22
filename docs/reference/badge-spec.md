@@ -28,7 +28,7 @@ Any `badge` object may contain the following properties:
 * `title`: This is a **required** property. Specifying the title of the badge. Such as `Deprecated`.
 * `text`: This is an **optional** property. Specifying further information about this badge. That may be hidden either based on a user setting or by context.
 * `link`: This is an **optional** property. Providing a link for the user to be directed to, that may contain further information about the badge.
-* `type`: This is a **required** property. Instructing what type of badge this is. The type of badge should be used to determine any icons used alongside the badge, as well as any colour or styling the badge will receive when displayed by the client. The valid `type`s currently available are as follows:
+* `type`: This is a **required** property. Instructing what type of badge this is. The type of badge should be used to determine any icons used alongside the badge, as well as any color or styling the badge will receive when displayed by the client. The valid `type`s currently available are as follows:
   - `warn`: This should be used to indicate something that the user **must** be aware of.
   - `info`: This should be used to point out information that is neutral in the user receiving.
   - `success`: Should be used to indicate something good about the badge, that the user would be delighted to know about.
