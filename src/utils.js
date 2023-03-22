@@ -79,7 +79,7 @@ async function constructPackageObjectFull(pack) {
   }
 
   // Apply any custom deliver time badges
-  if (newPack.creation_method === "User Made Package") {
+  if (pack.creation_method === "User Made Package") {
     newPack.badges.push({
       title: "Made for Pulsar!",
       type: "success"
@@ -117,10 +117,10 @@ async function constructPackageObjectShort(pack) {
     }
 
     // Apply any custom deliver time badges
-    if (newPack.creation_method === "User Made Package") {
+    if (pack.creation_method === "User Made Package") {
       newPack.badges.push({ title: "Made for Pulsar!", type: "success" });
     }
-    
+
     return newPack;
   };
 
