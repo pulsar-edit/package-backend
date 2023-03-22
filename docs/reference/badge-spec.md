@@ -1,6 +1,6 @@
 # Pulsar Package's Badges
 
-A badge allows extra information to be communicated about that package. Similar to how NPM may warn of errors after installing a package, or how a user is able to receive badges on their GitHub profile.
+A badge allows extra information to be communicated to a Pulsar user about a package. Similar to how NPM may warn of errors after installing a package, or how a user is able to receive badges on their GitHub profile.
 
 A badge allows the Pulsar admins to communicate certain information about a package quickly to end users everywhere it may appear.
 
