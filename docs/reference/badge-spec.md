@@ -22,6 +22,7 @@ The following schema is required of any `generic` badge type:
 ```
 
 As you can see `badges` is an array of a valid `badge` object.
+A side note, while there is currently no hard limit for the amount of badges a single package may contain, the current recommendation is to try and stay around 5 badges. This may be later on solidified into a proper part of the schema but currently there is no limit.
 
 Any `badge` object may contain the following properties:
 
