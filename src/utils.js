@@ -73,6 +73,19 @@ async function constructPackageObjectFull(pack) {
   // so no need to find the latest semver, it's the first one (index 0).
   newPack.releases = { latest: pack?.versions[0]?.semver ?? "" };
 
+  if (!Array.isArray(newPack.badges)) {
+    // A package that has yet to receive any permenant badges
+    newPack.badges = [];
+  }
+
+  // Apply any custom deliver time badges
+  if (newPack.creation_method === "User Made Package") {
+    newPack.badges.push({
+      title: "Made for Pulsar!",
+      type: "success"
+    });
+  }
+
   logger.generic(6, "Built Package Object Full without Error");
 
   return newPack;
@@ -97,6 +110,17 @@ async function constructPackageObjectShort(pack) {
     newPack.releases = {
       latest: p.semver,
     };
+
+    if (!Array.isArray(newPack.badges)) {
+      // A package that has yet to receive any permenant badges
+      newPack.badges = [];
+    }
+
+    // Apply any custom deliver time badges
+    if (newPack.creation_method === "User Made Package") {
+      newPack.badges.push({ title: "Made for Pulsar!", type: "success" });
+    }
+    
     return newPack;
   };
 
