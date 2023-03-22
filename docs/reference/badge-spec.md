@@ -32,6 +32,7 @@ Any `badge` object may contain the following properties:
   - `warn`: This should be used to indicate an error that the user **must** be aware of.
   - `info`: This should be used to point out information that is neutral in the user receiving.
   - `success`: Should be used to indicate something good about the badge, that the user would be delighted to know about.
+  - A note about `type`: It's highly recommended for your client to support default styling of badges, in the event new types are added before your client has support for this type. Default styling will ensure badges will always appear.
 
 The following are some valid examples of badges:
 
