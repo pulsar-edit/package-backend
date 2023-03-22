@@ -21,7 +21,7 @@ The following schema is required of any `generic` badge type:
 ]
 ```
 
-As you can see `badges` is an array of a valid `badge` object.
+As you can see `badges` is an array of a valid `badge` objects.
 
 Any `badge` object may contain the following properties:
 
