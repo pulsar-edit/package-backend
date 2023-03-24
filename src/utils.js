@@ -82,7 +82,7 @@ async function constructPackageObjectFull(pack) {
   if (pack.creation_method === "User Made Package") {
     newPack.badges.push({
       title: "Made for Pulsar!",
-      type: "success"
+      type: "success",
     });
   }
 
