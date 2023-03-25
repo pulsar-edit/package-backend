@@ -4,6 +4,37 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - March 25
+
+For a period of time there was a bug on the backend that, when a package author would publish a new version of their package, the package's main `data` field would be saved improperly. Resulting in the package becoming corrupt and un-downloadable. Some package authors were effected by this.
+
+One of which was the package author @manngo. Who helpfully pointed out that their package was corrupt on a [GitHub Issue](https://github.com/pulsar-edit/package-backend/issues/125).
+
+So their package was manually modified on the database to fix this corruption:
+
+* [`web-developer-tools`](https://github.com/manngo/atom-web-tools/tree/master)
+  - Removed version `0.4.4` from the backend.
+  - Reset version `0.4.0` as the `latest`.
+  - Fixed the packages `data` field to be valid, and contain the data needed.
+
+## 2023 - March 24
+
+For the uninitiated, during the last month or so of the old Atom Package Registry days there was significant amounts of spam packages being generated.
+
+After the initial migration of packages from Atom we had to sift through everything to remove any of this spam we could find.
+
+Some of the common factors:
+* The package included nothing beyond template or `package-generator` files.
+* The package advertised online gambling.
+* The package's major language was always Indonesian.
+
+Considering the above commonalities of the hundreds of spam packages Atom saw in the last days we continue to remain vigilant to these appearing within our database, and remove it once found. And in that effort:
+
+We removed the following packages due to suspected spam:
+
+* [`slot-depo-pulsa`](https://github.com/Star-Grey/slot-depo-pulsa)
+* [`togel-sdy`](https://github.com/Star-Grey/togel-sdy)
+
 ## 2023 - March 18
 
 Removed some community packages during our effort to ensure we only keep packages with licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thourough attempt to contact the publishers we had resolved to remove the packages.
