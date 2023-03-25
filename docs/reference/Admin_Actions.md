@@ -4,6 +4,19 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - March 25
+
+For a period of time there was a bug on the backend that, when a package author would publish a new version of their package, the package's main `data` field would be saved improperly. Resulting in the package becoming corrupt and un-downloadable. Some package authors were effected by this.
+
+One of which was the package author @manngo. Who helpfully pointed out that their package was corrupt on a [GitHub Issue](https://github.com/pulsar-edit/package-backend/issues/125).
+
+So their package was manually modified on the database to fix this corruption:
+
+* [`web-developer-tools`](https://github.com/manngo/atom-web-tools/tree/master)
+  - Removed version `0.4.4` from the backend.
+  - Reset version `0.4.0` as the `latest`.
+  - Fixed the packages `data` field to be valid, and contain the data needed.
+
 ## 2023 - March 24
 
 For the uninitiated, during the last month or so of the old Atom Package Registry days there was significant amounts of spam packages being generated.
