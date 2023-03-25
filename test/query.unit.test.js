@@ -139,3 +139,29 @@ describe("Verify Rename Query Returns", () => {
     expect(query.rename(arg)).toBe(result);
   });
 });
+
+const serviceTypeCases = [
+  [{ query: { serviceType: "consumed" } }, "consumedServices"],
+  [{ query: { serviceType: "provided" } }, "providedServices"],
+  [{ query: { serviceType: "invalid" } }, false],
+  [{ query: {} }, false]
+];
+
+describe("Verify serviceType Returns", () => {
+  test.each(serviceTypeCases)("Given %o Returns %p", (arg, result) => {
+    expect(query.serviceType(arg)).toBe(result);
+  });
+});
+
+const serviceVersionCases = [
+  [{ query: { serviceVersion: "1.0.0" } }, "1.0.0"],
+  [{ query: { serviceVersion: "1.0.0-abc" } }, "1.0.0-abc"],
+  [{ query: { serviceVersion: "1234" } }, false],
+  [{ query: {} }, false]
+];
+
+describe("Verify serviceVersion Returns", () => {
+  test.each(serviceVersionCases)("Given %o Returns %p", (arg, result) => {
+    expect(query.serviceVersion(arg)).toBe(result);
+  });
+});
