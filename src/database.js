@@ -1365,7 +1365,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       WITH search_query AS (
         SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-          v.semver, p.created, v.updated
+          v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
           INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name LIKE ${
             "%" + searchTerm + "%"
@@ -1487,7 +1487,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
       WITH latest_versions AS (
         SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-          v.semver, p.created, v.updated
+          v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
           INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE
           ${
