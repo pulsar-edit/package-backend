@@ -26,13 +26,12 @@ async function getPackages(req, res) {
     page: query.page(req),
     sort: query.sort(req),
     direction: query.dir(req),
+    serviceType: query.serviceType(req),
+    service: query.service(req),
+    serviceVersion: query.serviceVersion(req)
   };
 
-  const packages = await database.getSortedPackages(
-    params.page,
-    params.direction,
-    params.sort
-  );
+  const packages = await database.getSortedPackages(params);
 
   if (!packages.ok) {
     logger.generic(

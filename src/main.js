@@ -191,6 +191,22 @@ app.options("/api/pat", genericLimit, async (req, res) => {
  *   @valid desc, asc
  *   @required false
  *   @Pdesc Which direction to list the results. If sorting by stars, can only be sorted by desc.
+ * @param
+ *  @name service
+ *  @Ptype string
+ *  @required false
+ *  @Pdesc A service to filter results by.
+ * @param
+ *  @name serviceType
+ *  @Ptype string
+ *  @required false
+ *  @valid provided, consumed
+ *  @Pdesc The service type to filter results by. Must be supplied if a service is provided.
+ * @param
+ *  @name serviceVersion
+ *  @Ptype string
+ *  @required false
+ *  @Pdesc An optional (when providing a service) version to filter results by.
  * @response
  *   @status 200
  *   @Rtype application/json

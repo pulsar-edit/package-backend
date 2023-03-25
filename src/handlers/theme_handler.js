@@ -61,12 +61,7 @@ async function getThemes(req, res) {
     direction: query.dir(req),
   };
 
-  const packages = await database.getSortedPackages(
-    params.page,
-    params.direction,
-    params.sort,
-    true
-  );
+  const packages = await database.getSortedPackages(params, true);
 
   if (!packages.ok) {
     logger.generic(

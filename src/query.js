@@ -233,6 +233,49 @@ function login(req) {
   return req.params.login ?? "";
 }
 
+function serviceType(req) {
+  const prov = req.query.serviceType;
+
+  if (prov === undefined) {
+    return false;
+  }
+
+  if (prov === "provided") {
+    return "providedServices";
+  }
+
+  if (prov === "consumed") {
+    return "consumedServices"
+  }
+
+  return false; // fallback
+}
+
+function serviceVersion(req) {
+  const semver = req.query.serviceVersion;
+  try {
+    // Regex matching what's used in query.engine()
+    const regex = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)/;
+
+    // Check if it's a valid semver
+    return semver.match(regex) !== null ? semver : false;
+  } catch(err) {
+    return false;
+  }
+}
+
+function service(req) {
+  // Functionality here matching that of our query.name()
+  const maxLength = 50;
+  const prov = req.query.service;
+
+  if (typeof prov !== "string") {
+    return false;
+  }
+
+  return pathTraversalAttempt(prov) ? false : prov.slice(0, maxLength).trim();
+}
+
 module.exports = {
   page,
   sort,
@@ -245,4 +288,7 @@ module.exports = {
   auth,
   packageName,
   login,
+  serviceType,
+  serviceVersion,
+  service,
 };

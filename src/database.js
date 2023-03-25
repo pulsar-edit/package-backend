@@ -1460,25 +1460,25 @@ async function getUserCollectionById(ids) {
  * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
  * @returns {object} A server status object containing the results and the pagination object.
  */
-async function getSortedPackages(page, dir, method, themes = false) {
+async function getSortedPackages(opts, themes = false) {
   // Here will be a monolithic function for returning sortable packages arrays.
   // We must keep in mind that all the endpoint handler knows is the
   // page, sort method, and direction. We must figure out the rest here.
   // only knowing we have a valid sort method provided.
 
   const limit = paginated_amount;
-  const offset = page > 1 ? (page - 1) * limit : 0;
+  const offset = opts.page > 1 ? (opts.page - 1) * limit : 0;
 
   try {
     sqlStorage ??= setupSQL();
 
-    const orderType = getOrderField(method, sqlStorage);
+    const orderType = getOrderField(opts.sort, sqlStorage);
 
     if (orderType === null) {
-      logger.generic(3, `Unrecognized Sorting Method Provided: ${method}`);
+      logger.generic(3, `Unrecognized Sorting Method Provided: ${opts.sort}`);
       return {
         ok: false,
-        content: `Unrecognized Sorting Method Provided: ${method}`,
+        content: `Unrecognized Sorting Method Provided: ${opts.sort}`,
         short: "Server Error",
       };
     }
@@ -1495,12 +1495,21 @@ async function getSortedPackages(page, dir, method, themes = false) {
               ? sqlStorage`AND p.package_type = 'theme'`
               : sqlStorage``
           })
+          ${
+            (typeof opts.service === "string" && typeof opts.serviceType === "string")
+            ? sqlStorage`WHERE v.meta -> ${opts.serviceType} -> ${opts.service} ${
+              (typeof opts.serviceVersion === "string")
+              ? sqlStorage`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`
+              : sqlStorage`IS NOT NULL`
+            }`
+            : sqlStorage``
+          }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )
       SELECT *, COUNT(*) OVER() AS query_result_count
       FROM latest_versions
       ORDER BY ${orderType} ${
-      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
+      opts.direction === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
     }
       LIMIT ${limit}
       OFFSET ${offset};
@@ -1516,7 +1525,7 @@ async function getSortedPackages(page, dir, method, themes = false) {
       content: command,
       pagination: {
         count: resultCount,
-        page: page < totalPages ? page : totalPages,
+        page: opts.page < totalPages ? opts.page : totalPages,
         total: totalPages,
         limit,
       },
