@@ -1496,13 +1496,16 @@ async function getSortedPackages(opts, themes = false) {
               : sqlStorage``
           })
           ${
-            (typeof opts.service === "string" && typeof opts.serviceType === "string")
-            ? sqlStorage`WHERE v.meta -> ${opts.serviceType} -> ${opts.service} ${
-              (typeof opts.serviceVersion === "string")
-              ? sqlStorage`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`
-              : sqlStorage`IS NOT NULL`
-            }`
-            : sqlStorage``
+            typeof opts.service === "string" &&
+            typeof opts.serviceType === "string"
+              ? sqlStorage`WHERE v.meta -> ${opts.serviceType} -> ${
+                  opts.service
+                } ${
+                  typeof opts.serviceVersion === "string"
+                    ? sqlStorage`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`
+                    : sqlStorage`IS NOT NULL`
+                }`
+              : sqlStorage``
           }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )

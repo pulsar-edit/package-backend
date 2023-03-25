@@ -144,7 +144,7 @@ const serviceTypeCases = [
   [{ query: { serviceType: "consumed" } }, "consumedServices"],
   [{ query: { serviceType: "provided" } }, "providedServices"],
   [{ query: { serviceType: "invalid" } }, false],
-  [{ query: {} }, false]
+  [{ query: {} }, false],
 ];
 
 describe("Verify serviceType Returns", () => {
@@ -157,7 +157,7 @@ const serviceVersionCases = [
   [{ query: { serviceVersion: "1.0.0" } }, "1.0.0"],
   [{ query: { serviceVersion: "1.0.0-abc" } }, "1.0.0-abc"],
   [{ query: { serviceVersion: "1234" } }, false],
-  [{ query: {} }, false]
+  [{ query: {} }, false],
 ];
 
 describe("Verify serviceVersion Returns", () => {

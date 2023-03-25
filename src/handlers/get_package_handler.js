@@ -28,7 +28,7 @@ async function getPackages(req, res) {
     direction: query.dir(req),
     serviceType: query.serviceType(req),
     service: query.service(req),
-    serviceVersion: query.serviceVersion(req)
+    serviceVersion: query.serviceVersion(req),
   };
 
   const packages = await database.getSortedPackages(params);

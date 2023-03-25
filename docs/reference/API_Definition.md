@@ -40,6 +40,21 @@ Parameters:
 
 
 ---
+* service _(optional)_ `[string]`   
+  - A service to filter results by.
+
+
+---
+* serviceType _(optional)_ `[string]`   | Valid: `[provided, consumed]`
+  - The service type to filter results by. Must be supplied if a service is provided.
+
+
+---
+* serviceVersion _(optional)_ `[string]`   
+  - An optional (when providing a service) version to filter results by.
+
+
+---
 Responses:
 ---
 **HTTP Status Code:** `200 OK`

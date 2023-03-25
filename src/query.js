@@ -245,7 +245,7 @@ function serviceType(req) {
   }
 
   if (prov === "consumed") {
-    return "consumedServices"
+    return "consumedServices";
   }
 
   return false; // fallback
@@ -259,7 +259,7 @@ function serviceVersion(req) {
 
     // Check if it's a valid semver
     return semver.match(regex) !== null ? semver : false;
-  } catch(err) {
+  } catch (err) {
     return false;
   }
 }
