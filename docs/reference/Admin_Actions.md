@@ -4,6 +4,13 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - March 29
+
+Allowed for a seemless takeover of the `language-pegjs` name.
+Since this was a package originally published by Atom, and is now being updated and maintained by Pulsar, we will manually allow a takeover of the unique name on the registry.
+
+By changing the `repository.url` object of the top level `language-pegjs` `package` entry, to point to the `pulsar-edit` GitHub organization, we can allow our newer versions to be published, while keeping Atom's old versions available as is.
+
 ## 2023 - March 28
 
 The following packages will recieve the Outdated Badge:
