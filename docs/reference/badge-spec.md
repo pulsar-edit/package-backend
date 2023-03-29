@@ -65,7 +65,7 @@ The `Outdated` badge is used to indicate that the version of a package that may 
 
 This badge should only be used when the main functionality of the branch is missing/broken/or otherwise non-functional when installed onto Pulsar as the latest branch, in a supported Pulsar configuration.
 
-That is, if a Pulsar users on a supported platform, indepent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is elligble to receive this badge.
+That is, if a Pulsar users on a supported platform, indepent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is eligible to receive this badge.
 
 This badge would be added on a case by case basis, and would likely only be added if Pulsar users are reporting the error.
 
