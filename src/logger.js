@@ -40,11 +40,13 @@ function httpLog(req, res) {
 function sanitizeLogs(val) {
   // Removes New Line, Carriage Return, Tabs,
   // TODO: Should probably also defend against links within this.
-  if (typeof val === "number") {
-    // Don't try to preform string methods on number
-    return val;
+  val ??= "";
+
+  if (typeof val !== "string") {
+    val = val.toString();
   }
-  return val?.replace(/\n|\r/g, "")?.replace(/\t/g, "");
+
+  return val.replace(/\n|\r/g, "").replace(/\t/g, "");
 }
 
 /**
@@ -105,25 +107,25 @@ function generic(lvl, val, meta = {}) {
 
   switch (lvl) {
     case 1:
-      output += `[FATAL]:: ${val ?? ""}`;
+      output += `[FATAL]:: ${sanitizeLogs(val)}`;
       break;
     case 2:
-      output += `[ERROR]:: ${val ?? ""}`;
+      output += `[ERROR]:: ${sanitizeLogs(val)}`;
       break;
     case 3:
-      output += `[WARNING]:: ${val ?? ""}`;
+      output += `[WARNING]:: ${sanitizeLogs(val)}`;
       break;
     case 4:
-      output += `[INFO]:: ${val ?? ""}`;
+      output += `[INFO]:: ${sanitizeLogs(val)}`;
       break;
     case 5:
-      output += `[DEBUG]:: ${val ?? ""}`;
+      output += `[DEBUG]:: ${sanitizeLogs(val)}`;
       break;
     case 6:
-      output += `[TRACE]:: ${val ?? ""}`;
+      output += `[TRACE]:: ${sanitizeLogs(val)}`;
       break;
     default:
-      output += `[UNSUPORTED]:: ${val ?? ""}`;
+      output += `[UNSUPORTED]:: ${sanitizeLogs(val)}`;
       break;
   }
 
@@ -148,11 +150,11 @@ function generic(lvl, val, meta = {}) {
 
   switch (LOG_FORMAT) {
     case "stdout":
-      console.log(sanitizeLogs(output));
+      console.log(output);
       break;
     default:
       // Unsupported method. Use "stdout" by default.
-      console.log("#BAD_LOG_FORMAT#" + sanitizeLogs(output));
+      console.log("#BAD_LOG_FORMAT#" + output);
       break;
   }
 }
