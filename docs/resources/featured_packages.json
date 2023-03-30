@@ -4,7 +4,8 @@
   "sb-atom-sonic-pi",
   "x-terminal-reloaded",
   "dracula-syntax",
-  "hydrogen",
   "atom-clock",
-  "hey-pane"
+  "hey-pane",
+  "tidal-sharp",
+  "language-tiger"
 ]
