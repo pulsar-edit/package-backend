@@ -56,3 +56,17 @@ The following are some valid examples of badges:
   }
 ]
 ```
+
+# Types of Badges & Why They May be Added
+
+## Outdated
+
+The `Outdated` badge is used to indicate that the version of a package that may exist on the Pulsar Package Registry, may be out of date when compared to the package on GitHub (Or other VCS host).
+
+This badge should only be used when the main functionality of the branch is missing/broken/or otherwise non-functional when installed onto Pulsar as the latest branch, in a supported Pulsar configuration.
+
+That is, if a Pulsar users on a supported platform, indepent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is eligible to receive this badge.
+
+This badge would be added on a case by case basis, and would likely only be added if Pulsar users are reporting the error.
+
+As with all other badges this badge may be removed at any time, and if you, as a package maintainer have updated a package and did not see this badge removed automatically, or within a reasonable time, feel free to [create an issue](https://github.com/pulsar-edit/package-backend/issues) asking for it to be removed.

@@ -4,6 +4,38 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - March 28
+
+The following packages will recieve the Outdated Badge:
+
+### Hydrogen
+
+The Hydrogen package has a bug where it will fallback to using incorrect old Atom API's when interacting with Pulsar.
+
+One of the Pulsar devs had submitted a fix for this bug [`nteract/hydrogen#2162`](https://github.com/nteract/hydrogen/pull/2162) and that was accepted into the package. Additionally, the package maintainers released a new version [`v2.16.5`](https://github.com/nteract/hydrogen/releases/tag/v2.16.5) containing this fix. But this fix has **not** been published to the Pulsar Package Registry.
+
+It is for this reason it is recommended to install the `hydrogen` package with the following command:
+
+```bash
+pulsar -p install https://github.com/nteract/hydrogen -t v2.16.5
+```
+
+With the above said, `hydrogen` will receive an [`outdated`](./badge-spec.md#outdated) badge.
+
+### Glacier-Darkula-UI
+
+The Glacier-Darkula-UI package uses an old, no longer supported CSS selector when styling the scrollbar. Resulting in the scrollbar taking on OS Native styling when used within Pulsar.
+
+One of the Pulsar devs had submitted a fix for this bug [`pit00/glacier-darkula-ui#1`](https://github.com/pit00/glacier-darkula-ui/pull/1) and that was accepted into the package. But this fix has **not** been published to the Pulsar Package Registry, or added to any tagged release of the package.
+
+It is for this reason it is recommended to install the `glacier-darkula-ui` package with the following command:
+
+```bash
+pulsar -p install https://github.com/pit00/glacier-darkula-ui -t 34c5f677527310463f6930967fdf55f502a818c2
+```
+
+With the above said, `glacier-darkula-ui` will receive an [`outdated`](./badge-spec.md#outdated) badge.
+
 ## 2023 - March 25
 
 For a period of time there was a bug on the backend that, when a package author would publish a new version of their package, the package's main `data` field would be saved improperly. Resulting in the package becoming corrupt and un-downloadable. Some package authors were effected by this.
