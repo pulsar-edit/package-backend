@@ -99,7 +99,7 @@ async function verifyAuth(token) {
     };
 
   } catch (err) {
-    logger.generic(3, "auth.verifyAuth() Cuaght an Error", {
+    logger.generic(3, "auth.verifyAuth() Caught an Error", {
       type: "error",
       err: err
     });
