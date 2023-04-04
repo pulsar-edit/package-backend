@@ -316,7 +316,7 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Package");
     expect(res.content).toBe(
-      `Failed to get gh package for ${ownerRepo} - Server Error`
+      `Failed to get GitHub package for ${ownerRepo} - Server Error - 500`
     );
   });
 
@@ -355,7 +355,7 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Repo");
     expect(res.content).toBe(
-      `Failed to get gh readme for ${ownerRepo} - Server Error`
+      `Failed to get GitHub readme for ${ownerRepo} - Server Error - 500`
     );
   });
 
@@ -407,7 +407,7 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Server Error");
     expect(res.content).toBe(
-      `Failed to get gh tags for ${ownerRepo} - Server Error`
+      `Failed to get GitHub tags for ${ownerRepo} - Server Error - 500`
     );
   });
 
