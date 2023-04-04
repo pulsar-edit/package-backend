@@ -234,7 +234,7 @@ async function postPackagesVersion(req, res) {
   if (!user.ok) {
     logger.generic(6, "User Authentication Failed when attempting to publish package version!");
 
-    await common.emitError(req, res, user);
+    await common.handleDetailedError(req, res, user);
     return;
   }
   logger.generic(
