@@ -256,7 +256,7 @@ async function postPackagesVersion(req, res) {
       ok: false,
       short: packExists.short,
       content: "The server was unable to locate your package when publishing a new version.",
-    })
+    });
     return;
   }
 

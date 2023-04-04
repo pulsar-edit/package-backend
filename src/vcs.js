@@ -273,7 +273,7 @@ async function newVersionData(userObj, ownerRepo, service) {
       ok: false,
       short: "Bad Package",
       content: `Failed to get GitHub Package ${ownerRepo} - ${pack.short} - ${pack.content}`,
-    }
+    };
   }
 
   // Now we will also need to get the packages data to update on the DB
