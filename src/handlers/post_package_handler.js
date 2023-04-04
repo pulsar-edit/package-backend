@@ -229,26 +229,17 @@ async function postPackagesVersion(req, res) {
   // And if they are, we expect that `auth` is true. Because otherwise it will fail.
   // That's the methodology, the logic here just needs to catch up.
 
-  let logString = `TMPLOG: Raw Auth Size: ${logger.sanitizeLogs(
-    req.get("Authorization")?.length
-  )} Parsed: ${logger.sanitizeLogs(
-    params.auth !== "" ? params.auth.length : "0"
-  )}`;
-  logger.generic(6, logString);
-
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    logger.generic(
-      6,
-      "User Authentication Failed when attempting to publish package version!"
-    );
-    await common.handleError(req, res, user);
+    logger.generic(6, "User Authentication Failed when attempting to publish package version!");
+    
+    await common.emitError(req, res, user);
     return;
   }
   logger.generic(
     6,
-    `${user.content.username} Attempting to publish a new package version`
+    `${user.content.username} Attempting to publish a new package version - ${params.packageName}`
   );
 
   // To support a rename, we need to check if they have permissions over this packages new name.
@@ -259,9 +250,13 @@ async function postPackagesVersion(req, res) {
   if (!packExists.ok) {
     logger.generic(
       6,
-      "Seems Package does not exist when trying to publish new version"
+      `Seems Package does not exist when trying to publish new version - ${packExists.content}`
     );
-    await common.handleError(req, res, packExists);
+    await common.handleDetailedError(req, res, {
+      ok: false,
+      short: packExists.short,
+      content: "The server was unable to locate your package when publishing a new version."
+    })
     return;
   }
 
