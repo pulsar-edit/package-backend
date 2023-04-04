@@ -272,7 +272,7 @@ async function newVersionData(userObj, ownerRepo, service) {
     return {
       ok: false,
       short: "Bad Package",
-      content: `Failed to get GitHub Package ${ownerRepo} - ${pack.short} - ${pack.content}`
+      content: `Failed to get GitHub Package ${ownerRepo} - ${pack.short} - ${pack.content}`;
     }
   }
 
