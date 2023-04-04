@@ -123,7 +123,7 @@ async function postPackages(req, res) {
 
   if (!newPack.ok) {
     logger.generic(3, `postPackages-createPackage Not OK: ${newPack.content}`);
-    await common.handleError(req, res, newPack);
+    await common.handleDetailedError(req, res, newPack);
     return;
   }
 
@@ -233,7 +233,7 @@ async function postPackagesVersion(req, res) {
 
   if (!user.ok) {
     logger.generic(6, "User Authentication Failed when attempting to publish package version!");
-    
+
     await common.emitError(req, res, user);
     return;
   }
