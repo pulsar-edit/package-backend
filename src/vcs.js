@@ -285,7 +285,7 @@ async function newVersionData(userObj, ownerRepo, service) {
     return {
       ok: false,
       short: "Bad Repo",
-      content: `Failed to get GitHub Package ${ownerRepo} - ${readme.short} - ${readme.content}`
+      content: `Failed to get GitHub ReadMe ${ownerRepo} - ${readme.short} - ${readme.content}`
     };
   }
 
