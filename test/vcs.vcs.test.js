@@ -316,7 +316,7 @@ describe("Does newVersionData Return as Expected", () => {
     expect(res.ok).toBe(false);
     expect(res.short).toBe("Bad Package");
     expect(res.content).toBe(
-      `Failed to get GitHub Package for ${ownerRepo} - Server Error - 500`
+      `Failed to get GitHub Package ${ownerRepo} - Server Error - 500`
     );
   });
 
