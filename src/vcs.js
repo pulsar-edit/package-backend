@@ -285,7 +285,7 @@ async function newVersionData(userObj, ownerRepo, service) {
     return {
       ok: false,
       short: "Bad Repo",
-      content: `Failed to get GitHub ReadMe ${ownerRepo} - ${readme.short} - ${readme.content}`
+      content: `Failed to get GitHub ReadMe ${ownerRepo} - ${readme.short} - ${readme.content}`,
     };
   }
 
@@ -303,7 +303,7 @@ async function newVersionData(userObj, ownerRepo, service) {
       return {
         ok: false,
         short: tags.short,
-        content: `Failed to get GitHub Tags for ${ownerRepo} - ${tags.short} - ${tags.content}`
+        content: `Failed to get GitHub Tags for ${ownerRepo} - ${tags.short} - ${tags.content}`,
       };
     }
 
@@ -324,7 +324,7 @@ async function newVersionData(userObj, ownerRepo, service) {
       return {
         ok: false,
         short: "Bad Repo",
-        content: `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`
+        content: `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`,
       };
     }
   }
@@ -337,7 +337,7 @@ async function newVersionData(userObj, ownerRepo, service) {
     return {
       ok: false,
       short: "Server Error",
-      content: `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`
+      content: `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`,
     };
   }
 
@@ -350,8 +350,8 @@ async function newVersionData(userObj, ownerRepo, service) {
       name: pack.content.name.toLowerCase(),
       repository: determineProvider(pack.content.repository),
       readme: readme.content,
-      metadata: pack.content
-    }
+      metadata: pack.content,
+    },
   };
 }
 

@@ -189,13 +189,13 @@ class GitHub extends Git {
               return {
                 ok: false,
                 short: "Bad Auth",
-                content: readmeRaw.content.status
+                content: readmeRaw.content.status,
               };
             default:
               return {
                 ok: false,
                 short: "Server Error",
-                content: readmeRaw.content.status
+                content: readmeRaw.content.status,
               };
           }
         }
@@ -203,7 +203,7 @@ class GitHub extends Git {
         return {
           ok: false,
           short: "Server Error",
-          content: readmeRaw.content.status
+          content: readmeRaw.content.status,
         };
       }
 
@@ -221,7 +221,7 @@ class GitHub extends Git {
         ok: false,
         short: "Server Error",
         content: null,
-        error: err
+        error: err,
       };
     }
   }
@@ -250,20 +250,20 @@ class GitHub extends Git {
               return {
                 ok: false,
                 short: "Bad Auth",
-                content: raw.content.status
+                content: raw.content.status,
               };
             default:
               return {
                 ok: false,
                 short: "Server Error",
-                content: raw.content.status
+                content: raw.content.status,
               };
           }
         }
         return {
           ok: false,
           short: "Server Error",
-          content: raw.content.status
+          content: raw.content.status,
         };
       }
 
@@ -277,7 +277,7 @@ class GitHub extends Git {
         ok: false,
         short: "Server Error",
         content: null,
-        error: err
+        error: err,
       };
     }
   }
@@ -305,20 +305,20 @@ class GitHub extends Git {
               return {
                 ok: false,
                 short: "Bad Auth",
-                content: raw.content.status
+                content: raw.content.status,
               };
             default:
               return {
                 ok: false,
                 short: "Server Error",
-                content: raw.content.status
+                content: raw.content.status,
               };
           }
         }
         return {
           ok: false,
           short: "Server Error",
-          content: raw.content.status
+          content: raw.content.status,
         };
       }
 

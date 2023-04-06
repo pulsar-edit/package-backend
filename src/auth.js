@@ -17,12 +17,15 @@ const logger = require("./logger.js");
  */
 async function verifyAuth(token) {
   if (token === null || token === undefined) {
-    logger.generic(5, "auth.verifyAuth() Returning 'Bad Auth' due to null|undefined token");
+    logger.generic(
+      5,
+      "auth.verifyAuth() Returning 'Bad Auth' due to null|undefined token"
+    );
 
     return {
       ok: false,
       short: "Bad Auth",
-      content: "User Token not a valid format."
+      content: "User Token not a valid format.",
     };
   }
 
@@ -91,25 +94,26 @@ async function verifyAuth(token) {
       data: dbUser.content.data,
     };
 
-    logger.generic(4, `auth.verifyAuth() returning authenticated user: ${authUserObject.username}`);
+    logger.generic(
+      4,
+      `auth.verifyAuth() returning authenticated user: ${authUserObject.username}`
+    );
 
     return {
       ok: true,
-      content: authUserObject
+      content: authUserObject,
     };
-
   } catch (err) {
     logger.generic(3, "auth.verifyAuth() Caught an Error", {
       type: "error",
-      err: err
+      err: err,
     });
 
     return {
       ok: false,
       short: "Server Error",
-      content: "An unexpected Error occured while verifying your user."
+      content: "An unexpected Error occured while verifying your user.",
     };
-    
   }
 }
 

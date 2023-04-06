@@ -232,7 +232,10 @@ async function postPackagesVersion(req, res) {
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    logger.generic(6, "User Authentication Failed when attempting to publish package version!");
+    logger.generic(
+      6,
+      "User Authentication Failed when attempting to publish package version!"
+    );
 
     await common.handleDetailedError(req, res, user);
     return;
@@ -255,7 +258,8 @@ async function postPackagesVersion(req, res) {
     await common.handleDetailedError(req, res, {
       ok: false,
       short: packExists.short,
-      content: "The server was unable to locate your package when publishing a new version.",
+      content:
+        "The server was unable to locate your package when publishing a new version.",
     });
     return;
   }
