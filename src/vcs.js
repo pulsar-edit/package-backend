@@ -269,11 +269,11 @@ async function newVersionData(userObj, ownerRepo, service) {
   let pack = await provider.packageJSON(userObj, ownerRepo);
 
   if (!pack.ok) {
-    return new ServerStatus()
-      .notOk()
-      .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
-      .setShort("Bad Package")
-      .build();
+    return {
+      ok: false,
+      short: "Bad Package",
+      content: `Failed to get GitHub Package ${ownerRepo} - ${pack.short} - ${pack.content}`,
+    };
   }
 
   // Now we will also need to get the packages data to update on the DB
@@ -282,11 +282,11 @@ async function newVersionData(userObj, ownerRepo, service) {
   let readme = await provider.readme(userObj, ownerRepo);
 
   if (!readme.ok) {
-    return new ServerStatus()
-      .notOk()
-      .setContent(`Failed to get gh readme for ${ownerRepo} - ${readme.short}`)
-      .setShort("Bad Repo")
-      .build();
+    return {
+      ok: false,
+      short: "Bad Repo",
+      content: `Failed to get GitHub ReadMe ${ownerRepo} - ${readme.short} - ${readme.content}`
+    };
   }
 
   let tag = null;
@@ -300,11 +300,11 @@ async function newVersionData(userObj, ownerRepo, service) {
     const tags = await provider.tags(userObj, ownerRepo);
 
     if (!tags.ok) {
-      return new ServerStatus()
-        .notOk()
-        .setContent(`Failed to get gh tags for ${ownerRepo} - ${tags.short}`)
-        .setShort("Server Error")
-        .build();
+      return {
+        ok: false,
+        short: tags.short,
+        content: `Failed to get GitHub Tags for ${ownerRepo} - ${tags.short} - ${tags.content}`
+      };
     }
 
     for (const t of tags.content) {
@@ -321,13 +321,11 @@ async function newVersionData(userObj, ownerRepo, service) {
     if (tag === null) {
       // If we couldn't find any valid tags that match the tag currently available
       // on the remote package.json
-      return new ServerStatus()
-        .notOk()
-        .setContent(
-          `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`
-        )
-        .setShort("Server Error")
-        .build();
+      return {
+        ok: false,
+        short: "Bad Repo",
+        content: `Failed to find a matching tag: ${ownerRepo} - ${pack.content.version}`
+      };
     }
   }
 
@@ -336,27 +334,25 @@ async function newVersionData(userObj, ownerRepo, service) {
       3,
       `Cannot retreive metadata information for version ${ver} of ${ownerRepo}`
     );
-    return new ServerStatus()
-      .notOk()
-      .setContent(
-        `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`
-      )
-      .setShort("Server Error")
-      .build();
+    return {
+      ok: false,
+      short: "Server Error",
+      content: `Failed to find any valid tag data for: ${ownerRepo} - ${tag}`
+    };
   }
 
   pack.content.tarball_url = tag.tarball_url;
   pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
-  return new ServerStatus()
-    .isOk()
-    .setContent({
+  return {
+    ok: true,
+    content: {
       name: pack.content.name.toLowerCase(),
       repository: determineProvider(pack.content.repository),
       readme: readme.content,
-      metadata: pack.content,
-    })
-    .build();
+      metadata: pack.content
+    }
+  };
 }
 
 /**
