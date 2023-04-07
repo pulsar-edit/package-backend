@@ -5,7 +5,7 @@
  * With support for crafting objects using an object builder pattern.
  * And encoding data into `base64` as expected on the fly.
  */
- 
+
 const Git = require("../src/vcs_providers/git.js");
 
 class HTTP {
@@ -13,6 +13,7 @@ class HTTP {
     this.path = path ?? "";
     this.ok;
     this.status;
+    this.headers;
     this.body;
     this.short;
   }
@@ -32,6 +33,11 @@ class HTTP {
     return this;
   }
 
+  headers(val) {
+    this.headers = val;
+    return this;
+  }
+
   body(val) {
     this.body = val;
     return this;
@@ -47,6 +53,7 @@ class HTTP {
         short: this.short,
         content: {
           status: this.status,
+          headers: this.headers,
           body: this.body
         }
       }
@@ -74,7 +81,7 @@ const webRequestMock = (data) => {
       }
     });
     return tmpMock;
-}
+};
 
 module.exports = {
   webRequestMock,
