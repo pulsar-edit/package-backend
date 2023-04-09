@@ -1,17 +1,10 @@
-const Git = require("../src/vcs_providers/git.js");
+const httpMock = require("./httpMock.helper.jest.js");
+
 const vcs = require("../src/vcs.js");
 
-const webRequestMockHelper = (data) => {
-  const tmpMock = jest
-    .spyOn(Git.prototype, "_webRequestAuth")
-    .mockImplementation((url, token) => {
-      for (let i = 0; i < data.length; i++) {
-        if (url === data[i].url) {
-          return data[i].obj;
-        }
-      }
-    });
-  return tmpMock;
+let http_cache = {
+  pack1: {}, // pack1 will be used for newPackageData tests
+  pack2: {} // pack2 will be used for newVersionData tests
 };
 
 const userDataGeneric = {
@@ -21,21 +14,14 @@ const userDataGeneric = {
 
 describe("Does NewPackageData Return as expected", () => {
   test("Repo Exists Error on Bad WebRequest", async () => {
-    const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 404,
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    const ownerRepo = "confused-Techie/pulsar-backend";
+
+    http_cache.pack1.bad_exists = new httpMock
+      .HTTP(`/repos/${ownerRepo}`)
+      .ok(false).short("Failed Request").status(404).parse();
+
+    const tmpMock = httpMock.webRequestMock([ http_cache.pack1.bad_exists ]);
 
     const res = await vcs.newPackageData(userDataGeneric, ownerRepo, "git");
 
@@ -46,31 +32,18 @@ describe("Does NewPackageData Return as expected", () => {
 
   test("Package Error on Bad WebRequest", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              full_name: ownerRepo,
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 500,
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    http_cache.pack1.good_exists = new httpMock
+      .HTTP(`/repos/${ownerRepo}`)
+      .ok(true).body({ full_name: ownerRepo }).parse();
+
+    http_cache.pack1.bad_package_json = new httpMock
+      .HTTP(`/repos/${ownerRepo}/contents/package.json`)
+      .ok(false).short("Failed Request").status(500).parse();
+
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack1.good_exists, http_cache.pack1.bad_package_json
+    ]);
 
     const res = await vcs.newPackageData(userDataGeneric, ownerRepo, "git");
 
@@ -83,43 +56,22 @@ describe("Does NewPackageData Return as expected", () => {
 
   test("Tags Error Response on Bad WebRequest", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              full_name: ownerRepo,
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              content: "eyAibmFtZSI6ICJoZWxsbyB3b3JsZCIgfQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/tags`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 500,
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    http_cache.pack1.good_package_json = new httpMock
+      .HTTP(`/repos/${ownerRepo}/contents/package.json`)
+      .ok(true).body(
+        httpMock.base64('{ "name": "pulsar", "version": "v1.101.0-beta", "repository": "https://github.com/pulsar-edit/pulsar" }')
+      ).parse();
+
+    http_cache.pack1.bad_tags = new httpMock
+      .HTTP(`/repos/${ownerRepo}/tags`)
+      .ok(false).short("Failed Request").status(500).parse();
+
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack1.good_exists,
+      http_cache.pack1.good_package_json,
+      http_cache.pack1.bad_tags
+    ]);
 
     const res = await vcs.newPackageData(userDataGeneric, ownerRepo, "git");
 
@@ -132,62 +84,32 @@ describe("Does NewPackageData Return as expected", () => {
 
   test("Readme Error on Bad Web Request", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              full_name: ownerRepo,
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              content: "eyAibmFtZSI6ICJoZWxsbyB3b3JsZCIgfQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/tags`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: [
-              {
-                name: "v1.101.0-beta",
-                tarball_url:
-                  "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
-                commit: {
-                  sha: "1234",
-                },
-              },
-            ],
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/readme`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 500,
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    http_cache.pack1.good_tags = new httpMock
+      .HTTP(`/repos/${ownerRepo}/tags`)
+      .ok(true).status(200).body(
+        [
+          {
+            name: "v1.101.0-beta",
+            tarball_url:
+              "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+            commit: {
+              sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f",
+            },
+          },
+        ]
+      ).parse();
+
+    http_cache.pack1.bad_readme = new httpMock
+      .HTTP(`/repos/${ownerRepo}/readme`)
+      .ok(false).short("Failed Request").status(500).parse();
+
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack1.good_exists,
+      http_cache.pack1.good_package_json,
+      http_cache.pack1.good_tags,
+      http_cache.pack1.bad_readme
+    ]);
 
     const res = await vcs.newPackageData(userDataGeneric, ownerRepo, "git");
 
@@ -201,69 +123,20 @@ describe("Does NewPackageData Return as expected", () => {
   test("Returns Valid New Package Data with successful Requests", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
 
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              full_name: ownerRepo,
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              content:
-                "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/tags`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: [
-              {
-                name: "v1.101.0-beta",
-                tarball_url:
-                  "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
-                commit: {
-                  sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f",
-                },
-              },
-            ],
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/readme`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: {
-              content: "VGhpcyBpcyBhIHJlYWRtZQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-    ];
+    http_cache.pack1.good_readme = new httpMock
+      .HTTP(`/repos/${ownerRepo}/readme`)
+      .ok(true).status(200).body(
+        httpMock.base64("This is a readme")
+      ).parse();
 
-    const tmpMock = webRequestMockHelper(mockData);
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack1.good_exists,
+      http_cache.pack1.good_package_json,
+      http_cache.pack1.good_tags,
+      http_cache.pack1.good_readme
+    ]);
 
     const res = await vcs.newPackageData(userDataGeneric, ownerRepo, "git");
-    console.log(res.content.versions);
     expect(res.ok).toBe(true);
     expect(res.content.name).toBe("pulsar");
     expect(res.content.creation_method).toBe("User Made Package");
@@ -296,20 +169,14 @@ describe("Does NewPackageData Return as expected", () => {
 describe("Does newVersionData Return as Expected", () => {
   test("Package Error on Bad WebRequest", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 500,
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    http_cache.pack2.bad_pack = new httpMock
+      .HTTP(`/repos/${ownerRepo}/contents/package.json`)
+      .ok(false).short("Failed Request").status(500).parse();
+
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack2.bad_pack
+    ]);
 
     const res = await vcs.newVersionData(userDataGeneric, ownerRepo, "git");
 
@@ -322,33 +189,21 @@ describe("Does newVersionData Return as Expected", () => {
 
   test("Readme Error on Bad Web Request", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}/readme`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 500,
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: {
-              content: "eyAibmFtZSI6ICJoZWxsbyB3b3JsZCIgfQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    http_cache.pack2.good_pack = new httpMock
+      .HTTP(`/repos/${ownerRepo}/contents/package.json`)
+      .ok(true).status(200).body(
+        httpMock.base64('{ "name": "pulsar", "version": "v1.101.0-beta", "repository": "https://github.com/pulsar-edit/pulsar" }')
+      ).parse();
+
+    http_cache.pack2.bad_readme = new httpMock
+      .HTTP(`/repos/${ownerRepo}/readme`)
+      .ok(false).short("Failed Request").status(500).parse();
+
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack2.good_pack,
+      http_cache.pack2.bad_readme
+    ]);
 
     const res = await vcs.newVersionData(userDataGeneric, ownerRepo, "git");
 
@@ -361,46 +216,22 @@ describe("Does newVersionData Return as Expected", () => {
 
   test("Tags Error on Bad Web Request", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}/tags`,
-        obj: {
-          ok: false,
-          short: "Failed Request",
-          content: {
-            status: 500,
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              content:
-                "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/readme`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: {
-              content: "VGhpcyBpcyBhIHJlYWRtZQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-    ];
 
-    const tmpMock = webRequestMockHelper(mockData);
+    http_cache.pack2.good_readme = new httpMock
+      .HTTP(`/repos/${ownerRepo}/readme`)
+      .ok(true).status(200).body(
+        httpMock.base64("This is a readme")
+      ).parse();
+
+    http_cache.pack2.bad_tags = new httpMock
+      .HTTP(`/repos/${ownerRepo}/tags`)
+      .ok(false).short("Failed Request").status(500).parse();
+
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack2.good_pack,
+      http_cache.pack2.good_readme,
+      http_cache.pack2.bad_tags
+    ]);
 
     const res = await vcs.newVersionData(userDataGeneric, ownerRepo, "git");
 
@@ -414,55 +245,26 @@ describe("Does newVersionData Return as Expected", () => {
   test("Returns Valid New Version Data with successful Requests", async () => {
     const ownerRepo = "confused-Techie/pulsar-backend";
 
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}/tags`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: [
-              {
-                name: "v1.101.0-beta",
-                tarball_url:
-                  "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
-                commit: {
-                  sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f",
-                },
-              },
-            ],
-          },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/contents/package.json`,
-        obj: {
-          ok: true,
-          content: {
-            body: {
-              content:
-                "eyAibmFtZSI6ICJwdWxzYXIiLCAidmVyc2lvbiI6ICJ2MS4xMDEuMC1iZXRhIiwgInJlcG9zaXRvcnkiOiAiaHR0cHM6Ly9naXRodWIuY29tL3B1bHNhci1lZGl0L3B1bHNhciIgfQ==",
-              encoding: "base64",
+    http_cache.pack2.good_tags = new httpMock
+      .HTTP(`/repos/${ownerRepo}/tags`)
+      .ok(true).status(200).body(
+        [
+          {
+            name: "v1.101.0-beta",
+            tarball_url:
+              "https://api.github.com/repos/pulsar-edit/pulsar/tarball/refs/tags/v1.101.0-beta",
+            commit: {
+              sha: "dca05a3fccdc7d202e4ce00a5a2d3edef50a640f",
             },
           },
-        },
-      },
-      {
-        url: `/repos/${ownerRepo}/readme`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: {
-              content: "VGhpcyBpcyBhIHJlYWRtZQ==",
-              encoding: "base64",
-            },
-          },
-        },
-      },
-    ];
+        ]
+      ).parse();
 
-    const tmpMock = webRequestMockHelper(mockData);
+    const tmpMock = httpMock.webRequestMock([
+      http_cache.pack2.good_pack,
+      http_cache.pack2.good_readme,
+      http_cache.pack2.good_tags
+    ]);
 
     const res = await vcs.newVersionData(userDataGeneric, ownerRepo, "git");
 
@@ -499,33 +301,26 @@ describe("Ownership Returns as Expected", () => {
       data: {},
     };
 
-    const mockData = [
-      {
-        url: `/repos/${ownerRepo}/collaborators?page=1`,
-        obj: {
-          ok: true,
-          content: {
-            status: 200,
-            body: [
-              {
-                login: "confused-Techie",
-                node_id: userObj.node_id,
-                permissions: {
-                  admin: true,
-                  maintain: true,
-                  push: true,
-                  triage: true,
-                  pull: true,
-                },
-                role_name: "admin",
-              },
-            ],
+    const mockData = new httpMock
+      .HTTP(`/repos/${ownerRepo}/collaborators?page=1`)
+      .ok(true).status(200).body(
+        [
+          {
+            login: "confused-Techie",
+            node_id: userObj.node_id,
+            permissions: {
+              admin: true,
+              maintain: true,
+              push: true,
+              triage: true,
+              pull: true,
+            },
+            role_name: "admin",
           },
-        },
-      },
-    ];
+        ]
+      ).parse();
 
-    const tmpMock = webRequestMockHelper(mockData);
+    const tmpMock = httpMock.webRequestMock([mockData]);
 
     const res = await vcs.ownership(userObj, packObj);
 
