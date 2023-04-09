@@ -12,8 +12,11 @@ const webRequestMockHelper = (data) => {
 
 describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
   test("Returns No ownership with bad auth return of server", async () => {
-    const mockData = new httpMock
-      .HTTP().ok(false).short("Failed Request").status(401).parse().obj;
+    const mockData = new httpMock.HTTP()
+      .ok(false)
+      .short("Failed Request")
+      .status(401)
+      .parse().obj;
 
     const tmpMock = webRequestMockHelper(mockData);
 
@@ -31,18 +34,19 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
   });
 
   test("Returns Successful Ownership", async () => {
-    const mockData = new httpMock
-      .HTTP().ok(true).status(200).body(
-        [
-          {
-            node_id: "456",
-            permissions: {
-              admin: true,
-            },
-            role_name: "admin",
+    const mockData = new httpMock.HTTP()
+      .ok(true)
+      .status(200)
+      .body([
+        {
+          node_id: "456",
+          permissions: {
+            admin: true,
           },
-        ]
-      ).parse().obj;
+          role_name: "admin",
+        },
+      ])
+      .parse().obj;
 
     const tmpMock = webRequestMockHelper(mockData);
     const userData = {
@@ -59,19 +63,20 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
   });
 
   test("Returns No Access when the user isn't listed on a repo", async () => {
-
-    const mockData = new httpMock
-      .HTTP().ok(true).status(200).headers({ link: "" }).body(
-        [
-          {
-            node_id: "789",
-            permissions: {
-              admin: true,
-            },
-            role_name: "admin",
+    const mockData = new httpMock.HTTP()
+      .ok(true)
+      .status(200)
+      .headers({ link: "" })
+      .body([
+        {
+          node_id: "789",
+          permissions: {
+            admin: true,
           },
-        ]
-      ).parse().obj;
+          role_name: "admin",
+        },
+      ])
+      .parse().obj;
 
     const tmpMock = webRequestMockHelper(mockData);
     const userData = {
@@ -87,22 +92,24 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
     expect(res.short).toBe("No Access");
   });
   test("Returns No Access when the user has pull permission", async () => {
-    const mockData = new httpMock
-      .HTTP().ok(true).status(200).headers({ link: ""}).body(
-        [
-          {
-            node_id: "123",
-            permissions: {
-              admin: false,
-              maintain: false,
-              push: false,
-              triage: false,
-              pull: true,
-            },
-            role_name: "pull",
+    const mockData = new httpMock.HTTP()
+      .ok(true)
+      .status(200)
+      .headers({ link: "" })
+      .body([
+        {
+          node_id: "123",
+          permissions: {
+            admin: false,
+            maintain: false,
+            push: false,
+            triage: false,
+            pull: true,
           },
-        ]
-      ).parse().obj;
+          role_name: "pull",
+        },
+      ])
+      .parse().obj;
 
     const tmpMock = webRequestMockHelper(mockData);
     const userData = {
@@ -121,8 +128,11 @@ describe("vcs_providers/github.doesUserHaveRepo() MOCK", () => {
 
 describe("vcs_providers/github.readme() MOCK", () => {
   test("Returns Bad Auth", async () => {
-    const mockData = new httpMock
-      .HTTP().ok(false).short("Failed Request").status(401).parse().obj;
+    const mockData = new httpMock.HTTP()
+      .ok(false)
+      .short("Failed Request")
+      .status(401)
+      .parse().obj;
 
     const tmpMock = webRequestMockHelper(mockData);
 
@@ -134,8 +144,11 @@ describe("vcs_providers/github.readme() MOCK", () => {
     expect(res.short).toBe("Bad Auth");
   });
   test("Unexpected Status Code Returns Server Error", async () => {
-    const mockData = new httpMock
-      .HTTP().ok(false).short("Failed Request").status(404).parse().obj;
+    const mockData = new httpMock.HTTP()
+      .ok(false)
+      .short("Failed Request")
+      .status(404)
+      .parse().obj;
 
     const tmpMock = webRequestMockHelper(mockData);
 

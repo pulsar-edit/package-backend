@@ -54,9 +54,9 @@ class HTTP {
         content: {
           status: this.status,
           headers: this.headers,
-          body: this.body
-        }
-      }
+          body: this.body,
+        },
+      },
     };
   }
 }
@@ -66,7 +66,7 @@ function base64(val) {
   let content = Buffer.from(val).toString("base64");
   return {
     content: content,
-    encoding: "base64"
+    encoding: "base64",
   };
 }
 
@@ -80,11 +80,11 @@ const webRequestMock = (data) => {
         }
       }
     });
-    return tmpMock;
+  return tmpMock;
 };
 
 module.exports = {
   webRequestMock,
   base64,
-  HTTP
+  HTTP,
 };
