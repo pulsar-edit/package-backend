@@ -4,6 +4,20 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - April 13
+
+### Atom-Ink
+
+The [Atom-Ink](https://github.com/JunoLab/atom-ink) package has many coding practices that are no longer valid in JavaScript/NodeJS, such as using reserved words, or using variables without declaring them first, causing the package to crash without manually being edited on Pulsar.
+
+One of the Pulsar contributors has [submitted a fix](https://github.com/JunoLab/atom-ink/pull/289) for this bug, but after four months of inactivity from the maintainer of the package it seems unlikely this will be resolved.
+
+The package is MIT licensed, so if any devs out there would like to pick up the reigns, and get this package functional as a fork, please feel free to do so, and you'd be encouraged to contact the Pulsar Admins about this, so we can update the badges on this package appropriately.
+
+It is for this reason it is **not** recommended to install the `atom-ink` package. It will not work, unless you are comfortable editing the source code of the package manually, or until a community member decides to maintain a fork of said package, which in that event, installing that package would be the recommendation here, rather than not installing.
+
+With the above said, `atom-ink` will receive a [`broken`](./badge-spec.md#broken) badge.
+
 ## 2023 - March 29
 
 Allowed for a seamless takeover of the `language-pegjs` name.
