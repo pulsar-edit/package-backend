@@ -5,7 +5,7 @@ const auth = require("../src/auth.js");
 
 const authMock = (data) => {
   const tmpMock = jest
-    .spyOn(auth.prototype, "verifyAuth")
+    .spyOn(auth, "verifyAuth")
     .mockImplementation((token) => {
       return data;
     });
