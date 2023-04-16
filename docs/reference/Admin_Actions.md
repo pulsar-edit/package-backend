@@ -4,7 +4,17 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
-## 2023 - April 13
+## 2023 - April 15
+
+### Uber-Juno
+
+The [Uber-Juno](https://github.com/JunoLab/uber-juno) package uses an older unsupported coding style, sometimes called JavaScript Sloppy Mode, that's no longer supported in newer versions of NodeJS. Meaning the package crashes as soon as installed, and cannot be used without the user manually editing the source code.
+
+One of the Pulsar contributors has [submitted a fix](https://github.com/JunoLab/uber-juno/pull/85) for this issue, although it has not been updated on the Pulsar Package Registry.
+
+Additionally, Uber-Juno relies on Atom-Ink, which is also broken without any fixes, as mentioned below.
+
+Due to these issues of the package, while the `main` branch is fixed, but it relies on broken dependencies, that render's the package as a whole still broken, and in which case will receive a [`broken`](./badge-spec.md#broken) badge.
 
 ### Atom-Ink
 
