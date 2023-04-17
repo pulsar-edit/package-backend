@@ -1,53 +1,76 @@
 const request = require("supertest");
 const app = require("../src/main.js");
 
+const auth = require("../src/auth.js");
+
+const authMock = (data) => {
+  const internalMock = jest
+    .spyOn(auth, "verifyAuth")
+    .mockImplementationOnce((token) => {
+      return data;
+    });
+  return internalMock;
+};
+
 describe("GET /api/stars", () => {
   test("Returns Unauthenticated Status Code for Invalid User", async () => {
+    tmpMock = authMock({
+      ok: false,
+      short: "Bad Auth",
+      content: "Bad Auth Mock Return for Dev User"
+    });
+
     const res = await request(app)
       .get("/api/stars")
       .set("Authorization", "invalid");
     expect(res).toHaveHTTPCode(401);
-  });
-  test("Returns Unauthenticated JSON for Invalid User", async () => {
-    const res = await request(app)
-      .get("/api/stars")
-      .set("Authorization", "invalid");
     expect(res.body.message).toEqual(msg.badAuth);
+
+    tmpMock.mockClear();
   });
+
   test("Valid User with No Stars Returns array", async () => {
+    tmpMock = authMock({
+      ok: true,
+      content: {
+        token: "no-star-token",
+        id: 342342,
+        node_id: "no-star-test-user",
+        username: "no-star-test-user-node-id",
+        avatar: "https://domain.org"
+      }
+    });
+
     const res = await request(app)
       .get("/api/stars")
       .set("Authorization", "no-star-token");
     expect(res.body).toBeArray();
-  });
-  test("Valid User with No Stars Returns Empty Array", async () => {
-    const res = await request(app)
-      .get("/api/stars")
-      .set("Authorization", "no-star-token");
     expect(res.body.length).toEqual(0);
-  });
-  test("Valid User with No Stars Returns 200 Status Code", async () => {
-    const res = await request(app)
-      .get("/api/stars")
-      .set("Authorization", "no-star-token");
     expect(res).toHaveHTTPCode(200);
+
+    tmpMock.mockClear();
   });
+
   test("Valid User with Stars Returns 200 Status Code", async () => {
+    tmpMock = authMock({
+      ok: true,
+      content: {
+        token: "all-star-token",
+        id: 2222,
+        node_id: "many-star-user-node-id",
+        username: "many-star-user",
+        avatar: "https://domain.org"
+      }
+    });
+
     const res = await request(app)
       .get("/api/stars")
       .set("Authorization", "all-star-token");
     expect(res).toHaveHTTPCode(200);
-  });
-  test("Valid User with Stars Returns Array", async () => {
-    const res = await request(app)
-      .get("/api/stars")
-      .set("Authorization", "all-star-token");
     expect(res.body).toBeArray();
-  });
-  test("Valid User with Stars Returns Non-Empty Array", async () => {
-    const res = await request(app)
-      .get("/api/stars")
-      .set("Authorization", "all-star-token");
     expect(res.body.length).toBeGreaterThan(0);
+
+    tmpMock.mockClear();
   });
+
 });

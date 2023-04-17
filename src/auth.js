@@ -36,8 +36,9 @@ async function verifyAuth(token) {
       process.env.PULSAR_STATUS === "dev" &&
       process.env.MOCK_AUTH !== "false"
     ) {
+      throw new Error("Attempted to access dev data!");
       // Server is in developer mode.
-      userData = getUserDataDevMode(token);
+      //userData = getUserDataDevMode(token);
     } else {
       logger.generic(6, "auth.verifyAuth() Called in Production instance");
       userData = await superagent
