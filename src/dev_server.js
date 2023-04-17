@@ -99,19 +99,27 @@ async function processArgs() {
   for (let i = 0; i < rawArgs.length; i++) {
     if (rawArgs[i] === "--gh") {
       console.log("Setting No Mock GitHub");
-      process.env.MOCK_GH = "false";
+      process.env.MOCK_GH = false;
+    } else {
+      process.env.MOCK_GH = true;
     }
     if (rawArgs[i] === "--google") {
       console.log("Setting No Mock Google");
-      process.env.MOCK_GOOGLE = "false";
+      process.env.MOCK_GOOGLE = false;
+    } else {
+      process.env.MOCK_GOOGLE = true;
     }
     if (rawArgs[i] === "--db") {
       console.log("Setting No Mock Database");
-      process.env.MOCK_DB = "false";
+      process.env.MOCK_DB = false;
+    } else {
+      process.env.MOCK_DB = true;
     }
     if (rawArgs[i] === "--auth") {
       console.log("Setting No Mock Authentication");
-      process.env.MOCK_AUTH = "false";
+      process.env.MOCK_AUTH = false;
+    } else {
+      process.env.MOCK_AUTH = true;
     }
   }
 
