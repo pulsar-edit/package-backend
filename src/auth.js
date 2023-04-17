@@ -36,9 +36,8 @@ async function verifyAuth(token) {
       process.env.PULSAR_STATUS === "dev" &&
       process.env.MOCK_AUTH !== "false"
     ) {
-      throw new Error("Attempted to access dev data!");
-      // Server is in developer mode.
-      //userData = getUserDataDevMode(token);
+      throw new Error("Attempted to access dev auth.verifyAuth() data!");
+
     } else {
       logger.generic(6, "auth.verifyAuth() Called in Production instance");
       userData = await superagent
@@ -115,38 +114,6 @@ async function verifyAuth(token) {
       short: "Server Error",
       content: "An unexpected Error occured while verifying your user.",
     };
-  }
-}
-
-/**
- * @function getUserDataDevMode
- * @desc An internal util to retrieve the user data object in developer mode only.
- * @params {string} token - The token the user provided.
- * @returns {object} A mocked HTTP return containing the minimum information required to mock the return expected from GitHub.
- */
-function getUserDataDevMode(token) {
-  logger.generic(3, "auth.verifyAuth() is returning Dev Only Permissions!");
-
-  switch (token) {
-    case "valid-token":
-      return { status: 200, body: { node_id: "dever-nodeid" } };
-    case "no-valid-token":
-      return { status: 200, body: { node_id: "no-perm-user-nodeid" } };
-    case "admin-token":
-      return { status: 200, body: { node_id: "admin-user-nodeid" } };
-    case "no-star-token":
-      return { status: 200, body: { node_id: "has-no-stars-nodeid" } };
-    case "all-star-token":
-      return {
-        status: 200,
-        body: { node_id: "has-all-stars-nodeid" },
-      };
-    default:
-      logger.generic(3, "No Valid dev user found!");
-      return {
-        status: 401,
-        body: { message: "No Valid dev user found!" },
-      };
   }
 }
 
