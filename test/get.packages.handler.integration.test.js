@@ -142,13 +142,13 @@ describe("GET /api/packages/search", () => {
     const res = await request(app)
       .get("/api/packages/search?q=language")
       .query({ direction: "asc" });
-    expect(res.body[0].name).toBe("language-css");
+    expect(parseInt(res.body[0].downloads, 10)).toBeLessThan(parseInt(res.body[1].downloads, 10));
   });
   test("Sets ASC listing correctly with internal param", async () => {
     const res = await request(app)
       .get("/api/packages/search?q=language")
       .query({ order: "asc" });
-    expect(res.body[0].name).toBe("language-css");
+    expect(parseInt(res.body[0].downloads, 10)).toBeLessThan(parseInt(res.body[1].downloads, 10));
   });
   test("Has the correct order listing by stars", async () => {
     const res = await request(app)

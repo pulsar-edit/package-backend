@@ -16,7 +16,7 @@ const logger = require("./logger.js");
  * @returns {object} A server status object.
  */
 async function verifyAuth(token) {
-  if (token === null || token === undefined) {
+  if (token === null || token === undefined || token.length === 0) {
     logger.generic(
       5,
       "auth.verifyAuth() Returning 'Bad Auth' due to null|undefined token"
