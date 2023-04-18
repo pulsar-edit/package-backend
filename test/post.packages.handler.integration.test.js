@@ -1,16 +1,7 @@
 const request = require("supertest");
 const app = require("../src/main.js");
 
-const auth = require("../src/auth.js");
-
-const authMock = (data) => {
-  const internalMock = jest
-    .spyOn(auth, "verifyAuth")
-    .mockImplementationOnce((token) => {
-      return data;
-    });
-  return internalMock;
-};
+const { authMock } = require("./httpMock.helper.jest.js");
 
 let tmpMock;
 
@@ -54,7 +45,7 @@ describe("Post /api/packages", () => {
     expect(res.body.message).toEqual(msg.badRepoJSON);
     expect(res).toHaveHTTPCode(400);
   });
-  
+
   test("Fails with 'badRepoJSON' when bad repo is passed.", async () => {
     tmpMock = authMock({
       ok: true,

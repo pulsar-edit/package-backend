@@ -1,19 +1,9 @@
 const request = require("supertest");
 const app = require("../src/main.js");
 
-const auth = require("../src/auth.js");
-const vcs = require("../src/vcs.js");
+const { authMock, vcsMock } = require("./httpMock.helper.jest.js");
 
-const authMock = (data) => {
-  const internalMock = jest
-    .spyOn(auth, "verifyAuth")
-    .mockImplementationOnce((token) => {
-      return data;
-    });
-  return internalMock;
-};
-
-let tmpMock;
+let tmpMock, tmpVCSMock;
 
 describe("DELETE /api/packages/:packageName", () => {
   test("No Auth, returns 401", async () => {
@@ -40,12 +30,10 @@ describe("DELETE /api/packages/:packageName", () => {
 
   test("Returns Bad Auth Msg with Valid Token, but no repo access", async () => {
 
-    let vcsMock = jest.spyOn(vcs, "ownership").mockImplementationOnce(() => {
-      return {
-        ok: false,
-        short: "No Repo Access",
-        content: "Dev No Perms granted"
-      };
+    tmpVCSMock = vcsMock({
+      ok: false,
+      short: "No Repo Access",
+      content: "Dev No Perms granted"
     });
 
     tmpMock = authMock({
@@ -66,7 +54,7 @@ describe("DELETE /api/packages/:packageName", () => {
     expect(res).toHaveHTTPCode(401);
 
     tmpMock.mockClear();
-    vcsMock.mockClear();
+    tmpVCSMock.mockClear();
   });
 
   test("Returns Success Message & HTTP with Valid Token", async () => {
@@ -81,11 +69,9 @@ describe("DELETE /api/packages/:packageName", () => {
       }
     });
 
-    let vcsMock = jest.spyOn(vcs, "ownership").mockImplementationOnce(() => {
-      return {
-        ok: true,
-        content: "admin"
-      };
+    tmpVCSMock = vcsMock({
+      ok: true,
+      content: "admin"
     });
 
     const res = await request(app)
@@ -104,7 +90,7 @@ describe("DELETE /api/packages/:packageName", () => {
     );
 
     tmpMock.mockClear();
-    vcsMock.mockClear();
+    tmpVCSMock.mockClear();
   });
   // The ^^ above ^^ reads:
   //  * Expect your Array does NOT Equal
@@ -256,11 +242,9 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
       }
     });
 
-    let vcsMock = jest.spyOn(vcs, "ownership").mockImplementationOnce(() => {
-      return {
-        ok: true,
-        content: "admin"
-      };
+    tmpVCSMock = vcsMock({
+      ok: true,
+      content: "admin"
     });
 
     const res = await request(app)
@@ -270,7 +254,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     expect(res.body.message).toEqual(msg.notFound);
 
     tmpMock.mockClear();
-    vcsMock.mockClear();
+    tmpVCSMock.mockClear();
   });
 
   test("Returns 204 on Success", async () => {
@@ -285,11 +269,9 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
       }
     });
 
-    let vcsMock = jest.spyOn(vcs, "ownership").mockImplementationOnce(() => {
-      return {
-        ok: true,
-        content: "admin"
-      };
+    tmpVCSMock = vcsMock({
+      ok: true,
+      content: "admin"
     });
 
     const res = await request(app)
@@ -299,7 +281,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     expect(res).toHaveHTTPCode(204);
 
     tmpMock.mockClear();
-    vcsMock.mockClear();
+    tmpVCSMock.mockClear();
   });
 
   test("Doesn't allow deletion of only version available", async () => {
@@ -314,11 +296,9 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
       }
     });
 
-    let vcsMock = jest.spyOn(vcs, "ownership").mockImplementationOnce(() => {
-      return {
-        ok: true,
-        content: "admin"
-      };
+    tmpVCSMock = vcsMock({
+      ok: true,
+      content: "admin"
     });
 
     const res = await request(app)
@@ -329,7 +309,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     expect(res.body.message).toEqual(msg.serverError);
 
     tmpMock.mockClear();
-    vcsMock.mockClear();
+    tmpVCSMock.mockClear();
 
   });
 });

@@ -8,6 +8,9 @@
 
 const Git = require("../src/vcs_providers/git.js");
 
+const auth = require("../src/auth.js");
+const vcs = require("../src/vcs.js");
+
 class HTTP {
   constructor(path) {
     this.path = path ?? "";
@@ -83,8 +86,28 @@ const webRequestMock = (data) => {
   return tmpMock;
 };
 
+const authMock = (data) => {
+  const internalMock = jest
+    .spyOn(auth, "verifyAuth")
+    .mockImplementationOnce((token) => {
+      return data;
+    });
+  return internalMock;
+};
+
+const vcsMock = (data) => {
+  const internalMock = jest
+    .spyOn(vcs, "ownership")
+    .mockImplementationOnce(() => {
+      return data;
+    });
+  return internalMock;
+};
+
 module.exports = {
   webRequestMock,
+  authMock,
+  vcsMock,
   base64,
   HTTP,
 };

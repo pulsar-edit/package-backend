@@ -1,16 +1,9 @@
 const request = require("supertest");
 const app = require("../src/main.js");
 
-const auth = require("../src/auth.js");
+const { authMock } = require("./httpMock.helper.jest.js");
 
-const authMock = (data) => {
-  const internalMock = jest
-    .spyOn(auth, "verifyAuth")
-    .mockImplementationOnce((token) => {
-      return data;
-    });
-  return internalMock;
-};
+let tmpMock;
 
 describe("GET /api/stars", () => {
   test("Returns Unauthenticated Status Code for Invalid User", async () => {

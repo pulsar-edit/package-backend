@@ -30,24 +30,14 @@ async function verifyAuth(token) {
   }
 
   try {
-    let userData = null;
 
-    if (
-      process.env.PULSAR_STATUS === "dev" &&
-      process.env.MOCK_AUTH !== "false"
-    ) {
-      throw new Error("Attempted to access dev auth.verifyAuth() data!");
-
-    } else {
-      logger.generic(6, "auth.verifyAuth() Called in Production instance");
-      userData = await superagent
-        .get("https://api.github.com/user")
-        .set({ Authorization: `Bearer ${token}` })
-        .set({ "User-Agent": GH_USERAGENT })
-        .ok((res) => res.status < 500); // Provide custom handler to define what
-      // HTTP Status' are 'OK' since we need the handling on a 401 to inform of
-      // invalid auth, which otherwise emits an error.
-    }
+    let userData = await superagent
+      .get("https://api.github.com/user")
+      .set({ Authorization: `Bearer ${token}` })
+      .set({ "User-Agent": GH_USERAGENT })
+      .ok((res) => res.status < 500); // Provide custom handler to define what
+    // HTTP Status' are 'OK' since we need the handling on a 401 to inform of
+    // invalid auth, which otherwise emits an error.
 
     if (userData.status !== 200) {
       logger.generic(
