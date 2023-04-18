@@ -5,6 +5,18 @@
 
 ## [Unreleased]
 
+## [v1.1.0](https://github.com/pulsar-edit/package-backend/releases/tag/v1.1.0)
+
+* Removed nearly all static data returns during dev runs, to reduce chance of bugs being missed.
+* Removed dev server support.
+* Fixed an issue where delivery time generated badges wouldn't appear on a list.
+* Implemented object builder patterns, to reduce verbosity and knowledge needed throughout the codebase.
+* Improved errors returned during a new package version publish.
+* Improved internal log injection safety checks, to further mitigate any malicious logs.
+* Added a new service filter to the `/api/packages` endpoint, to filter a package based off the services it consumes or provides.
+* Added badge support, and added automated `Made for Pulsar!` badges to packages.
+* Fixed an issue where the `package` `data` column wouldn't be updated correctly during a new version publish.
+* Refactored all `/packages` endpoints, to make future changes and fixes easier.
 * Improved errors returned in some situations to increase transparancy on the server's logic.
 * Fixed an issue that would stop the `rename` query parameter from being handled correctly.
 * Fixed issue that could cause package download URL's to not resolve properly.
