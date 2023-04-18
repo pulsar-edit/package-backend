@@ -39,7 +39,7 @@ describe("Get /api/packages", () => {
     for (const p of res.body) {
       if (p.name === "language-asp") {
         expect(p.badges).toBeArray();
-        expect(p.badges).not.toContainEqual({ title: "Made for Pulsar!", type: "success" });
+        expect(p.badges).toContainEqual({ title: "Made for Pulsar!", type: "success" });
       }
     }
   });
