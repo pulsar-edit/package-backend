@@ -97,21 +97,11 @@ async function processArgs() {
   let rawArgs = process.argv.slice(2);
 
   for (let i = 0; i < rawArgs.length; i++) {
-    if (rawArgs[i] === "--gh") {
-      console.log("Setting No Mock GitHub");
-      process.env.MOCK_GH = "false";
-    }
-    if (rawArgs[i] === "--google") {
-      console.log("Setting No Mock Google");
-      process.env.MOCK_GOOGLE = "false";
-    }
     if (rawArgs[i] === "--db") {
       console.log("Setting No Mock Database");
-      process.env.MOCK_DB = "false";
-    }
-    if (rawArgs[i] === "--auth") {
-      console.log("Setting No Mock Authentication");
-      process.env.MOCK_AUTH = "false";
+      process.env.MOCK_DB = false;
+    } else {
+      process.env.MOCK_DB = true;
     }
   }
 

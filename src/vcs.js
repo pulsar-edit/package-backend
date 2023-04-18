@@ -41,39 +41,6 @@ const semVerInitRegex = /^\s*v/i;
  * to the repo or otherwise a failure.
  */
 async function ownership(userObj, packObj, dev_override = false) {
-  // TODO: Ideally we don't have any static fake returns.
-  // As we have seen this degrades the accuracy of our tests greatly.
-  // Now that we have the whole new Testing System I'd like to move away and remove this
-  // code whole sale, as well as the `dev_override`. But in the interest in finishing
-  // up this PR, and merging before I become to far off from main, we can keep this system for now.
-  // And hopefully rely on our individual vcs tests.
-  if (
-    process.env.PULSAR_STATUS === "dev" &&
-    !dev_override &&
-    process.env.MOCK_GH !== "false"
-  ) {
-    console.log(
-      `git.js.ownership() Is returning Dev Only Permissions for ${userObj.username}`
-    );
-
-    switch (userObj.username) {
-      case "admin_user":
-        return new ServerStatus().isOk().setContent("admin").build();
-      case "no_perm_user":
-        return new ServerStatus()
-          .notOk()
-          .setContent("Development NoPerms User")
-          .setShort("No Repo Access")
-          .build();
-      default:
-        return new ServerStatus()
-          .notOk()
-          .setContent("Server in Dev Mode passed unhandled user")
-          .setShort("Server Error")
-          .build();
-    }
-  }
-  // Non-dev return.
 
   // Since the package is already on the DB when attempting to determine ownership
   // (Or is at least formatted correctly, as if it was) We can directly access the

@@ -106,10 +106,9 @@ The following values can only ever be started when using `npm run start:dev` and
 
 To use any of the following you need to ensure they are passed through the `npm run ...` script by using `npm run start:dev -- YOUR_ARG`
 
-* `--gh`: This will set the environment variable `MOCK_GH` to false, ensuring any requests made in the dev server actually reach out to GitHub ignoring all local development data and logic.
-* `--google`: This will set the environment variable `MOCK_GOOGLE` to false, ensuring any requests made in the dev server actually reach out to Google, ignoring all local development data and logic.
 * `--db`: This will set the environment variable `MOCK_DB` to false, ensuring any requests made in the dev server actually reach out to your DB instance, ignoring all local development data and logic.
-* `--auth`: This will set the environment variable `MOCK_AUTH` to false, ensuring any requests made in the dev server for authentication actually rely on the user within the database (dev or otherwise) and actually reach out to GitHub (dev or otherwise).
+
+All other mock options have now been removed, apon removing dev server support in general. If you find yourself in a situation where you need to run the server in DEV mode, using `--db` and setting your `app.yaml` file to contain the parameters needed to access your local server, this can be done to have data persists when running in development. Otherwise the only other built in mock is for Google Cloud related files, which if `GOOGLE_APPLICATION_CREDENTIALS` in your `app.yaml` is set to `nofile` then remote connections to Google Cloud will be skipped. Otherwise it is your responsibility to properly handle any remote calls to dev resources during Auth, and Git actions.
 
 ## Development with a Local Database
 

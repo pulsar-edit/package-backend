@@ -19,6 +19,7 @@ const config = {
         "<rootDir>/test/global.setup.jest.js",
       ],
       testMatch: ["<rootDir>/test/*.integration.test.js"],
+      //testMatch: ["<rootDir>/test/delete.packages.handler.integration.test.js"],
     },
     {
       displayName: "Unit-Tests",

@@ -40,14 +40,15 @@ async function getBanList() {
 
   const getNew = async function () {
     if (
-      GCLOUD_STORAGE_BUCKET === undefined ||
-      GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS === "dev" &&
-        process.env.MOCK_GOOGLE !== "false")
+      GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
+      process.env.PULSAR_STATUS === "dev"
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
       // We will log a warning, and return preset test data.
+      // Setting GOOGLE_APPLICATION_CREDENTIALS to "nofile" will be the recommended
+      // method for running locally.
+      // TODO: Have this read the data from the ban list locally
       console.log("storage.js.getBanList() Returning Development Set of Data.");
       let list = ["slothoki", "slot-pulsa", "slot-dana", "hoki-slot"];
       cachedBanlist = new CacheObject(list);
@@ -98,14 +99,13 @@ async function getFeaturedPackages() {
 
   const getNew = async function () {
     if (
-      GCLOUD_STORAGE_BUCKET === undefined ||
-      GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS === "dev" &&
-        process.env.MOCK_GOOGLE !== "false")
+      GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
+      process.env.PULSAR_STATUS === "dev"
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
       // We will log a warning, and return preset test data.
+      // TODO: Have this read the featured packages locally
       console.log(
         "storage.js.getFeaturedPackages() Returning Development Set of Data."
       );
@@ -166,14 +166,13 @@ async function getFeaturedThemes() {
 
   const getNew = async function () {
     if (
-      GCLOUD_STORAGE_BUCKET === undefined ||
-      GOOGLE_APPLICATION_CREDENTIALS === undefined ||
-      (process.env.PULSAR_STATUS === "dev" &&
-        process.env.MOCK_GOOGLE !== "false")
+      GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
+      process.env.PULSAR_STATUS === "dev"
     ) {
       // This catches the instance when tests are being run, without access
       // or good reason to reach to 3rd party servers.
       // We will log a warning, and return preset test data.
+      // TODO: Have this read the featured themes locally
       console.log(
         "storage.js.getFeaturedThemes() Returning Development Set of Data."
       );
