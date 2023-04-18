@@ -16,7 +16,7 @@ describe("DELETE /api/packages/:packageName", () => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -29,11 +29,10 @@ describe("DELETE /api/packages/:packageName", () => {
   });
 
   test("Returns Bad Auth Msg with Valid Token, but no repo access", async () => {
-
     tmpVCSMock = vcsMock({
       ok: false,
       short: "No Repo Access",
-      content: "Dev No Perms granted"
+      content: "Dev No Perms granted",
     });
 
     tmpMock = authMock({
@@ -43,8 +42,8 @@ describe("DELETE /api/packages/:packageName", () => {
         id: 342342,
         node_id: "no-repo-access-delete-pkg",
         username: "no-repo-access-delete-pkg-node-id",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -65,13 +64,13 @@ describe("DELETE /api/packages/:packageName", () => {
         id: 342342,
         node_id: "no-repo-access-delete-pkg",
         username: "no-repo-access-delete-pkg-node-id",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     tmpVCSMock = vcsMock({
       ok: true,
-      content: "admin"
+      content: "admin",
     });
 
     const res = await request(app)
@@ -110,7 +109,7 @@ describe("DELETE /api/packages/:packageName/star", () => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -130,8 +129,8 @@ describe("DELETE /api/packages/:packageName/star", () => {
         id: 342342,
         node_id: "no-repo-access-delete-pkg",
         username: "no-repo-access-delete-pkg-node-id",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -151,8 +150,8 @@ describe("DELETE /api/packages/:packageName/star", () => {
         id: 11111,
         node_id: "has-starred-syntax-gfm",
         username: "has-starred-syntax-gfm-node-id",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -171,8 +170,8 @@ describe("DELETE /api/packages/:packageName/star", () => {
         id: 11111,
         node_id: "has-starred-syntax-gfm",
         username: "has-starred-syntax-gfm-node-id",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -197,7 +196,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -217,8 +216,8 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
         id: 234234,
         node_id: "can-delete-version-node-id",
         username: "can-delete-version",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -238,13 +237,13 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
         id: 234234,
         node_id: "can-delete-version-node-id",
         username: "can-delete-version",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     tmpVCSMock = vcsMock({
       ok: true,
-      content: "admin"
+      content: "admin",
     });
 
     const res = await request(app)
@@ -265,13 +264,13 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
         id: 234234,
         node_id: "can-delete-version-node-id",
         username: "can-delete-version",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     tmpVCSMock = vcsMock({
       ok: true,
-      content: "admin"
+      content: "admin",
     });
 
     const res = await request(app)
@@ -292,13 +291,13 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
         id: 234234,
         node_id: "can-delete-version-node-id",
         username: "can-delete-version",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     tmpVCSMock = vcsMock({
       ok: true,
-      content: "admin"
+      content: "admin",
     });
 
     const res = await request(app)
@@ -310,6 +309,5 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
 
     tmpMock.mockClear();
     tmpVCSMock.mockClear();
-
   });
 });

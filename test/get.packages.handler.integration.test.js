@@ -39,7 +39,10 @@ describe("Get /api/packages", () => {
     for (const p of res.body) {
       if (p.name === "language-asp") {
         expect(p.badges).toBeArray();
-        expect(p.badges).toContainEqual({ title: "Made for Pulsar!", type: "success" });
+        expect(p.badges).toContainEqual({
+          title: "Made for Pulsar!",
+          type: "success",
+        });
       }
     }
   });
@@ -152,13 +155,17 @@ describe("GET /api/packages/search", () => {
     const res = await request(app)
       .get("/api/packages/search?q=language")
       .query({ direction: "asc" });
-    expect(parseInt(res.body[0].downloads, 10)).toBeLessThan(parseInt(res.body[1].downloads, 10));
+    expect(parseInt(res.body[0].downloads, 10)).toBeLessThan(
+      parseInt(res.body[1].downloads, 10)
+    );
   });
   test("Sets ASC listing correctly with internal param", async () => {
     const res = await request(app)
       .get("/api/packages/search?q=language")
       .query({ order: "asc" });
-    expect(parseInt(res.body[0].downloads, 10)).toBeLessThan(parseInt(res.body[1].downloads, 10));
+    expect(parseInt(res.body[0].downloads, 10)).toBeLessThan(
+      parseInt(res.body[1].downloads, 10)
+    );
   });
   test("Has the correct order listing by stars", async () => {
     const res = await request(app)
@@ -218,7 +225,10 @@ describe("GET /api/packages/:packageName", () => {
   });
   test("Should contain the 'Made for Pulsar' badge when appropriate", async () => {
     const res = await request(app).get("/api/packages/language-asp");
-    expect(res.body.badges).toContainEqual({ title: "Made for Pulsar!", type: "success" });
+    expect(res.body.badges).toContainEqual({
+      title: "Made for Pulsar!",
+      type: "success",
+    });
   });
 });
 

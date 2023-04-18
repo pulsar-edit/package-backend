@@ -9,7 +9,8 @@
 */
 const postgres = require("postgres");
 const fs = require("fs");
-const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../../src/config.js").getConfig();
+const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
+  require("../../src/config.js").getConfig();
 
 let sqlStorage;
 
@@ -25,16 +26,15 @@ let badgeConfig = {
   type: "",
   title: "",
   text: "",
-  link: ""
+  link: "",
 };
 
 let packageName = "";
 
-const VALID_BADGES = [ "Outdated", "Broken" ];
-const VALID_BADGES_TYPES = [ "warn", "info", "success" ];
+const VALID_BADGES = ["Outdated", "Broken"];
+const VALID_BADGES_TYPES = ["warn", "info", "success"];
 
 async function main() {
-
   if (typeof badgeConfig !== "object") {
     console.error("Invalid Badge Config!");
     process.exit(100);
@@ -87,7 +87,7 @@ async function main() {
       ssl: {
         rejectUnauthorized: true,
         ca: fs.readFileSync(DB_SSL_CERT).toString(),
-      }
+      },
     });
 
     // Get package ID
@@ -136,8 +136,7 @@ async function main() {
     await sqlStorage.end();
     console.log(`Successfully added the badge to ${packageName}`);
     process.exit(0);
-
-  } catch(err) {
+  } catch (err) {
     console.error("An error occured!");
     if (sqlStorage !== undefined) {
       await sqlStorage.end();

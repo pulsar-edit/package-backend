@@ -364,6 +364,5 @@ describe("Ownership Returns as Expected", () => {
 
     expect(res.ok).toBe(true);
     expect(res.content).toBe("admin");
-
   });
 });

@@ -10,7 +10,7 @@ describe("GET /api/stars", () => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -30,8 +30,8 @@ describe("GET /api/stars", () => {
         id: 342342,
         node_id: "no-star-test-user",
         username: "no-star-test-user-node-id",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -52,8 +52,8 @@ describe("GET /api/stars", () => {
         id: 2222,
         node_id: "many-star-user-node-id",
         username: "many-star-user",
-        avatar: "https://domain.org"
-      }
+        avatar: "https://domain.org",
+      },
     });
 
     const res = await request(app)
@@ -65,5 +65,4 @@ describe("GET /api/stars", () => {
 
     tmpMock.mockClear();
   });
-
 });

@@ -30,7 +30,6 @@ async function verifyAuth(token) {
   }
 
   try {
-
     let userData = await superagent
       .get("https://api.github.com/user")
       .set({ Authorization: `Bearer ${token}` })

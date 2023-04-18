@@ -114,9 +114,6 @@ Once that is done, we can go ahead and search for said user within the database.
 If the user exists, then we can confirm that they are both locally and globally
 authenticated, and execute whatever action it is they wanted to.</p>
 </dd>
-<dt><a href="#getUserDataDevMode">getUserDataDevMode()</a> ⇒ <code>object</code></dt>
-<dd><p>An internal util to retrieve the user data object in developer mode only.</p>
-</dd>
 </dl>
 
 ## Typedefs
@@ -2527,14 +2524,6 @@ authenticated, and execute whatever action it is they wanted to.
 
 **Kind**: global function  
 **Returns**: <code>object</code> - A server status object.  
-**Params**: <code>string</code> token - The token the user provided.  
-<a name="getUserDataDevMode"></a>
-
-## getUserDataDevMode() ⇒ <code>object</code>
-An internal util to retrieve the user data object in developer mode only.
-
-**Kind**: global function  
-**Returns**: <code>object</code> - A mocked HTTP return containing the minimum information required to mock the return expected from GitHub.  
 **Params**: <code>string</code> token - The token the user provided.  
 <a name="ServerStatusObject"></a>
 

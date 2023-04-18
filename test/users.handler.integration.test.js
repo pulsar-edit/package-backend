@@ -45,11 +45,10 @@ describe("GET /api/users", () => {
   });
 
   test("Returns Unauthenticated Status Code & Message for Bad Creds", async () => {
-
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev user"
+      content: "Bad Auth Mock Return for Dev user",
     });
 
     const res = await request(app)
@@ -61,7 +60,6 @@ describe("GET /api/users", () => {
     tmpMock.mockClear();
   });
   test("Returns User Data and Proper Status Code for Good Creds", async () => {
-
     tmpMock = authMock({
       ok: true,
       content: {
@@ -72,8 +70,8 @@ describe("GET /api/users", () => {
         avatar: "https://domain.org",
         created_at: "",
         data: {},
-        packages: []
-      }
+        packages: [],
+      },
     });
     // TODO Might have to rethink this one.
 

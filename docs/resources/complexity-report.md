@@ -11,7 +11,7 @@
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
 
-* Physical LOC: 47
+* Physical LOC: 48
 * Logical LOC: 24
 * Mean parameter count: 0
 * Cyclomatic complexity: 1

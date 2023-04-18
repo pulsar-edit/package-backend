@@ -41,7 +41,6 @@ const semVerInitRegex = /^\s*v/i;
  * to the repo or otherwise a failure.
  */
 async function ownership(userObj, packObj, dev_override = false) {
-
   // Since the package is already on the DB when attempting to determine ownership
   // (Or is at least formatted correctly, as if it was) We can directly access the
   // repository object provided by determineProvider

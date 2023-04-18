@@ -6,7 +6,6 @@ const { authMock } = require("./httpMock.helper.jest.js");
 let tmpMock;
 
 describe("Post /api/packages", () => {
-
   afterEach(() => {
     tmpMock.mockClear();
   });
@@ -15,7 +14,7 @@ describe("Post /api/packages", () => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -34,8 +33,8 @@ describe("Post /api/packages", () => {
         id: 9999,
         node_id: "post-pkg-publish-test-user-node-id",
         username: "post-pkg-publish-test-user",
-        avatar: "https://roadtonowhere.com"
-      }
+        avatar: "https://roadtonowhere.com",
+      },
     });
 
     const res = await request(app)
@@ -54,8 +53,8 @@ describe("Post /api/packages", () => {
         id: 9999,
         node_id: "post-pkg-publish-test-user-node-id",
         username: "post-pkg-publish-test-user",
-        avatar: "https://roadtonowhere.com"
-      }
+        avatar: "https://roadtonowhere.com",
+      },
     });
 
     const res = await request(app)
@@ -73,8 +72,8 @@ describe("Post /api/packages", () => {
         id: 9999,
         node_id: "post-pkg-publish-test-user-node-id",
         username: "post-pkg-publish-test-user",
-        avatar: "https://roadtonowhere.com"
-      }
+        avatar: "https://roadtonowhere.com",
+      },
     });
 
     const res = await request(app)
@@ -93,8 +92,8 @@ describe("Post /api/packages", () => {
         id: 9999,
         node_id: "post-pkg-publish-test-user-node-id",
         username: "post-pkg-publish-test-user",
-        avatar: "https://roadtonowhere.com"
-      }
+        avatar: "https://roadtonowhere.com",
+      },
     });
 
     const res = await request(app)
@@ -109,14 +108,12 @@ describe("Post /api/packages", () => {
 });
 
 describe("POST /api/packages/:packageName/versions", () => {
-
   beforeEach(() => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev user"
+      content: "Bad Auth Mock Return for Dev user",
     });
-
   });
 
   afterEach(() => {
@@ -124,20 +121,17 @@ describe("POST /api/packages/:packageName/versions", () => {
   });
 
   test("Returns Bad Auth appropriately with Bad Package", async () => {
-
     const res = await request(app).post(
       "/api/packages/language-golang/versions"
     );
     expect(res).toHaveHTTPCode(401);
     expect(res.body.message).toEqual(msg.badAuth);
-
   });
 
   test.todo("Write all tests on this endpoint");
 });
 
 describe("POST /api/packages/:packageName/star", () => {
-
   afterEach(() => {
     tmpMock.mockClear();
   });
@@ -146,7 +140,7 @@ describe("POST /api/packages/:packageName/star", () => {
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app).post("/api/packages/language-gfm/star");
@@ -158,11 +152,10 @@ describe("POST /api/packages/:packageName/star", () => {
     expect(res.body.message).toEqual(msg.badAuth);
   });
   test("Returns 401 with Bad Auth", async () => {
-
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -171,11 +164,10 @@ describe("POST /api/packages/:packageName/star", () => {
     expect(res).toHaveHTTPCode(401);
   });
   test("Returns Bad Auth Msg with Bad Auth", async () => {
-
     tmpMock = authMock({
       ok: false,
       short: "Bad Auth",
-      content: "Bad Auth Mock Return for Dev User"
+      content: "Bad Auth Mock Return for Dev User",
     });
 
     const res = await request(app)
@@ -184,12 +176,11 @@ describe("POST /api/packages/:packageName/star", () => {
     expect(res.body.message).toEqual(msg.badAuth);
   });
   test("Returns not found with bad package", async () => {
-
     tmpMock = authMock({
       ok: true,
       content: {
-        token: "valid-token"
-      }
+        token: "valid-token",
+      },
     });
 
     const res = await request(app)
@@ -200,7 +191,6 @@ describe("POST /api/packages/:packageName/star", () => {
     expect(res.body.message).toEqual(msg.notFound);
   });
   test("Returns proper data on Success", async () => {
-
     const prev = await request(app).get("/api/packages/language-gfm");
 
     tmpMock = authMock({
@@ -210,8 +200,8 @@ describe("POST /api/packages/:packageName/star", () => {
         id: 999,
         node_id: "post-star-test-user-node-id",
         username: "post-star-test-user",
-        avatar: "https://roadtonowhere.com"
-      }
+        avatar: "https://roadtonowhere.com",
+      },
     });
 
     const res = await request(app)
@@ -227,8 +217,8 @@ describe("POST /api/packages/:packageName/star", () => {
         id: 999,
         node_id: "post-star-test-user-node-id",
         username: "post-star-test-user",
-        avatar: "https://roadtonowhere.com"
-      }
+        avatar: "https://roadtonowhere.com",
+      },
     });
 
     const dup = await request(app)
@@ -258,7 +248,9 @@ describe("POST /api/packages/:packageName/versions/:versionName/events/uninstall
   // This endpoint is now being deprecated, so we will remove tests
   // for handling any kind of actual functionality.
   // Instead ensuring this returns as success to users are unaffected.
-  test.todo("This endpoint is deprecated, once it's fully removed, these tests should be too.");
+  test.todo(
+    "This endpoint is deprecated, once it's fully removed, these tests should be too."
+  );
 
   test("Returns 200 with Valid Package, Bad Version", async () => {
     const res = await request(app)
