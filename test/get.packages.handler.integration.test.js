@@ -33,6 +33,16 @@ describe("Get /api/packages", () => {
     expect(res.headers["query-total"].match(/^\d+$/) === null).toBeFalsy();
     expect(res.headers["query-limit"].match(/^\d+$/) === null).toBeFalsy();
   });
+  test("Should show the 'Made for Pulsar' badge appropriately in a list", async () => {
+    // TODO: The fix to badges is needed here
+    const res = await request(app).get("/api/packages");
+    for (const p of res.body) {
+      if (p.name === "language-asp") {
+        expect(p.badges).toBeArray();
+        expect(p.badges).not.toContainEqual({ title: "Made for Pulsar!", type: "success" });
+      }
+    }
+  });
   test("Should 404 on invalid Method", async () => {
     const res = await request(app).patch("/api/packages");
     expect(res).toHaveHTTPCode(404);
@@ -205,6 +215,10 @@ describe("GET /api/packages/:packageName", () => {
   test("Invalid package, gives not found status code", async () => {
     const res = await request(app).get("/api/packages/invalid-package");
     expect(res).toHaveHTTPCode(404);
+  });
+  test("Should contain the 'Made for Pulsar' badge when appropriate", async () => {
+    const res = await request(app).get("/api/packages/language-asp");
+    expect(res.body.badges).toContainEqual({ title: "Made for Pulsar!", type: "success" });
   });
 });
 
