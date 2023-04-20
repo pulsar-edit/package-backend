@@ -89,6 +89,12 @@ function getConfig() {
       process.env.RATE_LIMIT_GENERIC ?? data.env_variables.RATE_LIMIT_GENERIC,
     RATE_LIMIT_AUTH:
       process.env.RATE_LIMIT_AUTH ?? data.env_variables.RATE_LIMIT_AUTH,
+    WEBHOOK_PUBLISH:
+      process.env.WEBHOOK_PUBLISH ?? data.env_variables.WEBHOOK_PUBLISH,
+    WEBHOOK_VERSION:
+      process.env.WEBHOOK_VERSION ?? data.env_variables.WEBHOOK_VERSION,
+    WEBHOOK_USERNAME:
+      process.env.WEBHOOK_USERNAME ?? data.env_variables.WEBHOOK_USERNAME,
   };
 }
 

@@ -1,6 +1,17 @@
 const request = require("supertest");
 const app = require("../src/main.js");
 
+// Mock any webhooks that would be sent
+const webhook = require("../src/webhook.js");
+
+jest.mock("../src/webhook.js", () => {
+
+  return {
+    alertPublishPackage: jest.fn(),
+    alertPublishVersion: jest.fn()
+  }
+});
+
 const { authMock } = require("./httpMock.helper.jest.js");
 
 let tmpMock;
