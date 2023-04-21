@@ -10,6 +10,7 @@ const logger = require("../logger.js");
 const utils = require("../utils.js");
 const database = require("../database.js");
 const auth = require("../auth.js");
+const webhook = require("../webhook.js");
 
 /**
  * @async
@@ -157,6 +158,9 @@ async function postPackages(req, res) {
     newDbPack.content
   );
   res.status(201).json(packageObjectFull);
+
+  // Return prior to webhook call so user doesn't wait on it
+  await webhook.alertPublishPackage(packageObjectFull, user.content);
 }
 
 /**
@@ -425,6 +429,9 @@ async function postPackagesVersion(req, res) {
 
   res.status(201).json(addVer.content);
   logger.httpLog(req, res);
+
+  // Invoke webhook after returning to user, to not make them wait on it.
+  await webhook.alertPublishVersion(packMetadata.content, user.content);
 }
 
 /**

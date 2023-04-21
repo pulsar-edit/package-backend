@@ -28,6 +28,9 @@ describe("Config Returns all Expected Values", () => {
         LOG_FORMAT: Joi.string().allow("").required(),
         RATE_LIMIT_GENERIC: Joi.number().integer().required(),
         RATE_LIMIT_AUTH: Joi.number().integer().required(),
+        WEBHOOK_PUBLISH: Joi.string().allow("").required(),
+        WEBHOOK_VERSION: Joi.string().allow("").required(),
+        WEBHOOK_USERNAME: Joi.string().allow("").required(),
       })
       .required();
 
