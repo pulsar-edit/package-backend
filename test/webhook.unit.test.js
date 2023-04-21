@@ -4,20 +4,18 @@ const logger = require("../src/logger.js");
 
 jest.mock("../src/logger.js", () => {
   return {
-    generic: jest.fn()
-  }
+    generic: jest.fn(),
+  };
 });
 
 jest.mock("superagent", () => {
-
   return {
     send: jest.fn().mockReturnThis(),
-    post: jest.fn().mockReturnThis()
-  }
+    post: jest.fn().mockReturnThis(),
+  };
 });
 
 describe("Publish Webhook", () => {
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -25,19 +23,18 @@ describe("Publish Webhook", () => {
   test("Success as Expected", async () => {
     let hookSend = await webhook.alertPublishPackage(
       {
-        name: "Dev Package"
+        name: "Dev Package",
       },
       {
-        username: "Dev User"
+        username: "Dev User",
       }
     );
-
 
     expect(superagent.post).toHaveBeenCalled();
     expect(superagent.send).toHaveBeenCalled();
     expect(superagent.send).toHaveBeenCalledWith(
       expect.objectContaining({
-        content: "Dev User Published Dev Package to Pulsar!"
+        content: "Dev User Published Dev Package to Pulsar!",
       })
     );
   });
@@ -45,7 +42,7 @@ describe("Publish Webhook", () => {
   test("Fails if not given proper data", async () => {
     let hookSend = await webhook.alertPublishPackage(
       {
-        name: "language"
+        name: "language",
       },
       {}
     );
@@ -57,13 +54,10 @@ describe("Publish Webhook", () => {
       3,
       "Webhook for package language was missing required fields!"
     );
-
   });
-
 });
 
 describe("Version Webhook", () => {
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -73,11 +67,11 @@ describe("Version Webhook", () => {
       {
         name: "language-css",
         metadata: {
-          version: "1.0.0"
-        }
+          version: "1.0.0",
+        },
       },
       {
-        username: "confused-Techie"
+        username: "confused-Techie",
       }
     );
 
@@ -85,7 +79,8 @@ describe("Version Webhook", () => {
     expect(superagent.send).toHaveBeenCalled();
     expect(superagent.send).toHaveBeenCalledWith(
       expect.objectContaining({
-        content: "confused-Techie Published version 1.0.0 of language-css to Pulsar!"
+        content:
+          "confused-Techie Published version 1.0.0 of language-css to Pulsar!",
       })
     );
   });
@@ -94,10 +89,10 @@ describe("Version Webhook", () => {
     let hookSend = await webhook.alertPublishVersion(
       {
         name: "langauge-css",
-        metadata: {}
+        metadata: {},
       },
       {
-        username: "confused-Techie"
+        username: "confused-Techie",
       }
     );
 
@@ -107,6 +102,6 @@ describe("Version Webhook", () => {
     expect(logger.generic).toHaveBeenCalledWith(
       3,
       "Webhook for version of langauge-css was missing required fields!"
-    )
+    );
   });
 });

@@ -5,11 +5,10 @@ const app = require("../src/main.js");
 const webhook = require("../src/webhook.js");
 
 jest.mock("../src/webhook.js", () => {
-
   return {
     alertPublishPackage: jest.fn(),
-    alertPublishVersion: jest.fn()
-  }
+    alertPublishVersion: jest.fn(),
+  };
 });
 
 const { authMock } = require("./httpMock.helper.jest.js");

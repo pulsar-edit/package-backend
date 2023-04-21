@@ -69,6 +69,9 @@ with Version Control Systems of different types in the cloud.
 To collect data from them, format it accordingly ang return it to the requesting
 function.</p>
 </dd>
+<dt><a href="#module_webhook">webhook</a></dt>
+<dd><p>Handles sending out webhooks based on function calls.</p>
+</dd>
 <dt><a href="#module_common_handler">common_handler</a></dt>
 <dd><p>Provides a simplistic way to refer to implement common endpoint returns.
 So these can be called as an async function without more complex functions, reducing
@@ -1696,6 +1699,53 @@ with it.
 | Param | Type | Description |
 | --- | --- | --- |
 | repo | <code>string</code> \| <code>object</code> | The `repository` of the retrieved package. |
+
+<a name="module_webhook"></a>
+
+## webhook
+Handles sending out webhooks based on function calls.
+
+
+* [webhook](#module_webhook)
+    * [~alertPublishPackage(pack, user)](#module_webhook..alertPublishPackage)
+    * [~alertPublishVersion(pack, user)](#module_webhook..alertPublishVersion)
+    * [~sendWebHook(obj, webhookURL)](#module_webhook..sendWebHook)
+
+<a name="module_webhook..alertPublishPackage"></a>
+
+### webhook~alertPublishPackage(pack, user)
+Used to send a webhook of a new package being published.
+
+**Kind**: inner method of [<code>webhook</code>](#module_webhook)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pack | <code>object</code> | The full package object being published. |
+| user | <code>object</code> | The full user object. |
+
+<a name="module_webhook..alertPublishVersion"></a>
+
+### webhook~alertPublishVersion(pack, user)
+Used to send a webhook of a new package version being published.
+
+**Kind**: inner method of [<code>webhook</code>](#module_webhook)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| pack | <code>object</code> | The full package object and version being published. |
+| user | <code>object</code> | The full user object. |
+
+<a name="module_webhook..sendWebHook"></a>
+
+### webhook~sendWebHook(obj, webhookURL)
+Used to preform the actual sending of the webhook.
+
+**Kind**: inner method of [<code>webhook</code>](#module_webhook)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>object</code> | The Object to send via the webhook |
+| webhookURL | <code>string</code> | The URL to send the webhook to. |
 
 <a name="module_common_handler"></a>
 

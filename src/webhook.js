@@ -4,7 +4,8 @@
  */
 
 const superagent = require("superagent");
-const { WEBHOOK_PUBLISH, WEBHOOK_VERSION, WEBHOOK_USERNAME, server_url } = require("./config.js").getConfig();
+const { WEBHOOK_PUBLISH, WEBHOOK_VERSION, WEBHOOK_USERNAME, server_url } =
+  require("./config.js").getConfig();
 const logger = require("./logger.js");
 
 /**
@@ -15,13 +16,12 @@ const logger = require("./logger.js");
  * @param {object} user - The full user object.
  */
 async function alertPublishPackage(pack, user) {
-
   // Lets do a safety check of the data we need
-  if (
-    typeof user.username !== "string" ||
-    typeof pack.name !== "string"
-  ) {
-    logger.generic(3, `Webhook for package ${pack?.name} was missing required fields!`);
+  if (typeof user.username !== "string" || typeof pack.name !== "string") {
+    logger.generic(
+      3,
+      `Webhook for package ${pack?.name} was missing required fields!`
+    );
     return;
   }
 
@@ -33,10 +33,10 @@ async function alertPublishPackage(pack, user) {
       {
         url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
         image: {
-          url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`
-        }
-      }
-    ]
+          url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
+        },
+      },
+    ],
   };
 
   let sendHook = await sendWebHook(sendObj, WEBHOOK_PUBLISH);
@@ -44,7 +44,7 @@ async function alertPublishPackage(pack, user) {
   if (!sendHook.ok) {
     logger.generic(3, "Sending Package Publish webhook failed", {
       err: sendHook.content,
-      type: "error"
+      type: "error",
     });
   }
   return;
@@ -58,21 +58,23 @@ async function alertPublishPackage(pack, user) {
  * @param {object} user - The full user object.
  */
 async function alertPublishVersion(pack, user) {
-
   // Lets do a safety check of the data we need.
   if (
     typeof user.username !== "string" ||
     typeof pack.metadata.version !== "string" ||
     typeof pack.name !== "string"
   ) {
-    logger.generic(3, `Webhook for version of ${pack?.name} was missing required fields!`);
+    logger.generic(
+      3,
+      `Webhook for version of ${pack?.name} was missing required fields!`
+    );
     return;
   }
 
   // Now with our data we can generate our webhook data.
   let sendObj = {
     username: WEBHOOK_USERNAME,
-    content: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`
+    content: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`,
   };
 
   let sendHook = await sendWebHook(sendObj, WEBHOOK_VERSION);
@@ -80,7 +82,7 @@ async function alertPublishVersion(pack, user) {
   if (!sendHook.ok) {
     logger.generic(3, "Sending Package Version Publish webhook failed", {
       err: sendHook.content,
-      type: "error"
+      type: "error",
     });
   }
   return;
@@ -99,12 +101,12 @@ async function sendWebHook(obj, webhookURL) {
     let send = await superagent.post(webhookURL).send(obj);
     // there was no error caught, so return
     return { ok: true };
-  } catch(err) {
+  } catch (err) {
     // our webhook failed
     return {
       ok: false,
-      content: err
-    }
+      content: err,
+    };
   }
 }
 
