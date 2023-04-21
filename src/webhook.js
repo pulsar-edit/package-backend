@@ -75,6 +75,14 @@ async function alertPublishVersion(pack, user) {
   let sendObj = {
     username: WEBHOOK_USERNAME,
     content: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`,
+    embeds: [
+      {
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
+        image: {
+          url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
+        }
+      }
+    ]
   };
 
   let sendHook = await sendWebHook(sendObj, WEBHOOK_VERSION);
