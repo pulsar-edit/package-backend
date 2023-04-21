@@ -80,9 +80,9 @@ async function alertPublishVersion(pack, user) {
         url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
         image: {
           url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   let sendHook = await sendWebHook(sendObj, WEBHOOK_VERSION);
