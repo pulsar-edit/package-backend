@@ -4,7 +4,7 @@
  */
 
 const superagent = require("superagent");
-const { WEBHOOK_PUBLISH, WEBHOOK_VERSION, WEBHOOK_USERNAME, server_url } =
+const { WEBHOOK_PUBLISH, WEBHOOK_VERSION, WEBHOOK_USERNAME } =
   require("./config.js").getConfig();
 const logger = require("./logger.js");
 
@@ -75,6 +75,14 @@ async function alertPublishVersion(pack, user) {
   let sendObj = {
     username: WEBHOOK_USERNAME,
     content: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`,
+    embeds: [
+      {
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
+        image: {
+          url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
+        }
+      }
+    ]
   };
 
   let sendHook = await sendWebHook(sendObj, WEBHOOK_VERSION);
@@ -98,7 +106,7 @@ async function alertPublishVersion(pack, user) {
 async function sendWebHook(obj, webhookURL) {
   try {
     // Send our webhook data
-    let send = await superagent.post(webhookURL).send(obj);
+    await superagent.post(webhookURL).send(obj);
     // there was no error caught, so return
     return { ok: true };
   } catch (err) {
