@@ -141,20 +141,6 @@ async function deletePackageVersion(req, res) {
     return;
   }
 
-  //const packMetadata = packageExists.content?.versions[0]?.meta;
-
-  //if (packMetadata === null) {
-  //  await common.handleError(req, res, {
-  //    ok: false,
-  //    short: "Not Found",
-  //    content: `Cannot retrieve metadata for ${params.packageName} package`,
-  //  });
-  //}
-
-  //const gitowner = await git.ownership(
-  //  user.content,
-  //  utils.getOwnerRepoFromPackage(packMetadata)
-  //);
   const gitowner = await vcs.ownership(user.content, packageExists.content);
 
   if (!gitowner.ok) {
