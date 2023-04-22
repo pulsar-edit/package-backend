@@ -4,6 +4,30 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - April 15
+
+### Uber-Juno
+
+The [Uber-Juno](https://github.com/JunoLab/uber-juno) package uses an older unsupported coding style, sometimes called JavaScript Sloppy Mode, that's no longer supported in newer versions of NodeJS. Meaning the package crashes as soon as installed, and cannot be used without the user manually editing the source code.
+
+One of the Pulsar contributors has [submitted a fix](https://github.com/JunoLab/uber-juno/pull/85) for this issue, although it has not been updated on the Pulsar Package Registry.
+
+Additionally, Uber-Juno relies on Atom-Ink, which is also broken without any fixes, as mentioned below.
+
+Due to these issues of the package, while the `main` branch is fixed, but it relies on broken dependencies, that render's the package as a whole still broken, and in which case will receive a [`broken`](./badge-spec.md#broken) badge.
+
+### Atom-Ink
+
+The [Atom-Ink](https://github.com/JunoLab/atom-ink) package has many coding practices that are no longer valid in JavaScript/NodeJS, such as using reserved words, or using variables without declaring them first, causing the package to crash without manually being edited on Pulsar.
+
+One of the Pulsar contributors has [submitted a fix](https://github.com/JunoLab/atom-ink/pull/289) for this bug, but after four months of inactivity from the maintainer of the package it seems unlikely this will be resolved.
+
+The package is MIT licensed, so if any devs out there would like to pick up the reigns, and get this package functional as a fork, please feel free to do so, and you'd be encouraged to contact the Pulsar Admins about this, so we can update the badges on this package appropriately.
+
+It is for this reason it is **not** recommended to install the `atom-ink` package. It will not work, unless you are comfortable editing the source code of the package manually, or until a community member decides to maintain a fork of said package, which in that event, installing that package would be the recommendation here, rather than not installing.
+
+With the above said, `atom-ink` will receive a [`broken`](./badge-spec.md#broken) badge.
+
 ## 2023 - March 29
 
 Allowed for a seamless takeover of the `language-pegjs` name.

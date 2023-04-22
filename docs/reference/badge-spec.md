@@ -70,3 +70,11 @@ That is, if a Pulsar users on a supported platform, indepent of any other issues
 This badge would be added on a case by case basis, and would likely only be added if Pulsar users are reporting the error.
 
 As with all other badges this badge may be removed at any time, and if you, as a package maintainer have updated a package and did not see this badge removed automatically, or within a reasonable time, feel free to [create an issue](https://github.com/pulsar-edit/package-backend/issues) asking for it to be removed.
+
+## Broken
+
+The `Broken` badge is used to indicate that the package available on the Pulsar Package Registry does not work at all in it's current form, on any supported platform. Either requiring manual changes to the source code, or otherwise being unrealistic to fix from the users perspective.
+
+This package likely emits warnings immediately, or may even cause the editor to crash as a whole. Installation of these packages is not recommended by the Pulsar team, and instead it is encouraged to work with the original maintainer to get these packages working, or otherwise the community is encouraged to maintain and manage a fork of said package.
+
+If a community member does decide to maintain a fork of a package with a `Broken` status, it's recommended to make the Pulsar Admins or Pulsar Backend Admins aware of this, so any warnings and links on the original package can be changed to recommend installation of your functional fork.
