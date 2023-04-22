@@ -4,6 +4,12 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - April 22
+
+The community package `language-nasmx86` has been found to have been removed from GitHub, meaning the package is no longer downloadable.
+
+As this package is broken in such a way that it cannot be fixed, it will be removed from the backend while keeping the reserved name to avoid any Supply Chain Attacks targeting this package.
+
 ## 2023 - March 29
 
 Allowed for a seamless takeover of the `language-pegjs` name.
