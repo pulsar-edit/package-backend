@@ -28,15 +28,13 @@ async function alertPublishPackage(pack, user) {
   // Now with our data we can generate the webhook data we want to send out.
   let sendObj = {
     username: WEBHOOK_USERNAME,
-    content: `${user.username} Published ${pack.name} to Pulsar!`,
     embeds: [
       {
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
+        title: `${user.username} Published ${pack.name} to Pulsar!`,
         image: {
           url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
         },
-      },
-      {
-        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
       },
     ],
   };
@@ -76,15 +74,13 @@ async function alertPublishVersion(pack, user) {
   // Now with our data we can generate our webhook data.
   let sendObj = {
     username: WEBHOOK_USERNAME,
-    content: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`,
     embeds: [
       {
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
+        title: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`,
         image: {
           url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
         },
-      },
-      {
-        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
       },
     ],
   };
