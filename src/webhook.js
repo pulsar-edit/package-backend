@@ -36,8 +36,8 @@ async function alertPublishPackage(pack, user) {
         },
       },
       {
-        url: `https://web.pulsar-edit.dev/packages/${pack.name}`
-      }
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
+      },
     ],
   };
 
@@ -84,8 +84,8 @@ async function alertPublishVersion(pack, user) {
         },
       },
       {
-        url: `https://web.pulsar-edit.dev/packages/${pack.name}`
-      }
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
+      },
     ],
   };
 
