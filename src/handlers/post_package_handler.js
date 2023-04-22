@@ -159,8 +159,11 @@ async function postPackages(req, res) {
   );
   res.status(201).json(packageObjectFull);
 
-  // Return prior to webhook call so user doesn't wait on it
+  // === Preform after publish actions, done after return to avoid user wait time
+
+  // Webhook for Publication
   await webhook.alertPublishPackage(packageObjectFull, user.content);
+
 }
 
 /**
@@ -430,8 +433,25 @@ async function postPackagesVersion(req, res) {
   res.status(201).json(addVer.content);
   logger.httpLog(req, res);
 
-  // Invoke webhook after returning to user, to not make them wait on it.
+  // === Preform after version publish actions, done after return to avoid user wait time
+
+  // Webhook for Version Publication
   await webhook.alertPublishVersion(packMetadata.content, user.content);
+
+  // Badge Check
+  if (Array.isArray(packMetadata.content.badges)) {
+    // Then we want to find and remove any badges that are invalidated on new versions
+    let replacementBadges = [];
+    for (const b of packMetadata.content.badges) {
+      if (b.title !== "Outdated") {
+        replacementBadges.push(b);
+      }
+    }
+    // Now that we have collected all badges that shouldn't be pruned, lets equality check
+
+    // (will likely need to make a utils array equals function)
+    // If not equal, write the new array to the DB, if it is, then return without action
+  }
 }
 
 /**
