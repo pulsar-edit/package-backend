@@ -31,11 +31,13 @@ async function alertPublishPackage(pack, user) {
     content: `${user.username} Published ${pack.name} to Pulsar!`,
     embeds: [
       {
-        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
         image: {
           url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
         },
       },
+      {
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`
+      }
     ],
   };
 
@@ -77,11 +79,13 @@ async function alertPublishVersion(pack, user) {
     content: `${user.username} Published version ${pack.metadata.version} of ${pack.name} to Pulsar!`,
     embeds: [
       {
-        url: `https://web.pulsar-edit.dev/packages/${pack.name}`,
         image: {
           url: `https://image.pulsar-edit.dev/packages/${pack.name}?image_kind=default`,
         },
       },
+      {
+        url: `https://web.pulsar-edit.dev/packages/${pack.name}`
+      }
     ],
   };
 
