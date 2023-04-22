@@ -230,7 +230,7 @@ async function postPackagesVersion(req, res) {
   // When a package is being renamed, we will expect that packageName will
   // match a previously published package.
   // But then the `name` of their `package.json` will be different.
-  // And if they are, we expect that `auth` is true. Because otherwise it will fail.
+  // And if they are, we expect that `rename` is true. Because otherwise it will fail.
   // That's the methodology, the logic here just needs to catch up.
 
   const user = await auth.verifyAuth(params.auth);
@@ -280,59 +280,6 @@ async function postPackagesVersion(req, res) {
     await common.handleError(req, res, packMetadata);
     return;
   }
-  // Now it's important to note, that getPackageJSON was intended to be an internal function.
-  // As such does not return a Server Status Object. This may change later, but for now,
-  // we will expect `undefined` to not be success.
-  //const packJSON = await git.getPackageJSON(ownerRepo, user.content);
-
-  //if (packJSON === undefined) {
-  //  logger.generic(6, `Unable to get Package JSON from git with: ${ownerRepo}`);
-  //  await common.handleError(req, res, {
-  //    ok: false,
-  //    short: "Bad Package",
-  //    content: `Failed to get Package JSON: ${ownerRepo}`,
-  //  });
-  //  return;
-  //}
-
-  // Now we will also need to get the packages data to update on the db
-  // during version pushes.
-
-  //const packReadme = await git.getRepoReadMe(ownerRepo, user.content);
-  // Again important to note, this was intended as an internal function of git
-  // As such does not return a Server Status Object, and instead returns the obj or null
-  //if (packReadme === undefined) {
-  //  logger.generic(
-  //    6,
-  //    `Unable to Get Package Readme from git with: ${ownerRepo}`
-  //  );
-  //  await common.handleError(req, res, {
-  //    ok: false,
-  //    short: "Bad Package",
-  //    content: `Failed to get Package Readme: ${ownerRepo}`,
-  //  });
-  //}
-
-  //const packMetadata = await git.metadataAppendTarballInfo(
-  //  packJSON,
-  //  packJSON.version,
-  //  user.content
-  //);
-  //if (packMetadata === undefined) {
-  //  await common.handleError(req, res, {
-  //    ok: false,
-  //    short: "Bad Package",
-  //    content: `Failed to get Package metadata info: ${ownerRepo}`,
-  //  });
-  //}
-
-  // Now construct the object that will be used to update the `data` column.
-  //const packageData = {
-  //  name: packMetadata.name.toLowerCase(),
-  //  repository: git.selectPackageRepository(packMetadata.repository),
-  //  readme: packReadme,
-  //  metadata: packMetadata,
-  //};
 
   const newName = packMetadata.content.name;
 
@@ -354,13 +301,9 @@ async function postPackagesVersion(req, res) {
   // Else we will continue, and trust the name provided from the package as being accurate.
   // And now we can ensure the user actually owns this repo, with our updated name.
 
-  // But to support a GH repo being renamed, we will now regrab the owner/repo combo
-  // From the newest updated `package.json` info, just in case it's changed that will be
-  // supported here
+  // By passing `packMetadata` explicitely, it ensures that data we use to check
+  // ownership is fresh, allowing for things like a package rename.
 
-  ownerRepo = utils.getOwnerRepoFromPackage(packMetadata.content.metadata);
-
-  //const gitowner = await git.ownership(user.content, ownerRepo);
   const gitowner = await vcs.ownership(user.content, packMetadata.content);
 
   if (!gitowner.ok) {
@@ -424,8 +367,6 @@ async function postPackagesVersion(req, res) {
     });
     return;
   }
-
-  // TODO: Additionally update things like the readme on the package here
 
   res.status(201).json(addVer.content);
   logger.httpLog(req, res);
