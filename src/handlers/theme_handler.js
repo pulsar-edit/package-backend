@@ -28,20 +28,24 @@ const { server_url } = require("../config.js").getConfig();
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/featured
  */
-async function getThemeFeatured(req, res) {
+async function getThemeFeatured() {
   // Returns Package Object Short Array
-  // Supports engine query parameter.
+
   let col = await database.getFeaturedThemes();
 
   if (!col.ok) {
-    await common.handleError(req, res, col);
-    return;
+    return {
+      ok: false,
+      content: col
+    };
   }
 
   let newCol = await utils.constructPackageObjectShort(col.content);
 
-  res.status(200).json(newCol);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: newCol
+  };
 }
 
 /**
@@ -54,12 +58,7 @@ async function getThemeFeatured(req, res) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes
  */
-async function getThemes(req, res) {
-  const params = {
-    page: query.page(req),
-    sort: query.sort(req),
-    direction: query.dir(req),
-  };
+async function getThemes(params) {
 
   const packages = await database.getSortedPackages(params, true);
 
@@ -68,8 +67,11 @@ async function getThemes(req, res) {
       3,
       `getThemes-getSortedPackages Not OK: ${packages.content}`
     );
-    await common.handleError(req, res, packages);
-    return;
+    return {
+      ok: false,
+      content: packages
+    };
+
   }
 
   const page = packages.pagination.page;
@@ -88,12 +90,14 @@ async function getThemes(req, res) {
     }&order=${params.direction}>; rel="next"`;
   }
 
-  res.append("Link", link);
-  res.append("Query-Total", packages.pagination.count);
-  res.append("Query-Limit", packages.pagination.limit);
+  return {
+    ok: true,
+    link: link,
+    total: packages.pagination.count,
+    limit: packages.pagination.limit,
+    content: packArray
+  };
 
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
 }
 
 /**

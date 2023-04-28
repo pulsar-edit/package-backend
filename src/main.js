@@ -16,6 +16,7 @@ const common_handler = require("./handlers/common_handler.js");
 const oauth_handler = require("./handlers/oauth_handler.js");
 const server_version = require("../package.json").version;
 const logger = require("./logger.js");
+const query = require("./query.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
 const { RATE_LIMIT_AUTH, RATE_LIMIT_GENERIC } =
@@ -218,7 +219,26 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
       await package_handler.getPackages(req, res);
       break;
     case "themes":
-      await theme_handler.getThemes(req, res);
+      let params = {
+        page: query.page(req),
+        sort: query.sort(req),
+        direction: query.dir(req)
+      };
+      let ret = await theme_handler.getThemes(params);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we will handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+      
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
+
       break;
     default:
       next();
@@ -318,7 +338,15 @@ app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
       await package_handler.getPackagesFeatured(req, res);
       break;
     case "themes":
-      await theme_handler.getThemeFeatured(req, res);
+      let ret = await theme_handler.getThemeFeatured();
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
     default:
       next();
