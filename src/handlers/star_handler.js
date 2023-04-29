@@ -5,25 +5,20 @@
 
 const logger = require("../logger.js");
 const database = require("../database.js");
-const common = require("./common_handler.js");
 const utils = require("../utils.js");
 const auth = require("../auth.js");
-const query = require("../query.js");
 
 /**
  * @async
  * @function getStars
  * @desc Endpoint for `GET /api/stars`. Whose endgoal is to return an array of all packages
  * the authenticated user has stared.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} param - The supported query parameters.
+ * @param {string} param.auth - The authentication API token
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/stars
  */
-async function getStars(req, res) {
-  let params = {
-    auth: query.auth(req),
-  };
+async function getStars(params) {
 
   let user = await auth.verifyAuth(params.auth);
 
@@ -32,8 +27,10 @@ async function getStars(req, res) {
       type: "object",
       obj: user,
     });
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   let userStars = await database.getStarredPointersByUserID(user.content.id);
@@ -43,8 +40,10 @@ async function getStars(req, res) {
       type: "object",
       obj: userStars,
     });
-    await common.handleError(req, res, userStars);
-    return;
+    return {
+      ok: false,
+      content: userStars
+    };
   }
 
   if (userStars.content.length === 0) {
@@ -52,9 +51,10 @@ async function getStars(req, res) {
     // If we have a return with no items, means the user has no stars.
     // And this will error out later when attempting to collect the data for the stars.
     // So we will reutrn here
-    res.status(200).json([]);
-    logger.httpLog(req, res);
-    return;
+    return {
+      ok: true,
+      content: []
+    };
   }
 
   let packCol = await database.getPackageCollectionByID(userStars.content);
@@ -64,14 +64,18 @@ async function getStars(req, res) {
       type: "object",
       obj: packCol,
     });
-    await common.handleError(req, res, packCol);
-    return;
+    return {
+      ok: false,
+      content: packCol
+    };
   }
 
   let newCol = await utils.constructPackageObjectShort(packCol.content);
 
-  res.status(200).json(newCol);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: newCol
+  };
 }
 
 module.exports = {

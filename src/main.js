@@ -1199,7 +1199,19 @@ app.options("/api/users/:login", genericLimit, async (req, res) => {
  *   @Rtype application/json
  */
 app.get("/api/stars", authLimit, async (req, res) => {
-  await star_handler.getStars(req, res);
+  const params = {
+    auth: query.auth(req)
+  };
+
+  let ret = await star_handler.getStars(params);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/stars", genericLimit, async (req, res) => {
