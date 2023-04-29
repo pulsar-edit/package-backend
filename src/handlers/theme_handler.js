@@ -1,17 +1,15 @@
 /**
  * @module theme_handler
  * @desc Endpoint Handlers relating to themes only.
- * @implements {command_handler}
  * @implements {database}
  * @implements {utils}
  * @implements {logger}
+ * @implements {config}
  */
 
-const common = require("./common_handler.js");
 const database = require("../database.js");
 const utils = require("../utils.js");
 const logger = require("../logger.js");
-const query = require("../query.js");
 const { server_url } = require("../config.js").getConfig();
 
 /**
