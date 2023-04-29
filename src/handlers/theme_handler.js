@@ -23,8 +23,6 @@ const { server_url } = require("../config.js").getConfig();
  * on Atom.io for now. Although there are plans to have this become automatic later on.
  * @see {@link https://github.com/atom/apm/blob/master/src/featured.coffee|Source Code}
  * @see {@link https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23|Discussion}
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/featured
  */
@@ -53,8 +51,11 @@ async function getThemeFeatured() {
  * @function getThemes
  * @desc Endpoint to return all Themes to the user. Based on any filtering
  * they'ved applied via query parameters.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters that can operate on this endpoint.
+ * @param {integer} params.page - The page of results to retreive.
+ * @param {string} params.sort - The sort method to use.
+ * @param {string} params.direction - The direction to sort results.
+ * @returns {object} An HTTP ServerStatus.
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes
  */
@@ -104,18 +105,15 @@ async function getThemes(params) {
  * @async
  * @function getThemesSearch
  * @desc Endpoint to Search from all themes on the registry.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters from the initial request.
+ * @param {integer} params.page - The page number to return
+ * @param {string} params.sort - The method to use to sort
+ * @param {string} params.direction - The direction to sort
+ * @param {string} params.query - The search query to use
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/search
  */
-async function getThemesSearch(req, res) {
-  const params = {
-    sort: query.sort(req),
-    page: query.page(req),
-    direction: query.dir(req),
-    query: query.query(req),
-  };
+async function getThemesSearch(params) {
 
   const packs = await database.simpleSearch(
     params.query,
@@ -131,13 +129,20 @@ async function getThemesSearch(req, res) {
         4,
         "getThemesSearch-simpleSearch Responding with Empty Array for Not Found Status"
       );
-      res.status(200).json([]);
-      logger.httpLog(req, res);
-      return;
+      return {
+        ok: true,
+        content: [],
+        link: "",
+        total: 0,
+        limit: 0
+      };
     }
+
     logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${packs.content}`);
-    await common.handleError(req, res, packs);
-    return;
+    return {
+      ok: false,
+      content: packs
+    };
   }
 
   const page = packs.pagination.page;
@@ -170,12 +175,14 @@ async function getThemesSearch(req, res) {
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
-  res.append("Link", link);
-  res.append("Query-Total", packs.pagination.count);
-  res.append("Query-Limit", packs.pagination.limit);
+  return {
+    ok: true,
+    content: packArray,
+    link: link,
+    total: packs.pagination.count,
+    limit: packs.pagination.limit
+  };
 
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
 }
 
 module.exports = {

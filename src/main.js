@@ -235,7 +235,7 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
       res.append("Link", ret.link);
       res.append("Query-Total", ret.total);
       res.append("Query-Limit", ret.limit);
-      
+
       res.status(200).json(ret.content);
       logger.httpLog(req, res);
 
@@ -423,7 +423,27 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
       await package_handler.getPackagesSearch(req, res);
       break;
     case "themes":
-      await theme_handler.getThemesSearch(req, res);
+      const params = {
+        sort: query.sort(req),
+        page: query.page(req),
+        direction: query.dir(req),
+        query: query.query(req)
+      };
+
+      let ret = await theme_handler.getThemesSearch(params);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we must handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
     default:
       next();
