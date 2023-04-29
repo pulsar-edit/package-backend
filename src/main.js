@@ -1095,7 +1095,19 @@ app.options(
  *  @Rdesc If the login does not exist, a 404 is returned.
  */
 app.get("/api/users/:login/stars", genericLimit, async (req, res) => {
-  await user_handler.getLoginStars(req, res);
+  const params = {
+    login: query.login(req)
+  };
+
+  let ret = await user_handler.getLoginStars(params);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/users/:login/stars", genericLimit, async (req, res) => {
@@ -1135,7 +1147,24 @@ app.get("/api/users", authLimit, async (req, res) => {
   );
   res.header("Access-Control-Allow-Origin", "https://web.pulsar-edit.dev");
   res.header("Access-Control-Allow-Credentials", true);
-  await user_handler.getAuthUser(req, res);
+
+  const params = {
+    auth: query.auth(req)
+  };
+
+
+  let ret = await user_handler.getAuthUser(params);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  // TODO: This was set within the function previously, needs to be determined if this is needed
+  res.set({"Access-Control-Allow-Credentials": true });
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/users", async (req, res) => {
@@ -1169,7 +1198,19 @@ app.options("/api/users", async (req, res) => {
  *   @Rtype application/json
  */
 app.get("/api/users/:login", genericLimit, async (req, res) => {
-  await user_handler.getUser(req, res);
+  const params = {
+    login: query.login(req)
+  };
+
+  let ret = await user_handler.getUser(params);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/users/:login", genericLimit, async (req, res) => {
@@ -1234,7 +1275,14 @@ app.options("/api/stars", genericLimit, async (req, res) => {
  *   @Rdesc Atom update feed, following the format expected by Squirrel.
  */
 app.get("/api/updates", genericLimit, async (req, res) => {
-  await update_handler.getUpdates(req, res);
+  let ret = await update_handler.getUpdates();
+
+  if (!ret.ok) {
+    await common_handler.notSupported(req, res);
+    return;
+  }
+
+  // TODO: There is no else until this endpoint is implemented.
 });
 
 app.options("/api/updates", genericLimit, async (req, res) => {
