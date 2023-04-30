@@ -15,6 +15,7 @@ const package_handler = require("./handlers/package_handler.js");
 const common_handler = require("./handlers/common_handler.js");
 const oauth_handler = require("./handlers/oauth_handler.js");
 const webhook = require("./webhook.js");
+const database = require("./database.js");
 const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const query = require("./query.js");
@@ -225,7 +226,7 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
         serviceType: query.serviceType(req),
         service: query.service(req),
         serviceVersion: query.serviceVersion(req)
-      });
+      }, database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);

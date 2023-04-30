@@ -21,12 +21,13 @@ const { URL } = require("node:url");
  * @param {string} params.serviceType - The service type to display
  * @param {string} params.service - The service to display
  * @param {string} params.serviceVersion - The service version to show
+ * @param {module} db - An instance of the database
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages
  */
-async function getPackages(params) {
+async function getPackages(params, db) {
 
-  const packages = await database.getSortedPackages(params);
+  const packages = await db.getSortedPackages(params);
 
   if (!packages.ok) {
     logger.generic(
