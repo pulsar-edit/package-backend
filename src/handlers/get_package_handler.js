@@ -6,7 +6,6 @@
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
 const utils = require("../utils.js");
-const database = require("../database.js");
 const { URL } = require("node:url");
 
 /**
@@ -78,10 +77,10 @@ async function getPackages(params, db) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/featured
  */
-async function getPackagesFeatured() {
+async function getPackagesFeatured(db) {
   // Returns Package Object Short array.
   // TODO: Does not support engine query parameter as of now
-  const packs = await database.getFeaturedPackages();
+  const packs = await db.getFeaturedPackages();
 
   if (!packs.ok) {
     logger.generic(
@@ -121,14 +120,14 @@ async function getPackagesFeatured() {
  * The TODO here is to eventually move this to use the custom built in LCS search,
  * rather than simple search.
  */
-async function getPackagesSearch(params) {
+async function getPackagesSearch(params, db) {
 
   // Because the task of implementing the custom search engine is taking longer
   // than expected, this will instead use super basic text searching on the DB side.
   // This is only an effort to get this working quickly and should be changed later.
   // This also means for now, the default sorting method will be downloads, not relevance.
 
-  const packs = await database.simpleSearch(
+  const packs = await db.simpleSearch(
     params.query,
     params.page,
     params.direction,
@@ -212,9 +211,9 @@ async function getPackagesSearch(params) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName
  */
-async function getPackagesDetails(params) {
+async function getPackagesDetails(params, db) {
 
-  let pack = await database.getPackageByName(params.name, true);
+  let pack = await db.getPackageByName(params.name, true);
 
   if (!pack.ok) {
     logger.generic(
@@ -251,9 +250,9 @@ async function getPackagesDetails(params) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/stargazers
  */
-async function getPackagesStargazers(params) {
+async function getPackagesStargazers(params, db) {
   // The following can't be executed in user mode because we need the pointer
-  const pack = await database.getPackageByName(params.packageName);
+  const pack = await db.getPackageByName(params.packageName);
 
   if (!pack.ok) {
     return {
@@ -262,7 +261,7 @@ async function getPackagesStargazers(params) {
     };
   }
 
-  const stars = await database.getStarringUsersByPointer(pack.content);
+  const stars = await db.getStarringUsersByPointer(pack.content);
 
   if (!stars.ok) {
     return {
@@ -271,7 +270,7 @@ async function getPackagesStargazers(params) {
     };
   }
 
-  const gazers = await database.getUserCollectionById(stars.content);
+  const gazers = await db.getUserCollectionById(stars.content);
 
   if (!gazers.ok) {
     return {
@@ -296,7 +295,7 @@ async function getPackagesStargazers(params) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
-async function getPackagesVersion(params) {
+async function getPackagesVersion(params, db) {
   // Check the truthiness of the returned query engine.
   if (params.versionName === false) {
     // we return a 404 for the version, since its an invalid format
@@ -309,7 +308,7 @@ async function getPackagesVersion(params) {
   }
   // Now we know the version is a valid semver.
 
-  const pack = await database.getPackageVersionByNameAndVersion(
+  const pack = await db.getPackageVersionByNameAndVersion(
     params.packageName,
     params.versionName
   );
@@ -339,7 +338,7 @@ async function getPackagesVersion(params) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName/tarball
  */
-async function getPackagesVersionTarball(params) {
+async function getPackagesVersionTarball(params, db) {
 
   // Now that migration has began we know that each version will have
   // a tarball_url key on it, linking directly to the tarball from gh for that version.
@@ -357,7 +356,7 @@ async function getPackagesVersionTarball(params) {
   }
 
   // first lets get the package
-  const pack = await database.getPackageVersionByNameAndVersion(
+  const pack = await db.getPackageVersionByNameAndVersion(
     params.packageName,
     params.versionName
   );
@@ -369,7 +368,7 @@ async function getPackagesVersionTarball(params) {
     };
   }
 
-  const save = await database.updatePackageIncrementDownloadByName(
+  const save = await db.updatePackageIncrementDownloadByName(
     params.packageName
   );
 

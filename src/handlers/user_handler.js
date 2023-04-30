@@ -4,10 +4,7 @@
  */
 
 const logger = require("../logger.js");
-const common = require("./common_handler.js");
-const database = require("../database.js");
 const utils = require("../utils.js");
-const query = require("../query.js");
 const auth = require("../auth.js");
 
 /**
@@ -19,9 +16,9 @@ const auth = require("../auth.js");
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login/stars
  */
-async function getLoginStars(params) {
+async function getLoginStars(params, db) {
 
-  let user = await database.getUserByName(params.login);
+  let user = await db.getUserByName(params.login);
 
   if (!user.ok) {
     return {
@@ -30,7 +27,7 @@ async function getLoginStars(params) {
     };
   }
 
-  let pointerCollection = await database.getStarredPointersByUserID(
+  let pointerCollection = await db.getStarredPointersByUserID(
     user.content.id
   );
 
@@ -57,7 +54,7 @@ async function getLoginStars(params) {
     };
   }
 
-  let packageCollection = await database.getPackageCollectionByID(
+  let packageCollection = await db.getPackageCollectionByID(
     pointerCollection.content
   );
 
@@ -129,9 +126,9 @@ async function getAuthUser(params) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login
  */
-async function getUser(params) {
-  
-  let user = await database.getUserByName(params.login);
+async function getUser(params, db) {
+
+  let user = await db.getUserByName(params.login);
 
   if (!user.ok) {
     return {

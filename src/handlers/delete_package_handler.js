@@ -3,11 +3,8 @@
  * @desc Endpoint Handlers for every DELETE Request that relates to packages themselves
  */
 
-const common = require("./common_handler.js");
-const query = require("../query.js");
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
-const database = require("../database.js");
 const auth = require("../auth.js");
 
 /**
@@ -19,7 +16,7 @@ const auth = require("../auth.js");
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName
  */
-async function deletePackagesName(params) {
+async function deletePackagesName(params, db) {
 
   const user = await auth.verifyAuth(params.auth);
 
@@ -31,7 +28,7 @@ async function deletePackagesName(params) {
   }
 
   // Lets also first check to make sure the package exists.
-  const packageExists = await database.getPackageByName(
+  const packageExists = await db.getPackageByName(
     params.packageName,
     true
   );
@@ -53,7 +50,7 @@ async function deletePackagesName(params) {
   }
 
   // Now they are logged in locally, and have permission over the GitHub repo.
-  const rm = await database.removePackageByName(params.packageName);
+  const rm = await db.removePackageByName(params.packageName);
 
   if (!rm.ok) {
     return {
@@ -76,7 +73,7 @@ async function deletePackagesName(params) {
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
-async function deletePackagesStar(params) {
+async function deletePackagesStar(params, db) {
 
   const user = await auth.verifyAuth(params.auth);
 
@@ -87,7 +84,7 @@ async function deletePackagesStar(params) {
     };
   }
 
-  const unstar = await database.updateDecrementStar(
+  const unstar = await db.updateDecrementStar(
     user.content,
     params.packageName
   );
@@ -114,7 +111,7 @@ async function deletePackagesStar(params) {
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
-async function deletePackageVersion(params) {
+async function deletePackageVersion(params, db) {
 
   // Moving this forward to do the least computationally expensive task first.
   // Check version validity
@@ -138,7 +135,7 @@ async function deletePackageVersion(params) {
   }
 
   // Lets also first check to make sure the package exists.
-  const packageExists = await database.getPackageByName(
+  const packageExists = await db.getPackageByName(
     params.packageName,
     true
   );
@@ -160,7 +157,7 @@ async function deletePackageVersion(params) {
   }
 
   // Mark the specified version for deletion, if version is valid
-  const removeVersion = await database.removePackageVersion(
+  const removeVersion = await db.removePackageVersion(
     params.packageName,
     params.versionName
   );

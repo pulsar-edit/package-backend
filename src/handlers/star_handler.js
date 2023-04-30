@@ -4,7 +4,6 @@
  */
 
 const logger = require("../logger.js");
-const database = require("../database.js");
 const utils = require("../utils.js");
 const auth = require("../auth.js");
 
@@ -18,7 +17,7 @@ const auth = require("../auth.js");
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/stars
  */
-async function getStars(params) {
+async function getStars(params, db) {
 
   let user = await auth.verifyAuth(params.auth);
 
@@ -33,7 +32,7 @@ async function getStars(params) {
     };
   }
 
-  let userStars = await database.getStarredPointersByUserID(user.content.id);
+  let userStars = await db.getStarredPointersByUserID(user.content.id);
 
   if (!userStars.ok) {
     logger.generic(3, "getStars database.getStarredPointersByUserID() Not OK", {
@@ -57,7 +56,7 @@ async function getStars(params) {
     };
   }
 
-  let packCol = await database.getPackageCollectionByID(userStars.content);
+  let packCol = await db.getPackageCollectionByID(userStars.content);
 
   if (!packCol.ok) {
     logger.generic(3, "getStars database.getPackageCollectionByID() Not OK", {

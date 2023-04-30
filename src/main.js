@@ -249,7 +249,7 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
         page: query.page(req),
         sort: query.sort(req),
         direction: query.dir(req)
-      });
+      }, database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -322,7 +322,7 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
         auth: query.auth(req)
       };
 
-      let ret = await package_handler.postPackages(params);
+      let ret = await package_handler.postPackages(params, database);
 
       if (!ret.ok) {
         if (ret.type === "detailed") {
@@ -383,7 +383,7 @@ app.options("/api/:packType", genericLimit, async (req, res, next) => {
 app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages": {
-      let ret = await package_handler.getPackagesFeatured();
+      let ret = await package_handler.getPackagesFeatured(database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -395,7 +395,7 @@ app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
       break;
     }
     case "themes": {
-      let ret = await theme_handler.getThemeFeatured();
+      let ret = await theme_handler.getThemeFeatured(database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -485,7 +485,7 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
         page: query.page(req),
         direction: query.dir(req),
         query: query.query(req)
-      });
+      }, database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -509,7 +509,7 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
         query: query.query(req)
       };
 
-      let ret = await theme_handler.getThemesSearch(params);
+      let ret = await theme_handler.getThemesSearch(params, database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -590,7 +590,7 @@ app.get("/api/:packType/:packageName", genericLimit, async (req, res, next) => {
         name: query.packageName(req)
       };
 
-      let ret = await package_handler.getPackagesDetails(params);
+      let ret = await package_handler.getPackagesDetails(params, database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -655,7 +655,7 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
         packageName: query.packageName(req)
       };
 
-      let ret = await package_handler.deletePackagesName(params);
+      let ret = await package_handler.deletePackagesName(params, database);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -736,7 +736,7 @@ app.post(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.postPackagesStar(params);
+        let ret = await package_handler.postPackagesStar(params, database);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -795,7 +795,7 @@ app.delete(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.deletePackagesStar(params);
+        let ret = await package_handler.deletePackagesStar(params, database);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -867,7 +867,7 @@ app.get(
         const params = {
           packageName: query.packageName(req)
         };
-        let ret = await package_handler.getPackagesStargazers(params);
+        let ret = await package_handler.getPackagesStargazers(params, database);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -953,7 +953,7 @@ app.post(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.postPackagesVersion(params);
+        let ret = await package_handler.postPackagesVersion(params, database);
 
         if (!ret.ok) {
           if (ret.type === "detailed") {
@@ -1038,7 +1038,7 @@ app.get(
           versionName: query.engine(req.params.versionName)
         };
 
-        let ret = await package_handler.getPackagesVersion(params);
+        let ret = await package_handler.getPackagesVersion(params, database);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -1101,7 +1101,7 @@ app.delete(
           versionName: query.engine(req.params.versionName)
         };
 
-        let ret = await package_handler.deletePackageVersion(params);
+        let ret = await package_handler.deletePackageVersion(params, database);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -1180,7 +1180,7 @@ app.get(
           versionName: query.engine(req.params.versionName)
         };
 
-        let ret = await package_handler.getPackagesVersionTarball(params);
+        let ret = await package_handler.getPackagesVersionTarball(params, database);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -1327,7 +1327,7 @@ app.get("/api/users/:login/stars", genericLimit, async (req, res) => {
     login: query.login(req)
   };
 
-  let ret = await user_handler.getLoginStars(params);
+  let ret = await user_handler.getLoginStars(params, database);
 
   if (!ret.ok) {
     await common_handler.handleError(req, res, ret.content);
@@ -1430,7 +1430,7 @@ app.get("/api/users/:login", genericLimit, async (req, res) => {
     login: query.login(req)
   };
 
-  let ret = await user_handler.getUser(params);
+  let ret = await user_handler.getUser(params, database);
 
   if (!ret.ok) {
     await common_handler.handleError(req, res, ret.content);
@@ -1472,7 +1472,7 @@ app.get("/api/stars", authLimit, async (req, res) => {
     auth: query.auth(req)
   };
 
-  let ret = await star_handler.getStars(params);
+  let ret = await star_handler.getStars(params, database);
 
   if (!ret.ok) {
     await common_handler.handleError(req, res, ret.content);

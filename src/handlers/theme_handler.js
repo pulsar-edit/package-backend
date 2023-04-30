@@ -7,7 +7,6 @@
  * @implements {config}
  */
 
-const database = require("../database.js");
 const utils = require("../utils.js");
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
@@ -24,10 +23,10 @@ const { server_url } = require("../config.js").getConfig();
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/featured
  */
-async function getThemeFeatured() {
+async function getThemeFeatured(db) {
   // Returns Package Object Short Array
 
-  let col = await database.getFeaturedThemes();
+  let col = await db.getFeaturedThemes();
 
   if (!col.ok) {
     return {
@@ -57,9 +56,9 @@ async function getThemeFeatured() {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes
  */
-async function getThemes(params) {
+async function getThemes(params, db) {
 
-  const packages = await database.getSortedPackages(params, true);
+  const packages = await db.getSortedPackages(params, true);
 
   if (!packages.ok) {
     logger.generic(
@@ -111,9 +110,9 @@ async function getThemes(params) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/search
  */
-async function getThemesSearch(params) {
+async function getThemesSearch(params, db) {
 
-  const packs = await database.simpleSearch(
+  const packs = await db.simpleSearch(
     params.query,
     params.page,
     params.direction,

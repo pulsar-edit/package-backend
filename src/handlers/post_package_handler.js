@@ -6,7 +6,6 @@
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 const utils = require("../utils.js");
-const database = require("../database.js");
 const auth = require("../auth.js");
 
 /**
@@ -22,7 +21,7 @@ const auth = require("../auth.js");
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages
  */
-async function postPackages(params) {
+async function postPackages(params, db) {
 
   const user = await auth.verifyAuth(params.auth);
   logger.generic(
@@ -87,7 +86,7 @@ async function postPackages(params) {
   // Check the package does NOT exists.
   // We will utilize our database.packageNameAvailability to see if the name is available.
 
-  const nameAvailable = await database.packageNameAvailability(repo);
+  const nameAvailable = await db.packageNameAvailability(repo);
 
   if (!nameAvailable.ok) {
     // Even further though we need to check that the error is not "Not Found",
@@ -146,7 +145,7 @@ async function postPackages(params) {
   }
 
   // Now with valid package data, we can insert them into the DB.
-  const insertedNewPack = await database.insertNewPackage(newPack.content);
+  const insertedNewPack = await db.insertNewPackage(newPack.content);
 
   if (!insertedNewPack.ok) {
     logger.generic(
@@ -162,7 +161,7 @@ async function postPackages(params) {
   // Finally we can return what was actually put into the database.
   // Retrieve the data from database.getPackageByName() and
   // convert it into Package Object Full format.
-  const newDbPack = await database.getPackageByName(repo, true);
+  const newDbPack = await db.getPackageByName(repo, true);
 
   if (!newDbPack.ok) {
     logger.generic(
@@ -199,7 +198,7 @@ async function postPackages(params) {
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
-async function postPackagesStar(params) {
+async function postPackagesStar(params, db) {
 
   const user = await auth.verifyAuth(params.auth);
 
@@ -210,7 +209,7 @@ async function postPackagesStar(params) {
     };
   }
 
-  const star = await database.updateIncrementStar(
+  const star = await db.updateIncrementStar(
     user.content,
     params.packageName
   );
@@ -223,7 +222,7 @@ async function postPackagesStar(params) {
   }
 
   // Now with a success we want to return the package back in this query
-  let pack = await database.getPackageByName(params.packageName, true);
+  let pack = await db.getPackageByName(params.packageName, true);
 
   if (!pack.ok) {
     return {
@@ -250,7 +249,7 @@ async function postPackagesStar(params) {
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/versions
  */
-async function postPackagesVersion(params) {
+async function postPackagesVersion(params, db) {
 
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
@@ -281,7 +280,7 @@ async function postPackagesVersion(params) {
   // To support a rename, we need to check if they have permissions over this packages new name.
   // Which means we have to check if they have ownership AFTER we collect it's data.
 
-  const packExists = await database.getPackageByName(params.packageName, true);
+  const packExists = await db.getPackageByName(params.packageName, true);
 
   if (!packExists.ok) {
     logger.generic(
@@ -374,7 +373,7 @@ async function postPackagesVersion(params) {
       };
     }
 
-    const isAvailable = await database.packageNameAvailability(newName);
+    const isAvailable = await db.packageNameAvailability(newName);
 
     if (isAvailable.ok) {
       logger.generic(
@@ -395,7 +394,7 @@ async function postPackagesVersion(params) {
 
   // Now add the new Version key.
 
-  const addVer = await database.insertNewPackageVersion(
+  const addVer = await db.insertNewPackageVersion(
     packMetadata.content,
     rename ? currentName : null
   );
