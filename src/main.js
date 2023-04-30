@@ -769,7 +769,7 @@ app.delete(
         // On success we just return status code
         res.status(201).send();
         logger.httpLog(req, res);
-        
+
         break;
       default:
         next();
@@ -1037,7 +1037,23 @@ app.delete(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.deletePackageVersion(req, res);
+        const params = {
+          auth: query.auth(req),
+          packageName: query.packageName(req),
+          versionName: query.engine(req.params.versionName)
+        };
+
+        let ret = await package_handler.deletePackageVersion(params);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        // This is, on success, and empty return
+        res.status(204).send();
+        logger.httpLog(req, res);
+        
         break;
       default:
         next();

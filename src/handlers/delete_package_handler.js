@@ -114,26 +114,27 @@ async function deletePackagesStar(params) {
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
-async function deletePackageVersion(req, res) {
-  const params = {
-    auth: query.auth(req),
-    packageName: query.packageName(req),
-    versionName: query.engine(req.params.versionName),
-  };
+async function deletePackageVersion(params) {
 
   // Moving this forward to do the least computationally expensive task first.
   // Check version validity
   if (params.versionName === false) {
-    await common.notFound(req, res);
-    return;
+    return {
+      ok: false,
+      content: {
+        short: "Not Found"
+      }
+    };
   }
 
   // Verify the user has local and remote permissions
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   // Lets also first check to make sure the package exists.
@@ -143,15 +144,19 @@ async function deletePackageVersion(req, res) {
   );
 
   if (!packageExists.ok) {
-    await common.handleError(req, res, packageExists);
-    return;
+    return {
+      ok: false,
+      content: packageExists
+    };
   }
 
   const gitowner = await vcs.ownership(user.content, packageExists.content);
 
   if (!gitowner.ok) {
-    await common.handleError(req, res, gitowner);
-    return;
+    return {
+      ok: false,
+      content: gitowner
+    };
   }
 
   // Mark the specified version for deletion, if version is valid
@@ -161,12 +166,13 @@ async function deletePackageVersion(req, res) {
   );
 
   if (!removeVersion.ok) {
-    await common.handleError(req, res, removeVersion);
-    return;
+    return {
+      ok: false,
+      content: removeVersion
+    };
   }
 
-  res.status(204).send();
-  logger.httpLog(req, res);
+  return { ok: true };
 }
 
 module.exports = {
