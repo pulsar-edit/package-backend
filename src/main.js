@@ -215,16 +215,16 @@ app.options("/api/pat", genericLimit, async (req, res) => {
  */
 app.get("/api/:packType", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
-    case "packages":
-      await package_handler.getPackages(req, res);
-      break;
-    case "themes":
-      let params = {
+    case "packages": {
+
+      let ret = await package_handler.getPackages({
         page: query.page(req),
         sort: query.sort(req),
-        direction: query.dir(req)
-      };
-      let ret = await theme_handler.getThemes(params);
+        direction: query.dir(req),
+        serviceType: query.serviceType(req),
+        service: query.service(req),
+        serviceVersion: query.serviceVersion(req)
+      });
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -240,9 +240,34 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
       logger.httpLog(req, res);
 
       break;
-    default:
+    }
+    case "themes": {
+
+      let ret = await theme_handler.getThemes({
+        page: query.page(req),
+        sort: query.sort(req),
+        direction: query.dir(req)
+      });
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we will handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
+
+      break;
+    }
+    default: {
       next();
       break;
+    }
   }
 });
 
@@ -334,10 +359,19 @@ app.options("/api/:packType", genericLimit, async (req, res, next) => {
  */
 app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
-    case "packages":
-      await package_handler.getPackagesFeatured(req, res);
+    case "packages": {
+      let ret = await package_handler.getPackagesFeatured();
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
-    case "themes":
+    }
+    case "themes": {
       let ret = await theme_handler.getThemeFeatured();
 
       if (!ret.ok) {
@@ -348,9 +382,11 @@ app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
       res.status(200).json(ret.content);
       logger.httpLog(req, res);
       break;
-    default:
+    }
+    default: {
       next();
       break;
+    }
   }
 });
 
@@ -419,10 +455,30 @@ app.options("/api/:packType/featured", genericLimit, async (req, res, next) => {
  */
 app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
-    case "packages":
-      await package_handler.getPackagesSearch(req, res);
+    case "packages": {
+
+      let ret = await package_handler.getPackagesSearch({
+        sort: query.sort(req),
+        page: query.page(req),
+        direction: query.dir(req),
+        query: query.query(req)
+      });
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we must handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
-    case "themes":
+    }
+    case "themes": {
       const params = {
         sort: query.sort(req),
         page: query.page(req),
@@ -445,9 +501,11 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
       res.status(200).json(ret.content);
       logger.httpLog(req, res);
       break;
-    default:
+    }
+    default: {
       next();
       break;
+    }
   }
 });
 
@@ -504,7 +562,20 @@ app.get("/api/:packType/:packageName", genericLimit, async (req, res, next) => {
     case "themes":
       // We can use the same handler here because the logic of the return
       // Will be identical no matter what type of package it is.
-      await package_handler.getPackagesDetails(req, res);
+      const params = {
+        engine: query.engine(req.query.engine),
+        name: query.packageName(req)
+      };
+
+      let ret = await package_handler.getPackagesDetails(params);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
     default:
       next();
@@ -727,7 +798,18 @@ app.get(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.getPackagesStargazers(req, res);
+        const params = {
+          packageName: query.packageName(req)
+        };
+        let ret = await package_handler.getPackagesStargazers(params);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        res.status(200).json(ret.content);
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -863,7 +945,20 @@ app.get(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.getPackagesVersion(req, res);
+        const params = {
+          packageName: query.packageName(req),
+          versionName: query.engine(req.params.versionName)
+        };
+
+        let ret = await package_handler.getPackagesVersion(params);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        res.status(200).json(ret.content);
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -976,7 +1071,22 @@ app.get(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.getPackagesVersionTarball(req, res);
+        const params = {
+          packageName: query.packageName(req),
+          versionName: query.engine(req.params.versionName)
+        };
+
+        let ret = await package_handler.getPackagesVersionTarball(params);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        // We know this endpoint, if successful will redirect, so that must be handled here
+        res.redirect(ret.content);
+        logger.httpLog(req, res);
+
         break;
       default:
         next();
