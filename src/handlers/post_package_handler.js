@@ -6,7 +6,6 @@
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 const utils = require("../utils.js");
-const auth = require("../auth.js");
 
 /**
  * @async
@@ -21,9 +20,9 @@ const auth = require("../auth.js");
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages
  */
-async function postPackages(params, db) {
+async function postPackages(params, db, auth) {
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
   logger.generic(
     6,
     `${user.content.username} Attempting to Publish new package`
@@ -198,9 +197,9 @@ async function postPackages(params, db) {
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
-async function postPackagesStar(params, db) {
+async function postPackagesStar(params, db, auth) {
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
@@ -249,7 +248,7 @@ async function postPackagesStar(params, db) {
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/versions
  */
-async function postPackagesVersion(params, db) {
+async function postPackagesVersion(params, db, auth) {
 
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
@@ -258,7 +257,7 @@ async function postPackagesVersion(params, db) {
   // And if they are, we expect that `rename` is true. Because otherwise it will fail.
   // That's the methodology, the logic here just needs to catch up.
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     logger.generic(

@@ -16,6 +16,7 @@ const common_handler = require("./handlers/common_handler.js");
 const oauth_handler = require("./handlers/oauth_handler.js");
 const webhook = require("./webhook.js");
 const database = require("./database.js");
+const auth = require("./auth.js");
 const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const query = require("./query.js");
@@ -322,7 +323,7 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
         auth: query.auth(req)
       };
 
-      let ret = await package_handler.postPackages(params, database);
+      let ret = await package_handler.postPackages(params, database, auth);
 
       if (!ret.ok) {
         if (ret.type === "detailed") {
@@ -655,7 +656,7 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
         packageName: query.packageName(req)
       };
 
-      let ret = await package_handler.deletePackagesName(params, database);
+      let ret = await package_handler.deletePackagesName(params, database, auth);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -736,7 +737,7 @@ app.post(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.postPackagesStar(params, database);
+        let ret = await package_handler.postPackagesStar(params, database, auth);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -795,7 +796,7 @@ app.delete(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.deletePackagesStar(params, database);
+        let ret = await package_handler.deletePackagesStar(params, database, auth);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -953,7 +954,7 @@ app.post(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.postPackagesVersion(params, database);
+        let ret = await package_handler.postPackagesVersion(params, database, auth);
 
         if (!ret.ok) {
           if (ret.type === "detailed") {
@@ -1101,7 +1102,7 @@ app.delete(
           versionName: query.engine(req.params.versionName)
         };
 
-        let ret = await package_handler.deletePackageVersion(params, database);
+        let ret = await package_handler.deletePackageVersion(params, database, auth);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -1381,7 +1382,7 @@ app.get("/api/users", authLimit, async (req, res) => {
   };
 
 
-  let ret = await user_handler.getAuthUser(params);
+  let ret = await user_handler.getAuthUser(params, database, auth);
 
   if (!ret.ok) {
     await common_handler.handleError(req, res, ret.content);
@@ -1472,7 +1473,7 @@ app.get("/api/stars", authLimit, async (req, res) => {
     auth: query.auth(req)
   };
 
-  let ret = await star_handler.getStars(params, database);
+  let ret = await star_handler.getStars(params, database, auth);
 
   if (!ret.ok) {
     await common_handler.handleError(req, res, ret.content);

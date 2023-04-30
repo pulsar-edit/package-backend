@@ -5,7 +5,6 @@
 
 const logger = require("../logger.js");
 const utils = require("../utils.js");
-const auth = require("../auth.js");
 
 /**
  * @async
@@ -84,9 +83,9 @@ async function getLoginStars(params, db) {
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users
  */
-async function getAuthUser(params) {
+async function getAuthUser(params, db, auth) {
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {

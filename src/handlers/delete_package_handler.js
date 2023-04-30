@@ -5,7 +5,6 @@
 
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
-const auth = require("../auth.js");
 
 /**
  * @async
@@ -16,9 +15,9 @@ const auth = require("../auth.js");
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName
  */
-async function deletePackagesName(params, db) {
+async function deletePackagesName(params, db, auth) {
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
@@ -73,9 +72,9 @@ async function deletePackagesName(params, db) {
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
-async function deletePackagesStar(params, db) {
+async function deletePackagesStar(params, db, auth) {
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
@@ -111,7 +110,7 @@ async function deletePackagesStar(params, db) {
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
-async function deletePackageVersion(params, db) {
+async function deletePackageVersion(params, db, auth) {
 
   // Moving this forward to do the least computationally expensive task first.
   // Check version validity
@@ -125,7 +124,7 @@ async function deletePackageVersion(params, db) {
   }
 
   // Verify the user has local and remote permissions
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {

@@ -5,7 +5,6 @@
 
 const logger = require("../logger.js");
 const utils = require("../utils.js");
-const auth = require("../auth.js");
 
 /**
  * @async
@@ -17,9 +16,9 @@ const auth = require("../auth.js");
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/stars
  */
-async function getStars(params, db) {
+async function getStars(params, db, auth) {
 
-  let user = await auth.verifyAuth(params.auth);
+  let user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     logger.generic(3, "getStars auth.verifyAuth() Not OK", {
