@@ -627,7 +627,22 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages":
     case "themes":
-      await package_handler.deletePackagesName(req, res);
+      const params = {
+        auth: query.auth(req),
+        packageName: query.packageName(req)
+      };
+
+      let ret = await package_handler.deletePackagesName(params);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // We know on success we should just return a statuscode
+      res.status(204).send();
+      logger.httpLog(req, res);
+
       break;
     default:
       next();
@@ -739,7 +754,22 @@ app.delete(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.deletePackagesStar(req, res);
+        const params = {
+          auth: query.auth(req),
+          packageName: query.packageName(req)
+        };
+
+        let ret = await package_handler.deletePackagesStar(params);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        // On success we just return status code
+        res.status(201).send();
+        logger.httpLog(req, res);
+        
         break;
       default:
         next();

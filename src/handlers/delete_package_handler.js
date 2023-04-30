@@ -19,17 +19,15 @@ const auth = require("../auth.js");
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName
  */
-async function deletePackagesName(req, res) {
-  const params = {
-    auth: query.auth(req),
-    packageName: query.packageName(req),
-  };
+async function deletePackagesName(params) {
 
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    await common.handleError(req, res, user, 1005);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   // Lets also first check to make sure the package exists.
@@ -39,27 +37,34 @@ async function deletePackagesName(req, res) {
   );
 
   if (!packageExists.ok) {
-    await common.handleError(req, res, packageExists);
-    return;
+    return {
+      ok: false,
+      content: packageExists
+    };
   }
 
   const gitowner = await vcs.ownership(user.content, packageExists.content);
 
   if (!gitowner.ok) {
-    await common.handleError(req, res, gitowner, 4001);
-    return;
+    return {
+      ok: false,
+      content: gitowner
+    };
   }
 
   // Now they are logged in locally, and have permission over the GitHub repo.
   const rm = await database.removePackageByName(params.packageName);
 
   if (!rm.ok) {
-    await common.handleError(req, res, rm, 1006);
-    return;
+    return {
+      ok: false,
+      content: rm
+    };
   }
 
-  res.status(204).send();
-  logger.httpLog(req, res);
+  return {
+    ok: true
+  };
 }
 
 /**
@@ -71,17 +76,15 @@ async function deletePackagesName(req, res) {
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
-async function deletePackagesStar(req, res) {
-  const params = {
-    auth: query.auth(req),
-    packageName: query.packageName(req),
-  };
+async function deletePackagesStar(params) {
 
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   const unstar = await database.updateDecrementStar(
@@ -90,13 +93,16 @@ async function deletePackagesStar(req, res) {
   );
 
   if (!unstar.ok) {
-    await common.handleError(req, res, unstar);
-    return;
+    return {
+      ok: false,
+      content: unstar
+    };
   }
 
   // On a successful action here we will return an empty 201
-  res.status(201).send();
-  logger.httpLog(req, res);
+  return {
+    ok: true
+  };
 }
 
 /**
