@@ -5,6 +5,7 @@
 
 ## [Unreleased]
 
+* Decouple HTTP Handling from backend logic
 * Added webhooks to be triggered after a package, or package version are published. Allowing notifications of these events to other services. Like the Pulsar Discord.
 
 ## [v1.1.0](https://github.com/pulsar-edit/package-backend/releases/tag/v1.1.0)
