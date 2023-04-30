@@ -14,6 +14,7 @@ const theme_handler = require("./handlers/theme_handler.js");
 const package_handler = require("./handlers/package_handler.js");
 const common_handler = require("./handlers/common_handler.js");
 const oauth_handler = require("./handlers/oauth_handler.js");
+const webhook = require("./webhook.js");
 const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const query = require("./query.js");
@@ -315,7 +316,28 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages":
     case "themes":
-      await package_handler.postPackages(req, res);
+      const params = {
+        repository: query.repo(req),
+        auth: query.auth(req)
+      };
+
+      let ret = await package_handler.postPackages(params);
+
+      if (!ret.ok) {
+        if (ret.type === "detailed") {
+          await common_handler.handleDetailedError(req, res, ret.content);
+          return;
+        } else {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+      }
+
+      res.status(201).json(ret.content);
+
+      // Return to user before webhook call, so user doesn't wait on it
+      await webhook.alertPublishPackage(ret.webhook.pack, ret.webhook.user);
+
       break;
     default:
       next();
@@ -708,7 +730,20 @@ app.post(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.postPackagesStar(req, res);
+        const params = {
+          auth: query.auth(req),
+          packageName: query.packageName(req)
+        };
+
+        let ret = await package_handler.postPackagesStar(params);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        res.status(200).json(ret.content);
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -911,7 +946,29 @@ app.post(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.postPackagesVersion(req, res);
+        const params = {
+          rename: query.rename(req),
+          auth: query.auth(req),
+          packageName: query.packageName(req)
+        };
+
+        let ret = await package_handler.postPackagesVersion(params);
+
+        if (!ret.ok) {
+          if (ret.type === "detailed") {
+            await common_handler.handleDetailedError(req, res, ret.content);
+            return;
+          } else {
+            await common_handler.handleError(req, res, ret.content);
+            return;
+          }
+        }
+
+        res.status(201).json(ret.content);
+
+        // Return to user before webhook call, so user doesn't wait on it
+        await webhook.alertPublishPackage(ret.webhook.pack, ret.webhook.user);
+
         break;
       default:
         next();
@@ -1053,7 +1110,7 @@ app.delete(
         // This is, on success, and empty return
         res.status(204).send();
         logger.httpLog(req, res);
-        
+
         break;
       default:
         next();
@@ -1202,7 +1259,21 @@ app.post(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.postPackagesEventUninstall(req, res);
+        /**
+          Used when a package is uninstalled, decreases the download count by 1.
+          Originally an undocumented endpoint.
+          The decision to return a '201' is based on how other POST endpoints return,
+          during a successful event.
+          This endpoint has now been deprecated, as it serves no useful features,
+          and on further examination may have been intended as a way to collect
+          data on users, which is not something we implement.
+          * Deprecated since v1.0.2
+          * see: https://github.com/atom/apm/blob/master/src/uninstall.coffee
+          * While decoupling HTTP handling from logic, the function has been removed
+            entirely: https://github.com/pulsar-edit/package-backend/pull/171
+        */
+        res.status(200).json({ ok: true });
+        logger.httpLog(req, res);
         break;
       default:
         next();

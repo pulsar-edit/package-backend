@@ -3,14 +3,11 @@
  * @desc Endpoint Handlers for every POST Request that relates to packages themselves
  */
 
-const common = require("./common_handler.js");
-const query = require("../query.js");
 const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 const utils = require("../utils.js");
 const database = require("../database.js");
 const auth = require("../auth.js");
-const webhook = require("../webhook.js");
 
 /**
  * @async
@@ -25,11 +22,7 @@ const webhook = require("../webhook.js");
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages
  */
-async function postPackages(req, res) {
-  const params = {
-    repository: query.repo(req),
-    auth: query.auth(req),
-  };
+async function postPackages(params) {
 
   const user = await auth.verifyAuth(params.auth);
   logger.generic(
@@ -39,16 +32,22 @@ async function postPackages(req, res) {
   // Check authentication.
   if (!user.ok) {
     logger.generic(3, `postPackages-verifyAuth Not OK: ${user.content}`);
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   // Check repository format validity.
   if (params.repository === "") {
     logger.generic(6, "Repository Format Invalid, returning error");
     // The repository format is invalid.
-    await common.badRepoJSON(req, res);
-    return;
+    return {
+      ok: false,
+      content: {
+        short: "Bad Repo"
+      }
+    };
   }
 
   // Currently though the repository is in `owner/repo` format,
@@ -59,8 +58,12 @@ async function postPackages(req, res) {
   if (repo === undefined) {
     logger.generic(6, "Repository determined invalid after failed split");
     // The repository format is invalid.
-    await common.badRepoJSON(req, res);
-    return;
+    return {
+      ok: false,
+      content: {
+        short: "Bad Repo"
+      }
+    };
   }
 
   // Now check if the name is banned.
@@ -69,13 +72,16 @@ async function postPackages(req, res) {
   if (isBanned.ok) {
     logger.generic(3, `postPackages Blocked by banned package name: ${repo}`);
     // The package name is banned
-    await common.handleError(req, res, {
+    return {
       ok: false,
-      short: "Server Error",
-      content: "Package Name is banned",
-    });
+      type: "detailed",
+      content: {
+        ok: false,
+        short: "Server Error",
+        content: "Package Name is banned."
+      }
+    };
     // ^^^ Replace with a more specific error handler once supported TODO
-    return;
   }
 
   // Check the package does NOT exists.
@@ -92,8 +98,10 @@ async function postPackages(req, res) {
         `postPackages-getPackageByName Not OK: ${nameAvailable.content}`
       );
       // The server failed for some other bubbled reason, and is now encountering an error
-      await common.handleError(req, res, nameAvailable);
-      return;
+      return {
+        ok: false,
+        content: nameAvailable
+      };
     }
     // But if the short is then only "Not Found" we can report it as not being available
     logger.generic(
@@ -101,8 +109,12 @@ async function postPackages(req, res) {
       "The name for the package is not available: aborting publish"
     );
     // The package exists.
-    await common.packageExists(req, res);
-    return;
+    return {
+      ok: false,
+      content: {
+        short: "Package Exists"
+      }
+    };
   }
 
   // Now we know the package doesn't exist. And we want to check that the user owns this repo on git.
@@ -110,8 +122,10 @@ async function postPackages(req, res) {
 
   if (!gitowner.ok) {
     logger.generic(3, `postPackages-ownership Not OK: ${gitowner.content}`);
-    await common.handleError(req, res, gitowner);
-    return;
+    return {
+      ok: false,
+      content: gitowner
+    };
   }
 
   // Now knowing they own the git repo, and it doesn't exist here, lets publish.
@@ -124,8 +138,11 @@ async function postPackages(req, res) {
 
   if (!newPack.ok) {
     logger.generic(3, `postPackages-createPackage Not OK: ${newPack.content}`);
-    await common.handleDetailedError(req, res, newPack);
-    return;
+    return {
+      ok: false,
+      type: "detailed",
+      content: newPack
+    };
   }
 
   // Now with valid package data, we can insert them into the DB.
@@ -136,8 +153,10 @@ async function postPackages(req, res) {
       3,
       `postPackages-insertNewPackage Not OK: ${insertedNewPack.content}`
     );
-    await common.handleError(req, res, insertedNewPack);
-    return;
+    return {
+      ok: false,
+      content: insertedNewPack
+    };
   }
 
   // Finally we can return what was actually put into the database.
@@ -150,17 +169,25 @@ async function postPackages(req, res) {
       3,
       `postPackages-getPackageByName (After Pub) Not OK: ${newDbPack.content}`
     );
-    common.handleError(req, res, newDbPack);
-    return;
+    return {
+      ok: false,
+      content: newDbPack
+    };
   }
 
   const packageObjectFull = await utils.constructPackageObjectFull(
     newDbPack.content
   );
-  res.status(201).json(packageObjectFull);
 
-  // Return prior to webhook call so user doesn't wait on it
-  await webhook.alertPublishPackage(packageObjectFull, user.content);
+  // Since this is a webhook call, we will return with some extra data
+  return {
+    ok: true,
+    content: packageObjectFull,
+    webhook: {
+      pack: packageObjectFull,
+      user: user.content
+    }
+  };
 }
 
 /**
@@ -172,17 +199,15 @@ async function postPackages(req, res) {
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
-async function postPackagesStar(req, res) {
-  const params = {
-    auth: query.auth(req),
-    packageName: query.packageName(req),
-  };
+async function postPackagesStar(params) {
 
   const user = await auth.verifyAuth(params.auth);
 
   if (!user.ok) {
-    await common.handleError(req, res, user, 1008);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   const star = await database.updateIncrementStar(
@@ -191,22 +216,28 @@ async function postPackagesStar(req, res) {
   );
 
   if (!star.ok) {
-    await common.handleError(req, res, star, 1009);
-    return;
+    return {
+      ok: false,
+      content: star
+    };
   }
 
   // Now with a success we want to return the package back in this query
   let pack = await database.getPackageByName(params.packageName, true);
 
   if (!pack.ok) {
-    await common.handleError(req, res, pack, 1011);
-    return;
+    return {
+      ok: false,
+      content: pack
+    };
   }
 
   pack = await utils.constructPackageObjectFull(pack.content);
 
-  res.status(200).json(pack);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: pack
+  };
 }
 
 /**
@@ -219,12 +250,7 @@ async function postPackagesStar(req, res) {
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/versions
  */
-async function postPackagesVersion(req, res) {
-  const params = {
-    rename: query.rename(req),
-    auth: query.auth(req),
-    packageName: query.packageName(req),
-  };
+async function postPackagesVersion(params) {
 
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
@@ -241,8 +267,11 @@ async function postPackagesVersion(req, res) {
       "User Authentication Failed when attempting to publish package version!"
     );
 
-    await common.handleDetailedError(req, res, user);
-    return;
+    return {
+      ok: false,
+      type: "detailed",
+      content: user
+    };
   }
   logger.generic(
     6,
@@ -259,13 +288,15 @@ async function postPackagesVersion(req, res) {
       6,
       `Seems Package does not exist when trying to publish new version - ${packExists.content}`
     );
-    await common.handleDetailedError(req, res, {
+    return {
       ok: false,
-      short: packExists.short,
-      content:
-        "The server was unable to locate your package when publishing a new version.",
-    });
-    return;
+      type: "detailed",
+      content: {
+        ok: false,
+        short: packExists.short,
+        content: "The server was unable to locate your package when publishing a new version."
+      }
+    };
   }
 
   // Get `owner/repo` string format from package.
@@ -277,8 +308,10 @@ async function postPackagesVersion(req, res) {
 
   if (!packMetadata.ok) {
     logger.generic(6, packMetadata.content);
-    await common.handleError(req, res, packMetadata);
-    return;
+    return {
+      ok: false,
+      content: packMetadata
+    };
   }
 
   const newName = packMetadata.content.name;
@@ -290,12 +323,14 @@ async function postPackagesVersion(req, res) {
       "Package JSON and Params Package Names don't match, with no rename flag"
     );
     // Only return error if the names don't match, and rename isn't enabled.
-    await common.handleError(req, res, {
+    return {
       ok: false,
-      short: "Bad Repo",
-      content: "Package name doesn't match local name, with rename false",
-    });
-    return;
+      content: {
+        ok: false,
+        short: "Bad Repo",
+        content: "Package name doesn't match local name, with rename false"
+      }
+    };
   }
 
   // Else we will continue, and trust the name provided from the package as being accurate.
@@ -308,8 +343,10 @@ async function postPackagesVersion(req, res) {
 
   if (!gitowner.ok) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
-    await common.handleError(req, res, gitowner);
-    return;
+    return {
+      ok: false,
+      content: gitowner
+    };
   }
 
   // Now the only thing left to do, is add this new version with the name from the package.
@@ -326,12 +363,15 @@ async function postPackagesVersion(req, res) {
         3,
         `postPackages Blocked by banned package name: ${newName}`
       );
-      await common.handleDetailedError(req, res, {
+      return {
         ok: false,
-        short: "Server Error",
-        content: "This Package Name is Banned on the Pulsar Registry.",
-      });
-      return;
+        type: "detailed",
+        content: {
+          ok: false,
+          short: "Server Error",
+          content: "This Package Name is Banned on the Pulsar Registry."
+        }
+      };
     }
 
     const isAvailable = await database.packageNameAvailability(newName);
@@ -341,12 +381,15 @@ async function postPackagesVersion(req, res) {
         3,
         `postPackages Blocked by new name ${newName} not available`
       );
-      await common.handleDetailedError(req, res, {
+      return {
         ok: false,
-        short: "Server Error",
-        content: `The Package Name: ${newName} is not available.`,
-      });
-      return;
+        type: "detailed",
+        content: {
+          ok: false,
+          short: "Server Error",
+          content: `The Package Name: ${newName} is not available.`
+        }
+      };
     }
   }
 
@@ -360,45 +403,29 @@ async function postPackagesVersion(req, res) {
   if (!addVer.ok) {
     // TODO: Use hardcoded message until we can verify messages from the db are safe
     // to pass directly to end users.
-    await common.handleDetailedError(req, res, {
-      ok: addVer.ok,
-      short: addVer.short,
-      content: "Failed to add the new package version to the database.",
-    });
-    return;
+    return {
+      ok: false,
+      type: "detailed",
+      content: {
+        ok: addVer.ok,
+        short: addVer.short,
+        content: "Failed to add the new package version to the database."
+      }
+    };
   }
 
-  res.status(201).json(addVer.content);
-  logger.httpLog(req, res);
-
-  // Invoke webhook after returning to user, to not make them wait on it.
-  await webhook.alertPublishVersion(packMetadata.content, user.content);
-}
-
-/**
- * @async
- * @function postPackagesEventUninstall
- * @desc Used when a package is uninstalled, decreases the download count by 1.
- * And saves this data, Originally an undocumented endpoint.
- * The decision to return a '201' was based on how other POST endpoints return,
- * during a successful event. This endpoint has now been deprecated, as it serves
- * no useful features, and on further examination may have been intended as a way
- * to collect data on users, which is not something we implement.
- * @deprecated since v 1.0.2
- * @see {@link https://github.com/atom/apm/blob/master/src/uninstall.coffee}
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
- * @property {http_method} - POST
- * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName/events/uninstall
- */
-async function postPackagesEventUninstall(req, res) {
-  res.status(200).json({ ok: true });
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: addVer.content,
+    webhook: {
+      pack: packMetadata.content,
+      user: user.content
+    }
+  };
 }
 
 module.exports = {
   postPackages,
   postPackagesStar,
   postPackagesVersion,
-  postPackagesEventUninstall,
 };

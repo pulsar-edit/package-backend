@@ -37,6 +37,10 @@ async function handleError(req, res, obj, num) {
       await authFail(req, res, obj, num);
       break;
 
+    case "Package Exists":
+      await packageExists(req, res);
+      break;
+      
     case "File Not Found":
     case "Server Error":
     default:
