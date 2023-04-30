@@ -10,8 +10,11 @@ const logger = require("../logger.js");
  * @async
  * @function deletePackagesName
  * @desc Allows the user to delete a repo they have ownership of.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.auth - The API key for the user
+ * @param {string} params.packageName - The name of the package
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName
  */
@@ -67,8 +70,11 @@ async function deletePackagesName(params, db, auth) {
  * @async
  * @function deletePackageStar
  * @desc Used to remove a star from a specific package for the authenticated usesr.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.auth - The API Key of the user
+ * @param {string} params.packageName - The name of the package
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
@@ -105,8 +111,12 @@ async function deletePackagesStar(params, db, auth) {
  * @async
  * @function deletePackageVersion
  * @desc Allows a user to delete a specific version of their package.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.auth - The API key of the user
+ * @param {string} params.packageName - The name of the package
+ * @param {string} params.versionName - The version of the package
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module 
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */

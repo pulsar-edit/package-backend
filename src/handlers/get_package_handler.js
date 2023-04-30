@@ -74,6 +74,7 @@ async function getPackages(params, db) {
  * on Atom.io for now. Although there are plans to have this become automatic later on.
  * @see {@link https://github.com/atom/apm/blob/master/src/featured.coffee|Source Code}
  * @see {@link https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23|Discussion}
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/featured
  */
@@ -114,6 +115,7 @@ async function getPackagesFeatured(db) {
  * @param {string} params.sort - The method to sort by
  * @param {string} params.direction - The direction to sort with
  * @param {string} params.query - The search query
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/search
  * @todo Note: This **has** been migrated to the new DB, and is fully functional.
@@ -208,6 +210,7 @@ async function getPackagesSearch(params, db) {
  * @param {object} param - The query parameters
  * @param {string} param.engine - The version of Pulsar to check compatibility with
  * @param {string} param.name - The package name
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName
  */
@@ -247,6 +250,7 @@ async function getPackagesDetails(params, db) {
  * Taking only the package wanted, and returning it directly.
  * @param {object} params - The query parameters
  * @param {string} params.packageName - The name of the package
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/stargazers
  */
@@ -292,6 +296,7 @@ async function getPackagesStargazers(params, db) {
  * @param {object} params - The query parameters
  * @param {string} params.packageName - The Package name we care about
  * @param {string} params.versionName - The package version we care about
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
@@ -333,8 +338,10 @@ async function getPackagesVersion(params, db) {
  * @function getPackagesVersionTarball
  * @desc Allows the user to get the tarball for a specific package version.
  * Which should initiate a download of said tarball on their end.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.packageName - The name of the package
+ * @param {string} params.versionName - The version of the package
+ * @param {module} db - An instance of the `database.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName/tarball
  */

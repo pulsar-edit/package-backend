@@ -20,6 +20,7 @@ const { server_url } = require("../config.js").getConfig();
  * on Atom.io for now. Although there are plans to have this become automatic later on.
  * @see {@link https://github.com/atom/apm/blob/master/src/featured.coffee|Source Code}
  * @see {@link https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23|Discussion}
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/featured
  */
@@ -52,6 +53,7 @@ async function getThemeFeatured(db) {
  * @param {integer} params.page - The page of results to retreive.
  * @param {string} params.sort - The sort method to use.
  * @param {string} params.direction - The direction to sort results.
+ * @param {module} db - An instance of the `database.js` module
  * @returns {object} An HTTP ServerStatus.
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes
@@ -107,6 +109,7 @@ async function getThemes(params, db) {
  * @param {string} params.sort - The method to use to sort
  * @param {string} params.direction - The direction to sort
  * @param {string} params.query - The search query to use
+ * @param {module} db - An instance of the `database.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/search
  */

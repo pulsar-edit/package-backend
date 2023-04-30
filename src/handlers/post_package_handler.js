@@ -13,8 +13,11 @@ const utils = require("../utils.js");
  * @desc This endpoint is used to publish a new package to the backend server.
  * Taking the repo, and your authentication for it, determines if it can be published,
  * then goes about doing so.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.repository - The `owner/repo` combo of the remote package
+ * @param {string} params.auth - The API key of the user
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module
  * @return {string} JSON object of new data pushed into the database, but stripped of
  * sensitive informations like primary and foreign keys.
  * @property {http_method} - POST
@@ -192,8 +195,11 @@ async function postPackages(params, db, auth) {
  * @async
  * @function postPackagesStar
  * @desc Used to submit a new star to a package from the authenticated user.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.auth - The API key of the user
+ * @param {string} params.packageName - The name of the package
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
@@ -243,8 +249,12 @@ async function postPackagesStar(params, db, auth) {
  * @function postPackagesVersion
  * @desc Allows a new version of a package to be published. But also can allow
  * a user to rename their application during this process.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {boolean} params.rename - Whether or not to preform a rename
+ * @param {string} params.auth - The API key of the user
+ * @param {string} params.packageName - The name of the package
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module 
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/versions
  */

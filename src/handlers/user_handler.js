@@ -11,7 +11,8 @@ const utils = require("../utils.js");
  * @function getLoginStars
  * @desc Endpoint that returns another users Star Gazers List.
  * @param {object} params - The query parameters for the request
- * @param {string} params.login - The Login API Key
+ * @param {string} params.login - The username
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login/stars
  */
@@ -80,6 +81,8 @@ async function getLoginStars(params, db) {
  * @desc Endpoint that returns the currently authenticated Users User Details
  * @param {object} params - The query parameters for this endpoint
  * @param {string} params.auth - The API Key
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users
  */
@@ -122,6 +125,7 @@ async function getAuthUser(params, db, auth) {
  * published.
  * @param {object} params - The query parameters
  * @param {string} params.login - The Username we want to look for
+ * @param {module} db - An instance of the `database.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login
  */

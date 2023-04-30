@@ -13,6 +13,8 @@ const utils = require("../utils.js");
  * the authenticated user has stared.
  * @param {object} param - The supported query parameters.
  * @param {string} param.auth - The authentication API token
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/stars
  */
