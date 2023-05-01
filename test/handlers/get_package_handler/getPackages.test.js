@@ -47,4 +47,38 @@ describe("Handles unexpected database returns properly", () => {
     expect(res.content.length).toBe(0);
   });
 
+  test("Returns all proper pagination keys", async () => {
+    const res = await getPackageHandler.getPackages(
+      {
+        page: 1,
+        sort: "relevance",
+        direction: "desc",
+        serviceType: "",
+        service: "",
+        serviceVersion: ""
+      },
+      {
+        getSortedPackages: () => {
+          return {
+            ok: true,
+            content: [],
+            pagination: {
+              count: 0,
+              page: 1,
+              total: 1,
+              limit: 10
+            }
+          };
+        }
+      }
+    );
+
+    expect(res.ok).toBeTruthy();
+    expect(typeof res.link).toBe("string");
+    expect(res.link.includes("desc")).toBeTruthy();
+    expect(res.total).toBe(0);
+    expect(res.limit).toBe(10);
+
+  });
+
 });
