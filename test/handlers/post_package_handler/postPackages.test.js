@@ -144,3 +144,66 @@ describe("Properly returns failed ownership check", () => {
   });
 
 });
+
+describe("Calls `vcs.newPackageData()` appropriately", () => {
+
+  test("Calls it with the expected data", async () => {
+    const authPass = () => {
+      return { ok: true, content: { username: "fake_username" } };
+    };
+    const dbPackageNameAvailability = () => {
+      return { ok: true };
+    };
+    const ownership = () => {
+      return { ok: true };
+    };
+
+    let vcsParams;
+    const newPackageData = (user, repo, service) => {
+      vcsParams = {
+        user: user,
+        repo: repo,
+        service: service
+      };
+      return { ok: false };
+    };
+
+    const res = await postPackageHandler.postPackages(
+      { repository: "pulsar-edit/pulsar" },
+      { packageNameAvailability: dbPackageNameAvailability },
+      { verifyAuth: authPass },
+      { ownership: ownership, newPackageData: newPackageData }
+    );
+
+    expect(res.ok).toBeFalsy();
+    // Now test what data was passed to vcs.newPackageData
+    expect(vcsParams.user.username).toBe("fake_username");
+    expect(vcsParams.repo).toBe("pulsar-edit/pulsar");
+    expect(vcsParams.service).toBe("git"); // TODO: Once we stop hardcoding git
+
+  });
+
+  test("Returns the error from `vcs.newPackageData()`", async () => {
+    const authPass = () => { return { ok: true, content: { username: "user" } }; };
+    const nameAvail = () => { return { ok: true }; };
+    const ownership = () => { return { ok: true }; };
+    const newPackageData = () => {
+      return {
+        ok: false,
+        content: "A random fake error"
+      };
+    };
+
+    const res = await postPackageHandler.postPackages(
+      { repository: "pulsar-edit/pulsar" },
+      { packageNameAvailability: nameAvail },
+      { verifyAuth: authPass },
+      { ownership: ownership, newPackageData: newPackageData }
+    );
+
+    expect(res.ok).toBeFalsy();
+    expect(res.content.content).toBe("A random fake error");
+
+  });
+
+});
