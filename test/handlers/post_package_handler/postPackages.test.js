@@ -118,3 +118,29 @@ describe("Handles an Repository and package name appropriately", () => {
   });
 
 });
+
+describe("Properly returns failed ownership check", () => {
+
+  test("When VCS Returns an error", async () => {
+    const authPass = () => {
+      return { ok: true, content: { username: "fake" } };
+    };
+    const dbPackageNameAvailability = () => {
+      return { ok: true };
+    };
+    const ownership = () => {
+      return { ok: false, content: "Fake VCS error" };
+    };
+
+    const res = await postPackageHandler.postPackages(
+      { repository: "pulsar-edit/pulsar" },
+      { packageNameAvailability: dbPackageNameAvailability },
+      { verifyAuth: authPass },
+      { ownership: ownership }
+    );
+
+    expect(res.ok).toBeFalsy();
+    expect(res.content.content).toBe("Fake VCS error");
+  });
+
+});
