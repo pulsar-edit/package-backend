@@ -23,7 +23,7 @@ describe("Handles invalid auth", () => {
 
 });
 
-describe("Handles an invalid Repository", () => {
+describe("Handles an Repository and package name appropriately", () => {
 
   test("When the repository is empty", async () => {
     const res = await postPackageHandler.postPackages(
@@ -54,6 +54,60 @@ describe("Handles an invalid Repository", () => {
 
     expect(res.ok).toBeFalsy();
     expect(res.content.short).toBe("Bad Repo");
+
+  });
+
+  test("When the repository is a banned name", async () => {
+    const authPass = () => {
+      return { ok: true, content: { username: "fake" } };
+    };
+
+    const res = await postPackageHandler.postPackages(
+      { repository: "pulsar-edit/slot-pulsa" },
+      {},
+      { verifyAuth: authPass }
+    );
+
+    expect(res.ok).toBeFalsy();
+    expect(res.content.short).toBe("Server Error");
+    expect(res.content.content).toBe("Package Name is banned.");
+  });
+
+  test("When the package name is not available", async () => {
+    const authPass = () => {
+      return { ok: true, content: { username: "fake" } };
+    };
+    const dbPackageNameAvailability = () => {
+      return { ok: false, short: "Not Found" };
+    };
+
+    const res = await postPackageHandler.postPackages(
+      { repository: "pulsar-edit/pulsar" },
+      { packageNameAvailability: dbPackageNameAvailability },
+      { verifyAuth: authPass }
+    );
+
+    expect(res.ok).toBeFalsy();
+    expect(res.content.short).toBe("Package Exists");
+  });
+
+  test("When the package name availability db call fails", async () => {
+    const authPass = () => {
+      return { ok: true, content: { username: "fake" } };
+    };
+    const dbPackageNameAvailability = () => {
+      return { ok: false, short: "Server Error", content: "Fake failure" };
+    };
+
+    const res = await postPackageHandler.postPackages(
+      { repository: "pulsar-edit/pulsar" },
+      { packageNameAvailability: dbPackageNameAvailability },
+      { verifyAuth: authPass }
+    );
+
+    expect(res.ok).toBeFalsy();
+    expect(res.content.short).toBe("Server Error");
+    expect(res.content.content).toBe("Fake failure");
 
   });
 
