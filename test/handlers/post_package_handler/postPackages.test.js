@@ -14,7 +14,8 @@ describe("Handles invalid auth", () => {
             content: "Fake auth failure"
           };
         }
-      }
+      },
+      {}
     );
 
     expect(res.ok).toBeFalsy();
@@ -31,7 +32,8 @@ describe("Handles an Repository and package name appropriately", () => {
       {},
       {
         verifyAuth: () => { return { ok: true, content: { username: "fake"} }; }
-      }
+      },
+      {}
     );
 
     expect(res.ok).toBeFalsy();
@@ -49,7 +51,8 @@ describe("Handles an Repository and package name appropriately", () => {
     const res = await postPackageHandler.postPackages(
       { repository: "just-a-long-string" },
       {},
-      { verifyAuth: authPass }
+      { verifyAuth: authPass },
+      {}
     );
 
     expect(res.ok).toBeFalsy();
@@ -65,7 +68,8 @@ describe("Handles an Repository and package name appropriately", () => {
     const res = await postPackageHandler.postPackages(
       { repository: "pulsar-edit/slot-pulsa" },
       {},
-      { verifyAuth: authPass }
+      { verifyAuth: authPass },
+      {}
     );
 
     expect(res.ok).toBeFalsy();
@@ -84,7 +88,8 @@ describe("Handles an Repository and package name appropriately", () => {
     const res = await postPackageHandler.postPackages(
       { repository: "pulsar-edit/pulsar" },
       { packageNameAvailability: dbPackageNameAvailability },
-      { verifyAuth: authPass }
+      { verifyAuth: authPass },
+      {}
     );
 
     expect(res.ok).toBeFalsy();
@@ -102,7 +107,8 @@ describe("Handles an Repository and package name appropriately", () => {
     const res = await postPackageHandler.postPackages(
       { repository: "pulsar-edit/pulsar" },
       { packageNameAvailability: dbPackageNameAvailability },
-      { verifyAuth: authPass }
+      { verifyAuth: authPass },
+      {}
     );
 
     expect(res.ok).toBeFalsy();
