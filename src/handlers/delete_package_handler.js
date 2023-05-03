@@ -3,7 +3,6 @@
  * @desc Endpoint Handlers for every DELETE Request that relates to packages themselves
  */
 
-const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 
 /**
@@ -15,10 +14,11 @@ const logger = require("../logger.js");
  * @param {string} params.packageName - The name of the package
  * @param {module} db - An instance of the `database.js` module
  * @param {module} auth - An instance of the `auth.js` module
+ * @param {module} vcs - An instance of the `vcs.js` module
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName
  */
-async function deletePackagesName(params, db, auth) {
+async function deletePackagesName(params, db, auth, vcs) {
 
   const user = await auth.verifyAuth(params.auth, db);
 
@@ -116,11 +116,12 @@ async function deletePackagesStar(params, db, auth) {
  * @param {string} params.packageName - The name of the package
  * @param {string} params.versionName - The version of the package
  * @param {module} db - An instance of the `database.js` module
- * @param {module} auth - An instance of the `auth.js` module 
+ * @param {module} auth - An instance of the `auth.js` module
+ * @param {module} vcs - An instance of the `vcs.js` module
  * @property {http_method} - DELETE
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
-async function deletePackageVersion(params, db, auth) {
+async function deletePackageVersion(params, db, auth, vcs) {
 
   // Moving this forward to do the least computationally expensive task first.
   // Check version validity

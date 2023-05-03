@@ -657,7 +657,7 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
         packageName: query.packageName(req)
       };
 
-      let ret = await package_handler.deletePackagesName(params, database, auth);
+      let ret = await package_handler.deletePackagesName(params, database, auth, vcs);
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -1103,7 +1103,7 @@ app.delete(
           versionName: query.engine(req.params.versionName)
         };
 
-        let ret = await package_handler.deletePackageVersion(params, database, auth);
+        let ret = await package_handler.deletePackageVersion(params, database, auth, vcs);
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
