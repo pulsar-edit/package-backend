@@ -20,6 +20,7 @@ const auth = require("./auth.js");
 const server_version = require("../package.json").version;
 const logger = require("./logger.js");
 const query = require("./query.js");
+const vcs = require("./vcs.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
 const { RATE_LIMIT_AUTH, RATE_LIMIT_GENERIC } =
@@ -323,7 +324,7 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
         auth: query.auth(req)
       };
 
-      let ret = await package_handler.postPackages(params, database, auth);
+      let ret = await package_handler.postPackages(params, database, auth, vcs);
 
       if (!ret.ok) {
         if (ret.type === "detailed") {
@@ -954,7 +955,7 @@ app.post(
           packageName: query.packageName(req)
         };
 
-        let ret = await package_handler.postPackagesVersion(params, database, auth);
+        let ret = await package_handler.postPackagesVersion(params, database, auth, vcs);
 
         if (!ret.ok) {
           if (ret.type === "detailed") {

@@ -3,7 +3,6 @@
  * @desc Endpoint Handlers for every POST Request that relates to packages themselves
  */
 
-const vcs = require("../vcs.js");
 const logger = require("../logger.js");
 const utils = require("../utils.js");
 
@@ -18,12 +17,13 @@ const utils = require("../utils.js");
  * @param {string} params.auth - The API key of the user
  * @param {module} db - An instance of the `database.js` module
  * @param {module} auth - An instance of the `auth.js` module
+ * @param {module} vcs - An instance of the `vcs.js` module
  * @return {string} JSON object of new data pushed into the database, but stripped of
  * sensitive informations like primary and foreign keys.
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages
  */
-async function postPackages(params, db, auth) {
+async function postPackages(params, db, auth, vcs) {
 
   const user = await auth.verifyAuth(params.auth, db);
   logger.generic(
@@ -254,11 +254,12 @@ async function postPackagesStar(params, db, auth) {
  * @param {string} params.auth - The API key of the user
  * @param {string} params.packageName - The name of the package
  * @param {module} db - An instance of the `database.js` module
- * @param {module} auth - An instance of the `auth.js` module 
+ * @param {module} auth - An instance of the `auth.js` module
+ * @param {module} vcs - An instance of the `vcs.js` module
  * @property {http_method} - POST
  * @property {http_endpoint} - /api/packages/:packageName/versions
  */
-async function postPackagesVersion(params, db, auth) {
+async function postPackagesVersion(params, db, auth, vcs) {
 
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
