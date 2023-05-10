@@ -4,40 +4,38 @@
  */
 
 const logger = require("../logger.js");
-const common = require("./common_handler.js");
-const database = require("../database.js");
 const utils = require("../utils.js");
-const query = require("../query.js");
-const auth = require("../auth.js");
 
 /**
  * @async
  * @function getLoginStars
  * @desc Endpoint that returns another users Star Gazers List.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters for the request
+ * @param {string} params.login - The username
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login/stars
  */
-async function getLoginStars(req, res) {
-  let params = {
-    login: query.login(req),
-  };
+async function getLoginStars(params, db) {
 
-  let user = await database.getUserByName(params.login);
+  let user = await db.getUserByName(params.login);
 
   if (!user.ok) {
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
-  let pointerCollection = await database.getStarredPointersByUserID(
+  let pointerCollection = await db.getStarredPointersByUserID(
     user.content.id
   );
 
   if (!pointerCollection.ok) {
-    await common.handleError(req, res, pointerCollection);
-    return;
+    return {
+      ok: false,
+      content: pointerCollection
+    };
   }
 
   // Since even if the pointerCollection is okay, it could be empty. Meaning the user
@@ -50,47 +48,53 @@ async function getLoginStars(req, res) {
     pointerCollection.content.length === 0
   ) {
     // Check for array to protect from an unexpected return
-    res.status(200).json([]);
-    logger.httpLog(req, res);
-    return;
+    return {
+      ok: true,
+      content: []
+    };
   }
 
-  let packageCollection = await database.getPackageCollectionByID(
+  let packageCollection = await db.getPackageCollectionByID(
     pointerCollection.content
   );
 
   if (!packageCollection.ok) {
-    await common.handleError(req, res, packageCollection);
-    return;
+    return {
+      ok: false,
+      content: packageCollection
+    }
   }
 
   packageCollection = await utils.constructPackageObjectShort(
     packageCollection.content
   );
 
-  res.status(200).json(packageCollection);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: packageCollection
+  };
 }
 
 /**
  * @async
  * @function getAuthUser
  * @desc Endpoint that returns the currently authenticated Users User Details
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters for this endpoint
+ * @param {string} params.auth - The API Key
+ * @param {module} db - An instance of the `database.js` module
+ * @param {module} auth - An instance of the `auth.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users
  */
-async function getAuthUser(req, res) {
-  const params = {
-    auth: query.auth(req),
-  };
+async function getAuthUser(params, db, auth) {
 
-  const user = await auth.verifyAuth(params.auth);
+  const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   // TODO We need to find a way to add the users published pacakges here
@@ -107,9 +111,11 @@ async function getAuthUser(req, res) {
   };
 
   // Now with the user, since this is the authenticated user we can return all account details.
-  res.set({ "Access-Control-Allow-Credentials": true });
-  res.status(200).json(returnUser);
-  logger.httpLog(req, res);
+
+  return {
+    ok: true,
+    content: returnUser
+  };
 }
 
 /**
@@ -117,21 +123,21 @@ async function getAuthUser(req, res) {
  * @function getUser
  * @desc Endpoint that returns the user account details of another user. Including all packages
  * published.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.login - The Username we want to look for
+ * @param {module} db - An instance of the `database.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login
  */
-async function getUser(req, res) {
-  const params = {
-    login: query.login(req),
-  };
+async function getUser(params, db) {
 
-  let user = await database.getUserByName(params.login);
+  let user = await db.getUserByName(params.login);
 
   if (!user.ok) {
-    await common.handleError(req, res, user);
-    return;
+    return {
+      ok: false,
+      content: user
+    };
   }
 
   // TODO We need to find a way to add the users published pacakges here
@@ -148,8 +154,10 @@ async function getUser(req, res) {
     packages: [], // included as it should be used in the future
   };
 
-  res.status(200).json(returnUser);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: returnUser
+  };
 }
 
 module.exports = {

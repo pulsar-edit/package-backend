@@ -1,17 +1,14 @@
 /**
  * @module theme_handler
  * @desc Endpoint Handlers relating to themes only.
- * @implements {command_handler}
  * @implements {database}
  * @implements {utils}
  * @implements {logger}
+ * @implements {config}
  */
 
-const common = require("./common_handler.js");
-const database = require("../database.js");
 const utils = require("../utils.js");
 const logger = require("../logger.js");
-const query = require("../query.js");
 const { server_url } = require("../config.js").getConfig();
 
 /**
@@ -23,25 +20,28 @@ const { server_url } = require("../config.js").getConfig();
  * on Atom.io for now. Although there are plans to have this become automatic later on.
  * @see {@link https://github.com/atom/apm/blob/master/src/featured.coffee|Source Code}
  * @see {@link https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23|Discussion}
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/featured
  */
-async function getThemeFeatured(req, res) {
+async function getThemeFeatured(db) {
   // Returns Package Object Short Array
-  // Supports engine query parameter.
-  let col = await database.getFeaturedThemes();
+
+  let col = await db.getFeaturedThemes();
 
   if (!col.ok) {
-    await common.handleError(req, res, col);
-    return;
+    return {
+      ok: false,
+      content: col
+    };
   }
 
   let newCol = await utils.constructPackageObjectShort(col.content);
 
-  res.status(200).json(newCol);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: newCol
+  };
 }
 
 /**
@@ -49,27 +49,29 @@ async function getThemeFeatured(req, res) {
  * @function getThemes
  * @desc Endpoint to return all Themes to the user. Based on any filtering
  * they'ved applied via query parameters.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters that can operate on this endpoint.
+ * @param {integer} params.page - The page of results to retreive.
+ * @param {string} params.sort - The sort method to use.
+ * @param {string} params.direction - The direction to sort results.
+ * @param {module} db - An instance of the `database.js` module
+ * @returns {object} An HTTP ServerStatus.
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes
  */
-async function getThemes(req, res) {
-  const params = {
-    page: query.page(req),
-    sort: query.sort(req),
-    direction: query.dir(req),
-  };
+async function getThemes(params, db) {
 
-  const packages = await database.getSortedPackages(params, true);
+  const packages = await db.getSortedPackages(params, true);
 
   if (!packages.ok) {
     logger.generic(
       3,
       `getThemes-getSortedPackages Not OK: ${packages.content}`
     );
-    await common.handleError(req, res, packages);
-    return;
+    return {
+      ok: false,
+      content: packages
+    };
+
   }
 
   const page = packages.pagination.page;
@@ -88,32 +90,32 @@ async function getThemes(req, res) {
     }&order=${params.direction}>; rel="next"`;
   }
 
-  res.append("Link", link);
-  res.append("Query-Total", packages.pagination.count);
-  res.append("Query-Limit", packages.pagination.limit);
+  return {
+    ok: true,
+    link: link,
+    total: packages.pagination.count,
+    limit: packages.pagination.limit,
+    content: packArray
+  };
 
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
 }
 
 /**
  * @async
  * @function getThemesSearch
  * @desc Endpoint to Search from all themes on the registry.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters from the initial request.
+ * @param {integer} params.page - The page number to return
+ * @param {string} params.sort - The method to use to sort
+ * @param {string} params.direction - The direction to sort
+ * @param {string} params.query - The search query to use
+ * @param {module} db - An instance of the `database.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/search
  */
-async function getThemesSearch(req, res) {
-  const params = {
-    sort: query.sort(req),
-    page: query.page(req),
-    direction: query.dir(req),
-    query: query.query(req),
-  };
+async function getThemesSearch(params, db) {
 
-  const packs = await database.simpleSearch(
+  const packs = await db.simpleSearch(
     params.query,
     params.page,
     params.direction,
@@ -127,13 +129,20 @@ async function getThemesSearch(req, res) {
         4,
         "getThemesSearch-simpleSearch Responding with Empty Array for Not Found Status"
       );
-      res.status(200).json([]);
-      logger.httpLog(req, res);
-      return;
+      return {
+        ok: true,
+        content: [],
+        link: "",
+        total: 0,
+        limit: 0
+      };
     }
+
     logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${packs.content}`);
-    await common.handleError(req, res, packs);
-    return;
+    return {
+      ok: false,
+      content: packs
+    };
   }
 
   const page = packs.pagination.page;
@@ -166,12 +175,14 @@ async function getThemesSearch(req, res) {
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
-  res.append("Link", link);
-  res.append("Query-Total", packs.pagination.count);
-  res.append("Query-Limit", packs.pagination.limit);
+  return {
+    ok: true,
+    content: packArray,
+    link: link,
+    total: packs.pagination.count,
+    limit: packs.pagination.limit
+  };
 
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
 }
 
 module.exports = {

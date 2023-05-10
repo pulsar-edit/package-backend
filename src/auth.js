@@ -1,4 +1,3 @@
-const database = require("./database.js");
 const superagent = require("superagent");
 const { GH_USERAGENT } = require("./config.js").getConfig();
 const logger = require("./logger.js");
@@ -15,7 +14,7 @@ const logger = require("./logger.js");
  * @params {string} token - The token the user provided.
  * @returns {object} A server status object.
  */
-async function verifyAuth(token) {
+async function verifyAuth(token, db) {
   if (token === null || token === undefined || token.length === 0) {
     logger.generic(
       5,
@@ -64,7 +63,7 @@ async function verifyAuth(token) {
     const provNodeId = userData.body.node_id;
 
     // Now we want to see if we are able to locate this user's node_id in our db.
-    const dbUser = await database.getUserByNodeID(provNodeId);
+    const dbUser = await db.getUserByNodeID(provNodeId);
 
     if (!dbUser.ok) {
       return dbUser;

@@ -14,8 +14,13 @@ const theme_handler = require("./handlers/theme_handler.js");
 const package_handler = require("./handlers/package_handler.js");
 const common_handler = require("./handlers/common_handler.js");
 const oauth_handler = require("./handlers/oauth_handler.js");
+const webhook = require("./webhook.js");
+const database = require("./database.js");
+const auth = require("./auth.js");
 const server_version = require("../package.json").version;
 const logger = require("./logger.js");
+const query = require("./query.js");
+const vcs = require("./vcs.js");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
 const { RATE_LIMIT_AUTH, RATE_LIMIT_GENERIC } =
@@ -214,15 +219,59 @@ app.options("/api/pat", genericLimit, async (req, res) => {
  */
 app.get("/api/:packType", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
-    case "packages":
-      await package_handler.getPackages(req, res);
+    case "packages": {
+
+      let ret = await package_handler.getPackages({
+        page: query.page(req),
+        sort: query.sort(req),
+        direction: query.dir(req),
+        serviceType: query.serviceType(req),
+        service: query.service(req),
+        serviceVersion: query.serviceVersion(req)
+      }, database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we will handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
+
       break;
-    case "themes":
-      await theme_handler.getThemes(req, res);
+    }
+    case "themes": {
+
+      let ret = await theme_handler.getThemes({
+        page: query.page(req),
+        sort: query.sort(req),
+        direction: query.dir(req)
+      }, database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we will handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
+
       break;
-    default:
+    }
+    default: {
       next();
       break;
+    }
   }
 });
 
@@ -270,7 +319,28 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages":
     case "themes":
-      await package_handler.postPackages(req, res);
+      const params = {
+        repository: query.repo(req),
+        auth: query.auth(req)
+      };
+
+      let ret = await package_handler.postPackages(params, database, auth, vcs);
+
+      if (!ret.ok) {
+        if (ret.type === "detailed") {
+          await common_handler.handleDetailedError(req, res, ret.content);
+          return;
+        } else {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+      }
+
+      res.status(201).json(ret.content);
+
+      // Return to user before webhook call, so user doesn't wait on it
+      await webhook.alertPublishPackage(ret.webhook.pack, ret.webhook.user);
+
       break;
     default:
       next();
@@ -314,15 +384,34 @@ app.options("/api/:packType", genericLimit, async (req, res, next) => {
  */
 app.get("/api/:packType/featured", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
-    case "packages":
-      await package_handler.getPackagesFeatured(req, res);
+    case "packages": {
+      let ret = await package_handler.getPackagesFeatured(database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
-    case "themes":
-      await theme_handler.getThemeFeatured(req, res);
+    }
+    case "themes": {
+      let ret = await theme_handler.getThemeFeatured(database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
-    default:
+    }
+    default: {
       next();
       break;
+    }
   }
 });
 
@@ -391,15 +480,57 @@ app.options("/api/:packType/featured", genericLimit, async (req, res, next) => {
  */
 app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
-    case "packages":
-      await package_handler.getPackagesSearch(req, res);
+    case "packages": {
+
+      let ret = await package_handler.getPackagesSearch({
+        sort: query.sort(req),
+        page: query.page(req),
+        direction: query.dir(req),
+        query: query.query(req)
+      }, database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we must handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
-    case "themes":
-      await theme_handler.getThemesSearch(req, res);
+    }
+    case "themes": {
+      const params = {
+        sort: query.sort(req),
+        page: query.page(req),
+        direction: query.dir(req),
+        query: query.query(req)
+      };
+
+      let ret = await theme_handler.getThemesSearch(params, database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // Since we know this is a paginated endpoint we must handle that here
+      res.append("Link", ret.link);
+      res.append("Query-Total", ret.total);
+      res.append("Query-Limit", ret.limit);
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
-    default:
+    }
+    default: {
       next();
       break;
+    }
   }
 });
 
@@ -456,7 +587,20 @@ app.get("/api/:packType/:packageName", genericLimit, async (req, res, next) => {
     case "themes":
       // We can use the same handler here because the logic of the return
       // Will be identical no matter what type of package it is.
-      await package_handler.getPackagesDetails(req, res);
+      const params = {
+        engine: query.engine(req.query.engine),
+        name: query.packageName(req)
+      };
+
+      let ret = await package_handler.getPackagesDetails(params, database);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      res.status(200).json(ret.content);
+      logger.httpLog(req, res);
       break;
     default:
       next();
@@ -508,7 +652,22 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages":
     case "themes":
-      await package_handler.deletePackagesName(req, res);
+      const params = {
+        auth: query.auth(req),
+        packageName: query.packageName(req)
+      };
+
+      let ret = await package_handler.deletePackagesName(params, database, auth, vcs);
+
+      if (!ret.ok) {
+        await common_handler.handleError(req, res, ret.content);
+        return;
+      }
+
+      // We know on success we should just return a statuscode
+      res.status(204).send();
+      logger.httpLog(req, res);
+
       break;
     default:
       next();
@@ -574,7 +733,20 @@ app.post(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.postPackagesStar(req, res);
+        const params = {
+          auth: query.auth(req),
+          packageName: query.packageName(req)
+        };
+
+        let ret = await package_handler.postPackagesStar(params, database, auth);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        res.status(200).json(ret.content);
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -620,7 +792,22 @@ app.delete(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.deletePackagesStar(req, res);
+        const params = {
+          auth: query.auth(req),
+          packageName: query.packageName(req)
+        };
+
+        let ret = await package_handler.deletePackagesStar(params, database, auth);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        // On success we just return status code
+        res.status(201).send();
+        logger.httpLog(req, res);
+
         break;
       default:
         next();
@@ -679,7 +866,18 @@ app.get(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.getPackagesStargazers(req, res);
+        const params = {
+          packageName: query.packageName(req)
+        };
+        let ret = await package_handler.getPackagesStargazers(params, database);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        res.status(200).json(ret.content);
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -751,7 +949,29 @@ app.post(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.postPackagesVersion(req, res);
+        const params = {
+          rename: query.rename(req),
+          auth: query.auth(req),
+          packageName: query.packageName(req)
+        };
+
+        let ret = await package_handler.postPackagesVersion(params, database, auth, vcs);
+
+        if (!ret.ok) {
+          if (ret.type === "detailed") {
+            await common_handler.handleDetailedError(req, res, ret.content);
+            return;
+          } else {
+            await common_handler.handleError(req, res, ret.content);
+            return;
+          }
+        }
+
+        res.status(201).json(ret.content);
+
+        // Return to user before webhook call, so user doesn't wait on it
+        await webhook.alertPublishPackage(ret.webhook.pack, ret.webhook.user);
+
         break;
       default:
         next();
@@ -815,7 +1035,20 @@ app.get(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.getPackagesVersion(req, res);
+        const params = {
+          packageName: query.packageName(req),
+          versionName: query.engine(req.params.versionName)
+        };
+
+        let ret = await package_handler.getPackagesVersion(params, database);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        res.status(200).json(ret.content);
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -864,7 +1097,23 @@ app.delete(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.deletePackageVersion(req, res);
+        const params = {
+          auth: query.auth(req),
+          packageName: query.packageName(req),
+          versionName: query.engine(req.params.versionName)
+        };
+
+        let ret = await package_handler.deletePackageVersion(params, database, auth, vcs);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        // This is, on success, and empty return
+        res.status(204).send();
+        logger.httpLog(req, res);
+
         break;
       default:
         next();
@@ -928,7 +1177,22 @@ app.get(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.getPackagesVersionTarball(req, res);
+        const params = {
+          packageName: query.packageName(req),
+          versionName: query.engine(req.params.versionName)
+        };
+
+        let ret = await package_handler.getPackagesVersionTarball(params, database);
+
+        if (!ret.ok) {
+          await common_handler.handleError(req, res, ret.content);
+          return;
+        }
+
+        // We know this endpoint, if successful will redirect, so that must be handled here
+        res.redirect(ret.content);
+        logger.httpLog(req, res);
+
         break;
       default:
         next();
@@ -998,7 +1262,21 @@ app.post(
     switch (req.params.packType) {
       case "packages":
       case "themes":
-        await package_handler.postPackagesEventUninstall(req, res);
+        /**
+          Used when a package is uninstalled, decreases the download count by 1.
+          Originally an undocumented endpoint.
+          The decision to return a '201' is based on how other POST endpoints return,
+          during a successful event.
+          This endpoint has now been deprecated, as it serves no useful features,
+          and on further examination may have been intended as a way to collect
+          data on users, which is not something we implement.
+          * Deprecated since v1.0.2
+          * see: https://github.com/atom/apm/blob/master/src/uninstall.coffee
+          * While decoupling HTTP handling from logic, the function has been removed
+            entirely: https://github.com/pulsar-edit/package-backend/pull/171
+        */
+        res.status(200).json({ ok: true });
+        logger.httpLog(req, res);
         break;
       default:
         next();
@@ -1047,7 +1325,19 @@ app.options(
  *  @Rdesc If the login does not exist, a 404 is returned.
  */
 app.get("/api/users/:login/stars", genericLimit, async (req, res) => {
-  await user_handler.getLoginStars(req, res);
+  const params = {
+    login: query.login(req)
+  };
+
+  let ret = await user_handler.getLoginStars(params, database);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/users/:login/stars", genericLimit, async (req, res) => {
@@ -1087,7 +1377,24 @@ app.get("/api/users", authLimit, async (req, res) => {
   );
   res.header("Access-Control-Allow-Origin", "https://web.pulsar-edit.dev");
   res.header("Access-Control-Allow-Credentials", true);
-  await user_handler.getAuthUser(req, res);
+
+  const params = {
+    auth: query.auth(req)
+  };
+
+
+  let ret = await user_handler.getAuthUser(params, database, auth);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  // TODO: This was set within the function previously, needs to be determined if this is needed
+  res.set({"Access-Control-Allow-Credentials": true });
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/users", async (req, res) => {
@@ -1121,7 +1428,19 @@ app.options("/api/users", async (req, res) => {
  *   @Rtype application/json
  */
 app.get("/api/users/:login", genericLimit, async (req, res) => {
-  await user_handler.getUser(req, res);
+  const params = {
+    login: query.login(req)
+  };
+
+  let ret = await user_handler.getUser(params, database);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/users/:login", genericLimit, async (req, res) => {
@@ -1151,7 +1470,19 @@ app.options("/api/users/:login", genericLimit, async (req, res) => {
  *   @Rtype application/json
  */
 app.get("/api/stars", authLimit, async (req, res) => {
-  await star_handler.getStars(req, res);
+  const params = {
+    auth: query.auth(req)
+  };
+
+  let ret = await star_handler.getStars(params, database, auth);
+
+  if (!ret.ok) {
+    await common_handler.handleError(req, res, ret.content);
+    return;
+  }
+
+  res.status(200).json(ret.content);
+  logger.httpLog(req, res);
 });
 
 app.options("/api/stars", genericLimit, async (req, res) => {
@@ -1174,7 +1505,14 @@ app.options("/api/stars", genericLimit, async (req, res) => {
  *   @Rdesc Atom update feed, following the format expected by Squirrel.
  */
 app.get("/api/updates", genericLimit, async (req, res) => {
-  await update_handler.getUpdates(req, res);
+  let ret = await update_handler.getUpdates();
+
+  if (!ret.ok) {
+    await common_handler.notSupported(req, res);
+    return;
+  }
+
+  // TODO: There is no else until this endpoint is implemented.
 });
 
 app.options("/api/updates", genericLimit, async (req, res) => {

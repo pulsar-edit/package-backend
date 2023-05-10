@@ -3,12 +3,9 @@
  * @desc Endpoint Handlers for every GET Request that relates to packages themselves
  */
 
-const common = require("./common_handler.js");
-const query = require("../query.js");
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
 const utils = require("../utils.js");
-const database = require("../database.js");
 const { URL } = require("node:url");
 
 /**
@@ -16,30 +13,30 @@ const { URL } = require("node:url");
  * @function getPackages
  * @desc Endpoint to return all packages to the user. Based on any filtering
  * theyved applied via query parameters.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters for this endpoint.
+ * @param {integer} params.page - The page to retreive
+ * @param {string} params.sort - The method to sort by
+ * @param {string} params.direction - The direction to sort with
+ * @param {string} params.serviceType - The service type to display
+ * @param {string} params.service - The service to display
+ * @param {string} params.serviceVersion - The service version to show
+ * @param {module} db - An instance of the database
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages
  */
-async function getPackages(req, res) {
-  const params = {
-    page: query.page(req),
-    sort: query.sort(req),
-    direction: query.dir(req),
-    serviceType: query.serviceType(req),
-    service: query.service(req),
-    serviceVersion: query.serviceVersion(req),
-  };
+async function getPackages(params, db) {
 
-  const packages = await database.getSortedPackages(params);
+  const packages = await db.getSortedPackages(params);
 
   if (!packages.ok) {
     logger.generic(
       3,
       `getPackages-getSortedPackages Not OK: ${packages.content}`
     );
-    await common.handleError(req, res, packages, 1001);
-    return;
+    return {
+      ok: false,
+      content: packages
+    };
   }
 
   const page = packages.pagination.page;
@@ -59,12 +56,13 @@ async function getPackages(req, res) {
     }&order=${params.direction}>; rel="next"`;
   }
 
-  res.append("Link", link);
-  res.append("Query-Total", packages.pagination.count);
-  res.append("Query-Limit", packages.pagination.limit);
-
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    link: link,
+    total: packages.pagination.count,
+    limit: packages.pagination.limit,
+    content: packArray
+  };
 }
 
 /**
@@ -76,23 +74,24 @@ async function getPackages(req, res) {
  * on Atom.io for now. Although there are plans to have this become automatic later on.
  * @see {@link https://github.com/atom/apm/blob/master/src/featured.coffee|Source Code}
  * @see {@link https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23|Discussion}
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/featured
  */
-async function getPackagesFeatured(req, res) {
+async function getPackagesFeatured(db) {
   // Returns Package Object Short array.
-  // Supports engine query parameter.
-  const packs = await database.getFeaturedPackages();
+  // TODO: Does not support engine query parameter as of now
+  const packs = await db.getFeaturedPackages();
 
   if (!packs.ok) {
     logger.generic(
       3,
       `getPackagesFeatured-getFeaturedPackages Not OK: ${packs.content}`
     );
-    await common.handleError(req, res, packs, 1003);
-    return;
+    return {
+      ok: false,
+      content: packs
+    };
   }
 
   const packObjShort = await utils.constructPackageObjectShort(packs.content);
@@ -100,8 +99,10 @@ async function getPackagesFeatured(req, res) {
   // The endpoint using this function needs an array.
   const packArray = Array.isArray(packObjShort) ? packObjShort : [packObjShort];
 
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: packArray
+  };
 }
 
 /**
@@ -109,28 +110,26 @@ async function getPackagesFeatured(req, res) {
  * @function getPackagesSearch
  * @desc Allows user to search through all packages. Using their specified
  * query parameter.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {integer} params.page - The page to retreive
+ * @param {string} params.sort - The method to sort by
+ * @param {string} params.direction - The direction to sort with
+ * @param {string} params.query - The search query
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/search
  * @todo Note: This **has** been migrated to the new DB, and is fully functional.
  * The TODO here is to eventually move this to use the custom built in LCS search,
  * rather than simple search.
  */
-async function getPackagesSearch(req, res) {
-  const params = {
-    sort: query.sort(req),
-    page: query.page(req),
-    direction: query.dir(req),
-    query: query.query(req),
-  };
+async function getPackagesSearch(params, db) {
 
   // Because the task of implementing the custom search engine is taking longer
   // than expected, this will instead use super basic text searching on the DB side.
   // This is only an effort to get this working quickly and should be changed later.
   // This also means for now, the default sorting method will be downloads, not relevance.
 
-  const packs = await database.simpleSearch(
+  const packs = await db.simpleSearch(
     params.query,
     params.page,
     params.direction,
@@ -146,16 +145,19 @@ async function getPackagesSearch(req, res) {
       // Because getting not found from the search, means the users
       // search just had no matches, we will specially handle this to return
       // an empty array instead.
-      res.status(200).json([]);
-      logger.httpLog(req, res);
-      return;
+      return {
+        ok: true,
+        content: []
+      };
     }
     logger.generic(
       3,
       `getPackagesSearch-simpleSearch Not OK: ${packs.content}`
     );
-    await common.handleError(req, res, packs, 1007);
-    return;
+    return {
+      ok: false,
+      content: packs
+    };
   }
 
   const page = packs.pagination.page;
@@ -191,12 +193,13 @@ async function getPackagesSearch(req, res) {
     }&sort=${params.sort}&order=${params.direction}>; rel="next"`;
   }
 
-  res.append("Link", link);
-  res.append("Query-Total", packs.pagination.count);
-  res.append("Query-Limit", packs.pagination.limit);
-
-  res.status(200).json(packArray);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    link: link,
+    total: packs.pagination.count,
+    limit: packs.pagination.limit,
+    content: packArray
+  };
 }
 
 /**
@@ -204,25 +207,26 @@ async function getPackagesSearch(req, res) {
  * @function getPackagesDetails
  * @desc Allows the user to request a single package object full, depending
  * on the package included in the path parameter.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} param - The query parameters
+ * @param {string} param.engine - The version of Pulsar to check compatibility with
+ * @param {string} param.name - The package name
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName
  */
-async function getPackagesDetails(req, res) {
-  const params = {
-    engine: query.engine(req.query.engine),
-    name: query.packageName(req),
-  };
-  let pack = await database.getPackageByName(params.name, true);
+async function getPackagesDetails(params, db) {
+
+  let pack = await db.getPackageByName(params.name, true);
 
   if (!pack.ok) {
     logger.generic(
       3,
       `getPackagesDetails-getPackageByName Not OK: ${pack.content}`
     );
-    await common.handleError(req, res, pack, 1004);
-    return;
+    return {
+      ok: false,
+      content: pack
+    };
   }
 
   pack = await utils.constructPackageObjectFull(pack.content);
@@ -233,8 +237,10 @@ async function getPackagesDetails(req, res) {
     pack = await utils.engineFilter(pack, params.engine);
   }
 
-  res.status(200).json(pack);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: pack
+  };
 }
 
 /**
@@ -242,77 +248,89 @@ async function getPackagesDetails(req, res) {
  * @function getPackagesStargazers
  * @desc Endpoint returns the array of `star_gazers` from a specified package.
  * Taking only the package wanted, and returning it directly.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.packageName - The name of the package
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/stargazers
  */
-async function getPackagesStargazers(req, res) {
-  const params = {
-    packageName: query.packageName(req),
-  };
+async function getPackagesStargazers(params, db) {
   // The following can't be executed in user mode because we need the pointer
-  const pack = await database.getPackageByName(params.packageName);
+  const pack = await db.getPackageByName(params.packageName);
 
   if (!pack.ok) {
-    await common.handleError(req, res, pack);
-    return;
+    return {
+      ok: false,
+      content: pack
+    };
   }
 
-  const stars = await database.getStarringUsersByPointer(pack.content);
+  const stars = await db.getStarringUsersByPointer(pack.content);
 
   if (!stars.ok) {
-    await common.handleError(req, res, stars);
-    return;
+    return {
+      ok: false,
+      content: stars
+    };
   }
 
-  const gazers = await database.getUserCollectionById(stars.content);
+  const gazers = await db.getUserCollectionById(stars.content);
 
   if (!gazers.ok) {
-    await common.handleError(req, res, gazers);
-    return;
+    return {
+      ok: false,
+      content: gazers
+    };
   }
 
-  res.status(200).json(gazers.content);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: gazers.content
+  };
 }
 
 /**
  * @async
  * @function getPackagesVersion
  * @desc Used to retrieve a specific version from a package.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.packageName - The Package name we care about
+ * @param {string} params.versionName - The package version we care about
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
-async function getPackagesVersion(req, res) {
-  const params = {
-    packageName: query.packageName(req),
-    versionName: query.engine(req.params.versionName),
-  };
+async function getPackagesVersion(params, db) {
   // Check the truthiness of the returned query engine.
   if (params.versionName === false) {
     // we return a 404 for the version, since its an invalid format
-    await common.notFound(req, res);
-    return;
+    return {
+      ok: false,
+      content: {
+        short: "Not Found",
+      }
+    };
   }
   // Now we know the version is a valid semver.
 
-  const pack = await database.getPackageVersionByNameAndVersion(
+  const pack = await db.getPackageVersionByNameAndVersion(
     params.packageName,
     params.versionName
   );
 
   if (!pack.ok) {
-    await common.handleError(req, res, pack);
-    return;
+    return {
+      ok: false,
+      content: pack
+    };
   }
 
   const packRes = await utils.constructPackageObjectJSON(pack.content);
 
-  res.status(200).json(packRes);
-  logger.httpLog(req, res);
+  return {
+    ok: true,
+    content: packRes
+  };
 }
 
 /**
@@ -320,16 +338,15 @@ async function getPackagesVersion(req, res) {
  * @function getPackagesVersionTarball
  * @desc Allows the user to get the tarball for a specific package version.
  * Which should initiate a download of said tarball on their end.
- * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @param {object} res - The `Response` object inherited from the Express endpoint.
+ * @param {object} params - The query parameters
+ * @param {string} params.packageName - The name of the package
+ * @param {string} params.versionName - The version of the package
+ * @param {module} db - An instance of the `database.js` module 
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName/tarball
  */
-async function getPackagesVersionTarball(req, res) {
-  const params = {
-    packageName: query.packageName(req),
-    versionName: query.engine(req.params.versionName),
-  };
+async function getPackagesVersionTarball(params, db) {
+
   // Now that migration has began we know that each version will have
   // a tarball_url key on it, linking directly to the tarball from gh for that version.
 
@@ -337,22 +354,28 @@ async function getPackagesVersionTarball(req, res) {
   if (params.versionName === false) {
     // since query.engine gives false if invalid, we can just check if its truthy
     // additionally if its false, we know the version will never be found.
-    await common.notFound(req, res);
-    return;
+    return {
+      ok: false,
+      content: {
+        short: "Not Found"
+      }
+    };
   }
 
   // first lets get the package
-  const pack = await database.getPackageVersionByNameAndVersion(
+  const pack = await db.getPackageVersionByNameAndVersion(
     params.packageName,
     params.versionName
   );
 
   if (!pack.ok) {
-    await common.handleError(req, res, pack);
-    return;
+    return {
+      ok: false,
+      content: pack
+    };
   }
 
-  const save = await database.updatePackageIncrementDownloadByName(
+  const save = await db.updatePackageIncrementDownloadByName(
     params.packageName
   );
 
@@ -386,12 +409,14 @@ async function getPackagesVersionTarball(req, res) {
       3,
       `Malformed tarball URL for version ${params.versionName} of ${params.packageName}`
     );
-    await common.handleError(req, res, {
+    return {
       ok: false,
-      short: "Server Error",
-      content: e,
-    });
-    return;
+      content: {
+        ok: false,
+        short: "Server Error",
+        content: e
+      }
+    };
   }
 
   const allowedHostnames = [
@@ -405,17 +430,20 @@ async function getPackagesVersionTarball(req, res) {
     !allowedHostnames.includes(hostname) &&
     process.env.PULSAR_STATUS !== "dev"
   ) {
-    await common.handleError(req, res, {
+    return {
       ok: false,
-      short: "Server Error",
-      content: `Invalid Domain for Download Redirect: ${hostname}`,
-    });
-    return;
+      content: {
+        ok: false,
+        short: "Server Error",
+        content: `Invalid Domain for Download Redirect: ${hostname}`,
+      }
+    };
   }
 
-  res.redirect(tarballURL);
-  logger.httpLog(req, res);
-  return;
+  return {
+    ok: true,
+    content: tarballURL
+  };
 }
 
 module.exports = {
