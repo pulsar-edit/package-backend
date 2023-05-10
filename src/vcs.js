@@ -178,7 +178,17 @@ async function newPackageData(userObj, ownerRepo, service) {
     // the PackageObject Builder to handle this
 
     // Then lets add the service used, so we are able to safely find it in the future
-    const packRepoObj = determineProvider(pack.content.repository);
+    let packRepoObj = determineProvider(pack.content.repository);
+
+    // It's possible the repository field within the `package.json` has a mispelling
+    // or is otherwise inaccurate. So we will compare this to our working repo
+    if (packRepoObj.type === "na") {
+      // We couldn't determine the repo at all from the `package.json`
+      packRepoObj = determineProvider(ownerRepo);
+    }
+    // TODO: While originally I had wanted to check for the possibility of a typo
+    // within the repo field, this would break support for transfering of ownership
+    // or of changing the repo name. So we may have to live with that possibility.
 
     newPack
       .setReadme(readme.content)
@@ -310,11 +320,20 @@ async function newVersionData(userObj, ownerRepo, service) {
   pack.content.tarball_url = tag.tarball_url;
   pack.content.sha = typeof tag.commit?.sha === "string" ? tag.commit.sha : "";
 
+  // Lets protect the repo field in case of error
+  let repoField = determineProvider(pack.content.repository);
+
+  if (repoField.type === "na") {
+    // THe new version function is only passed `owner/repo` literal, so must be
+    // reconstructed. TODO: If support moves beyond GitHub, this will have to check service type
+    repoField = determineProvider(`https://github.com/${ownerRepo}`);
+  }
+
   return {
     ok: true,
     content: {
       name: pack.content.name.toLowerCase(),
-      repository: determineProvider(pack.content.repository),
+      repository: repoField,
       readme: readme.content,
       metadata: pack.content,
     },
