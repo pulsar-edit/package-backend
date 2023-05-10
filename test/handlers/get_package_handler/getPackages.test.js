@@ -1,16 +1,18 @@
 const getPackageHandler = require("../../../src/handlers/get_package_handler.js");
 
 describe("Handles unexpected database returns properly", () => {
-
   test("Database call fails", async () => {
-    const res = await getPackageHandler.getPackages({}, {
-      getSortedPackages: () => {
-        return {
-          ok: false,
-          content: "Fake error"
-        }
+    const res = await getPackageHandler.getPackages(
+      {},
+      {
+        getSortedPackages: () => {
+          return {
+            ok: false,
+            content: "Fake error",
+          };
+        },
       }
-    });
+    );
 
     expect(res.ok).toBeFalsy();
     expect(res.content.content).toBe("Fake error");
@@ -24,7 +26,7 @@ describe("Handles unexpected database returns properly", () => {
         direction: "desc",
         serviceType: "",
         service: "",
-        serviceVersion: ""
+        serviceVersion: "",
       },
       {
         getSortedPackages: () => {
@@ -35,10 +37,10 @@ describe("Handles unexpected database returns properly", () => {
               count: 0,
               page: 1,
               total: 1,
-              limit: 10
-            }
+              limit: 10,
+            },
           };
-        }
+        },
       }
     );
 
@@ -55,7 +57,7 @@ describe("Handles unexpected database returns properly", () => {
         direction: "desc",
         serviceType: "",
         service: "",
-        serviceVersion: ""
+        serviceVersion: "",
       },
       {
         getSortedPackages: () => {
@@ -66,10 +68,10 @@ describe("Handles unexpected database returns properly", () => {
               count: 0,
               page: 1,
               total: 1,
-              limit: 10
-            }
+              limit: 10,
+            },
           };
-        }
+        },
       }
     );
 
@@ -78,7 +80,5 @@ describe("Handles unexpected database returns properly", () => {
     expect(res.link.includes("desc")).toBeTruthy();
     expect(res.total).toBe(0);
     expect(res.limit).toBe(10);
-
   });
-
 });

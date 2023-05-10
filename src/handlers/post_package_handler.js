@@ -24,7 +24,6 @@ const utils = require("../utils.js");
  * @property {http_endpoint} - /api/packages
  */
 async function postPackages(params, db, auth, vcs) {
-
   const user = await auth.verifyAuth(params.auth, db);
   logger.generic(
     6,
@@ -35,7 +34,7 @@ async function postPackages(params, db, auth, vcs) {
     logger.generic(3, `postPackages-verifyAuth Not OK: ${user.content}`);
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
@@ -46,8 +45,8 @@ async function postPackages(params, db, auth, vcs) {
     return {
       ok: false,
       content: {
-        short: "Bad Repo"
-      }
+        short: "Bad Repo",
+      },
     };
   }
 
@@ -62,8 +61,8 @@ async function postPackages(params, db, auth, vcs) {
     return {
       ok: false,
       content: {
-        short: "Bad Repo"
-      }
+        short: "Bad Repo",
+      },
     };
   }
 
@@ -79,8 +78,8 @@ async function postPackages(params, db, auth, vcs) {
       content: {
         ok: false,
         short: "Server Error",
-        content: "Package Name is banned."
-      }
+        content: "Package Name is banned.",
+      },
     };
     // ^^^ Replace with a more specific error handler once supported TODO
   }
@@ -101,7 +100,7 @@ async function postPackages(params, db, auth, vcs) {
       // The server failed for some other bubbled reason, and is now encountering an error
       return {
         ok: false,
-        content: nameAvailable
+        content: nameAvailable,
       };
     }
     // But if the short is then only "Not Found" we can report it as not being available
@@ -113,8 +112,8 @@ async function postPackages(params, db, auth, vcs) {
     return {
       ok: false,
       content: {
-        short: "Package Exists"
-      }
+        short: "Package Exists",
+      },
     };
   }
 
@@ -125,7 +124,7 @@ async function postPackages(params, db, auth, vcs) {
     logger.generic(3, `postPackages-ownership Not OK: ${gitowner.content}`);
     return {
       ok: false,
-      content: gitowner
+      content: gitowner,
     };
   }
 
@@ -142,7 +141,7 @@ async function postPackages(params, db, auth, vcs) {
     return {
       ok: false,
       type: "detailed",
-      content: newPack
+      content: newPack,
     };
   }
 
@@ -156,7 +155,7 @@ async function postPackages(params, db, auth, vcs) {
     );
     return {
       ok: false,
-      content: insertedNewPack
+      content: insertedNewPack,
     };
   }
 
@@ -172,7 +171,7 @@ async function postPackages(params, db, auth, vcs) {
     );
     return {
       ok: false,
-      content: newDbPack
+      content: newDbPack,
     };
   }
 
@@ -186,8 +185,8 @@ async function postPackages(params, db, auth, vcs) {
     content: packageObjectFull,
     webhook: {
       pack: packageObjectFull,
-      user: user.content
-    }
+      user: user.content,
+    },
   };
 }
 
@@ -204,25 +203,21 @@ async function postPackages(params, db, auth, vcs) {
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
 async function postPackagesStar(params, db, auth) {
-
   const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
-  const star = await db.updateIncrementStar(
-    user.content,
-    params.packageName
-  );
+  const star = await db.updateIncrementStar(user.content, params.packageName);
 
   if (!star.ok) {
     return {
       ok: false,
-      content: star
+      content: star,
     };
   }
 
@@ -232,7 +227,7 @@ async function postPackagesStar(params, db, auth) {
   if (!pack.ok) {
     return {
       ok: false,
-      content: pack
+      content: pack,
     };
   }
 
@@ -240,7 +235,7 @@ async function postPackagesStar(params, db, auth) {
 
   return {
     ok: true,
-    content: pack
+    content: pack,
   };
 }
 
@@ -260,7 +255,6 @@ async function postPackagesStar(params, db, auth) {
  * @property {http_endpoint} - /api/packages/:packageName/versions
  */
 async function postPackagesVersion(params, db, auth, vcs) {
-
   // On renaming:
   // When a package is being renamed, we will expect that packageName will
   // match a previously published package.
@@ -279,7 +273,7 @@ async function postPackagesVersion(params, db, auth, vcs) {
     return {
       ok: false,
       type: "detailed",
-      content: user
+      content: user,
     };
   }
   logger.generic(
@@ -303,8 +297,9 @@ async function postPackagesVersion(params, db, auth, vcs) {
       content: {
         ok: false,
         short: packExists.short,
-        content: "The server was unable to locate your package when publishing a new version."
-      }
+        content:
+          "The server was unable to locate your package when publishing a new version.",
+      },
     };
   }
 
@@ -319,7 +314,7 @@ async function postPackagesVersion(params, db, auth, vcs) {
     logger.generic(6, packMetadata.content);
     return {
       ok: false,
-      content: packMetadata
+      content: packMetadata,
     };
   }
 
@@ -337,8 +332,8 @@ async function postPackagesVersion(params, db, auth, vcs) {
       content: {
         ok: false,
         short: "Bad Repo",
-        content: "Package name doesn't match local name, with rename false"
-      }
+        content: "Package name doesn't match local name, with rename false",
+      },
     };
   }
 
@@ -354,7 +349,7 @@ async function postPackagesVersion(params, db, auth, vcs) {
     logger.generic(6, `User Failed Git Ownership Check: ${gitowner.content}`);
     return {
       ok: false,
-      content: gitowner
+      content: gitowner,
     };
   }
 
@@ -378,8 +373,8 @@ async function postPackagesVersion(params, db, auth, vcs) {
         content: {
           ok: false,
           short: "Server Error",
-          content: "This Package Name is Banned on the Pulsar Registry."
-        }
+          content: "This Package Name is Banned on the Pulsar Registry.",
+        },
       };
     }
 
@@ -396,8 +391,8 @@ async function postPackagesVersion(params, db, auth, vcs) {
         content: {
           ok: false,
           short: "Server Error",
-          content: `The Package Name: ${newName} is not available.`
-        }
+          content: `The Package Name: ${newName} is not available.`,
+        },
       };
     }
   }
@@ -418,8 +413,8 @@ async function postPackagesVersion(params, db, auth, vcs) {
       content: {
         ok: addVer.ok,
         short: addVer.short,
-        content: "Failed to add the new package version to the database."
-      }
+        content: "Failed to add the new package version to the database.",
+      },
     };
   }
 
@@ -428,8 +423,8 @@ async function postPackagesVersion(params, db, auth, vcs) {
     content: addVer.content,
     webhook: {
       pack: packMetadata.content,
-      user: user.content
-    }
+      user: user.content,
+    },
   };
 }
 

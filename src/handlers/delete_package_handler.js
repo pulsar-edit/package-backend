@@ -19,26 +19,22 @@ const logger = require("../logger.js");
  * @property {http_endpoint} - /api/packages/:packageName
  */
 async function deletePackagesName(params, db, auth, vcs) {
-
   const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
   // Lets also first check to make sure the package exists.
-  const packageExists = await db.getPackageByName(
-    params.packageName,
-    true
-  );
+  const packageExists = await db.getPackageByName(params.packageName, true);
 
   if (!packageExists.ok) {
     return {
       ok: false,
-      content: packageExists
+      content: packageExists,
     };
   }
 
@@ -47,7 +43,7 @@ async function deletePackagesName(params, db, auth, vcs) {
   if (!gitowner.ok) {
     return {
       ok: false,
-      content: gitowner
+      content: gitowner,
     };
   }
 
@@ -57,12 +53,12 @@ async function deletePackagesName(params, db, auth, vcs) {
   if (!rm.ok) {
     return {
       ok: false,
-      content: rm
+      content: rm,
     };
   }
 
   return {
-    ok: true
+    ok: true,
   };
 }
 
@@ -79,31 +75,27 @@ async function deletePackagesName(params, db, auth, vcs) {
  * @property {http_endpoint} - /api/packages/:packageName/star
  */
 async function deletePackagesStar(params, db, auth) {
-
   const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
-  const unstar = await db.updateDecrementStar(
-    user.content,
-    params.packageName
-  );
+  const unstar = await db.updateDecrementStar(user.content, params.packageName);
 
   if (!unstar.ok) {
     return {
       ok: false,
-      content: unstar
+      content: unstar,
     };
   }
 
   // On a successful action here we will return an empty 201
   return {
-    ok: true
+    ok: true,
   };
 }
 
@@ -122,15 +114,14 @@ async function deletePackagesStar(params, db, auth) {
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName
  */
 async function deletePackageVersion(params, db, auth, vcs) {
-
   // Moving this forward to do the least computationally expensive task first.
   // Check version validity
   if (params.versionName === false) {
     return {
       ok: false,
       content: {
-        short: "Not Found"
-      }
+        short: "Not Found",
+      },
     };
   }
 
@@ -140,20 +131,17 @@ async function deletePackageVersion(params, db, auth, vcs) {
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
   // Lets also first check to make sure the package exists.
-  const packageExists = await db.getPackageByName(
-    params.packageName,
-    true
-  );
+  const packageExists = await db.getPackageByName(params.packageName, true);
 
   if (!packageExists.ok) {
     return {
       ok: false,
-      content: packageExists
+      content: packageExists,
     };
   }
 
@@ -162,7 +150,7 @@ async function deletePackageVersion(params, db, auth, vcs) {
   if (!gitowner.ok) {
     return {
       ok: false,
-      content: gitowner
+      content: gitowner,
     };
   }
 
@@ -175,7 +163,7 @@ async function deletePackageVersion(params, db, auth, vcs) {
   if (!removeVersion.ok) {
     return {
       ok: false,
-      content: removeVersion
+      content: removeVersion,
     };
   }
 

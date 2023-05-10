@@ -32,7 +32,7 @@ async function getThemeFeatured(db) {
   if (!col.ok) {
     return {
       ok: false,
-      content: col
+      content: col,
     };
   }
 
@@ -40,7 +40,7 @@ async function getThemeFeatured(db) {
 
   return {
     ok: true,
-    content: newCol
+    content: newCol,
   };
 }
 
@@ -59,7 +59,6 @@ async function getThemeFeatured(db) {
  * @property {http_endpoint} - /api/themes
  */
 async function getThemes(params, db) {
-
   const packages = await db.getSortedPackages(params, true);
 
   if (!packages.ok) {
@@ -69,9 +68,8 @@ async function getThemes(params, db) {
     );
     return {
       ok: false,
-      content: packages
+      content: packages,
     };
-
   }
 
   const page = packages.pagination.page;
@@ -95,9 +93,8 @@ async function getThemes(params, db) {
     link: link,
     total: packages.pagination.count,
     limit: packages.pagination.limit,
-    content: packArray
+    content: packArray,
   };
-
 }
 
 /**
@@ -109,12 +106,11 @@ async function getThemes(params, db) {
  * @param {string} params.sort - The method to use to sort
  * @param {string} params.direction - The direction to sort
  * @param {string} params.query - The search query to use
- * @param {module} db - An instance of the `database.js` module 
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/themes/search
  */
 async function getThemesSearch(params, db) {
-
   const packs = await db.simpleSearch(
     params.query,
     params.page,
@@ -134,14 +130,14 @@ async function getThemesSearch(params, db) {
         content: [],
         link: "",
         total: 0,
-        limit: 0
+        limit: 0,
       };
     }
 
     logger.generic(3, `getThemesSearch-simpleSearch Not OK: ${packs.content}`);
     return {
       ok: false,
-      content: packs
+      content: packs,
     };
   }
 
@@ -180,9 +176,8 @@ async function getThemesSearch(params, db) {
     content: packArray,
     link: link,
     total: packs.pagination.count,
-    limit: packs.pagination.limit
+    limit: packs.pagination.limit,
   };
-
 }
 
 module.exports = {

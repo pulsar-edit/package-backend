@@ -220,15 +220,17 @@ app.options("/api/pat", genericLimit, async (req, res) => {
 app.get("/api/:packType", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages": {
-
-      let ret = await package_handler.getPackages({
-        page: query.page(req),
-        sort: query.sort(req),
-        direction: query.dir(req),
-        serviceType: query.serviceType(req),
-        service: query.service(req),
-        serviceVersion: query.serviceVersion(req)
-      }, database);
+      let ret = await package_handler.getPackages(
+        {
+          page: query.page(req),
+          sort: query.sort(req),
+          direction: query.dir(req),
+          serviceType: query.serviceType(req),
+          service: query.service(req),
+          serviceVersion: query.serviceVersion(req),
+        },
+        database
+      );
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -246,12 +248,14 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
       break;
     }
     case "themes": {
-
-      let ret = await theme_handler.getThemes({
-        page: query.page(req),
-        sort: query.sort(req),
-        direction: query.dir(req)
-      }, database);
+      let ret = await theme_handler.getThemes(
+        {
+          page: query.page(req),
+          sort: query.sort(req),
+          direction: query.dir(req),
+        },
+        database
+      );
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -321,7 +325,7 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
     case "themes":
       const params = {
         repository: query.repo(req),
-        auth: query.auth(req)
+        auth: query.auth(req),
       };
 
       let ret = await package_handler.postPackages(params, database, auth, vcs);
@@ -481,13 +485,15 @@ app.options("/api/:packType/featured", genericLimit, async (req, res, next) => {
 app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
   switch (req.params.packType) {
     case "packages": {
-
-      let ret = await package_handler.getPackagesSearch({
-        sort: query.sort(req),
-        page: query.page(req),
-        direction: query.dir(req),
-        query: query.query(req)
-      }, database);
+      let ret = await package_handler.getPackagesSearch(
+        {
+          sort: query.sort(req),
+          page: query.page(req),
+          direction: query.dir(req),
+          query: query.query(req),
+        },
+        database
+      );
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -508,7 +514,7 @@ app.get("/api/:packType/search", genericLimit, async (req, res, next) => {
         sort: query.sort(req),
         page: query.page(req),
         direction: query.dir(req),
-        query: query.query(req)
+        query: query.query(req),
       };
 
       let ret = await theme_handler.getThemesSearch(params, database);
@@ -589,7 +595,7 @@ app.get("/api/:packType/:packageName", genericLimit, async (req, res, next) => {
       // Will be identical no matter what type of package it is.
       const params = {
         engine: query.engine(req.query.engine),
-        name: query.packageName(req)
+        name: query.packageName(req),
       };
 
       let ret = await package_handler.getPackagesDetails(params, database);
@@ -654,10 +660,15 @@ app.delete("/api/:packType/:packageName", authLimit, async (req, res, next) => {
     case "themes":
       const params = {
         auth: query.auth(req),
-        packageName: query.packageName(req)
+        packageName: query.packageName(req),
       };
 
-      let ret = await package_handler.deletePackagesName(params, database, auth, vcs);
+      let ret = await package_handler.deletePackagesName(
+        params,
+        database,
+        auth,
+        vcs
+      );
 
       if (!ret.ok) {
         await common_handler.handleError(req, res, ret.content);
@@ -735,10 +746,14 @@ app.post(
       case "themes":
         const params = {
           auth: query.auth(req),
-          packageName: query.packageName(req)
+          packageName: query.packageName(req),
         };
 
-        let ret = await package_handler.postPackagesStar(params, database, auth);
+        let ret = await package_handler.postPackagesStar(
+          params,
+          database,
+          auth
+        );
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -794,10 +809,14 @@ app.delete(
       case "themes":
         const params = {
           auth: query.auth(req),
-          packageName: query.packageName(req)
+          packageName: query.packageName(req),
         };
 
-        let ret = await package_handler.deletePackagesStar(params, database, auth);
+        let ret = await package_handler.deletePackagesStar(
+          params,
+          database,
+          auth
+        );
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -867,7 +886,7 @@ app.get(
       case "packages":
       case "themes":
         const params = {
-          packageName: query.packageName(req)
+          packageName: query.packageName(req),
         };
         let ret = await package_handler.getPackagesStargazers(params, database);
 
@@ -952,10 +971,15 @@ app.post(
         const params = {
           rename: query.rename(req),
           auth: query.auth(req),
-          packageName: query.packageName(req)
+          packageName: query.packageName(req),
         };
 
-        let ret = await package_handler.postPackagesVersion(params, database, auth, vcs);
+        let ret = await package_handler.postPackagesVersion(
+          params,
+          database,
+          auth,
+          vcs
+        );
 
         if (!ret.ok) {
           if (ret.type === "detailed") {
@@ -1037,7 +1061,7 @@ app.get(
       case "themes":
         const params = {
           packageName: query.packageName(req),
-          versionName: query.engine(req.params.versionName)
+          versionName: query.engine(req.params.versionName),
         };
 
         let ret = await package_handler.getPackagesVersion(params, database);
@@ -1100,10 +1124,15 @@ app.delete(
         const params = {
           auth: query.auth(req),
           packageName: query.packageName(req),
-          versionName: query.engine(req.params.versionName)
+          versionName: query.engine(req.params.versionName),
         };
 
-        let ret = await package_handler.deletePackageVersion(params, database, auth, vcs);
+        let ret = await package_handler.deletePackageVersion(
+          params,
+          database,
+          auth,
+          vcs
+        );
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -1179,10 +1208,13 @@ app.get(
       case "themes":
         const params = {
           packageName: query.packageName(req),
-          versionName: query.engine(req.params.versionName)
+          versionName: query.engine(req.params.versionName),
         };
 
-        let ret = await package_handler.getPackagesVersionTarball(params, database);
+        let ret = await package_handler.getPackagesVersionTarball(
+          params,
+          database
+        );
 
         if (!ret.ok) {
           await common_handler.handleError(req, res, ret.content);
@@ -1326,7 +1358,7 @@ app.options(
  */
 app.get("/api/users/:login/stars", genericLimit, async (req, res) => {
   const params = {
-    login: query.login(req)
+    login: query.login(req),
   };
 
   let ret = await user_handler.getLoginStars(params, database);
@@ -1379,9 +1411,8 @@ app.get("/api/users", authLimit, async (req, res) => {
   res.header("Access-Control-Allow-Credentials", true);
 
   const params = {
-    auth: query.auth(req)
+    auth: query.auth(req),
   };
-
 
   let ret = await user_handler.getAuthUser(params, database, auth);
 
@@ -1391,7 +1422,7 @@ app.get("/api/users", authLimit, async (req, res) => {
   }
 
   // TODO: This was set within the function previously, needs to be determined if this is needed
-  res.set({"Access-Control-Allow-Credentials": true });
+  res.set({ "Access-Control-Allow-Credentials": true });
 
   res.status(200).json(ret.content);
   logger.httpLog(req, res);
@@ -1429,7 +1460,7 @@ app.options("/api/users", async (req, res) => {
  */
 app.get("/api/users/:login", genericLimit, async (req, res) => {
   const params = {
-    login: query.login(req)
+    login: query.login(req),
   };
 
   let ret = await user_handler.getUser(params, database);
@@ -1471,7 +1502,7 @@ app.options("/api/users/:login", genericLimit, async (req, res) => {
  */
 app.get("/api/stars", authLimit, async (req, res) => {
   const params = {
-    auth: query.auth(req)
+    auth: query.auth(req),
   };
 
   let ret = await star_handler.getStars(params, database, auth);

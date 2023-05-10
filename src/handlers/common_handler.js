@@ -40,7 +40,7 @@ async function handleError(req, res, obj, num) {
     case "Package Exists":
       await packageExists(req, res);
       break;
-      
+
     case "File Not Found":
     case "Server Error":
     default:

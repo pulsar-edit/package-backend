@@ -1955,21 +1955,25 @@ Endpoint Handlers for every DELETE Request that relates to packages themselves
 
 
 * [delete_package_handler](#module_delete_package_handler)
-    * [~deletePackagesName(req, res)](#module_delete_package_handler..deletePackagesName)
-    * [~deletePackageStar(req, res)](#module_delete_package_handler..deletePackageStar)
-    * [~deletePackageVersion(req, res)](#module_delete_package_handler..deletePackageVersion)
+    * [~deletePackagesName(params, db, auth, vcs)](#module_delete_package_handler..deletePackagesName)
+    * [~deletePackageStar(params, db, auth)](#module_delete_package_handler..deletePackageStar)
+    * [~deletePackageVersion(params, db, auth, vcs)](#module_delete_package_handler..deletePackageVersion)
 
 <a name="module_delete_package_handler..deletePackagesName"></a>
 
-### delete_package_handler~deletePackagesName(req, res)
+### delete_package_handler~deletePackagesName(params, db, auth, vcs)
 Allows the user to delete a repo they have ownership of.
 
 **Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.auth | <code>string</code> | The API key for the user |
+| params.packageName | <code>string</code> | The name of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
+| vcs | <code>module</code> | An instance of the `vcs.js` module |
 
 **Properties**
 
@@ -1980,15 +1984,18 @@ Allows the user to delete a repo they have ownership of.
 
 <a name="module_delete_package_handler..deletePackageStar"></a>
 
-### delete_package_handler~deletePackageStar(req, res)
+### delete_package_handler~deletePackageStar(params, db, auth)
 Used to remove a star from a specific package for the authenticated usesr.
 
 **Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.auth | <code>string</code> | The API Key of the user |
+| params.packageName | <code>string</code> | The name of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
 
 **Properties**
 
@@ -1999,15 +2006,20 @@ Used to remove a star from a specific package for the authenticated usesr.
 
 <a name="module_delete_package_handler..deletePackageVersion"></a>
 
-### delete_package_handler~deletePackageVersion(req, res)
+### delete_package_handler~deletePackageVersion(params, db, auth, vcs)
 Allows a user to delete a specific version of their package.
 
 **Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.auth | <code>string</code> | The API key of the user |
+| params.packageName | <code>string</code> | The name of the package |
+| params.versionName | <code>string</code> | The version of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
+| vcs | <code>module</code> | An instance of the `vcs.js` module |
 
 **Properties**
 
@@ -2023,17 +2035,17 @@ Endpoint Handlers for every GET Request that relates to packages themselves
 
 
 * [get_package_handler](#module_get_package_handler)
-    * [~getPackages(req, res)](#module_get_package_handler..getPackages)
-    * [~getPackagesFeatured(req, res)](#module_get_package_handler..getPackagesFeatured)
-    * [~getPackagesSearch(req, res)](#module_get_package_handler..getPackagesSearch)
-    * [~getPackagesDetails(req, res)](#module_get_package_handler..getPackagesDetails)
-    * [~getPackagesStargazers(req, res)](#module_get_package_handler..getPackagesStargazers)
-    * [~getPackagesVersion(req, res)](#module_get_package_handler..getPackagesVersion)
-    * [~getPackagesVersionTarball(req, res)](#module_get_package_handler..getPackagesVersionTarball)
+    * [~getPackages(params, db)](#module_get_package_handler..getPackages)
+    * [~getPackagesFeatured(db)](#module_get_package_handler..getPackagesFeatured)
+    * [~getPackagesSearch(params, db)](#module_get_package_handler..getPackagesSearch)
+    * [~getPackagesDetails(param, db)](#module_get_package_handler..getPackagesDetails)
+    * [~getPackagesStargazers(params, db)](#module_get_package_handler..getPackagesStargazers)
+    * [~getPackagesVersion(params, db)](#module_get_package_handler..getPackagesVersion)
+    * [~getPackagesVersionTarball(params, db)](#module_get_package_handler..getPackagesVersionTarball)
 
 <a name="module_get_package_handler..getPackages"></a>
 
-### get_package_handler~getPackages(req, res)
+### get_package_handler~getPackages(params, db)
 Endpoint to return all packages to the user. Based on any filtering
 theyved applied via query parameters.
 
@@ -2041,8 +2053,14 @@ theyved applied via query parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters for this endpoint. |
+| params.page | <code>integer</code> | The page to retreive |
+| params.sort | <code>string</code> | The method to sort by |
+| params.direction | <code>string</code> | The direction to sort with |
+| params.serviceType | <code>string</code> | The service type to display |
+| params.service | <code>string</code> | The service to display |
+| params.serviceVersion | <code>string</code> | The service version to show |
+| db | <code>module</code> | An instance of the database |
 
 **Properties**
 
@@ -2053,7 +2071,7 @@ theyved applied via query parameters.
 
 <a name="module_get_package_handler..getPackagesFeatured"></a>
 
-### get_package_handler~getPackagesFeatured(req, res)
+### get_package_handler~getPackagesFeatured(db)
 Allows the user to retrieve the featured packages, as package object shorts.
 This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
 Additionally for the time being this list is created manually, the same method used
@@ -2068,8 +2086,7 @@ on Atom.io for now. Although there are plans to have this become automatic later
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2080,7 +2097,7 @@ on Atom.io for now. Although there are plans to have this become automatic later
 
 <a name="module_get_package_handler..getPackagesSearch"></a>
 
-### get_package_handler~getPackagesSearch(req, res)
+### get_package_handler~getPackagesSearch(params, db)
 Allows user to search through all packages. Using their specified
 query parameter.
 
@@ -2094,8 +2111,12 @@ rather than simple search.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.page | <code>integer</code> | The page to retreive |
+| params.sort | <code>string</code> | The method to sort by |
+| params.direction | <code>string</code> | The direction to sort with |
+| params.query | <code>string</code> | The search query |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2106,7 +2127,7 @@ rather than simple search.
 
 <a name="module_get_package_handler..getPackagesDetails"></a>
 
-### get_package_handler~getPackagesDetails(req, res)
+### get_package_handler~getPackagesDetails(param, db)
 Allows the user to request a single package object full, depending
 on the package included in the path parameter.
 
@@ -2114,8 +2135,10 @@ on the package included in the path parameter.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| param | <code>object</code> | The query parameters |
+| param.engine | <code>string</code> | The version of Pulsar to check compatibility with |
+| param.name | <code>string</code> | The package name |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2126,7 +2149,7 @@ on the package included in the path parameter.
 
 <a name="module_get_package_handler..getPackagesStargazers"></a>
 
-### get_package_handler~getPackagesStargazers(req, res)
+### get_package_handler~getPackagesStargazers(params, db)
 Endpoint returns the array of `star_gazers` from a specified package.
 Taking only the package wanted, and returning it directly.
 
@@ -2134,8 +2157,9 @@ Taking only the package wanted, and returning it directly.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.packageName | <code>string</code> | The name of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2146,15 +2170,17 @@ Taking only the package wanted, and returning it directly.
 
 <a name="module_get_package_handler..getPackagesVersion"></a>
 
-### get_package_handler~getPackagesVersion(req, res)
+### get_package_handler~getPackagesVersion(params, db)
 Used to retrieve a specific version from a package.
 
 **Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.packageName | <code>string</code> | The Package name we care about |
+| params.versionName | <code>string</code> | The package version we care about |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2165,7 +2191,7 @@ Used to retrieve a specific version from a package.
 
 <a name="module_get_package_handler..getPackagesVersionTarball"></a>
 
-### get_package_handler~getPackagesVersionTarball(req, res)
+### get_package_handler~getPackagesVersionTarball(params, db)
 Allows the user to get the tarball for a specific package version.
 Which should initiate a download of said tarball on their end.
 
@@ -2173,8 +2199,10 @@ Which should initiate a download of said tarball on their end.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.packageName | <code>string</code> | The name of the package |
+| params.versionName | <code>string</code> | The version of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2266,14 +2294,13 @@ Endpoint Handlers for every POST Request that relates to packages themselves
 
 
 * [post_package_handler](#module_post_package_handler)
-    * [~postPackages(req, res)](#module_post_package_handler..postPackages) ⇒ <code>string</code>
-    * [~postPackagesStar(req, res)](#module_post_package_handler..postPackagesStar)
-    * [~postPackagesVersion(req, res)](#module_post_package_handler..postPackagesVersion)
-    * ~~[~postPackagesEventUninstall(req, res)](#module_post_package_handler..postPackagesEventUninstall)~~
+    * [~postPackages(params, db, auth, vcs)](#module_post_package_handler..postPackages) ⇒ <code>string</code>
+    * [~postPackagesStar(params, db, auth)](#module_post_package_handler..postPackagesStar)
+    * [~postPackagesVersion(params, db, auth, vcs)](#module_post_package_handler..postPackagesVersion)
 
 <a name="module_post_package_handler..postPackages"></a>
 
-### post_package_handler~postPackages(req, res) ⇒ <code>string</code>
+### post_package_handler~postPackages(params, db, auth, vcs) ⇒ <code>string</code>
 This endpoint is used to publish a new package to the backend server.
 Taking the repo, and your authentication for it, determines if it can be published,
 then goes about doing so.
@@ -2284,8 +2311,12 @@ sensitive informations like primary and foreign keys.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.repository | <code>string</code> | The `owner/repo` combo of the remote package |
+| params.auth | <code>string</code> | The API key of the user |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
+| vcs | <code>module</code> | An instance of the `vcs.js` module |
 
 **Properties**
 
@@ -2296,15 +2327,18 @@ sensitive informations like primary and foreign keys.
 
 <a name="module_post_package_handler..postPackagesStar"></a>
 
-### post_package_handler~postPackagesStar(req, res)
+### post_package_handler~postPackagesStar(params, db, auth)
 Used to submit a new star to a package from the authenticated user.
 
 **Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.auth | <code>string</code> | The API key of the user |
+| params.packageName | <code>string</code> | The name of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
 
 **Properties**
 
@@ -2315,7 +2349,7 @@ Used to submit a new star to a package from the authenticated user.
 
 <a name="module_post_package_handler..postPackagesVersion"></a>
 
-### post_package_handler~postPackagesVersion(req, res)
+### post_package_handler~postPackagesVersion(params, db, auth, vcs)
 Allows a new version of a package to be published. But also can allow
 a user to rename their application during this process.
 
@@ -2323,8 +2357,13 @@ a user to rename their application during this process.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.rename | <code>boolean</code> | Whether or not to preform a rename |
+| params.auth | <code>string</code> | The API key of the user |
+| params.packageName | <code>string</code> | The name of the package |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
+| vcs | <code>module</code> | An instance of the `vcs.js` module |
 
 **Properties**
 
@@ -2333,33 +2372,6 @@ a user to rename their application during this process.
 | <code>http\_method</code> | POST |
 | <code>http\_endpoint</code> | /api/packages/:packageName/versions |
 
-<a name="module_post_package_handler..postPackagesEventUninstall"></a>
-
-### ~~post_package_handler~postPackagesEventUninstall(req, res)~~
-***Deprecated***
-
-Used when a package is uninstalled, decreases the download count by 1.
-And saves this data, Originally an undocumented endpoint.
-The decision to return a '201' was based on how other POST endpoints return,
-during a successful event. This endpoint has now been deprecated, as it serves
-no useful features, and on further examination may have been intended as a way
-to collect data on users, which is not something we implement.
-
-**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
-**See**: [https://github.com/atom/apm/blob/master/src/uninstall.coffee](https://github.com/atom/apm/blob/master/src/uninstall.coffee)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | POST |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName/events/uninstall |
-
 <a name="module_star_handler"></a>
 
 ## star\_handler
@@ -2367,7 +2379,7 @@ Handler for any endpoints whose slug after `/api/` is `star`.
 
 <a name="module_star_handler..getStars"></a>
 
-### star_handler~getStars(req, res)
+### star_handler~getStars(param, db, auth)
 Endpoint for `GET /api/stars`. Whose endgoal is to return an array of all packages
 the authenticated user has stared.
 
@@ -2375,8 +2387,10 @@ the authenticated user has stared.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| param | <code>object</code> | The supported query parameters. |
+| param.auth | <code>string</code> | The authentication API token |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
 
 **Properties**
 
@@ -2390,16 +2404,16 @@ the authenticated user has stared.
 ## theme\_handler
 Endpoint Handlers relating to themes only.
 
-**Implements**: <code>command\_handler</code>, <code>database</code>, <code>utils</code>, <code>logger</code>  
+**Implements**: <code>database</code>, <code>utils</code>, <code>logger</code>, <code>config</code>  
 
 * [theme_handler](#module_theme_handler)
-    * [~getThemeFeatured(req, res)](#module_theme_handler..getThemeFeatured)
-    * [~getThemes(req, res)](#module_theme_handler..getThemes)
-    * [~getThemesSearch(req, res)](#module_theme_handler..getThemesSearch)
+    * [~getThemeFeatured(db)](#module_theme_handler..getThemeFeatured)
+    * [~getThemes(params, db)](#module_theme_handler..getThemes) ⇒ <code>object</code>
+    * [~getThemesSearch(params, db)](#module_theme_handler..getThemesSearch)
 
 <a name="module_theme_handler..getThemeFeatured"></a>
 
-### theme_handler~getThemeFeatured(req, res)
+### theme_handler~getThemeFeatured(db)
 Used to retrieve all Featured Packages that are Themes. Originally an undocumented
 endpoint. Returns a 200 response based on other similar responses.
 Additionally for the time being this list is created manually, the same method used
@@ -2414,8 +2428,7 @@ on Atom.io for now. Although there are plans to have this become automatic later
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2426,16 +2439,20 @@ on Atom.io for now. Although there are plans to have this become automatic later
 
 <a name="module_theme_handler..getThemes"></a>
 
-### theme_handler~getThemes(req, res)
+### theme_handler~getThemes(params, db) ⇒ <code>object</code>
 Endpoint to return all Themes to the user. Based on any filtering
 they'ved applied via query parameters.
 
 **Kind**: inner method of [<code>theme\_handler</code>](#module_theme_handler)  
+**Returns**: <code>object</code> - An HTTP ServerStatus.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters that can operate on this endpoint. |
+| params.page | <code>integer</code> | The page of results to retreive. |
+| params.sort | <code>string</code> | The sort method to use. |
+| params.direction | <code>string</code> | The direction to sort results. |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2446,15 +2463,19 @@ they'ved applied via query parameters.
 
 <a name="module_theme_handler..getThemesSearch"></a>
 
-### theme_handler~getThemesSearch(req, res)
+### theme_handler~getThemesSearch(params, db)
 Endpoint to Search from all themes on the registry.
 
 **Kind**: inner method of [<code>theme\_handler</code>](#module_theme_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters from the initial request. |
+| params.page | <code>integer</code> | The page number to return |
+| params.sort | <code>string</code> | The method to use to sort |
+| params.direction | <code>string</code> | The direction to sort |
+| params.query | <code>string</code> | The search query to use |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2471,7 +2492,7 @@ Endpoint Handlers relating to updating the editor.
 **Implments**: <code>command\_handler</code>  
 <a name="module_update_handler..getUpdates"></a>
 
-### update_handler~getUpdates(req, res)
+### update_handler~getUpdates()
 Used to retrieve new editor update information.
 
 **Kind**: inner method of [<code>update\_handler</code>](#module_update_handler)  
@@ -2479,12 +2500,6 @@ Used to retrieve new editor update information.
 
 - [ ] This function has never been implemented on this system. Since there is currently no
 update methodology.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
 
 **Properties**
 
@@ -2500,21 +2515,22 @@ Handler for endpoints whose slug after `/api/` is `user`.
 
 
 * [user_handler](#module_user_handler)
-    * [~getLoginStars(req, res)](#module_user_handler..getLoginStars)
-    * [~getAuthUser(req, res)](#module_user_handler..getAuthUser)
-    * [~getUser(req, res)](#module_user_handler..getUser)
+    * [~getLoginStars(params, db)](#module_user_handler..getLoginStars)
+    * [~getAuthUser(params, db, auth)](#module_user_handler..getAuthUser)
+    * [~getUser(params, db)](#module_user_handler..getUser)
 
 <a name="module_user_handler..getLoginStars"></a>
 
-### user_handler~getLoginStars(req, res)
+### user_handler~getLoginStars(params, db)
 Endpoint that returns another users Star Gazers List.
 
 **Kind**: inner method of [<code>user\_handler</code>](#module_user_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters for the request |
+| params.login | <code>string</code> | The username |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 
@@ -2525,15 +2541,17 @@ Endpoint that returns another users Star Gazers List.
 
 <a name="module_user_handler..getAuthUser"></a>
 
-### user_handler~getAuthUser(req, res)
+### user_handler~getAuthUser(params, db, auth)
 Endpoint that returns the currently authenticated Users User Details
 
 **Kind**: inner method of [<code>user\_handler</code>](#module_user_handler)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters for this endpoint |
+| params.auth | <code>string</code> | The API Key |
+| db | <code>module</code> | An instance of the `database.js` module |
+| auth | <code>module</code> | An instance of the `auth.js` module |
 
 **Properties**
 
@@ -2544,7 +2562,7 @@ Endpoint that returns the currently authenticated Users User Details
 
 <a name="module_user_handler..getUser"></a>
 
-### user_handler~getUser(req, res)
+### user_handler~getUser(params, db)
 Endpoint that returns the user account details of another user. Including all packages
 published.
 
@@ -2552,8 +2570,9 @@ published.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+| params | <code>object</code> | The query parameters |
+| params.login | <code>string</code> | The Username we want to look for |
+| db | <code>module</code> | An instance of the `database.js` module |
 
 **Properties**
 

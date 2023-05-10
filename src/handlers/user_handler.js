@@ -17,24 +17,21 @@ const utils = require("../utils.js");
  * @property {http_endpoint} - /api/users/:login/stars
  */
 async function getLoginStars(params, db) {
-
   let user = await db.getUserByName(params.login);
 
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
-  let pointerCollection = await db.getStarredPointersByUserID(
-    user.content.id
-  );
+  let pointerCollection = await db.getStarredPointersByUserID(user.content.id);
 
   if (!pointerCollection.ok) {
     return {
       ok: false,
-      content: pointerCollection
+      content: pointerCollection,
     };
   }
 
@@ -50,7 +47,7 @@ async function getLoginStars(params, db) {
     // Check for array to protect from an unexpected return
     return {
       ok: true,
-      content: []
+      content: [],
     };
   }
 
@@ -61,8 +58,8 @@ async function getLoginStars(params, db) {
   if (!packageCollection.ok) {
     return {
       ok: false,
-      content: packageCollection
-    }
+      content: packageCollection,
+    };
   }
 
   packageCollection = await utils.constructPackageObjectShort(
@@ -71,7 +68,7 @@ async function getLoginStars(params, db) {
 
   return {
     ok: true,
-    content: packageCollection
+    content: packageCollection,
   };
 }
 
@@ -87,13 +84,12 @@ async function getLoginStars(params, db) {
  * @property {http_endpoint} - /api/users
  */
 async function getAuthUser(params, db, auth) {
-
   const user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
@@ -114,7 +110,7 @@ async function getAuthUser(params, db, auth) {
 
   return {
     ok: true,
-    content: returnUser
+    content: returnUser,
   };
 }
 
@@ -125,18 +121,17 @@ async function getAuthUser(params, db, auth) {
  * published.
  * @param {object} params - The query parameters
  * @param {string} params.login - The Username we want to look for
- * @param {module} db - An instance of the `database.js` module 
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/users/:login
  */
 async function getUser(params, db) {
-
   let user = await db.getUserByName(params.login);
 
   if (!user.ok) {
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
@@ -156,7 +151,7 @@ async function getUser(params, db) {
 
   return {
     ok: true,
-    content: returnUser
+    content: returnUser,
   };
 }
 

@@ -14,12 +14,11 @@ const utils = require("../utils.js");
  * @param {object} param - The supported query parameters.
  * @param {string} param.auth - The authentication API token
  * @param {module} db - An instance of the `database.js` module
- * @param {module} auth - An instance of the `auth.js` module 
+ * @param {module} auth - An instance of the `auth.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/stars
  */
 async function getStars(params, db, auth) {
-
   let user = await auth.verifyAuth(params.auth, db);
 
   if (!user.ok) {
@@ -29,7 +28,7 @@ async function getStars(params, db, auth) {
     });
     return {
       ok: false,
-      content: user
+      content: user,
     };
   }
 
@@ -42,7 +41,7 @@ async function getStars(params, db, auth) {
     });
     return {
       ok: false,
-      content: userStars
+      content: userStars,
     };
   }
 
@@ -53,7 +52,7 @@ async function getStars(params, db, auth) {
     // So we will reutrn here
     return {
       ok: true,
-      content: []
+      content: [],
     };
   }
 
@@ -66,7 +65,7 @@ async function getStars(params, db, auth) {
     });
     return {
       ok: false,
-      content: packCol
+      content: packCol,
     };
   }
 
@@ -74,7 +73,7 @@ async function getStars(params, db, auth) {
 
   return {
     ok: true,
-    content: newCol
+    content: newCol,
   };
 }
 

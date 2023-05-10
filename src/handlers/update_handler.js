@@ -17,7 +17,7 @@ const common = require("./common_handler.js");
  */
 async function getUpdates() {
   return {
-    ok: false
+    ok: false,
   };
 }
 

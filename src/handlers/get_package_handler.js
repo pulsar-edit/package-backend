@@ -25,7 +25,6 @@ const { URL } = require("node:url");
  * @property {http_endpoint} - /api/packages
  */
 async function getPackages(params, db) {
-
   const packages = await db.getSortedPackages(params);
 
   if (!packages.ok) {
@@ -35,7 +34,7 @@ async function getPackages(params, db) {
     );
     return {
       ok: false,
-      content: packages
+      content: packages,
     };
   }
 
@@ -61,7 +60,7 @@ async function getPackages(params, db) {
     link: link,
     total: packages.pagination.count,
     limit: packages.pagination.limit,
-    content: packArray
+    content: packArray,
   };
 }
 
@@ -90,7 +89,7 @@ async function getPackagesFeatured(db) {
     );
     return {
       ok: false,
-      content: packs
+      content: packs,
     };
   }
 
@@ -101,7 +100,7 @@ async function getPackagesFeatured(db) {
 
   return {
     ok: true,
-    content: packArray
+    content: packArray,
   };
 }
 
@@ -123,7 +122,6 @@ async function getPackagesFeatured(db) {
  * rather than simple search.
  */
 async function getPackagesSearch(params, db) {
-
   // Because the task of implementing the custom search engine is taking longer
   // than expected, this will instead use super basic text searching on the DB side.
   // This is only an effort to get this working quickly and should be changed later.
@@ -147,7 +145,7 @@ async function getPackagesSearch(params, db) {
       // an empty array instead.
       return {
         ok: true,
-        content: []
+        content: [],
       };
     }
     logger.generic(
@@ -156,7 +154,7 @@ async function getPackagesSearch(params, db) {
     );
     return {
       ok: false,
-      content: packs
+      content: packs,
     };
   }
 
@@ -198,7 +196,7 @@ async function getPackagesSearch(params, db) {
     link: link,
     total: packs.pagination.count,
     limit: packs.pagination.limit,
-    content: packArray
+    content: packArray,
   };
 }
 
@@ -215,7 +213,6 @@ async function getPackagesSearch(params, db) {
  * @property {http_endpoint} - /api/packages/:packageName
  */
 async function getPackagesDetails(params, db) {
-
   let pack = await db.getPackageByName(params.name, true);
 
   if (!pack.ok) {
@@ -225,7 +222,7 @@ async function getPackagesDetails(params, db) {
     );
     return {
       ok: false,
-      content: pack
+      content: pack,
     };
   }
 
@@ -239,7 +236,7 @@ async function getPackagesDetails(params, db) {
 
   return {
     ok: true,
-    content: pack
+    content: pack,
   };
 }
 
@@ -261,7 +258,7 @@ async function getPackagesStargazers(params, db) {
   if (!pack.ok) {
     return {
       ok: false,
-      content: pack
+      content: pack,
     };
   }
 
@@ -270,7 +267,7 @@ async function getPackagesStargazers(params, db) {
   if (!stars.ok) {
     return {
       ok: false,
-      content: stars
+      content: stars,
     };
   }
 
@@ -279,13 +276,13 @@ async function getPackagesStargazers(params, db) {
   if (!gazers.ok) {
     return {
       ok: false,
-      content: gazers
+      content: gazers,
     };
   }
 
   return {
     ok: true,
-    content: gazers.content
+    content: gazers.content,
   };
 }
 
@@ -308,7 +305,7 @@ async function getPackagesVersion(params, db) {
       ok: false,
       content: {
         short: "Not Found",
-      }
+      },
     };
   }
   // Now we know the version is a valid semver.
@@ -321,7 +318,7 @@ async function getPackagesVersion(params, db) {
   if (!pack.ok) {
     return {
       ok: false,
-      content: pack
+      content: pack,
     };
   }
 
@@ -329,7 +326,7 @@ async function getPackagesVersion(params, db) {
 
   return {
     ok: true,
-    content: packRes
+    content: packRes,
   };
 }
 
@@ -341,12 +338,11 @@ async function getPackagesVersion(params, db) {
  * @param {object} params - The query parameters
  * @param {string} params.packageName - The name of the package
  * @param {string} params.versionName - The version of the package
- * @param {module} db - An instance of the `database.js` module 
+ * @param {module} db - An instance of the `database.js` module
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages/:packageName/versions/:versionName/tarball
  */
 async function getPackagesVersionTarball(params, db) {
-
   // Now that migration has began we know that each version will have
   // a tarball_url key on it, linking directly to the tarball from gh for that version.
 
@@ -357,8 +353,8 @@ async function getPackagesVersionTarball(params, db) {
     return {
       ok: false,
       content: {
-        short: "Not Found"
-      }
+        short: "Not Found",
+      },
     };
   }
 
@@ -371,7 +367,7 @@ async function getPackagesVersionTarball(params, db) {
   if (!pack.ok) {
     return {
       ok: false,
-      content: pack
+      content: pack,
     };
   }
 
@@ -414,8 +410,8 @@ async function getPackagesVersionTarball(params, db) {
       content: {
         ok: false,
         short: "Server Error",
-        content: e
-      }
+        content: e,
+      },
     };
   }
 
@@ -436,13 +432,13 @@ async function getPackagesVersionTarball(params, db) {
         ok: false,
         short: "Server Error",
         content: `Invalid Domain for Download Redirect: ${hostname}`,
-      }
+      },
     };
   }
 
   return {
     ok: true,
-    content: tarballURL
+    content: tarballURL,
   };
 }
 

@@ -1,7 +1,6 @@
 const postPackageHandler = require("../../../src/handlers/post_package_handler.js");
 
 describe("Handles invalid auth", () => {
-
   test("When auth fails", async () => {
     const res = await postPackageHandler.postPackages(
       {},
@@ -11,9 +10,9 @@ describe("Handles invalid auth", () => {
         verifyAuth: () => {
           return {
             ok: false,
-            content: "Fake auth failure"
+            content: "Fake auth failure",
           };
-        }
+        },
       },
       {}
     );
@@ -21,17 +20,17 @@ describe("Handles invalid auth", () => {
     expect(res.ok).toBeFalsy();
     expect(res.content.content).toBe("Fake auth failure");
   });
-
 });
 
 describe("Handles an Repository and package name appropriately", () => {
-
   test("When the repository is empty", async () => {
     const res = await postPackageHandler.postPackages(
       { repository: "" },
       {},
       {
-        verifyAuth: () => { return { ok: true, content: { username: "fake"} }; }
+        verifyAuth: () => {
+          return { ok: true, content: { username: "fake" } };
+        },
       },
       {}
     );
@@ -44,8 +43,8 @@ describe("Handles an Repository and package name appropriately", () => {
     const authPass = () => {
       return {
         ok: true,
-        content: { username: "fake" }
-      }
+        content: { username: "fake" },
+      };
     };
 
     const res = await postPackageHandler.postPackages(
@@ -57,7 +56,6 @@ describe("Handles an Repository and package name appropriately", () => {
 
     expect(res.ok).toBeFalsy();
     expect(res.content.short).toBe("Bad Repo");
-
   });
 
   test("When the repository is a banned name", async () => {
@@ -114,13 +112,10 @@ describe("Handles an Repository and package name appropriately", () => {
     expect(res.ok).toBeFalsy();
     expect(res.content.short).toBe("Server Error");
     expect(res.content.content).toBe("Fake failure");
-
   });
-
 });
 
 describe("Properly returns failed ownership check", () => {
-
   test("When VCS Returns an error", async () => {
     const authPass = () => {
       return { ok: true, content: { username: "fake" } };
@@ -142,11 +137,9 @@ describe("Properly returns failed ownership check", () => {
     expect(res.ok).toBeFalsy();
     expect(res.content.content).toBe("Fake VCS error");
   });
-
 });
 
 describe("Calls `vcs.newPackageData()` appropriately", () => {
-
   test("Calls it with the expected data", async () => {
     const authPass = () => {
       return { ok: true, content: { username: "fake_username" } };
@@ -163,7 +156,7 @@ describe("Calls `vcs.newPackageData()` appropriately", () => {
       vcsParams = {
         user: user,
         repo: repo,
-        service: service
+        service: service,
       };
       return { ok: false };
     };
@@ -180,17 +173,22 @@ describe("Calls `vcs.newPackageData()` appropriately", () => {
     expect(vcsParams.user.username).toBe("fake_username");
     expect(vcsParams.repo).toBe("pulsar-edit/pulsar");
     expect(vcsParams.service).toBe("git"); // TODO: Once we stop hardcoding git
-
   });
 
   test("Returns the error from `vcs.newPackageData()`", async () => {
-    const authPass = () => { return { ok: true, content: { username: "user" } }; };
-    const nameAvail = () => { return { ok: true }; };
-    const ownership = () => { return { ok: true }; };
+    const authPass = () => {
+      return { ok: true, content: { username: "user" } };
+    };
+    const nameAvail = () => {
+      return { ok: true };
+    };
+    const ownership = () => {
+      return { ok: true };
+    };
     const newPackageData = () => {
       return {
         ok: false,
-        content: "A random fake error"
+        content: "A random fake error",
       };
     };
 
@@ -203,7 +201,5 @@ describe("Calls `vcs.newPackageData()` appropriately", () => {
 
     expect(res.ok).toBeFalsy();
     expect(res.content.content).toBe("A random fake error");
-
   });
-
 });
