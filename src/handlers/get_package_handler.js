@@ -143,6 +143,9 @@ async function getPackagesSearch(params, db) {
       // Because getting not found from the search, means the users
       // search just had no matches, we will specially handle this to return
       // an empty array instead.
+      // TODO: Re-evaluate if this is needed. The empty result
+      // returning 'Not Found' has been resolved via the DB.
+      // But this check still might come in handy, so it'll be left in.
       return {
         ok: true,
         content: [],

@@ -1387,11 +1387,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       OFFSET ${offset};
     `;
 
-    if (command.count === 0) {
-      return { ok: false, content: "No packages found.", short: "Not Found" };
-    }
-
-    const resultCount = command[0].query_result_count;
+    const resultCount = command[0]?.query_result_count ?? 0;
     const quotient = Math.trunc(resultCount / limit);
     const remainder = resultCount % limit;
     const totalPages = quotient + (remainder > 0 ? 1 : 0);

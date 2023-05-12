@@ -66,6 +66,38 @@ describe("getPackageByName", () => {
   });
 });
 
+describe("Get Sorted Packages", () => {
+  test("Should return good pagination when there are no results", async () => {
+    const obj = await database.getSortedPackages({
+      page: 1,
+      sort: "relevance",
+      service: "consumed",
+      serviceType: "does-not-exist",
+      direction: "desc"
+    });
+    expect(obj.ok).toBeTruthy();
+    expect(Array.isArray(obj.content)).toBeTruthy();
+    expect(obj.content.length).toBe(0);
+    expect(obj.pagination.count).toBe(0);
+    expect(obj.pagination.page).toBe(0);
+    expect(obj.pagination.total).toBe(0);
+  });
+});
+
+describe("Get Package Search", () => {
+  test("Should return good pagination when there are no results", async () => {
+    const obj = await database.simpleSearch(
+      "will-never-match-a-search", 1, "desc", "relevance"
+    );
+    expect(obj.ok).toBeTruthy();
+    expect(Array.isArray(obj.content)).toBeTruthy();
+    expect(obj.content.length).toBe(0);
+    expect(obj.pagination.count).toBe(0);
+    expect(obj.pagination.page).toBe(0);
+    expect(obj.pagination.total).toBe(0);
+  });
+});
+
 describe("Package Lifecycle Tests", () => {
   // Below are what we will call lifecycle tests.
   // That is tests that will test multiple actions against the same package,
