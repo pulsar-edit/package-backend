@@ -1,8 +1,7 @@
 # Pulsar Package's Badges
 
-A badge allows extra information to be communicated to a Pulsar user about a package. Similar to how NPM may warn of errors after installing a package, or how a user is able to receive badges on their GitHub profile.
-
-A badge allows the Pulsar admins to communicate certain information about a package quickly to end users everywhere it may appear.
+Badges communicate additional information to you about a package.
+Pulsar Maintainers communicate details about packages via badges when a community package maintainer can't or wont't, in the hope of making the usage of the [Pulsar Package Registry (PPR)](./glossary.md) as simple and easy as possible. Think of Pulsar Package Badges being similar to how NPM emits warnings when installing certain packages, or how users on GitHub can receive badges on their GitHub profile.
 
 Below is the specification for a badge, the data it may contain, the valid values that may be placed in an enum, and what should be done with it.
 
@@ -22,11 +21,11 @@ The following schema is required of any `generic` badge type:
 ```
 
 As you can see `badges` is an array of a valid `badge` object.
-A side note, while there is currently no hard limit for the amount of badges a single package may contain, the current recommendation is to try and stay around 5 badges. This may be later on solidified into a proper part of the schema but currently there is no limit.
+A side note, while there is currently no limit for the amount of badges a single package may contain, the current recommendation is to try and stay around 5 badges or less. This may be later on solidified into a proper part of the schema if required.
 
 Any `badge` object may contain the following properties:
 
-* `title`: This is a **required** property. Specifying the title of the badge. Such as `Deprecated`.
+* `title`: This is a **required** property. Specifying the title of the badge. Such as `Deprecated`. This value is a strict enum, with only the values specified below being allowed.
 * `text`: This is an **optional** property. Specifying further information about this badge. That may be hidden either based on a user setting or by context.
 * `link`: This is an **optional** property. Providing a link for the user to be directed to, that may contain further information about the badge.
 * `type`: This is a **required** property. Instructing what type of badge this is. The type of badge should be used to determine any icons used alongside the badge, as well as any color or styling the badge will receive when displayed by the client. The valid `type`s currently available are as follows:
@@ -63,10 +62,16 @@ The following are some valid examples of badges:
 
 The `Outdated` badge is used to indicate that the version of a package that may exist on the Pulsar Package Registry, may be out of date when compared to the package on GitHub (Or other VCS host).
 
-This badge should only be used when the main functionality of the branch is missing/broken/or otherwise non-functional when installed onto Pulsar as the latest branch, in a supported Pulsar configuration.
+This badge should only be used when the main functionality of the package is missing/broken/or otherwise non-functional when installed onto Pulsar, in a supported Pulsar configuration.
 
-That is, if a Pulsar users on a supported platform, indepent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is eligible to receive this badge.
+That is, if a Pulsar user on a supported platform, indepent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is eligible to receive this badge.
 
 This badge would be added on a case by case basis, and would likely only be added if Pulsar users are reporting the error.
 
 As with all other badges this badge may be removed at any time, and if you, as a package maintainer have updated a package and did not see this badge removed automatically, or within a reasonable time, feel free to [create an issue](https://github.com/pulsar-edit/package-backend/issues) asking for it to be removed.
+
+## Made for Pulsar!
+
+The `Made for Pulsar!` badge is automatically applied to any community packages that have been published to Pulsar through the Pulsar Package Registry. Unlike most other badges, which are applied to the package itself and thus saved in the Pulsar Package Registry Database, the `Made for Pulsar!` badge is applied dynamically at the time it is requested from the Pulsar Package Registry. Since this badge is applied dynamically there is no real way, currently, to opt out of it's usage if a community package maintainer wished to do so.
+
+The `Made for Pulsar!` badge is meant to be a badge of acheivment, showing that your package is more likely to work as expected, and be under active maintainance.

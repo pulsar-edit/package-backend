@@ -1,10 +1,10 @@
 # Package Backend Documentation
 
-This document introduces the `package-backend` documentation layout and resources, which should hopefully guide you to the most helpful resources.
+This document introduces the `package-backend` documentation layout and resources, which should hopefully guide you to what's most helpful.
 
 ## For Users
 
-To contact the maintainers, please contact us on the [Pulsar Discord](https://discord.gg/7aEbB9dGRT), open an [issue](https://github.com/pulsar-edit/package-backend/issues), or start a [discussion](https://github.com/orgs/pulsar-edit/discussions).
+To contact the maintainers, please use the [Pulsar Discord](https://discord.gg/7aEbB9dGRT), open an [issue](https://github.com/pulsar-edit/package-backend/issues), or start a [discussion](https://github.com/orgs/pulsar-edit/discussions).
 
 The following are some links that may be helpful:
 
@@ -25,7 +25,8 @@ While the Architecture File can provide insight into the overall structure of th
 
 The following list introduces the documentation required to become familiar with the Package Backend:
 
-  * [Glossary]()
+  * [Glossary](./reference/glossary.md): A summary of terminology needed to understand the documentation.
+  * [Pulsar Package Badge Specification](./reference/badge_spec.md): Specification of the badges applied to packages on the Pulsar Package Registry.
 
 A number of documents within this repo are automatically generated. These documents can help to view the codebase as it is right now. These documents can be helpful to identify problem areas or to learn about the source code itself.
 
