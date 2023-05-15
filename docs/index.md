@@ -9,7 +9,7 @@ To contact the maintainers, please use the [Pulsar Discord](https://discord.gg/7
 The following are some links that may be helpful:
 
   * You've discovered a security vulnerability: [Security Policy](https://github.com/pulsar-edit/package-backend/security/policy)
-  * You need help creating an account: []()
+  * You need help managing a Pulsar account: [Managing your Pulsar account](./reference/manage_pulsar_account.md)
   * You can't find a package from Atom: []()
 
 ## For Developers

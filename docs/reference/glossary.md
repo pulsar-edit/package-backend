@@ -6,6 +6,8 @@ This document provides definitions of words and terms used within this projects 
 
 * **Pulsar Package Registry (PPR)**: This repository hosts the code of the PPR. The PPR refers to the Pulsar backend server that hosts and responds to any package requests, allowing users to publish, and install community packages. The PPR is the Pulsar based, open-source, recreation of the APR.
 
+* **Pulsar Frontend website**: This refers to the Frontend website, available at [https://web.pulsar-edit.dev](https://web.pulsar-edit.dev/), that allows you to view all Pulsar packages on the web, as well as view details of your Pulsar account.
+
 * **Pulsar Package**: Refers to any community package that is published to the PPR.
 
 * **Server Status Object**: Refers to the structure of objects that is generally passed between modules within this code base. Allowing modules to easily communicate success or failure in a standardized method, while easily supporting the Early Return Strategy. Additional details on a [Server Status Object]().
