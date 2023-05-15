@@ -1,18 +1,33 @@
 # Style Guide
 
-The Style Guide chosen for the `package-backend` intends to be non-intrusive, and aims to not get in the way of a programmer, and only aims to increase the readability of the repo as well as follow some of our principals.
+This document covers the enforced styleguide of both the code within this repository, as well as the documentation.
 
-Some of the Style Guide rules are enforced via `prettier` which is a code formatting, or prettifying tool that in some cases will automatically format the code according to our style guide so that you don't have to, if you style differs.
+## Code Style Guide
 
-Additionally the `package-backend` uses `eslint` to look for issues in the code.
+The adopted coding style guide intends to be as non-problamatic as possible for those that need to adhere to it. With it being automatically enforced wherever possible to reduce the need to know it fully. For the style guide rules that are enforced via `prettier` those are applied once merging any changes to the `main` branch, meanwhile other rules are enforced via `eslint` which can only alert of issues on `Codacy` rather than change them automatically.
 
-Our ESLint rules are run on Codacy, to alert of errors there, but only there, as to not interfere with the development practice. Having them warned of there gives us the ability to see where our Style Guide is being broken and fix it as needed, while not hounding a new Contributor with these issues.
+The following list contains all coding style guide rules that should be adhered to:
 
-## Style Guide Rules
+  * `camelCase`: Usage of `camelCase` is enforced to keep variable names readable, and keeping code fragments in sync. (Enforced via `ESLint`)
 
-* camelCase: We enforce the use of camelCase variables within this repo for readability purposes, and keeping the code similar enough throughout the codebase. This rule is enforced via ESLint.
-* Cyclomatic Complexity: We enforce a maximum cyclomatic complexity on any one function to reduce the likelihood of mistakes and bugs within a code block. This rule is enforced via ESLint.
-* Type-Safe Equality Operators: We enforce the use of `===` or `!==` to avoid type coercion. Some instances it will be needed to use alternative comparisons, and these are accounted for. This rule will not flag usage when comparing against two literal values, when evaluating `typeof`, and when comparing against `null`. This rule is enforced via ESLint.
-* Max Nesting: We enforce a Max Nesting Depth of `4` within a code block. Following our coding principle of [Early Return Patterns](ARCHITECTURE.md). This is enforced via ESLint.
-* Double Quotes: We enforce the usage of Double Quotes when possible within code. This rule is enforced via Prettier and should be done automatically once code is merged into the repo.
-* Semicolons: We enforce the use of Semicolons at the end of lines. This rule is enforced via Prettier.
+  * Cyclomatic Complexity: The cyclomatic complexity of any individual function is monitored to reduce the likely-hood of error prone code, due to complextiy. (Enforced via `ESLint`)
+
+  * Type-Safe Equality Operators: Usage of equality operators is enforced to avoid type coercion. Using a Type-Safe Equality Operator refers to using `===` or `!===` instead of `==` and `!=`. Some instances do require using alternative comparison methods, which are accounted for, such as `typeof` and `null` comparisons. That is, any comparisons between two literal values will not be enforced or flagged. (Enforced via `ESLint`)
+
+  * Max Nesting: This code base enforces a Max Nesting depth of `4` within a single code block. Enforcing a max nesting depth helps to ensure adherence to this repositories coding principle [Early Return Pattern](ARCHITECTURE.md). (Enforced via `ESLint`)
+
+  * Double Quotes: Usage of double quotes instead of single quotes is enforced within this repository. (Enforced via `prettier`)
+
+  * Semicolons: Ensuring to end each line/block of JavaScript with a semicolon is required. (Enforced via `prettier`)
+
+## Documentation Style Guide
+
+The documentation style used within this repository indicates what's considered best practice and to be strived for, but it does not indicate that documentation will always adhere to these goals. If in any locations the existing documentation does not adhere to this style guide, a PR for improvement is more than welcome.
+
+The following list highlights the most important aspects of the documentation style guide used, but generally the [Google Highlights Style Guide](https://developers.google.com/style/highlights) should be followed:
+
+  * Write for a global audience: Such as using simple words for ease of translation, and avoiding colloqualisms.
+  * Use second person: "You" rather than "we".
+  * Use active voice: Make clear who's performing the action.
+  * Write inclusive documentation: Such as avoiding ableist language, and unnecessarily genered language.
+  * Provide alt text: Standard practice within this repository is to place alt text after a `>` symbol.
