@@ -82,3 +82,39 @@ describe("Handles unexpected database returns properly", () => {
     expect(res.limit).toBe(10);
   });
 });
+
+describe("Get Packages returns proper Pagination", () => {
+
+  test("When there are no results", async () => {
+    const res = await getPackageHandler.getPackages(
+      {
+        page: 1,
+        sort: "relevance",
+        direction: "desc",
+        serviceType: "consumed",
+        service: "does-not-exist"
+      },
+      {
+        getSortedPackages: () => {
+          return {
+            ok: true,
+            content: [],
+            pagination: {
+              count: 0,
+              page: 0,
+              total: 0,
+              limit: 30
+            }
+          };
+        },
+      }
+    );
+
+    expect(res.ok).toBeTruthy();
+    expect(Array.isArray(res.content)).toBeTruthy();
+    expect(res.content.length).toBe(0);
+    expect(res.limit).toBe(30);
+    expect(res.total).toBe(0);
+  });
+
+});
