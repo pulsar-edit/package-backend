@@ -84,7 +84,6 @@ describe("Handles unexpected database returns properly", () => {
 });
 
 describe("Get Packages returns proper Pagination", () => {
-
   test("When there are no results", async () => {
     const res = await getPackageHandler.getPackages(
       {
@@ -92,7 +91,7 @@ describe("Get Packages returns proper Pagination", () => {
         sort: "relevance",
         direction: "desc",
         serviceType: "consumed",
-        service: "does-not-exist"
+        service: "does-not-exist",
       },
       {
         getSortedPackages: () => {
@@ -103,8 +102,8 @@ describe("Get Packages returns proper Pagination", () => {
               count: 0,
               page: 0,
               total: 0,
-              limit: 30
-            }
+              limit: 30,
+            },
           };
         },
       }
@@ -116,5 +115,4 @@ describe("Get Packages returns proper Pagination", () => {
     expect(res.limit).toBe(30);
     expect(res.total).toBe(0);
   });
-
 });

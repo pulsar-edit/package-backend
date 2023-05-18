@@ -73,7 +73,7 @@ describe("Get Sorted Packages", () => {
       sort: "relevance",
       service: "consumed",
       serviceType: "does-not-exist",
-      direction: "desc"
+      direction: "desc",
     });
     expect(obj.ok).toBeTruthy();
     expect(Array.isArray(obj.content)).toBeTruthy();
@@ -87,7 +87,10 @@ describe("Get Sorted Packages", () => {
 describe("Get Package Search", () => {
   test("Should return good pagination when there are no results", async () => {
     const obj = await database.simpleSearch(
-      "will-never-match-a-search", 1, "desc", "relevance"
+      "will-never-match-a-search",
+      1,
+      "desc",
+      "relevance"
     );
     expect(obj.ok).toBeTruthy();
     expect(Array.isArray(obj.content)).toBeTruthy();
