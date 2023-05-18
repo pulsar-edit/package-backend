@@ -75,3 +75,21 @@ As with all other badges this badge may be removed at any time, and if you, as a
 The `Made for Pulsar!` badge is automatically applied to any community packages that have been published to Pulsar through the Pulsar Package Registry. Unlike most other badges, which are applied to the package itself and thus saved in the Pulsar Package Registry Database, the `Made for Pulsar!` badge is applied dynamically at the time it is requested from the Pulsar Package Registry. Since this badge is applied dynamically there is no real way, currently, to opt out of it's usage if a community package maintainer wished to do so.
 
 The `Made for Pulsar!` badge is meant to be a badge of acheivment, showing that your package is more likely to work as expected, and be under active maintainance.
+
+## Broken
+
+The `Broken` badge is used to indicate that the package available on the Pulsar Package Registry does not work at all in it's current form, on any supported platform. Either requiring manual changes to the source code, or otherwise being unrealistic to fix from the users perspective.
+
+This package likely emits warnings immediatly, or may even cause the editor to crash as a whole. Installation of these packages is not recommended by the Pulsar team, and instead it is encouraged to work with the original maintainer to get these packages working, or otherwise the community is encouraged to maintain and manage a fork of said package.
+
+If a community member does decide to maintain a fork of a package with a `Broken` badge, it's recommended to make the Pulsar team or Pulsar Backend team (such as by opening an issue on this repo) aware of this, so any warnings and links on the original package can be changed to recommend installation of your functional fork.
+
+## Archived
+
+The `Archived` badge is used to indicate that this package has been archived on GitHub (Or other VCS host). This does not mean that the package doesn't work, or has any kind of issue, it only means that if there does become issues with this package then support is most likely not going to exist.
+
+The `Archived` badge should only be used as a neutral badge, to not cause any kind of concern beyond informing the user of what might be expected, and to avoid any assumptions for this package relating to:
+
+  * Bugs being fixed.
+  * New features being added.
+  * Support of any kind from the package maintainer.
