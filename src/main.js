@@ -994,7 +994,7 @@ app.post(
         res.status(201).json(ret.content);
 
         // Return to user before webhook call, so user doesn't wait on it
-        await webhook.alertPublishPackage(ret.webhook.pack, ret.webhook.user);
+        await webhook.alertPublishVersion(ret.webhook.pack, ret.webhook.user);
 
         break;
       default:
