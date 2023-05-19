@@ -28,6 +28,7 @@ The following list introduces the documentation required to become familiar with
   * [Glossary](./reference/glossary.md): A summary of terminology needed to understand the documentation.
   * [Style Guide](./reference/style_guide.md): This repositories coding and documentation style guide.
   * [Pulsar Package Badge Specification](./reference/badge_spec.md): Specification of the badges applied to packages on the Pulsar Package Registry.
+  * [Mysterious Object Structures](./reference/structures.md): Documentation about the widely used, but less understood object structures within the Pulsar Package Registry.
 
 A number of documents within this repo are automatically generated. These documents can help to view the codebase as it is right now. These documents can be helpful to identify problem areas or to learn about the source code itself.
 
