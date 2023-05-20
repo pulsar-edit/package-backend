@@ -4,6 +4,7 @@
  */
 
 const Git = require("./git.js");
+const CSON = require("cson");
 
 /**
  * @class GitHub
@@ -398,6 +399,146 @@ class GitHub extends Git {
       };
     }
   }
+
+  /**
+   * @async
+   * @function featureDetection
+   * @desc This function is used to return a `featureObject`, informing the backend
+   * about what features this package supports.
+   * @param {object} userObj - The Full User Object as returned from verification.
+   * @param {string} ownerRepo - The string combo of `owner/repo`
+   * @returns {object} A Server Status Object, whose, when successful, will return
+   * a `featureObject` declaring what features this package supports.
+   */
+  async featureDetection(userObj, ownerRepo) {
+
+    // First lets declare the functions we will rely on within this
+    const providesSnippets = () => {
+      try {
+        const raw = await this._webRequestAuth(
+          `/repos/${ownerRepo}/contents/snippets`,
+          userObj.token
+        );
+
+        if (!raw.ok) {
+          if (raw.short === "Failed Request") {
+            if (raw.content.status === 404) {
+              return { ok: true, content: { hasSnippets: false }};
+            }
+          } else {
+            return raw;
+          }
+        }
+        // The request succeeded
+        return { ok: true, content: { hasSnippets: true }};
+      } catch(err) {
+        return { ok: false, content: err };
+      }
+    };
+
+    const getGrammars = () => {
+      try {
+        const raw = await this._webRequestAuth(
+          `/repos/${ownerRepo}/contents/grammars`,
+          userObj.token
+        );
+
+        if (!raw.ok && raw.short === "Failed Request" && raw.content.status === 404) {
+          return { ok: true, content: { hasGrammar: false }};
+        } else if (!raw.ok) {
+          return raw;
+        }
+
+        // Successful request
+        let supportedLanguages = [];
+        let tech;
+
+        for (let i = 0; i < raw.content.body.length; i++) {
+          const rawInner = this._webRequestAuth(
+            `/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`,
+            userObj.token
+          );
+
+          if (!rawInner.ok) { continue; }
+
+          if (typeof rawInner.content.body.encoding !== "string") { continue; }
+
+          let file = Buffer.from(rawInner.content.body.content, rawInner.content.body.encoding).toString();
+          let data;
+
+          if (rawInner.content.body.name.endsWith(".json")) {
+            data = JSON.parse(file);
+          } else if (rawInner.content.body.name.endsWith(".cson")) {
+            data = CSON.parseCSONString(file);
+          }
+
+          if (Array.isArray(data.fileTypes)) {
+            for (let i = 0; i < data.fileTypes.length; i++) {
+              if (typeof data.fileTypes[i] === "string") {
+                supportedLanguages.push(data.fileTypes[i]);
+              }
+            }
+          }
+
+          if (typeof data?.type === "string") {
+            if (data.type === "tree-sitter") {
+              tech = "tree-sitter";
+            } else if (data.type === "modern-tree-sitter") {
+              tech = "modern-tree-sitter";
+            }
+          } else {
+            tech = "text-mate";
+          }
+        }
+
+        return {
+          ok: true,
+          content: {
+            hasGrammar: true,
+            supportedLanguages: supportedLanguages,
+            tech: tech
+          }
+        };
+
+      } catch(err) {
+        return { ok: false, content: err };
+      }
+    };
+
+    // Now with our utility functions here defined, lets call them and build
+    // our featureObject
+    let grammars = await getGrammars();
+    let snippets = await providesSnippets();
+
+    let featureObject = {};
+
+    if (snippets.ok && snippets.content.hasSnippets) {
+      featureObject.hasSnippets = true;
+    }
+
+    if (grammars.ok && grammars.content.hasGrammar) {
+      featureObject.hasGrammar = true;
+    }
+
+    if (grammars.ok && grammars.content.supportedLanguages.length > 0) {
+      featureObject.supportedLanguages = grammars.content.supportedLanguages;
+    }
+
+    if (grammars.ok && typeof grammars.content.tech === "string" && grammars.content.tech.length > 0) {
+      featureObject.grammarTech = grammars.content.tech;
+    }
+
+    if (Object.keys(featureObject).length === 0) {
+      featureObject.standard = true;
+    }
+
+    return {
+      ok: true,
+      content: featureObject
+    };
+
+  }
+
 }
 
 module.exports = GitHub;

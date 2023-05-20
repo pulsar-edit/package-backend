@@ -76,6 +76,8 @@ CREATE TABLE versions (
     engine JSONB NOT NULL,
     meta JSONB,
     deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    has_grammar BOOLEAN NOT NULL DEFAULT FALSE,
+    supported_languages VARCHAR(256) ARRAY,
     -- generated columns
     semver_v1 INTEGER GENERATED ALWAYS AS
         (CAST ((regexp_match(semver, '^(\d+)\.(\d+)\.(\d+)'))[1] AS INTEGER)) STORED,

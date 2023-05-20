@@ -26,7 +26,7 @@ There are a few reasons we want to have these questions answered:
 
 
 */
-
+const AUTH = "REDACTED"; // DO NOT COMMIT
 const fs = require("fs");
 const postgres = require("postgres");
 const superagent = require("superagent");
@@ -41,9 +41,12 @@ async function init(params) {
 
   for (const param of params) {
     if (param.startsWith("repo=")) {
+      // Only used for testing
       let repo = param.replace("repo=", "");
       // We only want to search for a single package
-      await analyzePackage(repo);
+      let dataGram = await analyzePackage(repo);
+      console.log(dataGram);
+      console.log("The above output is for testing purposes and has not been written.");
     }
   }
 }
@@ -78,9 +81,7 @@ async function analyzePackage(repo) {
   }
 
   let archivedRepo = await isRepoArchived(ownerRepo.content);
-
-  console.log(`Is Repo Archived? ${archivedRepo.content}`);
-
+  // archivedRepo is a simple true or false
   let grammars = await getGrammars(ownerRepo.content);
   /*
   The Grammars data returned will look like:
@@ -93,7 +94,6 @@ async function analyzePackage(repo) {
     }
   }
   */
-  console.log(grammars);
 
   let snippets = await providesSnippets(ownerRepo.content);
   /*
@@ -105,13 +105,59 @@ async function analyzePackage(repo) {
     }
   }
   */
-  console.log(`Has Snippets: ${snippets.content?.hasSnippets}`);
+
+  let dataGram = {};
+
+  if (snippets.ok && snippets.content.hasSnippets) {
+    dataGram.hasSnippets = true;
+  }
+
+  if (grammars.ok && grammars.content.hasGrammar) {
+    dataGram.hasGrammar = true;
+  }
+
+  if (grammars.ok && grammars.content.supportedLanguages.length > 0) {
+    dataGram.supportedLanguages = grammars.content.supportedLanguages;
+  }
+
+  if (grammars.ok && typeof grammars.content.tech === "string" && grammars.content.tech.length > 0) {
+    dataGram.grammarTech = grammars.content.tech;
+  }
+
+  if (archivedRepo.ok && archivedRepo.content) {
+    dataGram.isRepoArchived = true;
+  }
+
+  // Keep at last position
+  if (Object.keys(dataGram).length === 0) {
+    dataGram.standard = true;
+    // We only apply the standard variable, if this package contains zero other features
+  }
+
+  /*
+  Now dataGram contains all data we care about for this package.
+  Only including the fields for which it has valid data.
+  In the following format:
+  {
+    hasSnippets: true,
+    hasGrammar: true,
+    isRepoArchived: true,
+    supportedLanguages: [],
+    grammarTech: "",
+    standard: true // This last item will only appear, if zero other features exist
+  }
+
+  Where if one of those is false, or empty, the key will not exist.
+  */
+
+  return dataGram;
 }
 
 async function isRepoArchived(ownerRepo) {
   try {
     const res = await superagent
       .get(`https://api.github.com/repos/${ownerRepo}`)
+      .set({ Authorization: `Bearer ${AUTH}`})
       .set({ "User-Agent": USER_AGENT });
 
     if (res.status !== 200) {
@@ -143,6 +189,7 @@ async function providesSnippets(ownerRepo) {
   try {
     const res = await superagent
       .get(`https://api.github.com/repos/${ownerRepo}/contents/snippets`)
+      .set({ Authorization: `Bearer ${AUTH}`})
       .set({ "User-Agent": USER_AGENT });
 
     if (res.status === 404) {
@@ -179,6 +226,7 @@ async function getGrammars(ownerRepo) {
   try {
     const res = await superagent
       .get(`https://api.github.com/repos/${ownerRepo}/contents/grammars`)
+      .set({ Authorization: `Bearer ${AUTH}`})
       .set({ "User-Agent": USER_AGENT });
 
     if (res.status === 404) {
@@ -204,6 +252,7 @@ async function getGrammars(ownerRepo) {
     for (let i = 0; i < res.body.length; i++) {
       const resInner = await superagent
         .get(`https://api.github.com/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`)
+        .set({ Authorization: `Bearer ${AUTH}`})
         .set({ "User-Agent": USER_AGENT });
 
       if (resInner.status !== 200) {
