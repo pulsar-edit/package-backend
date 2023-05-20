@@ -413,7 +413,7 @@ class GitHub extends Git {
   async featureDetection(userObj, ownerRepo) {
 
     // First lets declare the functions we will rely on within this
-    const providesSnippets = () => {
+    const providesSnippets = async () => {
       try {
         const raw = await this._webRequestAuth(
           `/repos/${ownerRepo}/contents/snippets`,
@@ -436,7 +436,7 @@ class GitHub extends Git {
       }
     };
 
-    const getGrammars = () => {
+    const getGrammars = async () => {
       try {
         const raw = await this._webRequestAuth(
           `/repos/${ownerRepo}/contents/grammars`,
