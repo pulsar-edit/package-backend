@@ -2,7 +2,7 @@
 
 This document provides instructions and information on how to create a Pulsar account.
 
-### Target Audience / Requirements / Objectives
+## Target Audience / Requirements / Objectives
 
 This document is aimed at user's that are new to Pulsar wanting to create an account with Pulsar. An account is not required to use Pulsar or the Pulsar Package Registry (downloading and installing community packages), but an account is required to publish community packages, or to star community packages.
 
