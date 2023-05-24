@@ -72,7 +72,7 @@ As with all other badges this badge may be removed at any time, and if you, as a
 
 ### Made for Pulsar!
 
-The `Made for Pulsar!` badge is automatically applied to any community packages that have been published to Pulsar through the PPR. Unlike most other badges, which are applied to the package itself and thus saved in the PPR Database, the `Made for Pulsar!` badge is applied dynamically at the time it is requested from the PPR. Since this badge is applied dynamically there is no real way, currently, to opt out of it's usage if a community package maintainer wished to do so.
+The `Made for Pulsar!` badge is automatically applied to any community packages that have been published to Pulsar through the PPR. Unlike most other badges, which are applied to the package itself and thus saved in the PPR Database, the `Made for Pulsar!` badge is applied dynamically at the time it is requested from the PPR. Since this badge is applied dynamically there is no real way, currently, to opt out of its usage if a community package maintainer wished to do so.
 
 The `Made for Pulsar!` badge is meant to be a badge of acheivment, showing that your package is more likely to work as expected, and be under active maintainance.
 
