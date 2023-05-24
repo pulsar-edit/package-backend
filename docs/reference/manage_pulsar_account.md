@@ -78,7 +78,7 @@ Unfortunately, at this time there is no automatic way to collect all data that i
 
 ## Disclosure about Pulsar accounts
 
-Pulsar, and it's maintainers, greatly respect your privacy, and more-so doesn't want the chance to invade your privacy. That's why when you create a Pulsar account your credentials and sensitive information is never stored within the Pulsar Package Registry at all.
+Pulsar, and its maintainers, greatly respect your privacy, and more-so doesn't want the chance to invade your privacy. That's why when you create a Pulsar account your credentials and sensitive information is never stored within the Pulsar Package Registry at all.
 
 When your create a Pulsar account, the following is the fully inclusive list of information stored about you:
 
