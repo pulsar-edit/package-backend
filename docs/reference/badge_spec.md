@@ -78,7 +78,7 @@ The `Made for Pulsar!` badge is meant to be a badge of acheivment, showing that 
 
 ### Broken
 
-The `Broken` badge is used to indicate that the package available on the PPR does not work at all in it's current form, on any supported platform. Either requiring manual changes to the source code, or otherwise being unrealistic to fix from the users perspective.
+The `Broken` badge is used to indicate that the package available on the PPR does not work at all in its current form, on any supported platform. Either requiring manual changes to the source code, or otherwise being unrealistic to fix from the users perspective.
 
 This package likely emits warnings immediatly, or may even cause the editor to crash as a whole. Installation of these packages is not recommended by the Pulsar team, and instead it is encouraged to work with the original maintainer to get these packages working, or otherwise the community is encouraged to maintain and manage a fork of said package.
 
