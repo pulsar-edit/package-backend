@@ -2,7 +2,7 @@
 
 This document provides instructions and information on how to create a Pulsar account.
 
-### Target Audience / Requirements / Objectives
+## Target Audience / Requirements / Objectives
 
 This document is aimed at user's that are new to Pulsar wanting to create an account with Pulsar. An account is not required to use Pulsar or the Pulsar Package Registry (downloading and installing community packages), but an account is required to publish community packages, or to star community packages.
 
@@ -78,7 +78,7 @@ Unfortunately, at this time there is no automatic way to collect all data that i
 
 ## Disclosure about Pulsar accounts
 
-Pulsar, and it's maintainers, greatly respect your privacy, and more-so doesn't want the chance to invade your privacy. That's why when you create a Pulsar account your credentials and sensitive information is never stored within the Pulsar Package Registry at all.
+Pulsar, and its maintainers, greatly respect your privacy, and more-so doesn't want the chance to invade your privacy. That's why when you create a Pulsar account your credentials and sensitive information is never stored within the Pulsar Package Registry at all.
 
 When your create a Pulsar account, the following is the fully inclusive list of information stored about you:
 
