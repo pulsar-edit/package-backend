@@ -187,6 +187,11 @@ async function postPackages(params, db, auth, vcs) {
       pack: packageObjectFull,
       user: user.content,
     },
+    featureDetection: {
+      user: user.content,
+      service: "git", // TODO Stop hardcoding Git
+      ownerRepo: params.repository
+    }
   };
 }
 

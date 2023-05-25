@@ -995,6 +995,25 @@ app.post(
 
         // Return to user before webhook call, so user doesn't wait on it
         await webhook.alertPublishVersion(ret.webhook.pack, ret.webhook.user);
+        // Now to call for feature detection
+        let features = await vcs.featureDetection(
+          ret.featureDetection.user,
+          ret.featureDetection.ownerRepo,
+          ret.featureDetection.service
+        );
+
+        if (!features.ok) {
+          // TODO Log an error
+          return;
+        }
+
+        // Then we know we don't need to apply any special features for a standard
+        // package, so we will check that early
+        if (features.content.standard) {
+          return;
+        }
+
+        let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name);
 
         break;
       default:
