@@ -1013,8 +1013,15 @@ app.post(
           return;
         }
 
-        let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name);
+        let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name, ret.webhook.pack.version);
 
+        if (!featureApply.ok) {
+          // TODO Log an error
+          return;
+        }
+
+        // Otherwise we have completed successfully. We could log this, or return
+        return;
         break;
       default:
         next();

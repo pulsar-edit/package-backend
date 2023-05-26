@@ -353,8 +353,9 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
  * @desc Takes a Feature Object, and applies it's data to the appropriate package
  * @param {object} featureObj - The object containing all feature declarations.
  * @param {string} packName - The name of the package to be affected.
+ * @param {string} packVersion - The regular semver version of the package
  */
-async function applyFeatures(featureObj, packName) {
+async function applyFeatures(featureObj, packName, packVersion) {
   try {
     sqlStorage ??= setupSQL();
 
@@ -374,79 +375,52 @@ async function applyFeatures(featureObj, packName) {
     let badgesToAdd = [];
 
     if (featureObj.hasSnippets) {
-      badgesToAdd.push({
-        type: "info",
-        title: "Snippets"
-      });
+      const addSnippetCommand = sqlStorage`
+        UPDATE versions
+        SET has_snippets = TRUE
+        WHERE pointer = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addSnippetCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to set 'has_snippets' flag to true for ${packName}`,
+          short: "Server Error"
+        };
+      }
     }
 
     if (featureObj.hasGrammar) {
-      if (typeof featureObj.grammarTech === "string") {
-        switch(featureObj.grammarTech) {
-          case "tree-sitter": {
-            badgesToAdd.push({
-              type: "info",
-              title: "Grammar: Tree-Sitter"
-            });
-            break;
-          }
-          case "text-mate": {
-            badgesToAdd.push({
-              type: "info",
-              title: "Grammar: Text-Mate"
-            });
-            break;
-          }
-        }
-      }
-    }
-
-    if (badgesToAdd.length > 0) {
-      // Apply badges via SQL
-      // For badges we want to add them to a key on the package table `data` field
-      // as badges, so they get picked up properly within the package object builder
-      const getPackData = sqlStorage`
-        SELECT data
-        FROM packages
-        WHERE pointer = ${pointer}
+      const addGrammarCommand = sqlStorage`
+        UPDATE versions
+        SET has_grammar = TRUE
+        WHERE pointer = ${pointer} AND semver = ${packVersion};
       `;
 
-      if (getPackData.count === 0) {
+      if (addGrammarCommand.count === 0) {
         return {
-          ok: false
-        };
-      }
-
-      let tmpPack = getPackData[0];
-
-      if (!Array.isArray(tmpPack.badges)) {
-        tmpPack.badges = [];
-      }
-
-      if (tmpPack.badges.length > 0) {
-        // We need to combine our new badges with the existing ones
-       tmpPack.badges = tmpPack.badges.concat(badgesToAdd);
-      } else {
-        // Apply all new badges
-        tmpPack.badges = badgesToAdd;
-      }
-
-      // Write data back to db
-      const setPackData = sqlStorage`
-        UPDATE packages
-        SET data = ${tmpPack}
-        WHERE pointer = ${pointer};
-      `;
-
-      if (setPackData.count === 0) {
-        return {
-          ok: false
+          ok: false,
+          content: `Unable to set 'has_grammar' flag to true for ${packName}`,
+          short: "Server Error"
         };
       }
     }
 
-    if (featureObj.supportedLanguages.length > 0) {
+    if (Array.isArray(featureObj.supportedLanguages) && featureObj.supportedLanguages.length > 0) {
       // Add the supported languages
+      const addLangCommand = sqlStorage`
+        UPDATE versions
+        SET supported_languages = ${featureObj.supportedLanguages}
+        WHERE pointer = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addLangCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to add supportedLanguages to ${packName}`,
+          short: "Server Error"
+        };
+      }
     }
 
     return {

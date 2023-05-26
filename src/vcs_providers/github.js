@@ -451,7 +451,6 @@ class GitHub extends Git {
 
         // Successful request
         let supportedLanguages = [];
-        let tech;
 
         for (let i = 0; i < raw.content.body.length; i++) {
           const rawInner = this._webRequestAuth(
@@ -479,24 +478,13 @@ class GitHub extends Git {
               }
             }
           }
-
-          if (typeof data?.type === "string") {
-            if (data.type === "tree-sitter") {
-              tech = "tree-sitter";
-            } else if (data.type === "modern-tree-sitter") {
-              tech = "modern-tree-sitter";
-            }
-          } else {
-            tech = "text-mate";
-          }
         }
 
         return {
           ok: true,
           content: {
             hasGrammar: true,
-            supportedLanguages: supportedLanguages,
-            tech: tech
+            supportedLanguages: supportedLanguages
           }
         };
 
