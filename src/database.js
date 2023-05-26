@@ -371,9 +371,6 @@ async function applyFeatures(featureObj, packName, packVersion) {
 
     const pointer = packID.content.pointer;
 
-    let addBadge = false;
-    let badgesToAdd = [];
-
     if (featureObj.hasSnippets) {
       const addSnippetCommand = sqlStorage`
         UPDATE versions
