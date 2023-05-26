@@ -1003,7 +1003,7 @@ app.post(
         );
 
         if (!features.ok) {
-          // TODO Log an error
+          logger.generic(3, features);
           return;
         }
 
@@ -1016,11 +1016,12 @@ app.post(
         let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name, ret.webhook.pack.version);
 
         if (!featureApply.ok) {
-          // TODO Log an error
+          logger.generic(3, featureApply);
           return;
         }
 
-        // Otherwise we have completed successfully. We could log this, or return
+        // Otherwise we have completed successfully.
+        // We could log this, but will just return
         return;
         break;
       default:

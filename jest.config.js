@@ -18,8 +18,10 @@ const config = {
         "<rootDir>/test/handlers.setup.jest.js",
         "<rootDir>/test/global.setup.jest.js",
       ],
-      testMatch: ["<rootDir>/test/*.integration.test.js"],
-      //testMatch: ["<rootDir>/test/delete.packages.handler.integration.test.js"],
+      testMatch: [
+        "<rootDir>/test/*.integration.test.js",
+        "<rootDir>/test/database/**/**.js"
+      ],
     },
     {
       displayName: "Unit-Tests",
