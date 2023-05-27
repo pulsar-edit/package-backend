@@ -173,34 +173,6 @@ async function getPackageData(pointer) {
   return { ok: true, content: command[0] };
 }
 
-async function getVersions(pointer) {
-  sqlStorage ??= setupSQL();
-
-  const command = await sqlStorage`
-    SELECT * from versions
-    WHERE package = ${pointer};
-  `;
-
-  if (command.count === 0) {
-    return { ok: false, content: `Failed to get version data of ${pointer}` };
-  }
-  return { ok: true, content: command };
-}
-
-async function getLatestVersion(pointer) {
-  sqlStorage ??= setupSQL();
-
-  const command = await sqlStorage`
-    SELECT * FROM versions
-    WHERE package = ${pointer} AND status = 'latest';
-  `;
-
-  if (command.count === 0) {
-    return { ok: false, content: `Failed to get latest version data of ${pointer}` };
-  }
-  return { ok: true, content: command };
-}
-
 async function applyFeatures(featureObj, packName, packVersion) {
   try {
     sqlStorage ??= setupSQL();
