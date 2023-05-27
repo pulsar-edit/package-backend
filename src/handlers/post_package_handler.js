@@ -430,6 +430,11 @@ async function postPackagesVersion(params, db, auth, vcs) {
       pack: packMetadata.content,
       user: user.content,
     },
+    featureDetection: {
+      user: user.content,
+      service: "git", // TODO Stop hardcoding git
+      ownerRepo: ownerRepo
+    }
   };
 }
 
