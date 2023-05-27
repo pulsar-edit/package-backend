@@ -34,6 +34,9 @@ const cson = require("cson"); // Using this tool requires CSON to be installed g
 const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../../src/config.js").getConfig();
 
 const USER_AGENT = "PulsarBot-FeatureDetectionScan;https://github.com/pulsar-edit/package-backend";
+let lastGithubContact = 0; // measured in epoch date
+let waitingOnGithubBuffer = false;
+const githubContactBuffer = 10000; // The milliseconds to wait before contacting GitHub again.
 let sqlStorage;
 
 async function init(params) {
@@ -47,8 +50,70 @@ async function init(params) {
       let dataGram = await analyzePackage(repo);
       console.log(dataGram);
       console.log("The above output is for testing purposes and has not been written.");
+      process.exit(1);
     }
   }
+
+  // Now to do the real work of this tool
+  const allPointers = await getPointers();
+  const totalPointers = allPointers.length;
+  let pointerCount = 0;
+  let results = [];
+
+  for (const pointer of allPointers) {
+    console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
+    console.log(`\r[${pointerCount}/${totalPointers}] Packages Checked...`);
+
+    if (typeof pointer.name !== "string") {
+      results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
+      continue;
+    }
+    if (typeof pointer.pointer !== "string") {
+      results.push(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
+      continue;
+    }
+
+    /**
+     * 1. We need to get the `repo` to pass to analyzePackage to find all available features.
+     * 2. We need to take those features and pass it to applyFeatures along with
+     * the featuresObj, package name, and package version.
+     * 3. Then start again
+     */
+
+     let pack = await getPackageData(pointer.pointer);
+
+     if (!pack.ok) {
+       process.exit(1);
+       results.push(pack);
+       continue;
+     }
+
+     let featureObj = await analyzePackage(pack.content.data.repository.url);
+
+     if (!featureObj.ok) {
+       console.log("ERROR");
+       console.log(featureObj);
+       process.exit(1);
+       results.push(featureObj.content);
+       continue;
+     }
+
+     console.log(`${pointer.name}::${pointer.pointer} v${pack.content.data.metadata.version} feature below:`);
+     console.log(featureObj);
+     process.exit(1);
+     let apply = await applyFeatures(featureObj.content, pointer.name, pack.content.data.metadata.version);
+
+     if (!apply.ok) {
+       results.push(apply.content);
+       continue;
+     }
+
+     results.push(`${pointer.name}::${pointer.pointer} Handled features successfully!`);
+  }
+
+  console.log(results);
+  await sqlEnd();
+  process.exit(0);
 }
 
 function setupSQL() {
@@ -68,6 +133,175 @@ function setupSQL() {
   } catch(err) {
     console.log(err);
     process.exit(100);
+  }
+}
+
+async function getPointers() {
+  sqlStorage ??= setupSQL();
+
+  const command = await sqlStorage`
+    SELECT * FROM names;
+  `;
+
+  if (command.count === 0) {
+    console.log("Failed to get all package pointers.");
+    await sqlEnd();
+    process.exit(1);
+  }
+  return command;
+}
+
+async function sqlEnd() {
+  if (sqlStorage !== undefined) {
+    await sqlStorage.end();
+    console.log("SQL Server Disconnected!");
+  }
+  return;
+}
+
+async function getPackageData(pointer) {
+  sqlStorage ??= setupSQL();
+
+  const command = await sqlStorage`
+    SELECT * from packages
+    WHERE pointer = ${pointer}
+  `;
+
+  if (command.count === 0) {
+    return { ok: false, content: `Failed to get package data of ${pointer}` };
+  }
+  return { ok: true, content: command[0] };
+}
+
+async function getVersions(pointer) {
+  sqlStorage ??= setupSQL();
+
+  const command = await sqlStorage`
+    SELECT * from versions
+    WHERE package = ${pointer};
+  `;
+
+  if (command.count === 0) {
+    return { ok: false, content: `Failed to get version data of ${pointer}` };
+  }
+  return { ok: true, content: command };
+}
+
+async function getLatestVersion(pointer) {
+  sqlStorage ??= setupSQL();
+
+  const command = await sqlStorage`
+    SELECT * FROM versions
+    WHERE package = ${pointer} AND status = 'latest';
+  `;
+
+  if (command.count === 0) {
+    return { ok: false, content: `Failed to get latest version data of ${pointer}` };
+  }
+  return { ok: true, content: command };
+}
+
+async function applyFeatures(featureObj, packName, packVersion) {
+  try {
+    sqlStorage ??= setupSQL();
+
+    const packID = await getPackageByNameSimple(packName);
+
+    if (!packID.ok) {
+      return {
+        ok: false,
+        content: `Unable to find the pointer of ${packName}`,
+        short: "Not Found"
+      };
+    }
+
+    const pointer = packID.content.pointer;
+
+    if (featureObj.hasSnippets) {
+      const addSnippetCommand = await sqlStorage`
+        UPDATE versions
+        SET has_snippets = TRUE
+        WHERE package = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addSnippetCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to set 'has_snippets' flag to true for ${packName}`,
+          short: "Server Error"
+        };
+      }
+    }
+
+    if (featureObj.hasGrammar) {
+      const addGrammarCommand = await sqlStorage`
+        UPDATE versions
+        SET has_grammar = TRUE
+        WHERE package = ${pointer} AND semver = ${packVersion}
+      `;
+
+      if (addGrammarCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to set 'has_grammar' flag to true for ${packName}`,
+          short: "Server Error"
+        };
+      }
+    }
+
+    if (Array.isArray(featureObj.supportedLanguages) && featuredObj.supportedLanguages.length > 0) {
+      const addLangCommand = await sqlStorage`
+        UPDATE versions
+        SET supported_languages = ${featureObj.supportedLanguages}
+        WHERE package = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addLangCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to add supportedLanguages to ${packName}`,
+          short: "Server Error"
+        };
+      }
+    }
+
+    return {
+      ok: true
+    };
+
+  } catch(err) {
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err.toString()
+    };
+  }
+}
+
+async function getPackageByNameSimple(name) {
+  try {
+    sqlStorage ??= setupSQL();
+
+    const command = await sqlStorage`
+      SELECT pointer FROM names
+      WHERE name = ${name};
+    `;
+
+    return command.count !== 0
+      ? { ok: true, content: command[0] }
+      : {
+          ok: false,
+          content: `Package ${name} not found`,
+          short: "Not Found"
+        };
+  } catch(err) {
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err.toString()
+    };
   }
 }
 
@@ -153,12 +387,51 @@ async function analyzePackage(repo) {
   return dataGram;
 }
 
+async function contactGitHub(url) {
+  const acceptableStatusCodes = [200, 404];
+  return new Promise(async (resolve, reject) => {
+    const now = Date.now();
+
+    if (now - lastGithubContact > githubContactBuffer) {
+      lastGithubContact = now;
+      waitingOnGithubBuffer = false;
+
+      try {
+        const res = await superagent
+          .get(url)
+          .set({ Authorization: `Bearer ${AUTH}` })
+          .set({ "User-Agent": USER_AGENT })
+          .ok((res) => acceptableStatusCodes.includes(res.status));
+
+        resolve(res);
+      } catch(err) {
+        reject(err);
+      }
+    } else {
+      setTimeout(() => {
+        resolve(contactGitHub(url));
+      }, githubContactBuffer);
+      waitingOnGithubBuffer = true;
+      twirlTimer(waitingOnGithubBuffer);
+    }
+  });
+}
+
+function twirlTimer(control) {
+  console.log("\n");
+  const icon = ["\\", "|", "/", "-" ];
+  let x = 0;
+  setInterval(() => {
+    if (control) {
+      process.stdout.write("\r" + icon[x++] + " Waiting on GitHub API Buffer");
+      x &= 3;
+    }
+  }, 250);
+}
+
 async function isRepoArchived(ownerRepo) {
   try {
-    const res = await superagent
-      .get(`https://api.github.com/repos/${ownerRepo}`)
-      .set({ Authorization: `Bearer ${AUTH}`})
-      .set({ "User-Agent": USER_AGENT });
+    const res = await contactGitHub(`https://api.github.com/repos/${onwerRepo}`);
 
     if (res.status !== 200) {
       return {
@@ -187,10 +460,7 @@ async function isRepoArchived(ownerRepo) {
 
 async function providesSnippets(ownerRepo) {
   try {
-    const res = await superagent
-      .get(`https://api.github.com/repos/${ownerRepo}/contents/snippets`)
-      .set({ Authorization: `Bearer ${AUTH}`})
-      .set({ "User-Agent": USER_AGENT });
+    const res = await contactGitHub(`https://api.github.com/repos/${ownerRepo}/contents/snippets`);
 
     if (res.status === 404) {
       return {
@@ -224,10 +494,7 @@ async function providesSnippets(ownerRepo) {
 
 async function getGrammars(ownerRepo) {
   try {
-    const res = await superagent
-      .get(`https://api.github.com/repos/${ownerRepo}/contents/grammars`)
-      .set({ Authorization: `Bearer ${AUTH}`})
-      .set({ "User-Agent": USER_AGENT });
+    const res = await contactGitHub(`https://api.github.com/repos/${ownerRepo}/contents/grammars`);
 
     if (res.status === 404) {
       return {
@@ -250,10 +517,7 @@ async function getGrammars(ownerRepo) {
     let tech;
 
     for (let i = 0; i < res.body.length; i++) {
-      const resInner = await superagent
-        .get(`https://api.github.com/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`)
-        .set({ Authorization: `Bearer ${AUTH}`})
-        .set({ "User-Agent": USER_AGENT });
+      const resInner = await contactGitHub(`https://api.github.com/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`);
 
       if (resInner.status !== 200) {
         continue;
