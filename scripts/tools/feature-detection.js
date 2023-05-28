@@ -32,11 +32,11 @@ const postgres = require("postgres");
 const superagent = require("superagent");
 const cson = require("cson"); // Using this tool requires CSON to be installed globally
 const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../../src/config.js").getConfig();
+const featuresFound = require("./features_found.json");
 
 const USER_AGENT = "PulsarBot-FeatureDetectionScan;https://github.com/pulsar-edit/package-backend";
-let lastGithubContact = 0; // measured in epoch date
-let waitingOnGithubBuffer = false;
-const githubContactBuffer = 10000; // The milliseconds to wait before contacting GitHub again.
+let RATE_LIMIT_REMAINING = 1000;
+const UNUSED_RATE_LIMIT = 200;
 let sqlStorage;
 
 async function init(params) {
@@ -64,6 +64,11 @@ async function init(params) {
     console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
     console.log(`\r[${pointerCount}/${totalPointers}] Packages Checked...`);
 
+    if (featuresFound.includes(pointer.pointer)) {
+      console.log("Package already checked previously...");
+      continue;
+    }
+
     if (typeof pointer.name !== "string") {
       results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
       continue;
@@ -90,18 +95,10 @@ async function init(params) {
 
      let featureObj = await analyzePackage(pack.content.data.repository.url);
 
-     if (!featureObj.ok) {
-       console.log("ERROR");
-       console.log(featureObj);
-       process.exit(1);
-       results.push(featureObj.content);
-       continue;
-     }
-
      console.log(`${pointer.name}::${pointer.pointer} v${pack.content.data.metadata.version} feature below:`);
      console.log(featureObj);
      process.exit(1);
-     let apply = await applyFeatures(featureObj.content, pointer.name, pack.content.data.metadata.version);
+     let apply = await applyFeatures(featureObj, pointer.name, pack.content.data.metadata.version);
 
      if (!apply.ok) {
        results.push(apply.content);
@@ -109,6 +106,19 @@ async function init(params) {
      }
 
      results.push(`${pointer.name}::${pointer.pointer} Handled features successfully!`);
+
+     featuresFound.push(pointer.pointer);
+
+     if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT) {
+       // We have hit our limit on items to check today, lets exit
+       // After we write our changes
+       fs.writeFileSync("./features_found.json", JSON.stringify(featuresFound, null, 2));
+
+       console.log(results);
+       console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
+       await sqlEnd();
+       process.exit(1);
+     }
   }
 
   console.log(results);
@@ -361,32 +371,15 @@ async function analyzePackage(repo) {
 
 async function contactGitHub(url) {
   const acceptableStatusCodes = [200, 404];
-  return new Promise(async (resolve, reject) => {
-    const now = Date.now();
 
-    if (now - lastGithubContact > githubContactBuffer) {
-      lastGithubContact = now;
-      waitingOnGithubBuffer = false;
+  const res = await superagent
+    .get(url)
+    .set({ Authorization: `Bearer ${AUTH}` })
+    .set({ "User-Agent": USER_AGENT })
+    .ok((res) => acceptableStatusCodes.includes(res.status));
 
-      try {
-        const res = await superagent
-          .get(url)
-          .set({ Authorization: `Bearer ${AUTH}` })
-          .set({ "User-Agent": USER_AGENT })
-          .ok((res) => acceptableStatusCodes.includes(res.status));
-
-        resolve(res);
-      } catch(err) {
-        reject(err);
-      }
-    } else {
-      setTimeout(() => {
-        resolve(contactGitHub(url));
-      }, githubContactBuffer);
-      waitingOnGithubBuffer = true;
-      twirlTimer(waitingOnGithubBuffer);
-    }
-  });
+  RATE_LIMIT_REMAINING = parseInt(res.headers["x-ratelimit-remaining"]);
+  return res;
 }
 
 function twirlTimer(control) {
