@@ -382,18 +382,6 @@ async function contactGitHub(url) {
   return res;
 }
 
-function twirlTimer(control) {
-  console.log("\n");
-  const icon = ["\\", "|", "/", "-" ];
-  let x = 0;
-  setInterval(() => {
-    if (control) {
-      process.stdout.write("\r" + icon[x++] + " Waiting on GitHub API Buffer");
-      x &= 3;
-    }
-  }, 250);
-}
-
 async function isRepoArchived(ownerRepo) {
   try {
     const res = await contactGitHub(`https://api.github.com/repos/${onwerRepo}`);
