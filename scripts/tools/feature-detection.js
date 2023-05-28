@@ -118,10 +118,15 @@ async function init(params) {
        console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
        await sqlEnd();
        process.exit(1);
+     } else {
+       console.log(`-- Rate Limit Remaining: ${RATE_LIMIT_REMAINING}`);
      }
+
+     pointerCount++;
   }
 
   console.log(results);
+  fs.writeFileSync("./features_found.json", JSON.stringify(featuresFound, null, 2));
   await sqlEnd();
   process.exit(0);
 }
