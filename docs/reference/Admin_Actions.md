@@ -232,7 +232,7 @@ The below packages were never repackaged due to this:
 
 ### Package's GitHub repository is not available
 
-Package's were excluded from the repackaging process if the repository they pointed to wasn't accessible. Indicating the repository or user has since been deleted, or the repository has since become privated.
+Package's were excluded from the repackaging process if the repository they pointed to wasn't accessible. This implies that the repository or user has since been deleted, or the repository has since become privated.
 
 The below packages were never repackaged due to this:
 
