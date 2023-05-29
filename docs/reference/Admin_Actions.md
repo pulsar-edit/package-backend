@@ -82,7 +82,7 @@ We removed the following packages due to suspected spam:
 
 ## 2023 - March 18
 
-Removed some community packages during our effort to ensure we only keep packages with licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thourough attempt to contact the publishers we had resolved to remove the packages.
+Removed some community packages during our effort to ensure we only keep packages with licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thourough attempt to contact the publishers we had resolved to remove the packages. More information on this topic is available on the [Pulsar Blog](https://pulsar-edit.dev/blog/20230319-confused-Techie-HowLicenseNoneDeletedPackages.html)
 
 * [`bemhtml`](https://github.com/jchouse/bemhtml)
 * [`github-user-datatip`](https://github.com/jgebhardt/atom-github-user-datatip)
