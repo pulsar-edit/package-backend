@@ -210,7 +210,7 @@ In the time before the backend was actually created, when the Pulsar team had ar
 
 ### Database Migration
 
-During the initial migration of packages to the database, it's possible some packages would break some rules that had been configured within the schema of this new database. If you'd like the script and full logs of this process are available on [`confused-Techie/atom-package-migrator-to-db-2`](https://github.com/confused-Techie/atom-package-migrator-to-db-2/tree/main). Below are the package's that failed to migrate during this process:
+During the initial migration of packages to the database, it's possible some packages would break some rules that had been configured within the schema of this new database. The script and full logs of this process are available at [`confused-Techie/atom-package-migrator-to-db-2`](https://github.com/confused-Techie/atom-package-migrator-to-db-2/tree/main). Below are the packages that failed to migrate during this process:
 
 * `code-time`: Failed to migrate several versions due to the length of the license field being longer than what was allowed on the Database Schema. Since this was the only package to encounter this limit, we thought it best to contact the maintainers, rather than modify the database schema. An [issue](https://github.com/swdotcom/swdc-atom/issues/96) was created on `swdotcom/swdc-atom` to address this. But without response the package wasn't included as every version published encountered this issue.
 
