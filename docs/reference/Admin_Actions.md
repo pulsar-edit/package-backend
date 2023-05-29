@@ -230,7 +230,7 @@ The below packages were never repackaged due to this:
 * panic-palette-syntax@0.2.5
 * undefined
 
-### Package's GitHub is not available
+### Package's GitHub repository is not available
 
 Package's were excluded from the repackaging process if the repository they pointed to wasn't accessible. Indicating the repository or user has since been deleted, or the repository has since become privated.
 
