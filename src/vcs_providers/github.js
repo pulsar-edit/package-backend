@@ -512,10 +512,6 @@ class GitHub extends Git {
       featureObject.supportedLanguages = grammars.content.supportedLanguages;
     }
 
-    if (grammars.ok && typeof grammars.content.tech === "string" && grammars.content.tech.length > 0) {
-      featureObject.grammarTech = grammars.content.tech;
-    }
-
     if (Object.keys(featureObject).length === 0) {
       featureObject.standard = true;
     }

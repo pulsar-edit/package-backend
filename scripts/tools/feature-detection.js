@@ -310,8 +310,7 @@ async function analyzePackage(repo) {
     ok: true,
     content: {
       hasGrammar: true|false,
-      supportedLanguages: [],
-      tech: 'text-mate'|'tree-sitter'
+      supportedLanguages: []
     }
   }
   */
@@ -341,10 +340,6 @@ async function analyzePackage(repo) {
     dataGram.supportedLanguages = grammars.content.supportedLanguages;
   }
 
-  if (grammars.ok && typeof grammars.content.tech === "string" && grammars.content.tech.length > 0) {
-    dataGram.grammarTech = grammars.content.tech;
-  }
-
   if (archivedRepo.ok && archivedRepo.content) {
     dataGram.isRepoArchived = true;
   }
@@ -364,7 +359,6 @@ async function analyzePackage(repo) {
     hasGrammar: true,
     isRepoArchived: true,
     supportedLanguages: [],
-    grammarTech: "",
     standard: true // This last item will only appear, if zero other features exist
   }
 
@@ -472,7 +466,6 @@ async function getGrammars(ownerRepo) {
     // If this resolved this means the `grammars` folder does exist.
     // We then have an array of objects to look at for file names
     let supportedLanguages = [];
-    let tech;
 
     for (let i = 0; i < res.body.length; i++) {
       const resInner = await contactGitHub(`https://api.github.com/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`);
@@ -500,20 +493,13 @@ async function getGrammars(ownerRepo) {
           supportedLanguages.push(data.fileTypes[i]);
         }
       }
-
-      if (typeof data?.type === "string" && data?.type === "tree-sitter") {
-        tech = "tree-sitter";
-      } else {
-        tech = "text-mate";
-      }
     }
 
     return {
       ok: true,
       content: {
         hasGrammar: true,
-        supportedLanguages: supportedLanguages,
-        tech: tech
+        supportedLanguages: supportedLanguages
       }
     };
 
