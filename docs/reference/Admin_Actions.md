@@ -206,7 +206,7 @@ Modified some packages data on the backend database, due to incompatibility with
 
 ## Pre-Backend
 
-In the time before the backend was actually created, when the Pulsar team had archived all existing packages from the Atom Package Registry, there were two steps taken that resulted in some packages not making it passed the initial migration, and being excluded from the Pulsar Package Registry. Those steps are detailed below.
+In the time before the backend was actually created, when the Pulsar team had archived all existing packages from the Atom Package Registry, there were two steps taken that resulted in some packages not making it past the initial migration, and being excluded from the Pulsar Package Registry. Those steps are detailed below.
 
 ### Database Migration
 
