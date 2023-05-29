@@ -220,7 +220,7 @@ Before any archived packages were migrated, they were first put through several 
 
 ### Non-URL Safe Name
 
-Package's were excluded from the repackaging process if they contained a name that was not URL Safe.
+Packages were excluded from the repackaging process if they contained a name that was not URL Safe.
 
 The below packages were never repackaged due to this:
 
