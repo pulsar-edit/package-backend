@@ -216,7 +216,7 @@ During the initial migration of packages to the database, it's possible some pac
 
 ### Health Checks / Repackaging
 
-Before any archived package's were ever migrated, they were first put through several health checks, to ensure we only transfered over valid packages. The code used to run these health checks, and convert the archived data into usable package data is available on [`confused-Techie/atom-package-migrator`](https://github.com/confused-Techie/atom-package-migrator). The full log's and data created from this process is also available on [`confused-Techie/atom-package-collection`](https://github.com/confused-Techie/atom-package-collection/tree/main). Below will list all of the package's that failed these health checks.
+Before any archived packages were migrated, they were first put through several health checks to ensure we only transfered over valid packages. The code used to run these health checks, and convert the archived data into usable package data is available at [`confused-Techie/atom-package-migrator`](https://github.com/confused-Techie/atom-package-migrator). The full logs and data created from this process is also available at [`confused-Techie/atom-package-collection`](https://github.com/confused-Techie/atom-package-collection/tree/main). Below will list all of the packages that failed these health checks.
 
 ### Non-URL Safe Name
 
