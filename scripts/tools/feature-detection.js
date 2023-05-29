@@ -97,7 +97,7 @@ async function init(params) {
 
      console.log(`${pointer.name}::${pointer.pointer} v${pack.content.data.metadata.version} feature below:`);
      console.log(featureObj);
-     process.exit(1);
+
      let apply = await applyFeatures(featureObj, pointer.name, pack.content.data.metadata.version);
 
      if (!apply.ok) {
@@ -109,10 +109,10 @@ async function init(params) {
 
      featuresFound.push(pointer.pointer);
 
-     if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT) {
+     if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT || true) {
        // We have hit our limit on items to check today, lets exit
        // After we write our changes
-       fs.writeFileSync("./features_found.json", JSON.stringify(featuresFound, null, 2));
+       fs.writeFileSync(`${__dirname}/features_found.json`, JSON.stringify(featuresFound, null, 2));
 
        console.log(results);
        console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
@@ -126,7 +126,7 @@ async function init(params) {
   }
 
   console.log(results);
-  fs.writeFileSync("./features_found.json", JSON.stringify(featuresFound, null, 2));
+  fs.writeFileSync(`${__dirname}/features_found.json`, JSON.stringify(featuresFound, null, 2));
   await sqlEnd();
   process.exit(0);
 }
@@ -251,7 +251,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
         };
       }
     }
-
+    console.log(`Applied changes to ${packName}`);
     return {
       ok: true
     };
