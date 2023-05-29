@@ -35,7 +35,7 @@ const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../.
 const featuresFound = require("./features_found.json");
 
 const USER_AGENT = "PulsarBot-FeatureDetectionScan;https://github.com/pulsar-edit/package-backend";
-let RATE_LIMIT_REMAINING = 1000;
+let RATE_LIMIT_REMAINING = 10;
 const UNUSED_RATE_LIMIT = 200;
 let sqlStorage;
 
@@ -60,9 +60,17 @@ async function init(params) {
   let pointerCount = 0;
   let results = [];
 
-  for (const pointer of allPointers) {
+  for await (const pointer of allPointers) {
     console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
     console.log(`\r[${pointerCount}/${totalPointers}] Packages Checked...`);
+    pointerCount++;
+
+    if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT) {
+      console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
+      break;
+    } else {
+      console.log(`Rate Limit Remaining: ${RATE_LIMIT_REMAINING}`);
+    }
 
     if (featuresFound.includes(pointer.pointer)) {
       console.log("Package already checked previously...");
@@ -70,10 +78,12 @@ async function init(params) {
     }
 
     if (typeof pointer.name !== "string") {
+      console.log(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
       results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
       continue;
     }
     if (typeof pointer.pointer !== "string") {
+      console.log(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
       results.push(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
       continue;
     }
@@ -88,7 +98,8 @@ async function init(params) {
      let pack = await getPackageData(pointer.pointer);
 
      if (!pack.ok) {
-       process.exit(1);
+       console.log(`Failed to check: ${pointer.name}::${pointer.pointer}`);
+       console.log(pack);
        results.push(pack);
        continue;
      }
@@ -98,9 +109,18 @@ async function init(params) {
      console.log(`${pointer.name}::${pointer.pointer} v${pack.content.data.metadata.version} feature below:`);
      console.log(featureObj);
 
-     let apply = await applyFeatures(featureObj, pointer.name, pack.content.data.metadata.version);
+     if (!featureObj.ok) {
+       console.log(`Failed to analyze Package: ${pointer.name}::${pointer.pointer}`);
+       results.push(`Failed to analyze Package: ${pointer.name}::${pointer.pointer}`);
+       results.push(featureObj);
+       continue;
+     }
+
+     let apply = await applyFeatures(featureObj.content, pointer.name, pack.content.data.metadata.version);
 
      if (!apply.ok) {
+       console.log("Applying our package data was not okay");
+       console.log(apply);
        results.push(apply.content);
        continue;
      }
@@ -109,20 +129,6 @@ async function init(params) {
 
      featuresFound.push(pointer.pointer);
 
-     if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT || true) {
-       // We have hit our limit on items to check today, lets exit
-       // After we write our changes
-       fs.writeFileSync(`${__dirname}/features_found.json`, JSON.stringify(featuresFound, null, 2));
-
-       console.log(results);
-       console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
-       await sqlEnd();
-       process.exit(1);
-     } else {
-       console.log(`-- Rate Limit Remaining: ${RATE_LIMIT_REMAINING}`);
-     }
-
-     pointerCount++;
   }
 
   console.log(results);
@@ -297,8 +303,10 @@ async function analyzePackage(repo) {
   let ownerRepo = findOwnerRepo(repo);
 
   if (!ownerRepo.ok) {
-    console.log(ownerRepo);
-    process.exit(1); // TODO this shouldn't crash everything
+    return {
+      ok: false,
+      content: ownerRepo
+    };
   }
 
   let archivedRepo = await isRepoArchived(ownerRepo.content);
@@ -365,25 +373,34 @@ async function analyzePackage(repo) {
   Where if one of those is false, or empty, the key will not exist.
   */
 
-  return dataGram;
+  return {
+    ok: true,
+    content: dataGram
+  };
 }
 
 async function contactGitHub(url) {
-  const acceptableStatusCodes = [200, 404];
+  try {
+    const acceptableStatusCodes = [200, 404];
+    console.log("github stuff");
+    const res = await superagent
+      .get(url)
+      .set({ Authorization: `Bearer ${AUTH}` })
+      .set({ "User-Agent": USER_AGENT })
+      .ok((res) => acceptableStatusCodes.includes(res.status));
 
-  const res = await superagent
-    .get(url)
-    .set({ Authorization: `Bearer ${AUTH}` })
-    .set({ "User-Agent": USER_AGENT })
-    .ok((res) => acceptableStatusCodes.includes(res.status));
+    RATE_LIMIT_REMAINING = parseInt(res.headers["x-ratelimit-remaining"]);
 
-  RATE_LIMIT_REMAINING = parseInt(res.headers["x-ratelimit-remaining"]);
-  return res;
+    return res;
+  } catch(err) {
+    console.log(err);
+    process.exit(0);
+  }
 }
 
 async function isRepoArchived(ownerRepo) {
   try {
-    const res = await contactGitHub(`https://api.github.com/repos/${onwerRepo}`);
+    const res = await contactGitHub(`https://api.github.com/repos/${ownerRepo}`);
 
     if (res.status !== 200) {
       return {
