@@ -1620,7 +1620,7 @@ The below packages were never repackaged due to this:
 
 ### Name is Banned
 
-Due to the severe amount of spam the Atom Package Registry started to see in the last days, a ban list of names was created to prevent spam or malicious package's from being migrated over. Luckily the majority of spam package's were created in the following days after the initial migration was made, but still some package's had to be prevented from being repacked, which are listed below:
+Due to the severe amount of spam the Atom Package Registry started to see in the last days, a ban list of names was created to prevent spam or malicious packages from being migrated over. Luckily the majority of spam packages were created in the following days after the initial migration was made, but still some packages had to be prevented from being repacked, which are listed below:
 
 * demo-slot-joker-gacor
 * slot-bonus-new-member
