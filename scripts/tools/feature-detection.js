@@ -59,6 +59,7 @@ async function init(params) {
   const totalPointers = allPointers.length;
   let pointerCount = 0;
   let results = [];
+  let archivedPackages = [];
 
   for await (const pointer of allPointers) {
     console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
@@ -116,6 +117,11 @@ async function init(params) {
        continue;
      }
 
+     // Since the feature object doesn't apply the archived status we will save it for later
+     if (featureObj.isRepoArchived) {
+       archivedPackages.push(`${pointer.name}::${pointer.pointer}`);
+     }
+
      let apply = await applyFeatures(featureObj.content, pointer.name, pack.content.data.metadata.version);
 
      if (!apply.ok) {
@@ -133,6 +139,7 @@ async function init(params) {
 
   console.log(results);
   fs.writeFileSync(`${__dirname}/features_found.json`, JSON.stringify(featuresFound, null, 2));
+  fs.writeFileSync(`${__dirname}/archived_packages.json`, JSON.stringify(archivedPackages, null, 2));
   await sqlEnd();
   process.exit(0);
 }
