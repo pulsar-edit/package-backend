@@ -35,7 +35,7 @@ const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } = require("../.
 const featuresFound = require("./features_found.json");
 
 const USER_AGENT = "PulsarBot-FeatureDetectionScan;https://github.com/pulsar-edit/package-backend";
-let RATE_LIMIT_REMAINING = 10;
+let RATE_LIMIT_REMAINING = 201;
 const UNUSED_RATE_LIMIT = 200;
 let sqlStorage;
 
@@ -60,86 +60,101 @@ async function init(params) {
   let pointerCount = 0;
   let results = [];
   let archivedPackages = [];
+  let brokenPackages = [];
 
   for await (const pointer of allPointers) {
-    console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
-    console.log(`\r[${pointerCount}/${totalPointers}] Packages Checked...`);
-    pointerCount++;
+    try {
 
-    if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT) {
-      console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
-      break;
-    } else {
-      console.log(`Rate Limit Remaining: ${RATE_LIMIT_REMAINING}`);
+      console.log(`Checking: ${pointer.name}::${pointer.pointer}`);
+      console.log(`\r[${pointerCount}/${totalPointers}] Packages Checked...`);
+      pointerCount++;
+
+      if (RATE_LIMIT_REMAINING < UNUSED_RATE_LIMIT) {
+        console.log(`Exiting any and all feature checks because we have hit our unused rate limit of ${UNUSED_RATE_LIMIT} with ${RATE_LIMIT_REMAINING} api hits left.`);
+        break;
+      } else {
+        console.log(`Rate Limit Remaining: ${RATE_LIMIT_REMAINING}`);
+      }
+
+      if (featuresFound.includes(pointer.pointer)) {
+        console.log("Package already checked previously...");
+        continue;
+      }
+
+      if (typeof pointer.name !== "string") {
+        console.log(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
+        results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
+        continue;
+      }
+      if (typeof pointer.pointer !== "string") {
+        console.log(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
+        results.push(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
+        continue;
+      }
+
+      /**
+        * 1. We need to get the `repo` to pass to analyzePackage to find all available features.
+        * 2. We need to take those features and pass it to applyFeatures along with
+        * the featuresObj, package name, and package version.
+        * 3. Then start again
+        */
+
+      let pack = await getPackageData(pointer.pointer);
+
+      if (!pack.ok) {
+        console.log(`Failed to check: ${pointer.name}::${pointer.pointer}`);
+        console.log(pack);
+        results.push(pack);
+        continue;
+      }
+
+      let featureObj = await analyzePackage(pack.content.data.repository.url);
+
+      // Since we seem to have more invalid packages than originall thought,
+      // we will do a quick validity check here to see if this data exists
+      if (typeof pack.content?.data?.metadata?.version === "undefined") {
+        brokenPackages.push(`${pointer.name}::${pointer.pointer}`);
+        continue;
+      }
+
+      console.log(`${pointer.name}::${pointer.pointer} v${pack.content.data.metadata.version} feature below:`);
+      console.log(featureObj);
+
+      if (!featureObj.ok) {
+        console.log(`Failed to analyze Package: ${pointer.name}::${pointer.pointer}`);
+        results.push(`Failed to analyze Package: ${pointer.name}::${pointer.pointer}`);
+        results.push(featureObj);
+        continue;
+      }
+
+      // Since the feature object doesn't apply the archived status we will save it for later
+      if (featureObj.isRepoArchived) {
+        archivedPackages.push(`${pointer.name}::${pointer.pointer}`);
+      }
+
+      let apply = await applyFeatures(featureObj.content, pointer.name, pack.content.data.metadata.version);
+
+      if (!apply.ok) {
+        console.log("Applying our package data was not okay");
+        console.log(apply);
+        results.push(apply.content);
+        continue;
+      }
+
+      results.push(`${pointer.name}::${pointer.pointer} Handled features successfully!`);
+
+      featuresFound.push(pointer.pointer);
+
+      } catch(err) {
+        console.log(err);
+        break;
+      }
     }
-
-    if (featuresFound.includes(pointer.pointer)) {
-      console.log("Package already checked previously...");
-      continue;
-    }
-
-    if (typeof pointer.name !== "string") {
-      console.log(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
-      results.push(`The package ${pointer.name}::${pointer.pointer} is invalid without it's name!`);
-      continue;
-    }
-    if (typeof pointer.pointer !== "string") {
-      console.log(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
-      results.push(`The package ${pointer.name}::${pointer.pointer} likely has been deleted.`);
-      continue;
-    }
-
-    /**
-     * 1. We need to get the `repo` to pass to analyzePackage to find all available features.
-     * 2. We need to take those features and pass it to applyFeatures along with
-     * the featuresObj, package name, and package version.
-     * 3. Then start again
-     */
-
-     let pack = await getPackageData(pointer.pointer);
-
-     if (!pack.ok) {
-       console.log(`Failed to check: ${pointer.name}::${pointer.pointer}`);
-       console.log(pack);
-       results.push(pack);
-       continue;
-     }
-
-     let featureObj = await analyzePackage(pack.content.data.repository.url);
-
-     console.log(`${pointer.name}::${pointer.pointer} v${pack.content.data.metadata.version} feature below:`);
-     console.log(featureObj);
-
-     if (!featureObj.ok) {
-       console.log(`Failed to analyze Package: ${pointer.name}::${pointer.pointer}`);
-       results.push(`Failed to analyze Package: ${pointer.name}::${pointer.pointer}`);
-       results.push(featureObj);
-       continue;
-     }
-
-     // Since the feature object doesn't apply the archived status we will save it for later
-     if (featureObj.isRepoArchived) {
-       archivedPackages.push(`${pointer.name}::${pointer.pointer}`);
-     }
-
-     let apply = await applyFeatures(featureObj.content, pointer.name, pack.content.data.metadata.version);
-
-     if (!apply.ok) {
-       console.log("Applying our package data was not okay");
-       console.log(apply);
-       results.push(apply.content);
-       continue;
-     }
-
-     results.push(`${pointer.name}::${pointer.pointer} Handled features successfully!`);
-
-     featuresFound.push(pointer.pointer);
-
-  }
 
   console.log(results);
   fs.writeFileSync(`${__dirname}/features_found.json`, JSON.stringify(featuresFound, null, 2));
   fs.writeFileSync(`${__dirname}/archived_packages.json`, JSON.stringify(archivedPackages, null, 2));
+  fs.writeFileSync(`${__dirname}/broken_packages.json`, JSON.stringify(brokenPackages, null, 2));
   await sqlEnd();
   process.exit(0);
 }
@@ -249,7 +264,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
       }
     }
 
-    if (Array.isArray(featureObj.supportedLanguages) && featuredObj.supportedLanguages.length > 0) {
+    if (Array.isArray(featureObj.supportedLanguages) && featureObj.supportedLanguages.length > 0) {
       const addLangCommand = await sqlStorage`
         UPDATE versions
         SET supported_languages = ${featureObj.supportedLanguages}
@@ -351,7 +366,7 @@ async function analyzePackage(repo) {
     dataGram.hasGrammar = true;
   }
 
-  if (grammars.ok && grammars.content.supportedLanguages.length > 0) {
+  if (grammars.ok && grammars.content.hasGrammar && grammars.content?.supportedLanguages.length > 0) {
     dataGram.supportedLanguages = grammars.content.supportedLanguages;
   }
 
@@ -389,7 +404,7 @@ async function analyzePackage(repo) {
 async function contactGitHub(url) {
   try {
     const acceptableStatusCodes = [200, 404];
-    console.log("github stuff");
+    console.log(`Pinging: ${url}`);
     const res = await superagent
       .get(url)
       .set({ Authorization: `Bearer ${AUTH}` })
