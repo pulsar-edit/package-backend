@@ -233,6 +233,14 @@ function login(req) {
   return req.params.login ?? "";
 }
 
+/**
+ * @function serviceType
+ * @desc Returns the service type being requested.
+ * @param {object} req - The `Request` object inherited from the Express endpoint.
+ * @returns {string|boolean} Returns false if the provided value is invalid, or
+ * nonexistent. Returns `providedServices` if the query is `provided` or returns
+ * `consumedServices` if the query is `consumed`
+ */
 function serviceType(req) {
   const prov = req.query.serviceType;
 
@@ -251,6 +259,13 @@ function serviceType(req) {
   return false; // fallback
 }
 
+/**
+ * @function serviceVersion
+ * @desc Returns the version of whatever service is being requested.
+ * @param {object} req - The `Request` object inherited from the Express Endpoint.
+ * @returns {string|boolean} Returns false if the provided value is invalid, or
+ * nonexistant. Returns the version as a string otherwise.
+ */
 function serviceVersion(req) {
   const semver = req.query.serviceVersion;
   try {
@@ -264,10 +279,44 @@ function serviceVersion(req) {
   }
 }
 
+/**
+ * @function service
+ * @desc Returns the service being requested.
+ * @param {object} req - The `Request` object inherited from the Express endpoint.
+ * @returns {string|boolean} Returns false if the provided value is invalid, or
+ * nonexistant. Returns the service string otherwise.
+ */
 function service(req) {
-  // Functionality here matching that of our query.name()
+  return stringValidation(req.query.service);
+}
+
+/**
+ * @function fileExtension
+ * @desc Returns the file extension being requested.
+ * @param {object} req - The `Request` object inherited from the Express endpoint.
+ * @returns {string|boolean} Returns false if the provided value is invalid, or
+ * nonexistant. Returns the service string otherwise.
+ */
+function fileExtension(req) {
+  return stringValidation(req.query.fileExtension);
+}
+
+// *******************************
+// ******* Query Utilities *******
+// *******************************
+
+/**
+ * @function stringValidation
+ * @desc Provides a generic Query Utility that validates if a provided value
+ * is a string, as well as trimming it to the safe max length of query strings,
+ * while additionally passing it through the Path Traversal Detection function.
+ * @param {string} value - The value to check
+ * @returns {string|boolean} Returns false if any check fails, otherwise returns
+ * the valid string.
+ */
+function stringValidation(value) {
   const maxLength = 50;
-  const prov = req.query.service;
+  const prov = value;
 
   if (typeof prov !== "string") {
     return false;
@@ -291,4 +340,5 @@ module.exports = {
   serviceType,
   serviceVersion,
   service,
+  fileExtension,
 };

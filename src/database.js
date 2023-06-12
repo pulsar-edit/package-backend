@@ -1595,6 +1595,11 @@ async function getSortedPackages(opts, themes = false) {
                 }`
               : sqlStorage``
           }
+          ${
+            typeof opts.fileExtension === "string"
+              ? sqlStorage`WHERE ${opts.fileExtension}=ANY(v.supported_languages)`
+              : sqlStorage``
+          }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )
       SELECT *, COUNT(*) OVER() AS query_result_count
@@ -1626,7 +1631,7 @@ async function getSortedPackages(opts, themes = false) {
       ok: false,
       content: "Generic Error",
       short: "Server Error",
-      error: err,
+      error: err.toString(),
     };
   }
 }

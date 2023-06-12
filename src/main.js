@@ -212,6 +212,11 @@ app.options("/api/pat", genericLimit, async (req, res) => {
  *  @Ptype string
  *  @required false
  *  @Pdesc An optional (when providing a service) version to filter results by.
+ * @param
+ *  @name fileExtension
+ *  @Ptype string
+ *  @required false
+ *  @Pdesc The file extension to filter all results by. Must be just the file extension without any `.`
  * @response
  *   @status 200
  *   @Rtype application/json
@@ -228,6 +233,7 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
           serviceType: query.serviceType(req),
           service: query.service(req),
           serviceVersion: query.serviceVersion(req),
+          fileExtension: query.fileExtension(req),
         },
         database
       );

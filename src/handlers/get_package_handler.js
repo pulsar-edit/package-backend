@@ -20,6 +20,8 @@ const { URL } = require("node:url");
  * @param {string} params.serviceType - The service type to display
  * @param {string} params.service - The service to display
  * @param {string} params.serviceVersion - The service version to show
+ * @param {string} params.fileExtension - File extension to only show compatible
+ * grammar package's of.
  * @param {module} db - An instance of the database
  * @property {http_method} - GET
  * @property {http_endpoint} - /api/packages
