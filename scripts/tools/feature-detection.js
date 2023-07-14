@@ -507,7 +507,7 @@ async function getGrammars(ownerRepo) {
     let supportedLanguages = [];
 
     for (let i = 0; i < res.body.length; i++) {
-      const resInner = await contactGitHub(`https://api.github.com/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`);
+      const resInner = await contactGitHub(`https://api.github.com/repos/${ownerRepo}/contents/grammars/${encodeURIComponent(res.body[i].name)}`);
 
       if (resInner.status !== 200) {
         continue;
