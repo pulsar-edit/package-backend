@@ -272,8 +272,8 @@ The below packages were never repackaged due to this:
 * aml-workbench
 * an-color-picker
 * ancient-syntax
-* andrew-brovan-amazingly-non-dysfunctional-package
-* andrew-brovan-awesome-word-count-package
+* <REDACTED>-amazingly-non-dysfunctional-package (Note PPI has been removed and replaced with 'REDACTED' for this package.)
+* <REDACTED>-awesome-word-count-package (Note PPI has been removed and replaced with 'REDACTED' for this package.)
 * angular2-webpack-component-generator
 * animate-css
 * anuny-dark-syntax
