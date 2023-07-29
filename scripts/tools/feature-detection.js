@@ -322,6 +322,13 @@ async function getPackageByNameSimple(name) {
 
 async function analyzePackage(repo) {
   // This function preforms the actual checking on any given github repository
+
+  if (typeof repo !== "string") {
+    return {
+      ok: false,
+      content: "repo is not a string"
+    };
+  }
   let ownerRepo = findOwnerRepo(repo);
 
   if (!ownerRepo.ok) {
