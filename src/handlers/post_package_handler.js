@@ -190,8 +190,8 @@ async function postPackages(params, db, auth, vcs) {
     featureDetection: {
       user: user.content,
       service: "git", // TODO Stop hardcoding Git
-      ownerRepo: params.repository
-    }
+      ownerRepo: params.repository,
+    },
   };
 }
 
@@ -433,8 +433,8 @@ async function postPackagesVersion(params, db, auth, vcs) {
     featureDetection: {
       user: user.content,
       service: "git", // TODO Stop hardcoding git
-      ownerRepo: ownerRepo
-    }
+      ownerRepo: ownerRepo,
+    },
   };
 }
 

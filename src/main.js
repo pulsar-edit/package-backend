@@ -368,7 +368,11 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
         return;
       }
 
-      let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name, ret.wehbook.pack.version);
+      let featureApply = await database.applyFeatures(
+        features.content,
+        ret.webhook.pack.name,
+        ret.wehbook.pack.version
+      );
 
       if (!featureApply.ok) {
         logger.generic(3, featureApply);
@@ -1046,7 +1050,11 @@ app.post(
           return;
         }
 
-        let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name, ret.webhook.pack.version);
+        let featureApply = await database.applyFeatures(
+          features.content,
+          ret.webhook.pack.name,
+          ret.webhook.pack.version
+        );
 
         if (!featureApply.ok) {
           logger.generic(3, featureApply);

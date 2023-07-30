@@ -20,7 +20,7 @@ const config = {
       ],
       testMatch: [
         "<rootDir>/test/*.integration.test.js",
-        "<rootDir>/test/database/**/**.js"
+        "<rootDir>/test/database/**/**.js",
       ],
     },
     {

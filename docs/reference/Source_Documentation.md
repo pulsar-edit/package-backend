@@ -573,6 +573,7 @@ with and retrieve data from the cloud hosted database instance.
     * [~packageNameAvailability(name)](#module_database..packageNameAvailability) ⇒ <code>object</code>
     * [~insertNewPackage(pack)](#module_database..insertNewPackage) ⇒ <code>object</code>
     * [~insertNewPackageVersion(packJSON, oldName)](#module_database..insertNewPackageVersion) ⇒ <code>object</code>
+    * [~applyFeatures(featureObj, packName, packVersion)](#module_database..applyFeatures)
     * [~insertNewPackageName(newName, oldName)](#module_database..insertNewPackageName) ⇒ <code>object</code>
     * [~insertNewUser(username, id, avatar)](#module_database..insertNewUser) ⇒ <code>object</code>
     * [~getPackageByName(name, user)](#module_database..getPackageByName) ⇒ <code>object</code>
@@ -583,7 +584,7 @@ with and retrieve data from the cloud hosted database instance.
     * [~updatePackageStargazers(name, pointer)](#module_database..updatePackageStargazers) ⇒ <code>object</code>
     * [~updatePackageIncrementDownloadByName(name)](#module_database..updatePackageIncrementDownloadByName) ⇒ <code>object</code>
     * [~updatePackageDecrementDownloadByName(name)](#module_database..updatePackageDecrementDownloadByName) ⇒ <code>object</code>
-    * [~removePackageByName(name)](#module_database..removePackageByName) ⇒ <code>object</code>
+    * [~removePackageByName(name, exterminate)](#module_database..removePackageByName) ⇒ <code>object</code>
     * [~removePackageVersion(packName, semVer)](#module_database..removePackageVersion) ⇒ <code>object</code>
     * [~getFeaturedPackages()](#module_database..getFeaturedPackages) ⇒ <code>object</code>
     * [~getFeaturedThemes()](#module_database..getFeaturedThemes) ⇒ <code>object</code>
@@ -657,6 +658,22 @@ Adds a new package version to the db.
 | --- | --- | --- |
 | packJSON | <code>object</code> | A full `package.json` file for the wanted version. |
 | oldName | <code>string</code> \| <code>null</code> | If provided, the old name to be replaced for the renaming of the package. |
+
+<a name="module_database..applyFeatures"></a>
+
+### database~applyFeatures(featureObj, packName, packVersion)
+Takes a Feature Object, and applies it's data to the appropriate package
+
+**Kind**: inner method of [<code>database</code>](#module_database)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| featureObj | <code>object</code> | The object containing all feature declarations. |
+| featureObj.hasGrammar | <code>boolean</code> | If present, and true, means this package version provides a grammar. |
+| featureObj.hasSnippets | <code>boolean</code> | If present, and true, means this package version provides snippets. |
+| featureObj.supportedLanguages | <code>Array.&lt;string&gt;</code> | If present, defines an array of strings specifying the extensions, or file names supported by this grammar. |
+| packName | <code>string</code> | The name of the package to be affected. |
+| packVersion | <code>string</code> | The regular semver version of the package |
 
 <a name="module_database..insertNewPackageName"></a>
 
@@ -798,7 +815,7 @@ Uses the package name to decrement the download count by one.
 
 <a name="module_database..removePackageByName"></a>
 
-### database~removePackageByName(name) ⇒ <code>object</code>
+### database~removePackageByName(name, exterminate) ⇒ <code>object</code>
 Given a package name, removes its record alongside its names, versions, stars.
 
 **Kind**: inner method of [<code>database</code>](#module_database)  
@@ -807,6 +824,7 @@ Given a package name, removes its record alongside its names, versions, stars.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | The package name. |
+| exterminate | <code>boolean</code> | A flag that if true will totally remove the package. Including the normally reserved name. Should never be used in production, enables a supply chain vulnerability. |
 
 <a name="module_database..removePackageVersion"></a>
 
@@ -1187,6 +1205,11 @@ engine(): Returns false if not defined, to allow a fast way to determine if resu
     * [~packageName(req)](#module_query..packageName) ⇒ <code>string</code>
     * [~pathTraversalAttempt(data)](#module_query..pathTraversalAttempt) ⇒ <code>boolean</code>
     * [~login(req)](#module_query..login) ⇒ <code>string</code>
+    * [~serviceType(req)](#module_query..serviceType) ⇒ <code>string</code> \| <code>boolean</code>
+    * [~serviceVersion(req)](#module_query..serviceVersion) ⇒ <code>string</code> \| <code>boolean</code>
+    * [~service(req)](#module_query..service) ⇒ <code>string</code> \| <code>boolean</code>
+    * [~fileExtension(req)](#module_query..fileExtension) ⇒ <code>string</code> \| <code>boolean</code>
+    * [~stringValidation(value)](#module_query..stringValidation) ⇒ <code>string</code> \| <code>boolean</code>
 
 <a name="module_query..page"></a>
 
@@ -1340,6 +1363,74 @@ Returns the User from the URL Path, otherwise ''
 | Param | Type | Description |
 | --- | --- | --- |
 | req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="module_query..serviceType"></a>
+
+### query~serviceType(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the service type being requested.
+
+**Kind**: inner method of [<code>query</code>](#module_query)  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistent. Returns `providedServices` if the query is `provided` or returns
+`consumedServices` if the query is `consumed`  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="module_query..serviceVersion"></a>
+
+### query~serviceVersion(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the version of whatever service is being requested.
+
+**Kind**: inner method of [<code>query</code>](#module_query)  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistant. Returns the version as a string otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express Endpoint. |
+
+<a name="module_query..service"></a>
+
+### query~service(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the service being requested.
+
+**Kind**: inner method of [<code>query</code>](#module_query)  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistant. Returns the service string otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="module_query..fileExtension"></a>
+
+### query~fileExtension(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the file extension being requested.
+
+**Kind**: inner method of [<code>query</code>](#module_query)  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistant. Returns the service string otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="module_query..stringValidation"></a>
+
+### query~stringValidation(value) ⇒ <code>string</code> \| <code>boolean</code>
+Provides a generic Query Utility that validates if a provided value
+is a string, as well as trimming it to the safe max length of query strings,
+while additionally passing it through the Path Traversal Detection function.
+
+**Kind**: inner method of [<code>query</code>](#module_query)  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if any check fails, otherwise returns
+the valid string.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>string</code> | The value to check |
 
 <a name="module_server"></a>
 
@@ -1622,6 +1713,7 @@ function.
     * [~ownership(userObj, packObj, [opts])](#module_vcs..ownership) ⇒ <code>object</code>
     * [~newPackageData(userObj, ownerRepo, service)](#module_vcs..newPackageData) ⇒ <code>object</code>
     * [~newVersionData(userObj, ownerRepo, service)](#module_vcs..newVersionData) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
+    * [~featureDetection(userObj, ownerRepo, service)](#module_vcs..featureDetection) ⇒ <code>object</code>
     * [~determineProvider(repo)](#module_vcs..determineProvider) ⇒ <code>object</code>
 
 <a name="module_vcs..ownership"></a>
@@ -1678,6 +1770,20 @@ function to reduce usage elsewhere.
 **Returns**: [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData) - A Server Status Object, which when `ok: true`
 returns all data that would be needed to update a package on the DB, and
 upload a new version.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userObj | <code>object</code> | The Full User Object as returned by `auth.verifyAuth()` |
+| ownerRepo | <code>string</code> | The Owner Repo Combo of the package affected. Such as `pulsar-edit/pulsar` |
+| service | <code>string</code> | The service to use as expected to be returned by `vcs.determineProvider()`. Currently should be hardcoded to "git" |
+
+<a name="module_vcs..featureDetection"></a>
+
+### vcs~featureDetection(userObj, ownerRepo, service) ⇒ <code>object</code>
+Calls the apropriate provider's `featureDetection()` method
+
+**Kind**: inner method of [<code>vcs</code>](#module_vcs)  
+**Returns**: <code>object</code> - A `featureObject` as provided by the provider.  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -2060,6 +2166,7 @@ theyved applied via query parameters.
 | params.serviceType | <code>string</code> | The service type to display |
 | params.service | <code>string</code> | The service to display |
 | params.serviceVersion | <code>string</code> | The service version to show |
+| params.fileExtension | <code>string</code> | File extension to only show compatible grammar package's of. |
 | db | <code>module</code> | An instance of the database |
 
 **Properties**

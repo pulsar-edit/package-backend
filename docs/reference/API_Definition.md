@@ -55,6 +55,11 @@ Parameters:
 
 
 ---
+* fileExtension _(optional)_ `[string]`   
+  - The file extension to filter all results by. Must be just the file extension without any `.`
+
+
+---
 Responses:
 ---
 **HTTP Status Code:** `200 OK`

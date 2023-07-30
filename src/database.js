@@ -371,7 +371,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
       return {
         ok: false,
         content: `Unable to find the pointer of ${packName}`,
-        short: "Not Found"
+        short: "Not Found",
       };
     }
 
@@ -388,7 +388,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
         return {
           ok: false,
           content: `Unable to set 'has_snippets' flag to true for ${packName}`,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
     }
@@ -404,12 +404,15 @@ async function applyFeatures(featureObj, packName, packVersion) {
         return {
           ok: false,
           content: `Unable to set 'has_grammar' flag to true for ${packName}`,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
     }
 
-    if (Array.isArray(featureObj.supportedLanguages) && featureObj.supportedLanguages.length > 0) {
+    if (
+      Array.isArray(featureObj.supportedLanguages) &&
+      featureObj.supportedLanguages.length > 0
+    ) {
       // Add the supported languages
       const addLangCommand = await sqlStorage`
         UPDATE versions
@@ -421,16 +424,15 @@ async function applyFeatures(featureObj, packName, packVersion) {
         return {
           ok: false,
           content: `Unable to add supportedLanguages to ${packName}`,
-          short: "Server Error"
+          short: "Server Error",
         };
       }
     }
 
     return {
-      ok: true
+      ok: true,
     };
-
-  } catch(err) {
+  } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
@@ -947,7 +949,6 @@ async function removePackageByName(name, exterminate = false) {
           DELETE FROM names
           WHERE pointer = ${pointer}
         `; // We can't return name here, since it's set to null on package deletion
-
       }
 
       return { ok: true, content: `Successfully Deleted Package: ${name}` };

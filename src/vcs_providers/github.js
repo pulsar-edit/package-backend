@@ -411,7 +411,6 @@ class GitHub extends Git {
    * a `featureObject` declaring what features this package supports.
    */
   async featureDetection(userObj, ownerRepo) {
-
     // First lets declare the functions we will rely on within this
     const providesSnippets = async () => {
       try {
@@ -423,15 +422,15 @@ class GitHub extends Git {
         if (!raw.ok) {
           if (raw.short === "Failed Request") {
             if (raw.content.status === 404) {
-              return { ok: true, content: { hasSnippets: false }};
+              return { ok: true, content: { hasSnippets: false } };
             }
           } else {
             return raw;
           }
         }
         // The request succeeded
-        return { ok: true, content: { hasSnippets: true }};
-      } catch(err) {
+        return { ok: true, content: { hasSnippets: true } };
+      } catch (err) {
         return { ok: false, content: err };
       }
     };
@@ -443,8 +442,12 @@ class GitHub extends Git {
           userObj.token
         );
 
-        if (!raw.ok && raw.short === "Failed Request" && raw.content.status === 404) {
-          return { ok: true, content: { hasGrammar: false }};
+        if (
+          !raw.ok &&
+          raw.short === "Failed Request" &&
+          raw.content.status === 404
+        ) {
+          return { ok: true, content: { hasGrammar: false } };
         } else if (!raw.ok) {
           return raw;
         }
@@ -458,11 +461,18 @@ class GitHub extends Git {
             userObj.token
           );
 
-          if (!rawInner.ok) { continue; }
+          if (!rawInner.ok) {
+            continue;
+          }
 
-          if (typeof rawInner.content.body.encoding !== "string") { continue; }
+          if (typeof rawInner.content.body.encoding !== "string") {
+            continue;
+          }
 
-          let file = Buffer.from(rawInner.content.body.content, rawInner.content.body.encoding).toString();
+          let file = Buffer.from(
+            rawInner.content.body.content,
+            rawInner.content.body.encoding
+          ).toString();
           let data;
 
           if (rawInner.content.body.name.endsWith(".json")) {
@@ -484,11 +494,10 @@ class GitHub extends Git {
           ok: true,
           content: {
             hasGrammar: true,
-            supportedLanguages: supportedLanguages
-          }
+            supportedLanguages: supportedLanguages,
+          },
         };
-
-      } catch(err) {
+      } catch (err) {
         return { ok: false, content: err };
       }
     };
@@ -518,11 +527,9 @@ class GitHub extends Git {
 
     return {
       ok: true,
-      content: featureObject
+      content: featureObject,
     };
-
   }
-
 }
 
 module.exports = GitHub;

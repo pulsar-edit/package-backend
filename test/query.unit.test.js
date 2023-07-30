@@ -169,7 +169,7 @@ describe("Verify serviceVersion Returns", () => {
 const fileExtensionCases = [
   [{ query: { fileExtension: "css" } }, "css"],
   [{ query: { fileExtension: 123 } }, false],
-  [{ query: {} }, false]
+  [{ query: {} }, false],
 ];
 
 describe("Verify fileExtension Returns", () => {

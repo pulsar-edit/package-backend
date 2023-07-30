@@ -354,7 +354,7 @@ async function newVersionData(userObj, ownerRepo, service) {
 async function featureDetection(userObj, ownerRepo, service) {
   let provider = null;
 
-  switch(service) {
+  switch (service) {
     case "git":
     default:
       provider = new GitHub();
@@ -366,7 +366,7 @@ async function featureDetection(userObj, ownerRepo, service) {
     return {
       ok: false,
       short: "Unable to find features",
-      content: featureObject.content
+      content: featureObject.content,
     };
   }
 
