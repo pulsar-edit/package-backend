@@ -28,7 +28,7 @@ const config = {
       setupFilesAfterEnv: ["<rootDir>/test/global.setup.jest.js"],
       testMatch: [
         "<rootDir>/test/*.unit.test.js",
-        "<rootDir>/test/handlers/**/**.js",
+        "<rootDir>/test/handlers/**/**.test.js",
       ],
     },
     {
