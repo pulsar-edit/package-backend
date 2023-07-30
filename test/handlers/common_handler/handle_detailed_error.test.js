@@ -2,14 +2,13 @@ const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
 describe("Modifies res as needed", () => {
-
   test("via Not Found", async () => {
     let res = new Res();
     let req = new Req();
 
     await common.handleDetailedError(req, res, {
       short: "Not Found",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(404);
@@ -23,11 +22,13 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "Bad Repo",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(400);
-    expect(res.JSONObj.message).toBe("That repo does not exist, isn't a Pulsar package, or pulsarbot does not have access.");
+    expect(res.JSONObj.message).toBe(
+      "That repo does not exist, isn't a Pulsar package, or pulsarbot does not have access."
+    );
     expect(res.JSONObj.details).toBe("The Details");
   });
 
@@ -37,11 +38,13 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "Bad Package",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(400);
-    expect(res.JSONObj.message).toBe("The package.json at owner/repo isn't valid.");
+    expect(res.JSONObj.message).toBe(
+      "The package.json at owner/repo isn't valid."
+    );
     expect(res.JSONObj.details).toBe("The Details");
   });
 
@@ -51,11 +54,13 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "No Repo Access",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(401);
-    expect(res.JSONObj.message).toBe("Requires authentication. Please update your token if you haven't done so recently.");
+    expect(res.JSONObj.message).toBe(
+      "Requires authentication. Please update your token if you haven't done so recently."
+    );
     expect(res.JSONObj.details).toBe("The Details");
   });
 
@@ -65,11 +70,13 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "Bad Auth",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(401);
-    expect(res.JSONObj.message).toBe("Requires authentication. Please update your token if you haven't done so recently.");
+    expect(res.JSONObj.message).toBe(
+      "Requires authentication. Please update your token if you haven't done so recently."
+    );
     expect(res.JSONObj.details).toBe("The Details");
   });
 
@@ -79,7 +86,7 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "File Not Found",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(500);
@@ -93,7 +100,7 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "Server Error",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(500);
@@ -107,12 +114,11 @@ describe("Modifies res as needed", () => {
 
     await common.handleDetailedError(req, res, {
       short: "Invalid_Argument_That_Doesnt_Exist",
-      content: "The Details"
+      content: "The Details",
     });
 
     expect(res.statusCode).toBe(500);
     expect(res.JSONObj.message).toBe("Application Error");
     expect(res.JSONObj.details).toBe("The Details");
   });
-
 });

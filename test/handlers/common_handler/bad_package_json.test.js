@@ -19,7 +19,7 @@ test("Modifies res when invoked indirectly", async () => {
   let req = new Req();
 
   await common.handleError(req, res, {
-    short: "Bad Package"
+    short: "Bad Package",
   });
 
   expect(res.statusCode).toBe(EXPECTED_STATUS);

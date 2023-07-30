@@ -19,7 +19,7 @@ test("Modifies res when invoked indirectly - Server Error", async () => {
   let req = new Req();
 
   await common.handleError(req, res, {
-    short: "Server Error"
+    short: "Server Error",
   });
 
   expect(res.statusCode).toBe(EXPECTED_STATUS);
@@ -31,7 +31,7 @@ test("Modifies res when invoked indirectly - File Not Found", async () => {
   let req = new Req();
 
   await common.handleError(req, res, {
-    short: "File Not Found"
+    short: "File Not Found",
   });
 
   expect(res.statusCode).toBe(EXPECTED_STATUS);

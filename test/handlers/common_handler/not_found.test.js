@@ -19,7 +19,7 @@ test("Modifies res when invoked indirectly", async () => {
   let req = new Req();
 
   await common.handleError(req, res, {
-    short: "Not Found"
+    short: "Not Found",
   });
 
   expect(res.statusCode).toBe(EXPECTED_STATUS);

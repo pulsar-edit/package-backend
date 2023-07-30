@@ -2,8 +2,8 @@ const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
 describe("Modifies res when invoking 'missingAuthJSON'", () => {
-
-  let EXPECTED_MESSAGE = "Requires authentication. Please update your token if you haven't done so recently.";
+  let EXPECTED_MESSAGE =
+    "Requires authentication. Please update your token if you haven't done so recently.";
   let EXPECTED_STATUS = 401;
 
   test("via Bad Auth", async () => {
@@ -38,7 +38,6 @@ describe("Modifies res when invoking 'missingAuthJSON'", () => {
 });
 
 describe("Modifies res when invoking serverError", () => {
-
   let EXPECTED_STATUS = 500;
   let EXPECTED_MESSAGE = "Application Error";
 

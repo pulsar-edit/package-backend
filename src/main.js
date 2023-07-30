@@ -1628,7 +1628,9 @@ app.use(async (err, req, res, next) => {
   // We can also check for any unhandled errors passed down the endpoint chain
 
   if (err) {
-    console.error(`An error was encountered handling the request: ${err.toString()}`);
+    console.error(
+      `An error was encountered handling the request: ${err.toString()}`
+    );
     await common_handler.serverError(req, res, err);
     return;
   }

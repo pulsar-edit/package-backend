@@ -1,12 +1,12 @@
 # Complexity report, 7/30/2023
 
-* Mean per-function logical LOC: 14.80952380952381
-* Mean per-function parameter count: 0.2976190476190476
-* Mean per-function cyclomatic complexity: 1.4047619047619047
-* Mean per-function Halstead effort: 4126.274333101439
-* Mean per-module maintainability index: 68.89404791932176
-* First-order density: 0.45351473922902497%
-* Change cost: 5.215419501133787%
+* Mean per-function logical LOC: 14.272727272727273
+* Mean per-function parameter count: 0.2840909090909091
+* Mean per-function cyclomatic complexity: 1.3863636363636365
+* Mean per-function Halstead effort: 3943.557748871758
+* Mean per-module maintainability index: 69.41048329189348
+* First-order density: 0.4132231404958678%
+* Change cost: 4.958677685950414%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
@@ -357,5 +357,15 @@
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 16.666666666666664%
 * Maintainability index: 71.67165455570546
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/test/handlers/common_handler/express_fakes.js
+
+* Physical LOC: 26
+* Logical LOC: 3
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 33.33333333333333%
+* Maintainability index: 80.2556261158998
 * Dependency count: 0
 

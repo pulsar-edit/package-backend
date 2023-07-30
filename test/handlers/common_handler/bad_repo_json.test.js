@@ -1,7 +1,8 @@
 const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
-const EXPECTED_MESSAGE = "That repo does not exist, isn't an atom package, or atombot does not have access.";
+const EXPECTED_MESSAGE =
+  "That repo does not exist, isn't an atom package, or atombot does not have access.";
 const EXPECTED_STATUS = 400;
 
 test("Modifies res when invoked directly", async () => {
@@ -19,7 +20,7 @@ test("Modifies res when invoked indirectly", async () => {
   let req = new Req();
 
   await common.handleError(req, res, {
-    short: "Bad Repo"
+    short: "Bad Repo",
   });
 
   expect(res.statusCode).toBe(EXPECTED_STATUS);
