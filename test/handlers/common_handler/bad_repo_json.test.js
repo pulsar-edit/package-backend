@@ -1,4 +1,4 @@
-const common = require("../../src/handlers/common_handler.js");
+const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
 const EXPECTED_MESSAGE = "That repo does not exist, isn't an atom package, or atombot does not have access.";

@@ -1,4 +1,4 @@
-const common = require("../../src/handlers/common_handler.js");
+const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
 const EXPECTED_MESSAGE = "While under development this feature is not supported.";

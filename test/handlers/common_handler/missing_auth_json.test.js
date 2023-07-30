@@ -1,4 +1,4 @@
-const common = require("../../src/handlers/common_handler.js");
+const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
 const EXPECTED_MESSAGE = "Requires authentication. Please update your token if you haven't done so recently.";

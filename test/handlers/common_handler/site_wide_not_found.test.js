@@ -1,4 +1,4 @@
-const common = require("../../src/handlers/common_handler.js");
+const common = require("../../../src/handlers/common_handler.js");
 const { Res, Req } = require("./express_fakes.js");
 
 const EXPECTED_MESSAGE = "This is a standin for the proper site wide 404 page.";
