@@ -1622,9 +1622,17 @@ app.options("/api/updates", genericLimit, async (req, res) => {
   res.sendStatus(204);
 });
 
-app.use((req, res) => {
+app.use(async (err, req, res, next) => {
   // Having this as the last route, will handle all other unknown routes.
   // Ensure to leave this at the very last position to handle properly.
+  // We can also check for any unhandled errors passed down the endpoint chain
+
+  if (err) {
+    console.error(`An error was encountered handling the request: ${err.toString()}`);
+    await common_handler.serverError(req, res, err);
+    return;
+  }
+
   common_handler.siteWideNotFound(req, res);
 });
 
