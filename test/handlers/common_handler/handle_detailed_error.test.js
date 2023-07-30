@@ -27,7 +27,7 @@ describe("Modifies res as needed", () => {
     });
 
     expect(res.statusCode).toBe(400);
-    expect(res.JSONObj.message).toBe("That repo does not exists, isn't a Pulsar package, or pulsarbot does not have access.");
+    expect(res.JSONObj.message).toBe("That repo does not exist, isn't a Pulsar package, or pulsarbot does not have access.");
     expect(res.JSONObj.details).toBe("The Details");
   });
 
