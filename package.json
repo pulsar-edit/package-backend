@@ -25,7 +25,8 @@
     "tool:delete": "node ./scripts/tools/manual-delete-package.js",
     "tool:health": "node ./scripts/tools/health-check.js",
     "tool:license": "node ./scripts/tools/get-licenses.js",
-    "tool:badge": "node ./scripts/tools/add-badge.js"
+    "tool:badge": "node ./scripts/tools/add-badge.js",
+    "tool:feature-detection": "node ./scripts/tools/feature-detection.js"
   },
   "author": "confused-Techie",
   "license": "MIT",
@@ -46,6 +47,7 @@
   "dependencies": {
     "@google-cloud/storage": "^6.9.5",
     "crypto": "^1.0.1",
+    "cson": "^7.20.0",
     "express": "^4.18.1",
     "express-rate-limit": "^6.7.0",
     "js-yaml": "^4.1.0",

@@ -341,6 +341,39 @@ async function newVersionData(userObj, ownerRepo, service) {
 }
 
 /**
+ * @async
+ * @function featureDetection
+ * @desc Calls the apropriate provider's `featureDetection()` method
+ * @param {object} userObj - The Full User Object as returned by `auth.verifyAuth()`
+ * @param {string} ownerRepo - The Owner Repo Combo of the package affected.
+ * Such as `pulsar-edit/pulsar`
+ * @param {string} service - The service to use as expected to be returned
+ * by `vcs.determineProvider()`. Currently should be hardcoded to "git"
+ * @returns {object} A `featureObject` as provided by the provider.
+ */
+async function featureDetection(userObj, ownerRepo, service) {
+  let provider = null;
+
+  switch(service) {
+    case "git":
+    default:
+      provider = new GitHub();
+  }
+
+  let featureObject = await provider.featureDetection(userObj, ownerRepo);
+
+  if (!featureObject.ok) {
+    return {
+      ok: false,
+      short: "Unable to find features",
+      content: featureObject.content
+    };
+  }
+
+  return featureObject;
+}
+
+/**
  * @function determineProvider
  * @desc Determines the repostiry object by the given argument.
  * Takes the `repository` key of a `package.json` and with very little if not no
@@ -427,4 +460,5 @@ module.exports = {
   ownership,
   newPackageData,
   newVersionData,
+  featureDetection,
 };

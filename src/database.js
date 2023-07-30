@@ -349,6 +349,101 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
 
 /**
  * @async
+ * @function applyFeatures
+ * @desc Takes a Feature Object, and applies it's data to the appropriate package
+ * @param {object} featureObj - The object containing all feature declarations.
+ * @param {boolean} featureObj.hasGrammar - If present, and true, means this
+ * package version provides a grammar.
+ * @param {boolean} featureObj.hasSnippets - If present, and true, means this
+ * package version provides snippets.
+ * @param {string[]} featureObj.supportedLanguages - If present, defines an array
+ * of strings specifying the extensions, or file names supported by this grammar.
+ * @param {string} packName - The name of the package to be affected.
+ * @param {string} packVersion - The regular semver version of the package
+ */
+async function applyFeatures(featureObj, packName, packVersion) {
+  try {
+    sqlStorage ??= setupSQL();
+
+    const packID = await getPackageByNameSimple(packName);
+
+    if (!packID.ok) {
+      return {
+        ok: false,
+        content: `Unable to find the pointer of ${packName}`,
+        short: "Not Found"
+      };
+    }
+
+    const pointer = packID.content.pointer;
+
+    if (featureObj.hasSnippets) {
+      const addSnippetCommand = await sqlStorage`
+        UPDATE versions
+        SET has_snippets = TRUE
+        WHERE package = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addSnippetCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to set 'has_snippets' flag to true for ${packName}`,
+          short: "Server Error"
+        };
+      }
+    }
+
+    if (featureObj.hasGrammar) {
+      const addGrammarCommand = await sqlStorage`
+        UPDATE versions
+        SET has_grammar = TRUE
+        WHERE package = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addGrammarCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to set 'has_grammar' flag to true for ${packName}`,
+          short: "Server Error"
+        };
+      }
+    }
+
+    if (Array.isArray(featureObj.supportedLanguages) && featureObj.supportedLanguages.length > 0) {
+      // Add the supported languages
+      const addLangCommand = await sqlStorage`
+        UPDATE versions
+        SET supported_languages = ${featureObj.supportedLanguages}
+        WHERE package = ${pointer} AND semver = ${packVersion};
+      `;
+
+      if (addLangCommand.count === 0) {
+        return {
+          ok: false,
+          content: `Unable to add supportedLanguages to ${packName}`,
+          short: "Server Error"
+        };
+      }
+    }
+
+    return {
+      ok: true
+    };
+
+  } catch(err) {
+    return {
+      ok: false,
+      content: "Generic Error",
+      short: "Server Error",
+      error: err.toString(), // TODO this must be implemented within the logger
+      // seems the custom PostgreSQL error object doesn't have native to string methods
+      // or otherwise logging the error within an object doesn't trigger the toString method
+    };
+  }
+}
+
+/**
+ * @async
  * @function insertNewPackageName
  * @desc Insert a new package name with the same pointer as the old name.
  * This essentially renames an existing package.
@@ -491,7 +586,9 @@ async function getPackageByName(name, user = false) {
               user
                 ? sqlStorage``
                 : sqlStorage`'id', v.id, 'package', v.package,`
-            } 'semver', v.semver, 'license', v.license, 'engine', v.engine, 'meta', v.meta
+            } 'semver', v.semver, 'license', v.license, 'engine', v.engine, 'meta', v.meta,
+            'hasGrammar', v.has_grammar, 'hasSnippets', v.has_snippets,
+            'supportedLanguages', v.supported_languages
           )
           ORDER BY v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
         ) AS versions
@@ -791,9 +888,12 @@ async function updatePackageDecrementDownloadByName(name) {
  * @function removePackageByName
  * @description Given a package name, removes its record alongside its names, versions, stars.
  * @param {string} name - The package name.
+ * @param {boolean} exterminate - A flag that if true will totally remove the package.
+ * Including the normally reserved name. Should never be used in production, enables
+ * a supply chain vulnerability.
  * @returns {object} A server status object.
  */
-async function removePackageByName(name) {
+async function removePackageByName(name, exterminate = false) {
   sqlStorage ??= setupSQL();
 
   return await sqlStorage
@@ -827,22 +927,6 @@ async function removePackageByName(name) {
         RETURNING userid;
       `;
 
-      /*if (commandStar.count === 0) {
-        // No check on deleted stars because the package could also have 0 stars.
-      }*/
-
-      /* We do not remove the package names to avoid supply chain attacks.
-      const commandName = await sqlTrans`
-        DELETE FROM names
-        WHERE pointer = ${pointer}
-        RETURNING name;
-      `;
-
-      if (commandName.count === 0) {
-        throw `Failed to delete names for: ${name}`;
-      }
-      */
-
       const commandPack = await sqlTrans`
         DELETE FROM packages
         WHERE pointer = ${pointer}
@@ -858,6 +942,14 @@ async function removePackageByName(name) {
         throw `Attempted to delete ${commandPack[0].name} rather than ${name}`;
       }
 
+      if (exterminate) {
+        const commandName = await sqlTrans`
+          DELETE FROM names
+          WHERE pointer = ${pointer}
+        `; // We can't return name here, since it's set to null on package deletion
+
+      }
+
       return { ok: true, content: `Successfully Deleted Package: ${name}` };
     })
     .catch((err) => {
@@ -865,7 +957,7 @@ async function removePackageByName(name) {
         ? { ok: false, content: err, short: "Server Error" }
         : {
             ok: false,
-            content: `A generic error occurred while inserting ${pack.name} package`,
+            content: `A generic error occurred while inserting ${name} package`,
             short: "Server Error",
             error: err,
           };
@@ -1503,6 +1595,11 @@ async function getSortedPackages(opts, themes = false) {
                 }`
               : sqlStorage``
           }
+          ${
+            typeof opts.fileExtension === "string"
+              ? sqlStorage`WHERE ${opts.fileExtension}=ANY(v.supported_languages)`
+              : sqlStorage``
+          }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )
       SELECT *, COUNT(*) OVER() AS query_result_count
@@ -1534,7 +1631,7 @@ async function getSortedPackages(opts, themes = false) {
       ok: false,
       content: "Generic Error",
       short: "Server Error",
-      error: err,
+      error: err.toString(),
     };
   }
 }
@@ -1690,4 +1787,5 @@ module.exports = {
   insertNewPackageVersion,
   authStoreStateKey,
   authCheckAndDeleteStateKey,
+  applyFeatures,
 };

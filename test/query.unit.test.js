@@ -165,3 +165,15 @@ describe("Verify serviceVersion Returns", () => {
     expect(query.serviceVersion(arg)).toBe(result);
   });
 });
+
+const fileExtensionCases = [
+  [{ query: { fileExtension: "css" } }, "css"],
+  [{ query: { fileExtension: 123 } }, false],
+  [{ query: {} }, false]
+];
+
+describe("Verify fileExtension Returns", () => {
+  test.each(fileExtensionCases)("Given %o Returns %p", (arg, result) => {
+    expect(query.fileExtension(arg)).toBe(result);
+  });
+});

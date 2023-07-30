@@ -212,6 +212,11 @@ app.options("/api/pat", genericLimit, async (req, res) => {
  *  @Ptype string
  *  @required false
  *  @Pdesc An optional (when providing a service) version to filter results by.
+ * @param
+ *  @name fileExtension
+ *  @Ptype string
+ *  @required false
+ *  @Pdesc The file extension to filter all results by. Must be just the file extension without any `.`
  * @response
  *   @status 200
  *   @Rtype application/json
@@ -228,6 +233,7 @@ app.get("/api/:packType", genericLimit, async (req, res, next) => {
           serviceType: query.serviceType(req),
           service: query.service(req),
           serviceVersion: query.serviceVersion(req),
+          fileExtension: query.fileExtension(req),
         },
         database
       );
@@ -344,6 +350,33 @@ app.post("/api/:packType", authLimit, async (req, res, next) => {
 
       // Return to user before webhook call, so user doesn't wait on it
       await webhook.alertPublishPackage(ret.webhook.pack, ret.webhook.user);
+      // Now to call for feature detection
+      let features = await vcs.featureDetection(
+        ret.featureDetection.user,
+        ret.featureDetection.ownerRepo,
+        ret.featureDetection.service
+      );
+
+      if (!features.ok) {
+        logger.generic(3, features);
+        return;
+      }
+
+      // Then we know we don't need to apply any special features for a standard
+      // package, so we will check that early
+      if (features.content.standard) {
+        return;
+      }
+
+      let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name, ret.wehbook.pack.version);
+
+      if (!featureApply.ok) {
+        logger.generic(3, featureApply);
+        return;
+      }
+
+      // Now everything has completed successfully
+      return;
 
       break;
     default:
@@ -995,7 +1028,34 @@ app.post(
 
         // Return to user before webhook call, so user doesn't wait on it
         await webhook.alertPublishVersion(ret.webhook.pack, ret.webhook.user);
+        // Now to call for feature detection
+        let features = await vcs.featureDetection(
+          ret.featureDetection.user,
+          ret.featureDetection.ownerRepo,
+          ret.featureDetection.service
+        );
 
+        if (!features.ok) {
+          logger.generic(3, features);
+          return;
+        }
+
+        // Then we know we don't need to apply any special features for a standard
+        // package, so we will check that early
+        if (features.content.standard) {
+          return;
+        }
+
+        let featureApply = await database.applyFeatures(features.content, ret.webhook.pack.name, ret.webhook.pack.version);
+
+        if (!featureApply.ok) {
+          logger.generic(3, featureApply);
+          return;
+        }
+
+        // Otherwise we have completed successfully.
+        // We could log this, but will just return
+        return;
         break;
       default:
         next();
