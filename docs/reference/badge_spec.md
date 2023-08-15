@@ -64,7 +64,7 @@ The `Outdated` badge is used to indicate that the version of a package that may 
 
 This badge should only be used when the main functionality of the package is missing/broken/or otherwise non-functional when installed onto Pulsar, in a supported Pulsar configuration.
 
-That is, if a Pulsar user on a supported platform, indepent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is eligible to receive this badge.
+That is, if a Pulsar user on a supported platform, independent of any other issues, installs a package and it immediately does not work, displays severe visual bugs, or causes an error message logged as a notification, and there is a fix available for that package within it's source code, that has not been pushed to Pulsar in a reasonable time, then it is eligible to receive this badge.
 
 This badge would be added on a case by case basis, and would likely only be added if Pulsar users are reporting the error.
 
@@ -74,13 +74,13 @@ As with all other badges this badge may be removed at any time, and if you, as a
 
 The `Made for Pulsar!` badge is automatically applied to any community packages that have been published to Pulsar through the PPR. Unlike most other badges, which are applied to the package itself and thus saved in the PPR Database, the `Made for Pulsar!` badge is applied dynamically at the time it is requested from the PPR. Since this badge is applied dynamically there is no real way, currently, to opt out of its usage if a community package maintainer wished to do so.
 
-The `Made for Pulsar!` badge is meant to be a badge of acheivment, showing that your package is more likely to work as expected, and be under active maintainance.
+The `Made for Pulsar!` badge is meant to be a badge of achievement, showing that your package is more likely to work as expected, and be under active maintenance.
 
 ### Broken
 
 The `Broken` badge is used to indicate that the package available on the PPR does not work at all in its current form, on any supported platform. Either requiring manual changes to the source code, or otherwise being unrealistic to fix from the users perspective.
 
-This package likely emits warnings immediatly, or may even cause the editor to crash as a whole. Installation of these packages is not recommended by the Pulsar team, and instead it is encouraged to work with the original maintainer to get these packages working, or otherwise the community is encouraged to maintain and manage a fork of said package.
+This package likely emits warnings immediately, or may even cause the editor to crash as a whole. Installation of these packages is not recommended by the Pulsar team, and instead it is encouraged to work with the original maintainer to get these packages working, or otherwise the community is encouraged to maintain and manage a fork of said package.
 
 If a community member does decide to maintain a fork of a package with a `Broken` badge, it's recommended to make the Pulsar team or Pulsar Backend team (such as by opening an issue on this repo) aware of this, so any warnings and links on the original package can be changed to recommend installation of your functional fork.
 
