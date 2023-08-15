@@ -8,7 +8,7 @@ With that said this document will serve as the ongoing history of administrative
 
 The community package `linter-stylelint` has been discovered to be broken. The source code contains an [error](https://github.com/AtomLinter/linter-stylelint/issues/610) that was originally reported before Pulsar had ever been created. This package's source code has since been archived as of August 7th, 2023. So it is now impossible for this package to ever receive an update to resolve it's issue.
 
-As this package is now permanently broken, and archived, it'll receive both the `Archived` and `Broken` badges to reflect it's status.
+As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect it's status.
 
 ## 2023 - April 22
 
