@@ -17,10 +17,10 @@ let sqlStorage;
 /**
  @see https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/badge-spec.md
  Valid Values:
-  - type: <enum|required> The type of badge
-  - title: <enum|required> The title of the badge
-  - text: <string|optional> The text content of the badge
-  - link: <string|optional> A link for the badge
+  - type: <enum|required> The type of badge (info, warn, success)
+  - title: <enum|required> The title of the badge (outdated, broken, archived)
+  - text: <string|optional> The text content of the badge (no periods, fewest words possible)
+  - link: <string|optional> A link for the badge (link to admin actions log)
 */
 let badgeConfig = {
   type: "",
@@ -31,7 +31,7 @@ let badgeConfig = {
 
 let packageName = "";
 
-const VALID_BADGES = ["Outdated", "Broken"];
+const VALID_BADGES = ["Outdated", "Broken", "Archived"];
 const VALID_BADGES_TYPES = ["warn", "info", "success"];
 
 async function main() {

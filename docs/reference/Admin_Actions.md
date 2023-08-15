@@ -4,6 +4,12 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - August 14
+
+The community package `linter-stylelint` has been discovered to be broken. The source code contains an [error](https://github.com/AtomLinter/linter-stylelint/issues/610) that was originally reported before Pulsar had ever been created. This package's source code has since been archived as of August 7th, 2023. So it is now impossible for this package to ever receive an update to resolve it's issue.
+
+As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect it's status.
+
 ## 2023 - April 22
 
 The community package `language-nasmx86` has been found to have been removed from GitHub, meaning the package is no longer downloadable.
@@ -19,7 +25,7 @@ By changing the `repository.url` object of the top level `language-pegjs` `packa
 
 ## 2023 - March 28
 
-The following packages will recieve the Outdated Badge:
+The following packages will receive the Outdated Badge:
 
 ### Hydrogen
 
@@ -82,7 +88,7 @@ We removed the following packages due to suspected spam:
 
 ## 2023 - March 18
 
-Removed some community packages during our effort to ensure we only keep packages with licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thourough attempt to contact the publishers we decided to remove the packages. More information on this topic is available on the [Pulsar Blog](https://pulsar-edit.dev/blog/20230319-confused-Techie-HowLicenseNoneDeletedPackages.html)
+Removed some community packages during our effort to ensure we only keep packages with licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thorough attempt to contact the publishers we decided to remove the packages. More information on this topic is available on the [Pulsar Blog](https://pulsar-edit.dev/blog/20230319-confused-Techie-HowLicenseNoneDeletedPackages.html)
 
 * [`bemhtml`](https://github.com/jchouse/bemhtml)
 * [`github-user-datatip`](https://github.com/jgebhardt/atom-github-user-datatip)
@@ -165,7 +171,7 @@ Removed some community packages during our effort to ensure we only keep package
 
 ## 2023 - March 17
 
-Removed some community packages during our effort to ensure we only keep packages with Licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thourough attempt to contact the publishers we had resolved to remove the packages.
+Removed some community packages during our effort to ensure we only keep packages with Licenses that allow for redistribution. The packages listed below either had licenses that outright prohibited redistribution or were otherwise unclear, and after a thorough attempt to contact the publishers we had resolved to remove the packages.
 
 * [`mstest2`](https://github.com/mstest1/mstest2)
 * [`latex-online`](https://github.com/Spijkervet/atom-latex-online)
