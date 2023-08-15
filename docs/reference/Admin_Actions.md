@@ -6,9 +6,25 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2023 - August 14
 
+### linter-stylelint
+
 The community package `linter-stylelint` has been discovered to be broken. The source code contains an [error](https://github.com/AtomLinter/linter-stylelint/issues/610) that was originally reported before Pulsar had ever been created. This package's source code has since been archived as of August 7th, 2023. So it is now impossible for this package to ever receive an update to resolve it's issue.
 
 As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect it's status.
+
+### busy-signal
+
+The community package `busy-signal` has [received updates](https://github.com/steelbrain/busy-signal/pull/95) with some help of the Pulsar team to remove deprecations from it's source code. But unfortunately, those changes are no longer being published to the Pulsar Package Registry.
+
+This means the GitHub source of the package is more up to date and functional than what exists with Pulsar and special steps should be taken to install it.
+
+To reflect this status, `busy-signal` will additionally receive the [`Outdated`](./badge-spec#outdated) badge.
+
+To install `busy-signal` for end users, it's recommended to run the following command:
+
+```shell
+pulsar -p install https://github.com/steelbreain/busy-signal
+```
 
 ## 2023 - April 22
 
