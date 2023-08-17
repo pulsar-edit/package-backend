@@ -36,6 +36,12 @@ The community package [`omnisharp-atom`](https://web.pulsar-edit.dev/packages/om
 As such the package will receive the [`Broken`](./badge-spec.md#broken) badge, to make this fact obvious.
 But if the package is truly wanted, there seems to be some possible [workarounds](https://github.com/OmniSharp/omnisharp-atom/issues/1037) that may restore the desired functionality.
 
+### jupyter-notebook
+
+The community package [`jupyter-notebook`](https://web.pulsar-edit.dev/packages/jupyter-notebook) has been [reported](https://github.com/jupyter/atom-notebook/issues/58) as unmaintained since 2017, and prior to the Atom sunset had broken completely with many reports of invalid syntax errors causing the package to crash.
+
+Due to this, the package will receive the [`Broken`](./badge-spec.md#broken) badge.
+
 ## 2023 - August 14
 
 ### linter-stylelint
