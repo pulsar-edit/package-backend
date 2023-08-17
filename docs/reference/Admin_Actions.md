@@ -29,6 +29,13 @@ In an effort to make information like this more easily available to users of Pul
 
 As such this package was [requested](https://github.com/pulsar-edit/package-backend/issues/173) to be given the badge [`Archived`](./badge-spec.md#archived).
 
+### omnisharp-atom
+
+The community package [`omnisharp-atom`](https://web.pulsar-edit.dev/packages/omnisharp-atom) is unable to function without editing the source code of the package. The repository has not received any updates since this issue was originally reported, which was 4 years ago.
+
+As such the package will receive the [`Broken`](./badge-spec.md#broken) badge, to make this fact obvious.
+But if the package is truly wanted, there seems to be some possible [workarounds](https://github.com/OmniSharp/omnisharp-atom/issues/1037) that may restore the desired functionality.
+
 ## 2023 - August 14
 
 ### linter-stylelint
