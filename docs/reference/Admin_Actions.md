@@ -103,6 +103,17 @@ pulsar -p install https://github.com/nteract/hydrogen -t v2.16.5
 
 With the above said, `hydrogen` will receive an [`outdated`](./badge-spec.md#outdated) badge.
 
+Added: August 16, 2023
+
+In some instances it may also be necessary to run the following to build all native modules within `Hydrogen` properly:
+
+```bash
+cd ~/.pulsar/packages/hydrogen # or the equivalent on windows
+npx electron-rebuild -v 12.2.3
+```
+
+[Source](https://github.com/pulsar-edit/pulsar/issues/359)
+
 ### Glacier-Darkula-UI
 
 The Glacier-Darkula-UI package uses an old, no longer supported CSS selector when styling the scrollbar. Resulting in the scrollbar taking on OS Native styling when used within Pulsar.
