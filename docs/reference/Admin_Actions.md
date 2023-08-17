@@ -17,9 +17,17 @@ Since none of this issues where the fault of the developers and seem to fully fa
 
 To keep with this request, the following actions have been made:
 
-* `appcelerator-titanium` has been deleted from the PPR, leaving the name reserved to avoid Supply Chain Attacks 
+* `appcelerator-titanium` has been deleted from the PPR, leaving the name reserved to avoid Supply Chain Attacks
 * `appcelerator-titanium`s 6 `original_stargazers` (That is unindexed stargazers transferred from Atom) have been added to `titanium`s 0 `original_stargazers`
 * `appcelerator-titanium`s 11,652 `downloads` have been added to `titanium`s 114 `downloads`. Resulting in a new value of `11,766` downloads for the `titanium` package.
+
+### atom-oss-license
+
+The community package [`atom-oss-license`](https://web.pulsar-edit.dev/packages/atom-oss-license) ([repo](https://github.com/mmk2410/atom-oss-license)), has been archived on March 9, 2019.
+
+In an effort to make information like this more easily available to users of Pulsar, we do intend to mark any packages that originate from an archived forge.
+
+As such this package was [requested](https://github.com/pulsar-edit/package-backend/issues/173) to be given the badge [`Archived`](./badge-spec.md#archived).
 
 ## 2023 - August 14
 
