@@ -93,3 +93,9 @@ The `Archived` badge should only be used as a neutral badge, to not cause any ki
   * Bugs being fixed.
   * New features being added.
   * Support of any kind from the package maintainer.
+
+### Deprecated
+
+The `Deprecated` badge is used to indicate that this package, which is [`Broken`](#broken) has a working fork published to the PPR. It is recommended that users install the forked version of this package instead, to avoid the broken behavior of the original package.
+
+Pointing out this forked package does not constitute a recommendation from Pulsar, only drawing attention to the fact that it is possible to have a bug free experience with a more up to date version of the package.

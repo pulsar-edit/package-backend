@@ -42,6 +42,14 @@ The community package [`jupyter-notebook`](https://web.pulsar-edit.dev/packages/
 
 Due to this, the package will receive the [`Broken`](./badge-spec.md#broken) badge.
 
+### atom-elixir-formatter
+
+The community package [`atom-elixir-formatter`](https://web.pulsar-edit.dev/packages/atom-elixir-formatter) has been [reported](https://github.com/pulsar-edit/pulsar/issues/133) to be broken. This stems from now invalid JavaScript within Pulsar, after our NodeJS and Electron bumps.
+
+Amazingly, the community has stepped up to publish a functioning fork of this package, which is instead recommended to download.
+
+So this package will receive the [`Deprecated`](./badge-spec.md#deprecated) badge, with installation of [`atom-elixir-formatter-pulsar`](https://web.pulsar-edit.dev/packages/atom-elixir-formatter-pulsar) instead recommended.
+
 ## 2023 - August 14
 
 ### linter-stylelint
