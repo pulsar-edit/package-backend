@@ -4,6 +4,23 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - August 16
+
+### appcelerator-titanium && titanium
+
+When the developers of `appcelerator-titanium` wanted to rebrand their package to `titanium` it seemed the backend was encountering errors attempting to do so. The developers then went ahead to create a brand new package `titanium` and continue development there. Unfortunately, also encountering errors when attempting to delete the now defunk package `appcelerator-titanium`. The developers had then [reached out](https://github.com/pulsar-edit/package-backend/issues/190) to the Pulsar Backend team for assistance.
+
+Since none of this issues where the fault of the developers and seem to fully fall on the backend itself, the request was happy to be met, which attempted to do the following:
+
+* Remove `appcelerator-titanium`
+* Transfer what data possible over to `titanium`
+
+To keep with this request, the following actions have been made:
+
+* `appcelerator-titanium` has been deleted from the PPR, leaving the name reserved to avoid Supply Chain Attacks 
+* `appcelerator-titanium`s 6 `original_stargazers` (That is unindexed stargazers transferred from Atom) have been added to `titanium`s 0 `original_stargazers`
+* `appcelerator-titanium`s 11,652 `downloads` have been added to `titanium`s 114 `downloads`. Resulting in a new value of `11,766` downloads for the `titanium` package.
+
 ## 2023 - August 14
 
 ### linter-stylelint
