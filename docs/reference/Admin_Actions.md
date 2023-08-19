@@ -8,7 +8,7 @@ With that said this document will serve as the ongoing history of administrative
 
 ### appcelerator-titanium && titanium
 
-When the developers of `appcelerator-titanium` wanted to rebrand their package to `titanium` it seemed the backend was encountering errors attempting to do so. The developers then went ahead to create a brand new package `titanium` and continue development there. Unfortunately, also encountering errors when attempting to delete the now defunk package `appcelerator-titanium`. The developers had then [reached out](https://github.com/pulsar-edit/package-backend/issues/190) to the Pulsar Backend team for assistance.
+When the developers of `appcelerator-titanium` wanted to rebrand their package to `titanium` it seemed the backend was encountering errors attempting to do so. The developers then went ahead to create a brand new package `titanium` and continue development there. Unfortunately, also encountering errors when attempting to delete the now defunct package `appcelerator-titanium`. The developers had then [reached out](https://github.com/pulsar-edit/package-backend/issues/190) to the Pulsar Backend team for assistance.
 
 Since none of this issues where the fault of the developers and seem to fully fall on the backend itself, the request was happy to be met, which attempted to do the following:
 
