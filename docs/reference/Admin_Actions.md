@@ -4,6 +4,52 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - August 16
+
+### appcelerator-titanium && titanium
+
+When the developers of `appcelerator-titanium` wanted to rebrand their package to `titanium` it seemed the backend was encountering errors attempting to do so. The developers then went ahead to create a brand new package `titanium` and continue development there. Unfortunately, also encountering errors when attempting to delete the now defunct package `appcelerator-titanium`. The developers had then [reached out](https://github.com/pulsar-edit/package-backend/issues/190) to the Pulsar Backend team for assistance.
+
+Since none of these issues were the fault of the developers and seem to fully fall on the backend itself, the request was happy to be met, which attempted to do the following:
+
+* Remove `appcelerator-titanium`
+* Transfer what data possible over to `titanium`
+
+To keep with this request, the following actions have been made:
+
+* `appcelerator-titanium` has been deleted from the PPR, leaving the name reserved to avoid Supply Chain Attacks
+* `appcelerator-titanium`s 6 `original_stargazers` (That is unindexed stargazers transferred from Atom) have been added to `titanium`s 0 `original_stargazers`
+* `appcelerator-titanium`s 11,652 `downloads` have been added to `titanium`s 114 `downloads`. Resulting in a new value of `11,766` downloads for the `titanium` package.
+
+### atom-oss-license
+
+The community package [`atom-oss-license`](https://web.pulsar-edit.dev/packages/atom-oss-license) ([repo](https://github.com/mmk2410/atom-oss-license)), has been archived on March 9, 2019.
+
+In an effort to make information like this more easily available to users of Pulsar, we do intend to mark any packages that originate from an archived repo.
+
+As such this package was [requested](https://github.com/pulsar-edit/package-backend/issues/173) to be given the badge [`Archived`](./badge-spec.md#archived).
+
+### omnisharp-atom
+
+The community package [`omnisharp-atom`](https://web.pulsar-edit.dev/packages/omnisharp-atom) is unable to function without editing the source code of the package. The repository has not received any updates since this issue was originally reported, which was 4 years ago.
+
+As such the package will receive the [`Broken`](./badge-spec.md#broken) badge, to make this fact obvious.
+But if the package is truly wanted, there seems to be some possible [workarounds](https://github.com/OmniSharp/omnisharp-atom/issues/1037) that may restore the desired functionality.
+
+### jupyter-notebook
+
+The community package [`jupyter-notebook`](https://web.pulsar-edit.dev/packages/jupyter-notebook) has been [reported](https://github.com/jupyter/atom-notebook/issues/58) as unmaintained since 2017, and prior to the Atom sunset had broken completely with many reports of invalid syntax errors causing the package to crash.
+
+Due to this, the package will receive the [`Broken`](./badge-spec.md#broken) badge.
+
+### atom-elixir-formatter
+
+The community package [`atom-elixir-formatter`](https://web.pulsar-edit.dev/packages/atom-elixir-formatter) has been [reported](https://github.com/pulsar-edit/pulsar/issues/133) to be broken. This stems from now invalid JavaScript within Pulsar, after our NodeJS and Electron bumps.
+
+Amazingly, the community has stepped up to publish a functioning fork of this package, which is instead recommended to download.
+
+So this package will receive the [`Deprecated`](./badge-spec.md#deprecated) badge, with installation of [`atom-elixir-formatter-pulsar`](https://web.pulsar-edit.dev/packages/atom-elixir-formatter-pulsar) instead recommended.
+
 ## 2023 - August 14
 
 ### linter-stylelint
@@ -56,6 +102,17 @@ pulsar -p install https://github.com/nteract/hydrogen -t v2.16.5
 ```
 
 With the above said, `hydrogen` will receive an [`outdated`](./badge-spec.md#outdated) badge.
+
+Added: August 16, 2023
+
+In some instances it may also be necessary to run the following to build all native modules within `Hydrogen` properly:
+
+```bash
+cd ~/.pulsar/packages/hydrogen # or the equivalent on windows
+npx electron-rebuild -v 12.2.3
+```
+
+[Source](https://github.com/pulsar-edit/pulsar/issues/359)
 
 ### Glacier-Darkula-UI
 

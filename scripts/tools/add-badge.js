@@ -31,7 +31,7 @@ let badgeConfig = {
 
 let packageName = "";
 
-const VALID_BADGES = ["Outdated", "Broken", "Archived"];
+const VALID_BADGES = ["Outdated", "Broken", "Archived", "Deprecated"];
 const VALID_BADGES_TYPES = ["warn", "info", "success"];
 
 async function main() {
