@@ -25,7 +25,7 @@ To keep with this request, the following actions have been made:
 
 The community package [`atom-oss-license`](https://web.pulsar-edit.dev/packages/atom-oss-license) ([repo](https://github.com/mmk2410/atom-oss-license)), has been archived on March 9, 2019.
 
-In an effort to make information like this more easily available to users of Pulsar, we do intend to mark any packages that originate from an archived forge.
+In an effort to make information like this more easily available to users of Pulsar, we do intend to mark any packages that originate from an archived repo.
 
 As such this package was [requested](https://github.com/pulsar-edit/package-backend/issues/173) to be given the badge [`Archived`](./badge-spec.md#archived).
 
