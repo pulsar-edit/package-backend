@@ -38,6 +38,11 @@ async function deletePackagesName(params, db, auth, vcs) {
     };
   }
 
+  logger.generic(
+    6,
+    `${params.packageName} Successfully executed 'db.getPackageByName()'`
+  );
+
   const gitowner = await vcs.ownership(user.content, packageExists.content);
 
   if (!gitowner.ok) {
@@ -47,15 +52,33 @@ async function deletePackagesName(params, db, auth, vcs) {
     };
   }
 
+  logger.generic(
+    6,
+    `${params.packageName} Successfully executed 'vcs.ownership()'`
+  );
+
   // Now they are logged in locally, and have permission over the GitHub repo.
   const rm = await db.removePackageByName(params.packageName);
 
   if (!rm.ok) {
+    logger.generic(
+      6,
+      `${params.packageName} FAILED to execute 'db.removePackageByName'`,
+      {
+        type: "error",
+        err: rm
+      }
+    );
     return {
       ok: false,
       content: rm,
     };
   }
+
+  logger.generic(
+    6,
+    `${params.packageName} Successfully executed 'db.removePackageByName'`
+  );
 
   return {
     ok: true,
