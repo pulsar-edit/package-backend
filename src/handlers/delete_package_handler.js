@@ -4,6 +4,7 @@
  */
 
 const logger = require("../logger.js");
+const utils = require("../utils.js");
 
 /**
  * @async
@@ -38,7 +39,15 @@ async function deletePackagesName(params, db, auth, vcs) {
     };
   }
 
-  const gitowner = await vcs.ownership(user.content, packageExists.content);
+  logger.generic(
+    6,
+    `${params.packageName} Successfully executed 'db.getPackageByName()'`
+  );
+
+  // Get `owner/repo` string format from package.
+  const ownerRepo = utils.getOwnerRepoFromPackage(packageExists.content.data);
+
+  const gitowner = await vcs.ownership(user.content, ownerRepo);
 
   if (!gitowner.ok) {
     return {
@@ -47,15 +56,33 @@ async function deletePackagesName(params, db, auth, vcs) {
     };
   }
 
+  logger.generic(
+    6,
+    `${params.packageName} Successfully executed 'vcs.ownership()'`
+  );
+
   // Now they are logged in locally, and have permission over the GitHub repo.
   const rm = await db.removePackageByName(params.packageName);
 
   if (!rm.ok) {
+    logger.generic(
+      6,
+      `${params.packageName} FAILED to execute 'db.removePackageByName'`,
+      {
+        type: "error",
+        err: rm
+      }
+    );
     return {
       ok: false,
       content: rm,
     };
   }
+
+  logger.generic(
+    6,
+    `${params.packageName} Successfully executed 'db.removePackageByName'`
+  );
 
   return {
     ok: true,
