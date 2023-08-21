@@ -70,7 +70,7 @@ async function deletePackagesName(params, db, auth, vcs) {
       `${params.packageName} FAILED to execute 'db.removePackageByName'`,
       {
         type: "error",
-        err: rm
+        err: rm,
       }
     );
     return {
