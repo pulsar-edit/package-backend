@@ -45,7 +45,7 @@ async function deletePackagesName(params, db, auth, vcs) {
   );
 
   // Get `owner/repo` string format from package.
-  const ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+  const ownerRepo = utils.getOwnerRepoFromPackage(packageExists.content.data);
 
   const gitowner = await vcs.ownership(user.content, ownerRepo);
 
