@@ -4,6 +4,7 @@
  */
 
 const logger = require("../logger.js");
+const utils = require("../utils.js");
 
 /**
  * @async
@@ -43,7 +44,10 @@ async function deletePackagesName(params, db, auth, vcs) {
     `${params.packageName} Successfully executed 'db.getPackageByName()'`
   );
 
-  const gitowner = await vcs.ownership(user.content, packageExists.content);
+  // Get `owner/repo` string format from package.
+  const ownerRepo = utils.getOwnerRepoFromPackage(packExists.content.data);
+
+  const gitowner = await vcs.ownership(user.content, ownerRepo);
 
   if (!gitowner.ok) {
     return {
