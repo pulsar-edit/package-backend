@@ -4,6 +4,51 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2023 - September 4
+
+### pulsar-gpp-compiler
+
+The maintainers of the community package `pulsar-gpp-compiler` during the course of maintaining their package, had accidentally completely unpublished the package, rather than unpublishing a specific version.
+
+These maintainers had wanted to retain the same package name during a republication, but the backend reserves all package names after unpublishing to help keep users safe from a potential [Supply Chain Vulnerability](https://en.wikipedia.org/wiki/Supply_chain_attack).
+
+At the request of this package's maintainers we investigated any way to allow the same name to be published, while keeping our users safe.
+
+Since the nature of a Supply Chain Vulnerability relies on users having previously installed the potential package, and due to the young age of the package, we realized that if we can confirm with 100% certainty that absolutely 0 users had installed this package, nobody could be affected by a supply chain vulnerability, and it could be safe to the overall community to allow republication.
+
+An important note about confirming the download count: Because when a package is unpublished, the download count is permanently deleted from the Pulsar Package Repository, we have to rely on the logs of the backend. These logs only go back 30 days, meaning that if a package was published more than 30 days ago, it would **never** be eligible for allowing republication of a reserved name.
+
+Beyond that we had to confirm the following details:
+
+1. The user requesting this service had sufficient permission to the affected repository.
+2. No major, malicious changes had occurred in the codebase, which could signal a GitHub user's account had been compromised.
+3. That absolutely 0 downloads have ever occurred of this package.
+
+To confirm the above:
+
+1. The user was asked to create a branch of the affected repo named `allow-pulsar-un-reserving`
+2. The diffs between all published tags on the GitHub repository were carefully inspected.
+3. More on that in the below investigation of server logs.
+
+To help ensure any community members that may be reading this, below is the full investigative work done for all network requests to the backend, that relate to this package, the owner of this package's IP address, and unique UserAgent.
+
+The first ever hit in the logs for `pulsar-gpp-compiler` occurred at `2023-09-03 05:16:53.577 PDT`. This was an initial search for the package. Likely to determine if the name was available, this search did not return any results.
+
+Very shortly after at `06:22:48.956 PDT` a direct request via the Pulsar Frontend was made for this package's data. This page returned a `404` confirming that no package by this name had existed.
+
+At `06:22:49.408` the package was initially published. With only a second later the first version being published. It was then at `2023-09-03 06:33:28.314` that the request to delete the package was successfully processed.
+
+In between the time of initial publish, and uninstallation, the following are the only unique URLs to have been hit (in relation to this package):
+
+* `https://image.pulsar-edit.dev/packages/pulsar-gpp-compiler?image_kind=default`: This comes from our `image` microservice, which displays social cards of a package. These social cards are automatically linked to our community Discord on any package publication.
+* `/api/packages/pulsar-gpp-compiler?image_kind=default`: This is a request from the `image` microservice for information of the package. We are able to tell since the IP address comes from the `image` microservice, and the query parameters have been passed through as we expect.
+* `/packages/pulsar-gpp-compiler`: This URL originates from the Pulsar Frontend.
+* `/api/packages/pulsar-gpp-compiler`: This URL is the backend being asked for data of the package. Which would be triggered anytime the frontend is hit.
+
+This is the full list of unique endpoints hit in relation to this package, since the time of it's publication, and it's unpublishing. As you can see there were zero requests to download this package, so we are able to confirm beyond a shadow of a doubt, that **0** installs had ever occurred. Meaning we can allow republication of this reserved name, while keeping our community safe.
+
+As such, with all the above details, the name `pulsar-gpp-compiler` will be unreserved from the package backend. The name will be reserved just as normal once the package is republished, and even once this same package is unpublished, the name will be reserved just as we expect.
+
 ## 2023 - August 16
 
 ### appcelerator-titanium && titanium
