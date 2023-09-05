@@ -26,7 +26,7 @@ Beyond that we had to confirm the following details:
 
 To confirm the above:
 
-1. The user was asked to create a branch of the effected repo named `allow-pulsar-un-reserving`
+1. The user was asked to create a branch of the affected repo named `allow-pulsar-un-reserving`
 2. The diffs between all published tags on the GitHub repository were carefully inspected.
 3. More on that in the below investigation of server logs.
 
