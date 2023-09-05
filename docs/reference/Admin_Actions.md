@@ -21,7 +21,7 @@ An important note about confirming the download count: Because when a package is
 Beyond that we had to confirm the following details:
 
 1. The user requesting this service had sufficient permission to the effected repository.
-2. No major, malicious changes had occurred in the codebase, which could signal a GitHub users account has been compromised.
+2. No major, malicious changes had occurred in the codebase, which could signal a GitHub user's account had been compromised.
 3. That absolutely 0 downloads have ever occurred of this package.
 
 To confirm the above:
