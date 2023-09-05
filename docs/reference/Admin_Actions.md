@@ -10,7 +10,7 @@ With that said this document will serve as the ongoing history of administrative
 
 The maintainers of the community package `pulsar-gpp-compiler` during the course of maintaining their package, had accidentally completely unpublished the package, rather than unpublishing a specific version.
 
-These maintainers had wanted to retain the same package name during a republication, but the backend reserves all package names after unpublishing to help keep users safe from a potentially [Supply Chain Vulnerability]().
+These maintainers had wanted to retain the same package name during a republication, but the backend reserves all package names after unpublishing to help keep users safe from a potentially [Supply Chain Vulnerability](https://en.wikipedia.org/wiki/Supply_chain_attack).
 
 At the request of this package's maintainers we investigated any way to allow the same name to be published, while keeping our users safe.
 
