@@ -28,8 +28,10 @@ The `path` here is an array since in some instances, we want to accept multiple 
 
 ```javascript
 const endpoint = {
+  // Can be "GET", "POST", "DELETE"
   method: "GET",
-  path: [ "/api/themes" ],
+  paths: [ "/api/themes" ],
+  // Can be "generic" or "auth"
   rate_limit: "generic",
   options: {
     // This would be the headers to return for `HTTP OPTIONS` req:

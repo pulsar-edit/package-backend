@@ -1,29 +1,20 @@
 
 module.exports = {
-  endpoint(app, context) {
-    app.get("/api/themes", context.genericLimit, async (req, res, next) => {
-      const ret = await this.logic(
-        {
-          page: context.query.page(req),
-          sort: context.query.sort(req),
-          direction: context.query.dir(req)
-        },
-        context
-      );
-
-      if (!ret.ok) {
-        await context.common_handler.handleError(req, res, ret.content);
-        return;
-      }
-
-      // This is a paginated endpoint
-      res.append("Link", ret.link);
-      res.append("Query-Total", ret.total);
-      res.append("Query-Limit", ret.limit);
-
-      res.status(200).json(ret.content);
-      context.logger.httpLog(req, res);
-    });
+  endpoint: {
+    method: "GET",
+    paths: [ "/api/themes" ],
+    rate_limit: "generic",
+    options: {
+      Allow: "POST, GET",
+      "X-Content-Type-Options": "nosniff"
+    }
+  },
+  params(req, context) {
+    return {
+      page: context.query.page(req),
+      sort: context.query.sort(req),
+      direction: context.query.dir(req)
+    };
   },
 
   /**
@@ -36,7 +27,7 @@ module.exports = {
    */
   async logic(params, context) {
 
-    const packages = await context.db.getSortedPackages(params, true);
+    const packages = await context.database.getSortedPackages(params, true);
 
     if (!packages.ok) {
       context.logger.generic(
