@@ -20,7 +20,9 @@ const context = {
   vcs: require("./vcs.js"),
   config: require("./config.js").getConfig(),
   common_handler: require("./handlers/common_handler.js"),
-  utils: require("./utils.js")
+  utils: require("./utils.js"),
+  sso: require("./models/sso.js"),
+  ssoPaginate: require("./models/sso.js")
 };
 
 // Define our Basic Rate Limiters
@@ -82,12 +84,9 @@ for (const node of endpoints) {
 
           let obj = await node.logic(params, context);
 
-          if (!obj.ok) {
-            obj.handleError(req, res, context);
-            return;
-          }
+          obj.addGoodStatus(node.endpoint.success_status);
 
-          obj.handleSuccess(req, res, context);
+          obj.handleReturnHTTP(req, res, context);
           return;
         });
       case "POST":
@@ -96,12 +95,9 @@ for (const node of endpoints) {
 
           let obj = await node.logic(params, context);
 
-          if (!obj.ok) {
-            obj.handleError(req, res, context);
-            return;
-          }
+          obj.addGoodStatus(node.endpoint.success_status);
 
-          obj.handleSuccess(req, res, context);
+          obj.handleReturnHTTP(req, res, context);
           return;
         });
       case "DELETE":
@@ -110,12 +106,9 @@ for (const node of endpoints) {
 
           let obj = await node.logic(params, context);
 
-          if (!obj.ok) {
-            obj.handleError(req, res, context);
-            return;
-          }
+          obj.addGoodStatus(node.endpoint.success_status);
 
-          obj.handleSuccess(req, res, context);
+          obj.handleReturnHTTP(req, res, context);
           return;
         });
       default:

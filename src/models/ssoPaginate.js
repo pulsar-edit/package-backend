@@ -1,15 +1,16 @@
+const SSO = require("./sso.js");
+
 module.exports =
-class PaginateSSO {
+class SSOPaginate extends SSO {
   constructor() {
-    this.kind = "paginateSSO";
+    super();
+
     this.link;
     this.total;
     this.limit;
-    this.content;
-    this.ok;
   }
 
-  buildLink(url, currentPage, totalPages, params) {
+  buildLink(url, currentPage, params) {
     let paramString = "";
 
     for (let param of params) {
@@ -19,22 +20,23 @@ class PaginateSSO {
     let linkString = "";
 
     linkString += `<${url}?page=${currentPage}${paramString}>; rel="self", `;
-    linkString += `<${url}?page=${totalPages}${paramString}>; rel="last"`;
+    linkString += `<${url}?page=${this.total}${paramString}>; rel="last"`;
 
-    if (currentPage !== totalPages) {
+    if (currentPage !== this.total) {
       linkString += `, <${url}?page=${currentPage + 1}${paramString}>; rel="next"`;
     }
 
     this.link = linkString;
   }
 
-  httpReturn(req, res, logger) {
+  handleSuccess(req, res, context) {
 
     res.append("Link", this.link);
     res.append("Query-Total", this.total);
     res.append("Query-Limit", this.limit);
 
-    res.status(200).json(ret.content);
-    logger.httpLog(req, res);
+    res.status(this.successStatusCode).json(this.content);
+    context.logger.httpLog(req, res);
+    return;
   }
 }

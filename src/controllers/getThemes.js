@@ -4,6 +4,7 @@ module.exports = {
     method: "GET",
     paths: [ "/api/themes" ],
     rate_limit: "generic",
+    success_status: 200,
     options: {
       Allow: "POST, GET",
       "X-Content-Type-Options": "nosniff"
@@ -30,38 +31,23 @@ module.exports = {
     const packages = await context.database.getSortedPackages(params, true);
 
     if (!packages.ok) {
-      context.logger.generic(
-        3,
-        `getThemes-getSortedPackages Not OK: ${packages.content}`
-      );
-      return {
-        ok: false,
-        content: packages
-      };
+      const sso = new context.sso();
+
+      return sso.notOk().addContent(packages.content).addCalls("db.getSortedPackages", packages);
     }
 
-    const page = packages.pagination.page;
-    const totPage = packages.pagination.total;
     const packObjShort = await context.utils.constructPackageObjectShort(
       packages.content
     );
 
     const packArray = Array.isArray(packObjShort) ? packObjShort : [ packObjShort ];
 
-    let link = `<${server_url}/api/themes?page=${page}&sort=${params.sort}&order=${params.direction}>; rel="self", <${server_url}/api/themes?page=${totPage}&sort=${params.sort}&order=${params.direction}>; rel="last"`;
+    const ssoP = new context.ssoPaginate();
 
-    if (page !== totPage) {
-      link += `, <${server_url}/api/themes?page=${page + 1}&sort=${
-        params.sort
-      }&order=${params.direction}>; rel="next"`;
-    }
+    ssoP.total = packages.pagination.total;
+    ssoP.limit = packages.pagination.total;
+    ssoP.buildLink(`${context.config.server_url}/api/themes`, page, params);
 
-    return {
-      ok: true,
-      link: link,
-      total: packages.pagination.count,
-      limit: packages.pagination.limit,
-      content: packArray
-    };
+    return ssoP.isOk().addContent(packArray);
   }
 };
