@@ -5,7 +5,12 @@ const { MemoryStore } = require("express-rate-limit");
 const app = express();
 
 const endpoints = [
-  require("./controllers/getThemes.js")
+  require("./controllers/getStars.js"),
+  require("./controllers/getThemes.js"),
+  require("./controllers/getThemesFeatured.js"),
+  require("./controllers/getUpdates.js"),
+  require("./controllers/getUsers.js"),
+  require("./controllers/getusersLogin.js")
 ];
 
 // The CONST Context - Enables access to all other modules within the system
@@ -70,9 +75,9 @@ for (const node of endpoints) {
 
     let limiter = genericLimit;
 
-    if (node.endpoint.rate_limit === "auth") {
+    if (node.endpoint.rateLimit === "auth") {
       limiter = authLimit;
-    } else if (node.endpoint.rate_limit === "generic") {
+    } else if (node.endpoint.rateLimit === "generic") {
       limiter = genericLimit;
     }
 
@@ -82,9 +87,17 @@ for (const node of endpoints) {
         app.get(path, limiter, async (req, res) => {
           let params = node.params(req, context);
 
+          if (typeof node.preLogic === "function") {
+            node.preLogic(req, res, context);
+          }
+
           let obj = await node.logic(params, context);
 
-          obj.addGoodStatus(node.endpoint.success_status);
+          if (typeof node.postLogic === "function") {
+            node.postLogic(req, res, context);
+          }
+
+          obj.addGoodStatus(node.endpoint.successStatus);
 
           obj.handleReturnHTTP(req, res, context);
           return;
@@ -93,9 +106,17 @@ for (const node of endpoints) {
         app.post(path, limiter, async (req, res) => {
           let params = node.params(req, context);
 
+          if (typeof node.preLogic === "function") {
+            node.preLogic(req, res, context);
+          }
+
           let obj = await node.logic(params, context);
 
-          obj.addGoodStatus(node.endpoint.success_status);
+          if (typeof node.postLogic === "function") {
+            node.postLogic(req, res, context);
+          }
+
+          obj.addGoodStatus(node.endpoint.successStatus);
 
           obj.handleReturnHTTP(req, res, context);
           return;
@@ -104,9 +125,17 @@ for (const node of endpoints) {
         app.delete(path, limiter, async (req, res) => {
           let params = node.params(req, context);
 
+          if (typeof node.preLogic === "function") {
+            node.preLogic(req, res, context);
+          }
+
           let obj = await node.logic(params, context);
 
-          obj.addGoodStatus(node.endpoint.success_status);
+          if (typeof node.postLogic === "function") {
+            node.postLogic(req, res, context);
+          }
+
+          obj.addGoodStatus(node.endpoint.successStatus);
 
           obj.handleReturnHTTP(req, res, context);
           return;

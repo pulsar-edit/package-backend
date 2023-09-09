@@ -5,6 +5,7 @@ class SSO {
   constructor() {
     this.ok = false;
     this.content;
+    this.short;
     this.safeContent = false;
     this.successStatusCode = 200;
     this.calls = {};
@@ -34,6 +35,12 @@ class SSO {
       content: content,
       time: performance.now()
     };
+    return this;
+  }
+
+  addShort(enum) {
+    // TODO Validate enum being assigned
+    this.short = enum;
     return this;
   }
 

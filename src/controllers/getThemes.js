@@ -3,8 +3,8 @@ module.exports = {
   endpoint: {
     method: "GET",
     paths: [ "/api/themes" ],
-    rate_limit: "generic",
-    success_status: 200,
+    rateLimit: "generic",
+    successStatus: 200,
     options: {
       Allow: "POST, GET",
       "X-Content-Type-Options": "nosniff"
@@ -24,7 +24,7 @@ module.exports = {
    * @function logic
    * @desc Returns all themes to the user. Based on any filters they've applied
    * via query parameters.
-   * @returns {object} PaginateSSO
+   * @returns {object} ssoPaginate
    */
   async logic(params, context) {
 

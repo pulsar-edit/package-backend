@@ -29,6 +29,7 @@ const config = {
       testMatch: [
         "<rootDir>/test/*.unit.test.js",
         "<rootDir>/test/handlers/**/**.test.js",
+        "<rootDir>/test/controllers/**.test.js"
       ],
     },
     {
