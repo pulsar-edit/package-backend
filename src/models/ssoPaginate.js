@@ -5,9 +5,9 @@ class SSOPaginate extends SSO {
   constructor() {
     super();
 
-    this.link;
-    this.total;
-    this.limit;
+    this.link = "";
+    this.total = 0;
+    this.limit = 0;
   }
 
   buildLink(url, currentPage, params) {

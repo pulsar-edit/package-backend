@@ -4,8 +4,8 @@ module.exports =
 class SSO {
   constructor() {
     this.ok = false;
-    this.content;
-    this.short;
+    this.content = {};
+    this.short = "";
     this.safeContent = false;
     this.successStatusCode = 200;
     this.calls = {};
@@ -38,9 +38,9 @@ class SSO {
     return this;
   }
 
-  addShort(enum) {
+  addShort(enumValue) {
     // TODO Validate enum being assigned
-    this.short = enum;
+    this.short = enumValue;
     return this;
   }
 

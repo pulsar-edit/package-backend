@@ -37,7 +37,7 @@ module.exports = {
   },
   postLogic(req, res, context) {
     res.set({ "Access-Control-Allow-Credentials": true });
-  }
+  },
 
   /**
    * @async
