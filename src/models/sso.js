@@ -40,7 +40,9 @@ class SSO {
 
   addShort(enumValue) {
     // TODO Validate enum being assigned
-    this.short = enumValue;
+    if (typeof this.short !== "string") {
+      this.short = enumValue;
+    }
     return this;
   }
 

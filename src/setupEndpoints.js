@@ -29,7 +29,8 @@ const context = {
   common_handler: require("./handlers/common_handler.js"),
   utils: require("./utils.js"),
   sso: require("./models/sso.js"),
-  ssoPaginate: require("./models/sso.js")
+  ssoPaginate: require("./models/ssoPaginate.js"),
+  ssoRedirect: require("./models/ssoRedirect.js")
 };
 
 // Define our Basic Rate Limiters
