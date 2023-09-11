@@ -10,7 +10,9 @@ const endpoints = [
   require("./controllers/getThemesFeatured.js"),
   require("./controllers/getUpdates.js"),
   require("./controllers/getUsers.js"),
-  require("./controllers/getusersLogin.js")
+  require("./controllers/getusersLogin.js"),
+  require("./controllers/getUsersLoginStars.js"),
+  require("./controllers/postPackagesPackageNameVersionsVersionNameEventsUninstall.js")
 ];
 
 // The CONST Context - Enables access to all other modules within the system
@@ -34,7 +36,7 @@ const context = {
 const genericLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   // Limit each IP per window, 0 disables rate limit
-  max: process.env.PULSAR_STATUS === "dev" ? 0 : context.config.RATE_LIMIT_GENRIC,
+  max: process.env.PULSAR_STATUS === "dev" ? 0 : context.config.RATE_LIMIT_GENERIC,
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // use default memory store
