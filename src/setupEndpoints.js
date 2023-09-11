@@ -85,7 +85,11 @@ for (const node of endpoints) {
     switch(node.endpoint.method) {
       case "GET":
         app.get(path, limiter, async (req, res) => {
-          let params = node.params(req, context);
+          let params = {};
+
+          for (const param in node.params) {
+            params[param] = node.params[param](context, req);
+          }
 
           if (typeof node.preLogic === "function") {
             node.preLogic(req, res, context);
@@ -104,7 +108,11 @@ for (const node of endpoints) {
         });
       case "POST":
         app.post(path, limiter, async (req, res) => {
-          let params = node.params(req, context);
+          let params = {};
+
+          for (const param in node.params) {
+            params[param] = node.params[param](context, req);
+          }
 
           if (typeof node.preLogic === "function") {
             node.preLogic(req, res, context);
@@ -123,7 +131,11 @@ for (const node of endpoints) {
         });
       case "DELETE":
         app.delete(path, limiter, async (req, res) => {
-          let params = node.params(req, context);
+          let params = {};
+
+          for (const param in node.params) {
+            params[param] = node.params[param](context, req);
+          }
 
           if (typeof node.preLogic === "function") {
             node.preLogic(req, res, context);

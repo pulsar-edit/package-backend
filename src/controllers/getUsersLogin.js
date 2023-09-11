@@ -20,10 +20,8 @@ module.exports = {
       "X-Content-Type-Options": "nosniff"
     }
   },
-  params(req, context) {
-    return {
-      login: context.query.login(req)
-    };
+  params: {
+    login: (context, req) => { return context.query.login(req); }
   },
 
   /**

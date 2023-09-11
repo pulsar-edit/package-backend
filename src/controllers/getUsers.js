@@ -24,10 +24,8 @@ module.exports = {
       "Access-Control-Allow-Credentials": true
     }
   },
-  params(req, context) {
-    return {
-      auth: context.query.auth(req)
-    };
+  params: {
+    auth: (context, req) => { return context.query.auth(req); }
   },
   preLogic(req, res, context) {
     res.header("Access-Control-Allow-Methods", "GET");

@@ -21,9 +21,7 @@ module.exports = {
       "X-Content-Type-Options": "nosniff"
     }
   },
-  params(req, context) {
-    return {};
-  },
+  params: {},
 
   /**
    * @async

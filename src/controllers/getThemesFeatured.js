@@ -9,10 +9,9 @@ module.exports = {
       "X-Content-Type-Options": "nosniff"
     }
   },
-  params(req, context) {
+  params: {
     // Currently we don't seem to utilize any query parameters here.
     // We likely want to make this match whatever is used in getPackagesFeatured.js
-    return {};
   },
   async logic(params, context) {
     const col = await context.database.getFeaturedThemes();

@@ -10,12 +10,10 @@ module.exports = {
       "X-Content-Type-Options": "nosniff"
     }
   },
-  params(req, context) {
-    return {
-      page: context.query.page(req),
-      sort: context.query.sort(req),
-      direction: context.query.dir(req)
-    };
+  params: {
+    page: (context, req) => { return context.query.page(req); },
+    sort: (context, req) => { return context.query.sort(req); },
+    direction: (context, req) => { return context.query.dir(req); }
   },
 
   /**
