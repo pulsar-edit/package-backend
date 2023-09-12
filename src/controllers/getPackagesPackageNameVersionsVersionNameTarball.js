@@ -36,7 +36,8 @@ module.exports = {
       // but returning early uses less compute, as a false version will never be found
       const sso = new context.sso();
 
-      return sso.notOk().addShort("Not Found");
+      return sso.notOk().addShort("not_found")
+                        .addMessage("The version provided is invalid.");
     }
 
     const pack = await context.database.getPackageVersionByNameAndVersion(
@@ -47,7 +48,7 @@ module.exports = {
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso.noOk().addContent(pack.content)
+      return sso.notOk().addContent(pack)
                        .addCalls("db.getPackageVersionByNameAndVersion", pack);
     }
 
@@ -58,6 +59,7 @@ module.exports = {
         type: "object",
         obj: save.content
       });
+      // TODO We will probably want to revisit this after rewriting logging
       // We don't want to exit on failed update to download count, only log
     }
 
@@ -79,7 +81,9 @@ module.exports = {
       );
       const sso = new context.sso();
 
-      return sso.notOk().addContent(err).addShort("Server Error");
+      return sso.notOk().addContent(err)
+                        .addShort("server_error")
+                        .addMessage(`The URL to download this package seems invalid: ${tarballURL}.`);
     }
 
     const allowedHostnames = [
@@ -95,10 +99,11 @@ module.exports = {
     ) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(`Invalid Domain for Download Redirect: ${hostname}`).addShort("Server Error");
+      return sso.notOk().addShort("server_error")
+                        .addMessage(`Invalid Domain for Download Redirect: ${hostname}`);
     }
 
-    const sso = new context.sso();
+    const sso = new context.ssoRedirect();
     return sso.isOk().addContent(tarballURL);
   }
 };

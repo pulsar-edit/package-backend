@@ -31,7 +31,7 @@ module.exports = {
     if (!packages.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packages.content).addCalls("db.getSortedPackages", packages);
+      return sso.notOk().addContent(packages).addCalls("db.getSortedPackages", packages);
     }
 
     const packObjShort = await context.utils.constructPackageObjectShort(

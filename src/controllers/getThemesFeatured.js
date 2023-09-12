@@ -19,7 +19,7 @@ module.exports = {
     if (!col.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(col.content).addCalls("db.getFeaturedThemes", col);
+      return sso.notOk().addContent(col).addCalls("db.getFeaturedThemes", col);
     }
 
     const newCol = await utils.constructPackageObjectShort(col.content);

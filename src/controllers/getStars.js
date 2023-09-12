@@ -36,7 +36,7 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user.content).addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
     }
 
     let userStars = await context.database.getStarredPointersByUserID(user.content.id);
@@ -44,7 +44,7 @@ module.exports = {
     if (!userStars.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(userStars.content)
+      return sso.notOk().addContent(userStars)
                 .addCalls("auth.verifyAuth", user)
                 .addCalls("db.getStarredPointersByUserID", userStars);
     }
@@ -63,7 +63,7 @@ module.exports = {
     if (!packCol.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packCol.content)
+      return sso.notOk().addContent(packCol)
                 .addCalls("auth.verifyAuth", user)
                 .addCalls("db.getStarredPointersByUserID", userStars)
                 .addCalls("db.getPackageCollectionByID", packCol);

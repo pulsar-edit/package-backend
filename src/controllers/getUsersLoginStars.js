@@ -29,7 +29,7 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user.content)
+      return sso.notOk().addContent(user)
                         .addCalls("db.getUserByName", user);
     }
 
@@ -38,7 +38,7 @@ module.exports = {
     if (!pointerCollection.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(pointerCollection.content)
+      return sso.notOk().addContent(pointerCollection)
                         .addCalls("db.getUserByName", user)
                         .addCalls("db.getStarredPointersByUserID", pointerCollection);
     }
@@ -65,7 +65,7 @@ module.exports = {
     if (!packageCollection.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packageCollection.content)
+      return sso.notOk().addContent(packageCollection)
                         .addCalls("db.getUserByName", user)
                         .addCalls("db.getStarredPointersByUserID", pointerCollection)
                         .addCalls("db.getPackageCollectionByID", packageCollection);

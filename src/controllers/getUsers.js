@@ -48,7 +48,7 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user.content)
+      return sso.notOk().addContent(user)
                         .addCalls("auth.verifyAuth", user);
     }
 
