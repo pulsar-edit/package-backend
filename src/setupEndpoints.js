@@ -12,7 +12,11 @@ const endpoints = [
   require("./controllers/getUsers.js"),
   require("./controllers/getusersLogin.js"),
   require("./controllers/getUsersLoginStars.js"),
-  require("./controllers/postPackagesPackageNameVersionsVersionNameEventsUninstall.js")
+  require("./controllers/postPackagesPackageNameVersionsVersionNameEventsUninstall.js"),
+  require("./controllers/deletePackagesPackageNameVersionsVersionName.js"),
+  require("./controllers/getPackagesPackageNameVersionsVersionName.js"),
+  require("./controllers/getPackagesPackageNameVersionsVersionNameTarball.js"),
+  require("./controllers/postPackagesPackageNameVersions.js")
 ];
 
 // The CONST Context - Enables access to all other modules within the system
@@ -95,18 +99,23 @@ for (const node of endpoints) {
           }
 
           if (typeof node.preLogic === "function") {
-            node.preLogic(req, res, context);
+            await node.preLogic(req, res, context);
           }
 
           let obj = await node.logic(params, context);
 
           if (typeof node.postLogic === "function") {
-            node.postLogic(req, res, context);
+            await node.postLogic(req, res, context);
           }
 
           obj.addGoodStatus(node.endpoint.successStatus);
 
           obj.handleReturnHTTP(req, res, context);
+
+          if (typeof node.postReturnHTTP === "function") {
+            await node.postReturnHTTP(req, res, context, obj);
+          }
+
           return;
         });
       case "POST":
@@ -118,18 +127,23 @@ for (const node of endpoints) {
           }
 
           if (typeof node.preLogic === "function") {
-            node.preLogic(req, res, context);
+            await node.preLogic(req, res, context);
           }
 
           let obj = await node.logic(params, context);
 
           if (typeof node.postLogic === "function") {
-            node.postLogic(req, res, context);
+            await node.postLogic(req, res, context);
           }
 
           obj.addGoodStatus(node.endpoint.successStatus);
 
           obj.handleReturnHTTP(req, res, context);
+
+          if (typeof node.postReturnHTTP === "function") {
+            await node.postReturnHTTP(req, res, context, obj);
+          }
+
           return;
         });
       case "DELETE":
@@ -141,18 +155,23 @@ for (const node of endpoints) {
           }
 
           if (typeof node.preLogic === "function") {
-            node.preLogic(req, res, context);
+            await node.preLogic(req, res, context);
           }
 
           let obj = await node.logic(params, context);
 
           if (typeof node.postLogic === "function") {
-            node.postLogic(req, res, context);
+            await node.postLogic(req, res, context);
           }
 
           obj.addGoodStatus(node.endpoint.successStatus);
 
           obj.handleReturnHTTP(req, res, context);
+
+          if (typeof node.postReturnHTTP === "function") {
+            await node.postReturnHTTP(req, res, context, obj);
+          }
+
           return;
         });
       default:

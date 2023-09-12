@@ -3,7 +3,9 @@ const { performance } = require("node:perf_hooks");
 const validEnums = [
   "not_found",
   "server_error",
-  "not_supported"
+  "not_supported",
+  "unauthorized",
+  "bad_repo"
 ];
 
 const enumDetails = {
@@ -18,6 +20,14 @@ const enumDetails = {
   "not_supported": {
     code: 501,
     message: "While under development this feature is not supported."
+  },
+  "unauthorized": {
+    code: 401,
+    message: "Unauthorized"
+  },
+  "bad_repo": {
+    code: 400,
+    message: "That repo does not exist, or is inaccessible"
   }
 };
 

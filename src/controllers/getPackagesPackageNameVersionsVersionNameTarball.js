@@ -26,7 +26,7 @@ module.exports = {
   },
   params: {
     packageName: (context, req) => { return context.query.packageName(req); },
-    versionName: (context, req) => { return context.query.engine(req); }
+    versionName: (context, req) => { return context.query.engine(req.params.versionName); }
   },
   async logic(params, context) {
 

@@ -27,13 +27,13 @@ module.exports = {
   params: {
     auth: (context, req) => { return context.query.auth(req); }
   },
-  preLogic(req, res, context) {
+  async preLogic(req, res, context) {
     res.header("Access-Control-Allow-Methods", "GET");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Access-Control-Allow-Credentials");
     res.header("Access-Control-Allow-Origin", "https://web.pulsar-edit.dev");
     res.header("Access-Control-Allow-Credentials", true);
   },
-  postLogic(req, res, context) {
+  async postLogic(req, res, context) {
     res.set({ "Access-Control-Allow-Credentials": true });
   },
 
