@@ -21,6 +21,34 @@ expect.extend({
       };
     }
   },
+  // `expect().toBeTypeof(typeof)`
+  toBeTypeof(actual, want) {
+    if (typeof actual === want) {
+      return {
+        pass: true,
+        message: () => ""
+      };
+    } else {
+      return {
+        pass: false,
+        message: () => `Expected "${want}" but got "${typeof actual}"`
+      };
+    }
+  },
+  // `expect().toBeIncludedBy(ARRAY)`
+  toBeIncludedBy(actual, want) {
+    if (Array.isArray(want) && want.includes(actual)) {
+      return {
+        pass: true,
+        message: () => ""
+      };
+    } else {
+      return {
+        pass: false,
+        message: () => `Expected ${want} to include ${actual}`
+      };
+    }
+  },
   // `expect().toHaveHTTPCode()`
   toHaveHTTPCode(req, want) {
     // Type coercion here because the statusCode in the request object could be set as a string.

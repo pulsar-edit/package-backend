@@ -2,7 +2,7 @@
 // This mainly means to properly set timeouts, and to ensure that required
 // env vars are set properly.
 
-jest.setTimeout(3000000);
+//jest.setTimeout(3000000);
 
 const dbUrl = process.env.DATABASE_URL;
 // this gives us something like postgres://test-user@localhost:5432/test-db

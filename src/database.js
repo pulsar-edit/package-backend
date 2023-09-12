@@ -1128,7 +1128,7 @@ async function getUserByNodeID(id) {
       return {
         ok: false,
         content: `Unable to get User By NODE_ID: ${id}`,
-        short: "Not Found",
+        short: "not_found",
       };
     }
 
@@ -1137,13 +1137,13 @@ async function getUserByNodeID(id) {
       : {
           ok: false,
           content: `Unable to get User By NODE_ID: ${id}`,
-          short: "Server Error",
+          short: "server_error",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }

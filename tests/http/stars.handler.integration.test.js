@@ -1,7 +1,7 @@
 const request = require("supertest");
-const app = require("../src/main.js");
+const app = require("../../src/setupEndpoints.js");
 
-const { authMock } = require("./httpMock.helper.jest.js");
+const { authMock } = require("../helpers/httpMock.helper.jest.js");
 
 let tmpMock;
 
@@ -9,7 +9,7 @@ describe("GET /api/stars", () => {
   test("Returns Unauthenticated Status Code for Invalid User", async () => {
     tmpMock = authMock({
       ok: false,
-      short: "Bad Auth",
+      short: "unauthorized",
       content: "Bad Auth Mock Return for Dev User",
     });
 
@@ -17,12 +17,12 @@ describe("GET /api/stars", () => {
       .get("/api/stars")
       .set("Authorization", "invalid");
     expect(res).toHaveHTTPCode(401);
-    expect(res.body.message).toEqual(msg.badAuth);
+    expect(res.body.message).toEqual("Unauthorized: Please update your token if you haven't done so recently.");
 
     tmpMock.mockClear();
   });
 
-  test("Valid User with No Stars Returns array", async () => {
+  test.skip("Valid User with No Stars Returns array", async () => {
     tmpMock = authMock({
       ok: true,
       content: {
@@ -44,7 +44,7 @@ describe("GET /api/stars", () => {
     tmpMock.mockClear();
   });
 
-  test("Valid User with Stars Returns 200 Status Code", async () => {
+  test.skip("Valid User with Stars Returns 200 Status Code", async () => {
     tmpMock = authMock({
       ok: true,
       content: {

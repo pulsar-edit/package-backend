@@ -4,7 +4,7 @@
  * to listen on. As well as handling a graceful shutdown of the server.
  */
 
-const app = require("./main.js");
+const app = require("./setupEndpoints.js");
 const { port } = require("./config.js").getConfig();
 const logger = require("./logger.js");
 const database = require("./database.js");

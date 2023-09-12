@@ -2,8 +2,8 @@ module.exports = {
   endpoint: {
     method: "GET",
     paths: [ "/api/themes/featured" ],
-    rate_limit: "generic",
-    success_status: 200,
+    rateLimit: "generic",
+    successStatus: 200,
     options: {
       Allow: "GET",
       "X-Content-Type-Options": "nosniff"

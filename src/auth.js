@@ -23,7 +23,7 @@ async function verifyAuth(token, db) {
 
     return {
       ok: false,
-      short: "Bad Auth",
+      short: "unauthorized",
       content: "User Token not a valid format.",
     };
   }
@@ -47,7 +47,7 @@ async function verifyAuth(token, db) {
         case 401:
           // When the user provides bad authentication, lets tell them it's bad auth.
           logger.generic(6, "auth.verifyAuth() API Call Returning Bad Auth");
-          return { ok: false, short: "Bad Auth", content: userData };
+          return { ok: false, short: "unauthorized", content: userData };
           break;
         default:
           logger.generic(
@@ -56,7 +56,7 @@ async function verifyAuth(token, db) {
             { type: "object", obj: userData }
           );
 
-          return { ok: false, short: "Server Error", content: userData };
+          return { ok: false, short: "server_error", content: userData };
       }
     }
 
@@ -99,7 +99,7 @@ async function verifyAuth(token, db) {
 
     return {
       ok: false,
-      short: "Server Error",
+      short: "server_error",
       content: "An unexpected Error occured while verifying your user.",
     };
   }

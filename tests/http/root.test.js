@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../src/main.js");
+const app = require("../../src/setupEndpoints.js");
 
 describe("Get /", () => {
   test("Should respond with an HTML document noting the server version", async () => {

@@ -36,7 +36,9 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user)
+                        .addMessage("Please update your token if you haven't done so recently.")
+                        .addCalls("auth.verifyAuth", user);
     }
 
     let userStars = await context.database.getStarredPointersByUserID(user.content.id);

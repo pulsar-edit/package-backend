@@ -1,4 +1,4 @@
-const query = require("../src/query.js");
+const query = require("../../src/query.js");
 
 // Page Testing
 

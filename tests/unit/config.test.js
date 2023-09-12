@@ -1,4 +1,4 @@
-const config = require("../src/config.js");
+const config = require("../../src/config.js");
 const Joi = require("joi");
 
 describe("Config Returns all Expected Values", () => {

@@ -6,10 +6,10 @@
  * And encoding data into `base64` as expected on the fly.
  */
 
-const Git = require("../src/vcs_providers/git.js");
+const Git = require("../../src/vcs_providers/git.js");
 
-const auth = require("../src/auth.js");
-const vcs = require("../src/vcs.js");
+const auth = require("../../src/auth.js");
+const vcs = require("../../src/vcs.js");
 
 class HTTP {
   constructor(path) {

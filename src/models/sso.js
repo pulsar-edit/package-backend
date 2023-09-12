@@ -99,14 +99,16 @@ class SSO {
   }
 
   handleError(req, res, context) {
+    console.log(this.content);
+    console.log(this.calls);
 
-    let shortToUse, msgToUse;
+    let shortToUse, msgToUse, codeToUse;
 
-    if (typeof this.short === "string") {
+    if (typeof this.short === "string" && this.short.length > 0) {
       // Use the short given to us during the build stage
       shortToUse = this.short;
 
-    } else if (typeof this.content?.short === "string") {
+    } else if (typeof this.content?.short === "string" && this.content.short.length > 0) {
       // Use the short that's bubbled up from other calls
       shortToUse = this.content.short;
 
@@ -116,9 +118,11 @@ class SSO {
     }
 
     // Now that we have our short, we must determine the text of our message.
-    msgToUse = enumDetails[shortToUse].msg;
+    msgToUse = enumDetails[shortToUse]?.message ?? `Server Error: From ${shortToUse}`;
 
-    if (typeof this.message === "string") {
+    codeToUse = enumDetails[shortToUse]?.code ?? 500;
+
+    if (typeof this.message === "string" && this.message.length > 0) {
       msgToUse += `: ${this.message}`;
     }
     // TODO We should make use of our `calls` here.
@@ -126,7 +130,7 @@ class SSO {
     // But we also could use this to get more information to return. Such as
     // providing helpful error logs and such.
 
-    res.status(enumDetails[shortToUse].code).json({
+    res.status(codeToUse).json({
       message: msgToUse
     });
 

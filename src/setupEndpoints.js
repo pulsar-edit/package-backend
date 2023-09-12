@@ -2,40 +2,10 @@ const express = require("express");
 const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
 
+const endpoints = require("./controllers/endpoints.js");
+const context = require("./context.js");
+
 const app = express();
-
-const endpoints = [
-  require("./controllers/getStars.js"),
-  require("./controllers/getThemes.js"),
-  require("./controllers/getThemesFeatured.js"),
-  require("./controllers/getUpdates.js"),
-  require("./controllers/getUsers.js"),
-  require("./controllers/getusersLogin.js"),
-  require("./controllers/getUsersLoginStars.js"),
-  require("./controllers/postPackagesPackageNameVersionsVersionNameEventsUninstall.js"),
-  require("./controllers/deletePackagesPackageNameVersionsVersionName.js"),
-  require("./controllers/getPackagesPackageNameVersionsVersionName.js"),
-  require("./controllers/getPackagesPackageNameVersionsVersionNameTarball.js"),
-  require("./controllers/postPackagesPackageNameVersions.js")
-];
-
-// The CONST Context - Enables access to all other modules within the system
-// By passing this object to everywhere needed allows not only easy access
-// but greater control in mocking these later on
-const context = {
-  logger: require("./logger.js"),
-  database: require("./database.js"),
-  webhook: require("./webhook.js"),
-  server_version: require("../package.json").version,
-  query: require("./query.js"),
-  vcs: require("./vcs.js"),
-  config: require("./config.js").getConfig(),
-  common_handler: require("./handlers/common_handler.js"),
-  utils: require("./utils.js"),
-  sso: require("./models/sso.js"),
-  ssoPaginate: require("./models/ssoPaginate.js"),
-  ssoRedirect: require("./models/ssoRedirect.js")
-};
 
 // Define our Basic Rate Limiters
 const genericLimit = rateLimit({
@@ -73,6 +43,12 @@ const authLimit = rateLimit({
 app.set("trust proxy", true);
 
 app.use("/swagger-ui", express.static("docs/swagger"));
+
+// Some endpoints likely won't see any kind of migration anytime soon.
+// Because of their complexity, and how vital they are to keep working.
+const nonMigratedHandlers = require("./handlers/nonMigratedHandlers.js");
+
+nonMigratedHandlers(app, genericLimit, authLimit);
 
 // Setup all endpoints
 

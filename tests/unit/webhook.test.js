@@ -1,8 +1,8 @@
-const webhook = require("../src/webhook.js");
+const webhook = require("../../src/webhook.js");
 const superagent = require("superagent");
-const logger = require("../src/logger.js");
+const logger = require("../../src/logger.js");
 
-jest.mock("../src/logger.js", () => {
+jest.mock("../../src/logger.js", () => {
   return {
     generic: jest.fn(),
   };
