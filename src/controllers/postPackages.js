@@ -9,7 +9,7 @@ module.exports = {
       "/api/themes"
     ],
     rateLimit: "auth",
-    successStauts: 201,
+    successStatus: 201,
     options: {
       Allow: "POST, GET",
       "X-Content-Type-Options": "nosniff"
