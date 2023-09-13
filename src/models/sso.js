@@ -5,7 +5,8 @@ const validEnums = [
   "server_error",
   "not_supported",
   "unauthorized",
-  "bad_repo"
+  "bad_repo",
+  "package_exists"
 ];
 
 const enumDetails = {
@@ -28,6 +29,10 @@ const enumDetails = {
   "bad_repo": {
     code: 400,
     message: "That repo does not exist, or is inaccessible"
+  },
+  "package_exists": {
+    code: 409,
+    message: "A Package by that name already exists."
   }
 };
 

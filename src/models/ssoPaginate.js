@@ -14,7 +14,15 @@ class SSOPaginate extends SSO {
     let paramString = "";
 
     for (let param of params) {
-      paramString += `&param=${params[param]}`;
+      if (param === "query") {
+        // Since we know we want to keep search queries safe strings
+        const safeQuery = encodeURIComponent(
+          params[param].replace(/[<>"':;\\/]+/g, "")
+        );
+        paramString += `&${param}=${safeQuery}`;
+      } else {
+        paramString += `&${param}=${params[param]}`;
+      }
     }
 
     let linkString = "";

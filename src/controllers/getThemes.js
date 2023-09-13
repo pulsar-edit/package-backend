@@ -43,8 +43,8 @@ module.exports = {
     const ssoP = new context.ssoPaginate();
 
     ssoP.total = packages.pagination.total;
-    ssoP.limit = packages.pagination.total;
-    ssoP.buildLink(`${context.config.server_url}/api/themes`, page, params);
+    ssoP.limit = packages.pagination.limit;
+    ssoP.buildLink(`${context.config.server_url}/api/themes`, packages.pagination.page, params);
 
     return ssoP.isOk().addContent(packArray);
   }
