@@ -22,7 +22,7 @@ describe("GET /api/stars", () => {
     tmpMock.mockClear();
   });
 
-  test.skip("Valid User with No Stars Returns array", async () => {
+  test("Valid User with No Stars Returns array", async () => {
     tmpMock = authMock({
       ok: true,
       content: {
@@ -44,7 +44,7 @@ describe("GET /api/stars", () => {
     tmpMock.mockClear();
   });
 
-  test.skip("Valid User with Stars Returns 200 Status Code", async () => {
+  test("Valid User with Stars Returns 200 Status Code", async () => {
     tmpMock = authMock({
       ok: true,
       content: {
