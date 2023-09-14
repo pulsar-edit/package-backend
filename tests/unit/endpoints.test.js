@@ -34,6 +34,11 @@ describe("All endpoints are valid", () => {
       expect(endpoint.rateLimit).toBeIncludedBy([ "generic", "auth" ]);
       expect(endpoint.successStatus).toBeTypeof("number");
       expect(endpoint.options).toBeDefined();
+
+      if (endpoint.endpointKind) {
+        expect(endpoint.endpointKind).toBeTypeof("string");
+        expect(endpoint.endpointKind).toBeIncludedBy([ "raw", "default" ]);
+      }
     }
 
   });

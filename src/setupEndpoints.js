@@ -44,16 +44,48 @@ app.set("trust proxy", true);
 
 app.use("/swagger-ui", express.static("docs/swagger"));
 
-// Some endpoints likely won't see any kind of migration anytime soon.
-// Because of their complexity, and how vital they are to keep working.
-const nonMigratedHandlers = require("./handlers/nonMigratedHandlers.js");
+const endpointHandler = async function(node, req, res) {
+  let params = {};
 
-nonMigratedHandlers(app, genericLimit, authLimit);
+  for (const param in node.params) {
+    params[param] = node.params[param](context, req);
+  }
+
+  if (typeof node.preLogic === "function") {
+    await node.preLogic(req, res, context);
+  }
+
+  let obj;
+
+  if (node.endpoint.endpointKind === "raw") {
+    obj = await node.logic(req, res, context);
+    // If it's a raw endpoint, they must handle all other steps manually
+    return;
+
+  } else {
+    obj = await node.logic(params, context);
+  }
+
+  if (typeof node.postLogic === "function") {
+    await node.postLogic(req, res, context);
+  }
+
+  obj.addGoodStatus(node.endpoint.successStatus);
+
+  obj.handleReturnHTTP(req, res, context);
+
+  if (typeof node.postReturnHTTP === "function") {
+    await node.postReturnHTTP(req, res, context, obj);
+  }
+
+  return;
+};
 
 // Setup all endpoints
 
-for (const node of endpoints) {
+const pathOptions = [];
 
+for (const node of endpoints) {
   for (const path of node.endpoint.paths) {
 
     let limiter = genericLimit;
@@ -68,94 +100,26 @@ for (const node of endpoints) {
     switch(node.endpoint.method) {
       case "GET":
         app.get(path, limiter, async (req, res) => {
-          let params = {};
-
-          for (const param in node.params) {
-            params[param] = node.params[param](context, req);
-          }
-
-          if (typeof node.preLogic === "function") {
-            await node.preLogic(req, res, context);
-          }
-
-          let obj = await node.logic(params, context);
-
-          if (typeof node.postLogic === "function") {
-            await node.postLogic(req, res, context);
-          }
-
-          obj.addGoodStatus(node.endpoint.successStatus);
-
-          obj.handleReturnHTTP(req, res, context);
-
-          if (typeof node.postReturnHTTP === "function") {
-            await node.postReturnHTTP(req, res, context, obj);
-          }
-
-          return;
+          await endpointHandler(node, req, res);
         });
       case "POST":
         app.post(path, limiter, async (req, res) => {
-          let params = {};
-
-          for (const param in node.params) {
-            params[param] = node.params[param](context, req);
-          }
-
-          if (typeof node.preLogic === "function") {
-            await node.preLogic(req, res, context);
-          }
-
-          let obj = await node.logic(params, context);
-
-          if (typeof node.postLogic === "function") {
-            await node.postLogic(req, res, context);
-          }
-
-          obj.addGoodStatus(node.endpoint.successStatus);
-
-          obj.handleReturnHTTP(req, res, context);
-
-          if (typeof node.postReturnHTTP === "function") {
-            await node.postReturnHTTP(req, res, context, obj);
-          }
-
-          return;
+          await endpointHandler(node, req, res);
         });
       case "DELETE":
         app.delete(path, limiter, async (req, res) => {
-          let params = {};
-
-          for (const param in node.params) {
-            params[param] = node.params[param](context, req);
-          }
-
-          if (typeof node.preLogic === "function") {
-            await node.preLogic(req, res, context);
-          }
-
-          let obj = await node.logic(params, context);
-
-          if (typeof node.postLogic === "function") {
-            await node.postLogic(req, res, context);
-          }
-
-          obj.addGoodStatus(node.endpoint.successStatus);
-
-          obj.handleReturnHTTP(req, res, context);
-
-          if (typeof node.postReturnHTTP === "function") {
-            await node.postReturnHTTP(req, res, context, obj);
-          }
-
-          return;
+          await endpointHandler(node, req, res);
         });
       default:
-        app.options(path, genericLimit, async (req, res) => {
-          res.header(node.endpoint.options);
-          res.sendStatus(204);
-          return;
-        });
+        if (!pathOptions.includes(path)) {
+          // Only add one "OPTIONS" entry per path
+          app.options(path, genericLimit, async (req, res) => {
+            res.header(node.endpoint.options);
+            res.sendStatus(204);
+            return;
+          });
+          pathOptions.push(path);
+        }
     }
   }
 }
