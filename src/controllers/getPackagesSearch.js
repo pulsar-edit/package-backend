@@ -1,53 +1,6 @@
 module.exports = {
   docs: {
-    parameters: [
-      {
-        name: "q",
-        in: "query",
-        schema: { type: "string" },
-        example: "generic-lsp",
-        required: true,
-        description: "Search query."
-      },
-      {
-        name: "page",
-        in: "query",
-        schema: { type: "number", minimum: 1, default: 1 },
-        example: 1,
-        allowEmptyValue: true,
-        description: "The page of search results to return."
-      },
-      {
-        name: "sort",
-        in: "query",
-        schema: {
-          type: "string",
-          enum: [
-            "downloads",
-            "created_at",
-            "updated_at",
-            "stars",
-            "relevance"
-          ],
-          default: "relevance"
-        },
-        example: "downloads",
-        allowEmptyValue: true,
-        description: "Method to sort the results."
-      },
-      {
-        name: "direction",
-        in: "query",
-        schema: {
-          type: "string",
-          enum: [ "desc", "asc" ],
-          default: "desc"
-        },
-        example: "desc",
-        allowEmptyValue: true,
-        description: "Direction to list search results."
-      }
-    ]
+
   },
   endpoint: {
     method: "GET",

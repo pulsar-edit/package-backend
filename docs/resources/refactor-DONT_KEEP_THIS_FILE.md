@@ -63,3 +63,13 @@ Meaning the only tests we would likely need are:
 I think this is plenty to focus on now. At the very least the changes described here would likely mean a rewrite of about or over half the entire codebase. But if all goes to plan, would mean that every single piece of logic is more modular, keeping logic related to itself within the same file, and if tests are effected as hoped, would mean a much more robust testing solution, that who knows, may actually be able to achieve near 100% testing coverage.
 
 One side effect of all this change, means the possibility of generating documentation of the API based totally on the documentation itself, where we no longer would be reliant on my own `@confused-techie/quick-webserver-docs` module, nor having to ensure comments are updated.
+
+## Documentation
+
+Alright, so some cool ideas about documentation.
+
+Within `./src/parameters` we have modules named after the common name of any given parameter.
+
+Then to ensure our OpenAPI docs are ALWAYS up to date with the actual code, we take the `params` object of every single endpoint module, and we actually iterate through the `params` there and match those against these modules within `parameters`.
+
+So that the parameters within our docs will always match exactly with what's actually used. This does mean the name we use for the parameter within code has to match up with the names of the files.
