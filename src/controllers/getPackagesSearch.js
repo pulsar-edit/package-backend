@@ -1,6 +1,10 @@
+/**
+ * @module getPackagesSearch
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Searches all packages."
   },
   endpoint: {
     method: "GET",
@@ -19,6 +23,16 @@ module.exports = {
     query: (context, req) => { return context.query.query(req); }
   },
 
+  /**
+   * @async
+   * @memberof getPackagesSearch
+   * @function logic
+   * @desc Allows user to search through all packages. Using specified query params.
+   * @param {object} params - The available query parameters.
+   * @param {object} context - The Endpoint Context.
+   * @todo Use custom LCS search.
+   * @returns {ssoPaginate}
+   */
   async logic(params, context) {
     // Because the task of implementing the custom search engine is taking longer
     // than expected, this will instead use super basic text searching on the DB side.

@@ -1,6 +1,10 @@
+/**
+ * @module getPackages
+ */
+
 module.exports = {
   docs: {
-
+    summary: "List all packages"
   },
   endpoint: {
     method: "GET",
@@ -22,6 +26,15 @@ module.exports = {
     fileExtension: (context, req) => { return context.query.fileExtension(req); }
   },
 
+  /**
+   * @async
+   * @memberof getPackages
+   * @function logic
+   * @desc Returns all packages to user, filtered by query params.
+   * @param {object} params - The available query parameters.
+   * @param {object} context - The Endpoint Context.
+   * @returns {ssoPaginate}
+   */
   async logic(params, context) {
     const packages = await context.database.getSortedPackages(params);
 

@@ -1,6 +1,10 @@
+/**
+ * @module getPackagesPackageNameStargazers
+ */
+
 module.exports = {
   docs: {
-
+    summary: "List the users that have starred a package."
   },
   endpoint: {
     method: "GET",
@@ -19,6 +23,15 @@ module.exports = {
     packageName: (context, req) => { return context.query.packageName(req); }
   },
 
+  /**
+   * @async
+   * @memberof getPackagesPackageNameStargazers
+   * @function logic
+   * @desc Returns an array of `star_gazers` from a specified package.
+   * @param {object} params - The available query parameters.
+   * @param {object} context - The Endpoint Context.
+   * @returns {sso}
+   */
   async logic(params, context) {
     // The following can't be executed in user mode because we need the pointer
     const pack = await context.database.getPackageByName(params.packageName);

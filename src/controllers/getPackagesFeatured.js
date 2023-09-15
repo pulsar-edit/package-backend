@@ -1,6 +1,10 @@
+/**
+ * @module getPackagesFeatured
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Returns all featured packages. Previously undocumented endpoint."
   },
   endpoint: {
     method: "GET",
@@ -13,6 +17,13 @@ module.exports = {
     }
   },
   params: {},
+
+  /**
+   * @async
+   * @memberof getPackagesFeatured
+   * @function logic
+   * @desc Retreived a list of the featured packages, as Package Object Shorts.
+   */
   async logic(params, context) {
     // TODO: Does not support engine query parameter as of now
     const packs = await context.database.getFeaturedPackages();

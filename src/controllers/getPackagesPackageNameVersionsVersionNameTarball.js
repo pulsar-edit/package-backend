@@ -1,3 +1,7 @@
+/**
+ * @module getPackagesPackageNameVersionsVersionNameTarball
+ */
+
 const { URL } = require("node:url");
 
 module.exports = {
@@ -28,6 +32,16 @@ module.exports = {
     packageName: (context, req) => { return context.query.packageName(req); },
     versionName: (context, req) => { return context.query.engine(req.params.versionName); }
   },
+
+  /**
+   * @async
+   * @memberof getPackagesPackageNameVersionsVersionNameTarball
+   * @function logic
+   * @desc Get the tarball of a specific package version.
+   * @param {object} params - The available query parameters.
+   * @param {object} context - The Endpoint Context.
+   * @returns {sso}
+   */
   async logic(params, context) {
 
     // First ensure our version is valid

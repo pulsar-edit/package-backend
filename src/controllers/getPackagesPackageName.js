@@ -1,6 +1,10 @@
+/**
+ * @module getPackagesPackageName
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Show package details."
   },
   endpoint: {
     method: "GET",
@@ -17,11 +21,20 @@ module.exports = {
   },
   params: {
     engine: (context, req) => { return context.query.engine(req.query.engine); },
-    name: (context, req) => { return context.query.packageName(req); }
+    packageName: (context, req) => { return context.query.packageName(req); }
   },
 
+  /**
+   * @async
+   * @memberof getPackagesPackageName
+   * @function logic
+   * @desc Returns the data of a single requested package, as a Package Object Full.
+   * @param {object} params - The available query parameters.
+   * @param {object} context - The Endpoint Context.
+   * @returns {sso}
+   */
   async logic(params, context) {
-    let pack = await context.database.getPackageByName(params.name, true);
+    let pack = await context.database.getPackageByName(params.packageName, true);
 
     if (!pack.ok) {
       const sso = new context.sso();

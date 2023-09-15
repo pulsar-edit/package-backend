@@ -1,6 +1,10 @@
+/**
+ * @module getPackagesPackageNameVersionsVersionName
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Get the details of a specific package version."
   },
   endpoint: {
     method: "GET",
@@ -20,6 +24,15 @@ module.exports = {
     versionName: (context, req) => { return context.query.engine(req.params.versionName); }
   },
 
+  /**
+   * @async
+   * @memberof getPackagesPackageNameVersionsVersionName
+   * @function logic
+   * @desc Used to retreive the details of a specific version of a package.
+   * @param {object} params - The available query parameters.
+   * @param {object} context - The Endpoint Context.
+   * @returns {sso}
+   */
   async logic(params, context) {
     // Check the truthiness of the returned query engine
     if (params.versionName === false) {
