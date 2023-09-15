@@ -76,7 +76,11 @@ class SSO {
   }
 
   addShort(enumValue) {
-    if (typeof this.short !== "string" && typeof enumValue === "string" && validEnums.includes(enumValue)) {
+    if (
+      !this.short?.length > 0 &&
+      typeof enumValue === "string" &&
+      validEnums.includes(enumValue)
+    ) {
       // Only assign short once
       this.short = enumValue;
     }
@@ -104,8 +108,7 @@ class SSO {
   }
 
   handleError(req, res, context) {
-    console.log(this.content);
-    console.log(this.calls);
+    console.log(this);
 
     let shortToUse, msgToUse, codeToUse;
 

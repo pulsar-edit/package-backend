@@ -32,7 +32,7 @@ const config = {
         "<rootDir>/tests/helpers/global.setup.jest.js"
       ],
       testMatch: [
-        "<rootDir>/tests/unit/**.test.js"
+        "<rootDir>/tests/unit/**/**.test.js"
       ]
     }
   ]

@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../src/main.js");
+const app = require("../../src/setupEndpoints.js");
 
 describe("Get /api/login", () => {
   test("Returns proper Status Code", async () => {

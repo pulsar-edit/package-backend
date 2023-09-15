@@ -1,4 +1,4 @@
-const endpoint = require("../../src/controllers/postPackagesPackageNameVersions.js");
+const endpoint = require("../../../src/controllers/postPackagesPackageNameVersions.js");
 
 describe("Has features expected", () => {
   test("Has correct endpoint features", () => {

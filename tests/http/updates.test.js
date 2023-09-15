@@ -1,8 +1,7 @@
 const request = require("supertest");
-const app = require("../src/main.js");
+const app = require("../../src/setupEndpoints.js");
 
 describe("GET /api/updates", () => {
-  test.todo("/api/updates currentlty returns Not Supported.");
   test("Returns NotSupported Status Code.", async () => {
     const res = await request(app).get("/api/updates");
     expect(res).toHaveHTTPCode(501);

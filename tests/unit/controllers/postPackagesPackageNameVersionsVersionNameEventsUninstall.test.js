@@ -1,5 +1,5 @@
-const endpoint = require("../../src/controllers/postPackagesPackageNameVersionsVersionNameEventsUninstall.js");
-const context = require("../../src/context.js");
+const endpoint = require("../../../src/controllers/postPackagesPackageNameVersionsVersionNameEventsUninstall.js");
+const context = require("../../../src/context.js");
 
 describe("Has features expected", () => {
   test("Has correct endpoint features", () => {
