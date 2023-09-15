@@ -1,6 +1,10 @@
+/**
+ * @module getLogin
+ */
+
 module.exports = {
   docs: {
-
+    summary: "OAuth callback URL."
   },
   endpoint: {
     method: "GET",

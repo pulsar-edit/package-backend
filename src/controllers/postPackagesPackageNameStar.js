@@ -1,6 +1,10 @@
+/**
+ * @module postPackagesPackageNameStar
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Star a package."
   },
   endpoint: {
     method: "POST",

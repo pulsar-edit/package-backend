@@ -1,6 +1,10 @@
+/**
+ * @module getThemesSearch
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Get featured packages that are themes. Previously undocumented."
   },
   endpoint: {
     method: "GET",

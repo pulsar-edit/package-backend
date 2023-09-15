@@ -1,6 +1,10 @@
+/**
+ * @module postPackagesPackageNameVersions
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Creates a new package version."
   },
   endpoint: {
     method: "POST",

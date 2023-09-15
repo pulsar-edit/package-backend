@@ -1,4 +1,11 @@
+/**
+ * @module getThemesFeatured
+ */
+
 module.exports = {
+  docs: {
+    summary: "Display featured packages that are themes."
+  },
   endpoint: {
     method: "GET",
     paths: [ "/api/themes/featured" ],

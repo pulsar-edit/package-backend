@@ -1,8 +1,12 @@
+/**
+ * @module getPat
+ */
+
 const superagent = require("superagent");
 
 module.exports = {
   docs: {
-
+    summary: "PAT Token Signup URL."
   },
   endpoint: {
     method: "GET",

@@ -1,8 +1,12 @@
+/**
+ * @module getOauth
+ */
+
 const superagent = require("superagent");
 
 module.exports = {
   docs: {
-
+    summary: "OAuth Callback URL."
   },
   endpoint: {
     method: "GET",

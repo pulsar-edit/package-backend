@@ -1,6 +1,10 @@
+/**
+ * @module DeletePackagesPackageNameStar
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Unstar a package."
   },
   endpoint: {
     method: "DELETE",

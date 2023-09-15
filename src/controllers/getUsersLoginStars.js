@@ -1,3 +1,7 @@
+/**
+ * @module getUsersLoginStars
+ */
+ 
 module.exports = {
   docs: {
     summary: "List a user's starred packages.",

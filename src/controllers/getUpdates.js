@@ -1,3 +1,7 @@
+/**
+ * @module getUpdates
+ */
+ 
 module.exports = {
   docs: {
     summary: "List Pulsar Updates",

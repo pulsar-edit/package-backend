@@ -1,3 +1,7 @@
+/**
+ * @module getUsersLogin
+ */
+ 
 module.exports = {
   docs: {
     summary: "Display the details of any user, as well as the packages they have published.",

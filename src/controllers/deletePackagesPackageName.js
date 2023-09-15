@@ -1,6 +1,10 @@
+/**
+ * @module deletePackagesPackageName
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Delete a package."
   },
   endpoint: {
     method: "DELETE",

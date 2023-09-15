@@ -1,6 +1,10 @@
+/**
+ * @module getRoot
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Non-Essential endpoint to return status message, and link to Swagger Instance."
   },
   endpoint: {
     method: "GET",

@@ -1,6 +1,10 @@
+/**
+ * @module postPackages
+ */
+
 module.exports = {
   docs: {
-
+    summary: "Publishes a new Package."
   },
   endpoint: {
     method: "POST",

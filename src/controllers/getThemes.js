@@ -1,5 +1,11 @@
+/**
+ * @module getThemes
+ */
 
 module.exports = {
+  docs: {
+    summary: "List all packages that are themes."
+  },
   endpoint: {
     method: "GET",
     paths: [ "/api/themes" ],

@@ -1,3 +1,7 @@
+/**
+ * @module getUsers
+ */
+ 
 module.exports = {
   docs: {
     summary: "Display details of the currently authenticated user. This endpoint is undocumented and is somewhat strange.",
