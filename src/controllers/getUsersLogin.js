@@ -1,18 +1,31 @@
 /**
  * @module getUsersLogin
  */
- 
+
 module.exports = {
   docs: {
     summary: "Display the details of any user, as well as the packages they have published.",
-    responses: [
-      {
-        200: {
-          description: "The returned details of a specific user.",
-          content: {}
+    responses: {
+      200: {
+        description: "The returned details of a specific user.",
+        content: {
+          // This references the file name of a `./tests/models` model
+          "application/json": "$userObjectPublic"
+        }
+      },
+      404: {
+        description: "The User requested cannot be found.",
+        content: {
+          "application/json": "$message"
+        }
+      },
+      500: {
+        description: "An error has occured.",
+        content: {
+          "application/json": "$message"
         }
       }
-    ]
+    }
   },
   endpoint: {
     method: "GET",
@@ -53,8 +66,8 @@ module.exports = {
     const returnUser = {
       username: user.content.username,
       avatar: user.content.avatar,
-      created_at: user.content.created_at,
-      data: user.content.data,
+      created_at: `${user.content.created_at}`,
+      data: user.content.data ?? {},
       packages: [], // included as it should be used in the future
     };
 

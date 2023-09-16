@@ -73,3 +73,8 @@ Within `./src/parameters` we have modules named after the common name of any giv
 Then to ensure our OpenAPI docs are ALWAYS up to date with the actual code, we take the `params` object of every single endpoint module, and we actually iterate through the `params` there and match those against these modules within `parameters`.
 
 So that the parameters within our docs will always match exactly with what's actually used. This does mean the name we use for the parameter within code has to match up with the names of the files.
+
+Additionally, for the content, we can reference a fileName from ./tests/models so that we can accomplish the following:
+
+* Use that object's `schema` and `example` to generate an object
+* We can also possibly use this to ensure the return matches what we expect.

@@ -9,8 +9,9 @@ const config = {
     "clover"
   ],
   coveragePathIgnorePatterns: [
-    "<rootDir>/tests/fixtures/**",
-    "<rootDir>/node_modules/**"
+    "<rootDir>/tests/",
+    "<rootDir>/test/",
+    "<rootDir>/node_modules/"
   ],
   projects: [
     {

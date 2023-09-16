@@ -1096,14 +1096,13 @@ async function getUserByName(username) {
       : {
           ok: false,
           content: `Unable to query for user: ${username}`,
-          short: "Not Found",
+          short: "not_found",
         };
   } catch (err) {
     return {
       ok: false,
-      content: "Generic Error",
-      short: "Server Error",
-      error: err,
+      content: err,
+      short: "server_error"
     };
   }
 }
