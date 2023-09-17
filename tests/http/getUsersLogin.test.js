@@ -2,7 +2,6 @@ const endpoint = require("../../src/controllers/getUsersLogin.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPublic.js");
-const { matchesSuccessObject } = require("../helpers/utils.helper.jest.js");
 
 describe("Behaves as expected", () => {
 
@@ -45,10 +44,7 @@ describe("Behaves as expected", () => {
     expect(res.content).toMatchObject(userObject.test);
     expect(res.content.username).toBe(userObj.username);
     expect(res.content.avatar).toBe(userObj.avatar);
-
-    // We also want to ensure that the object matches what the docs say it should
-    const match = matchesSuccessObject(res, endpoint);
-    expect(match).toBeTruthy();
+    expect(res).toMatchEndpointSuccessObject(endpoint);
     // TODO delete once there's a method to do so
   });
 });

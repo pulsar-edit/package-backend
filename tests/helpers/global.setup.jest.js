@@ -49,6 +49,35 @@ expect.extend({
       };
     }
   },
+  // `expect().toMatchEndpointSuccessObject(endpoint)`
+  toMatchEndpointSuccessObject(sso, endpoint) {
+    let done = false;
+    for (const response in endpoint.docs.responses) {
+      // We use `==` to facilitate type coercion
+      if (response == endpoint.endpoint.successStatus) {
+        let obj = endpoint.docs.responses[response].content["application/json"];
+
+        if (obj.startsWith("$")) {
+          obj = require(`../models/${obj.replace("$","")}.js`);
+        }
+
+        expect(sso.content).toMatchObject(obj.test);
+        done = true;
+        break;
+      }
+    }
+    if (done) {
+      return {
+        pass: true, message: () => ""
+      };
+    } else {
+      return {
+        pass: false,
+        message: () =>
+          `Unable to find ${endpoint.endpoint.successStatus}.`
+      };
+    }
+  },
   // `expect().toHaveHTTPCode()`
   toHaveHTTPCode(req, want) {
     // Type coercion here because the statusCode in the request object could be set as a string.

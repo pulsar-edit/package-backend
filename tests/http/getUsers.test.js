@@ -2,7 +2,6 @@ const endpoint = require("../../src/controllers/getUsers.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPrivate.js");
-const { matchesSuccessObject } = require("../helpers/utils.helper.jest.js");
 
 describe("Behaves as expected", () => {
 
@@ -51,9 +50,7 @@ describe("Behaves as expected", () => {
 
     expect(sso.ok).toBe(true);
     expect(sso.content).toMatchObject(testUser);
-
-    const match = matchesSuccessObject(sso, endpoint);
-    expect(match).toBeTruthy();
+    expect(sso).toMatchEndpointSuccessObject(endpoint);
   });
 });
 
