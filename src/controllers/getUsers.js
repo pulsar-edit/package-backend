@@ -1,19 +1,19 @@
 /**
  * @module getUsers
  */
- 
+
 module.exports = {
   docs: {
     summary: "Display details of the currently authenticated user. This endpoint is undocumented and is somewhat strange.",
     description: "This endpoint only exists on the web version of the upstream API. Having no backend equivolent.",
-    responses: [
-      {
-        200: {
-          description: "Details of the Authenticated User Account.",
-          content: {}
+    responses: {
+      200: {
+        description: "Details of the Authenticated User Account.",
+        content: {
+          "application/json": "$userObjectPrivate"
         }
       }
-    ]
+    }
   },
   endpoint: {
     method: "GET",

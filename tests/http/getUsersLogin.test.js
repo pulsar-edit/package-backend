@@ -2,6 +2,7 @@ const endpoint = require("../../src/controllers/getUsersLogin.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPublic.js");
+const { matchesSuccessObject } = require("../helpers/utils.helper.jest.js");
 
 describe("Behaves as expected", () => {
 
@@ -12,6 +13,8 @@ describe("Behaves as expected", () => {
     const res = await endpoint.logic({}, localContext);
 
     expect(spy).toBeCalledTimes(1);
+
+    spy.mockClear();
   });
 
   test("Returns bad SSO on failure", async () => {
@@ -44,8 +47,6 @@ describe("Behaves as expected", () => {
     expect(res.content.avatar).toBe(userObj.avatar);
 
     // We also want to ensure that the object matches what the docs say it should
-    const { matchesSuccessObject } = require("../helpers/utils.helper.jest.js");
-
     const match = matchesSuccessObject(res, endpoint);
     expect(match).toBeTruthy();
     // TODO delete once there's a method to do so

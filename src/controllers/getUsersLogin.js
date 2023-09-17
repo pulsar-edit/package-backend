@@ -7,7 +7,7 @@ module.exports = {
     summary: "Display the details of any user, as well as the packages they have published.",
     responses: {
       200: {
-        description: "The returned details of a specific user.",
+        description: "The public details of a specific user.",
         content: {
           // This references the file name of a `./tests/models` model
           "application/json": "$userObjectPublic"
@@ -15,12 +15,6 @@ module.exports = {
       },
       404: {
         description: "The User requested cannot be found.",
-        content: {
-          "application/json": "$message"
-        }
-      },
-      500: {
-        description: "An error has occured.",
         content: {
           "application/json": "$message"
         }

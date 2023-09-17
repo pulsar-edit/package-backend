@@ -13,6 +13,9 @@ describe("Has features expected", () => {
     expect(endpoint.endpoint).toMatchObject(expected);
   });
 
+});
+
+describe("Parameters function as expected", () => {
   test("Returns params as provided", () => {
     const req = {
       params: {
