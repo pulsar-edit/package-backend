@@ -92,6 +92,15 @@
         "code",
         "userTesting"
       ]
+    },
+    {
+      "login": "JoanVicens",
+      "name": "Joan Vicens",
+      "avatar_url": "https://avatars.githubusercontent.com/u/38570230?v=4",
+      "profile": "https://joanvicens.github.io/",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
