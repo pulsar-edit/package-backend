@@ -31,7 +31,7 @@ Creating this code base and the interactions it has, has been a massive feat wit
 If you'd like to learn more about the Pulsar / Atom Backend or learn how to contribute then check out the links below:
 
 * If you'd like to understand at a high level how the `package-backend` works read our [Architecture file](ARCHITECTURE.md).
-* If you'd like to contribute, read the [docs](/docs/reference/index.md).
+* If you'd like to contribute, read the [docs](CONTRIBUTING.md).
 * To read about the original research and code that started the backend, visit [Atom Community Server Backend](https://github.com/confused-Techie/atom-community-server-backend) which was the original codebase of this project written in Golang. This was later switched to JavaScript to provide more broad support from contributors.
 * To visit the source code of the [Pulsar Backend Package Repository](https://github.com/pulsar-edit/package-backend).
 * To visit the source code of the [Atom Backend](https://github.com/confused-Techie/atom-backend).
