@@ -13,7 +13,11 @@ class SSOPaginate extends SSO {
   buildLink(url, currentPage, params) {
     let paramString = "";
 
-    for (let param of params) {
+    for (let param in params) {
+      // We manually assign the page query so we will skip
+      if (param === "page") {
+        continue;
+      }
       if (param === "query") {
         // Since we know we want to keep search queries safe strings
         const safeQuery = encodeURIComponent(
@@ -31,7 +35,7 @@ class SSOPaginate extends SSO {
     linkString += `<${url}?page=${this.total}${paramString}>; rel="last"`;
 
     if (currentPage !== this.total) {
-      linkString += `, <${url}?page=${currentPage + 1}${paramString}>; rel="next"`;
+      linkString += `, <${url}?page=${parseInt(currentPage) + 1}${paramString}>; rel="next"`;
     }
 
     this.link = linkString;

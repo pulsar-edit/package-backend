@@ -121,8 +121,8 @@ async function insertNewPackage(pack) {
   return await sqlStorage
     .begin(async (sqlTrans) => {
       const packageType =
-        typeof pack.metadata.themes === "string" &&
-        pack.metadata.themes.match(/^(?:themes|ui)$/i) !== null
+        typeof pack.metadata.theme === "string" &&
+        pack.metadata.theme.match(/^(?:syntax|ui)$/i) !== null
           ? "theme"
           : "package";
 
