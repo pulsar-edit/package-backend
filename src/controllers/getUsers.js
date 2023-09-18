@@ -23,7 +23,7 @@ module.exports = {
     options: {
       Allow: "GET",
       "Access-Control-Allow-Methods": "GET",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization, Acces-Control-Allow-Credentials",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Credentials",
       "Access-Control-Allow-Origin": "https://web.pulsar-edit.dev",
       "Access-Control-Allow-Credentials": true
     }

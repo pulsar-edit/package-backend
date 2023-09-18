@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../src/main.js");
+const app = require("../../src/setupEndpoints.js");
 
 describe("Ensure Options Method Returns as Expected", () => {
   const rateLimitHeaderCheck = (res) => {

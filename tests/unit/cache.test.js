@@ -1,4 +1,4 @@
-const cache = require("../src/cache.js");
+const cache = require("../../src/cache.js");
 const Joi = require("joi");
 
 test("Cache Creates Object As Expected", async () => {

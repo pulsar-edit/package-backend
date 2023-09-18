@@ -96,7 +96,16 @@ for (const node of endpoints) {
       limiter = genericLimit;
     }
 
-    // Don't break on switch, so default can provide `OPTIONS` endpoint
+    if (!pathOptions.includes(path)) {
+      app.options(path, genericLimit, async (req, res) => {
+        res.header(node.endpoint.options);
+        res.sendStatus(204);
+        return;
+      });
+
+      pathOptions.push(path);
+    }
+
     switch(node.endpoint.method) {
       case "GET":
         app.get(path, limiter, async (req, res) => {
@@ -111,16 +120,9 @@ for (const node of endpoints) {
           await endpointHandler(node, req, res);
         });
       default:
-        if (!pathOptions.includes(path)) {
-          // Only add one "OPTIONS" entry per path
-          app.options(path, genericLimit, async (req, res) => {
-            res.header(node.endpoint.options);
-            res.sendStatus(204);
-            return;
-          });
-          pathOptions.push(path);
-        }
+        console.log(`Unsupported method: ${node.endpoint.method} for ${path}`);
     }
+
   }
 }
 

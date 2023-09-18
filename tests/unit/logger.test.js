@@ -1,4 +1,4 @@
-const logger = require("../src/logger.js");
+const logger = require("../../src/logger.js");
 
 global.console.log = jest.fn();
 

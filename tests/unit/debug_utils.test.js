@@ -1,4 +1,4 @@
-const debug_utils = require("../src/debug_utils.js");
+const debug_utils = require("../../src/debug_utils.js");
 
 describe("Test lengths Returned by different Variables", () => {
   const objectCases = [
