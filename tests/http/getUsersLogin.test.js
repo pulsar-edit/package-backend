@@ -48,3 +48,18 @@ describe("Behaves as expected", () => {
     // TODO delete once there's a method to do so
   });
 });
+
+describe("HTTP Handling works", () => {
+  test("Calls the right function", async () => {
+    const request = require("supertest");
+    const app = require("../../src/setupEndpoints.js");
+
+    const spy = jest.spyOn(endpoint, "logic");
+
+    const res = await request(app).get("/api/users/confused-Techie");
+
+    expect(spy).toBeCalledTimes(1);
+
+    spy.mockClear();
+  });
+});

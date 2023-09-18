@@ -110,3 +110,18 @@ describe("Behaves as expected", () => {
     expect(sso.content.content).toBe("Test Failure");
   });
 });
+
+describe("HTTP Handling works", () => {
+  test("Calls the right function", async () => {
+    const request = require("supertest");
+    const app = require("../../src/setupEndpoints.js");
+
+    const spy = jest.spyOn(endpoint, "logic");
+
+    const res = await request(app).get("/api/themes");
+
+    expect(spy).toBeCalledTimes(1);
+
+    spy.mockClear();
+  });
+});

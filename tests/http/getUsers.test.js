@@ -89,3 +89,18 @@ describe("Extra functions behave", () => {
     expect(headerObj).toMatchObject(expected);
   });
 });
+
+describe("HTTP Handling works", () => {
+  test("Calls the right function", async () => {
+    const request = require("supertest");
+    const app = require("../../src/setupEndpoints.js");
+
+    const spy = jest.spyOn(endpoint, "logic");
+
+    const res = await request(app).get("/api/users");
+
+    expect(spy).toBeCalledTimes(1);
+
+    spy.mockClear();
+  });
+});
