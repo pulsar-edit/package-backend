@@ -76,8 +76,7 @@ describe("Behaves as expected", () => {
       },
       context
     );
-    console.log(sso);
-    expect(false).toBeTruthy();
+
     expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(1);
