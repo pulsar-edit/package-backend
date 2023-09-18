@@ -31,9 +31,9 @@ describe("Behaves as expected", () => {
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(0);
     expect(sso.link).toBe(
-      `<${process.env.SERVERURL}/api/themes?page=0&sort=downloads&direction=desc>;`
+      `<${context.config.server_url}/api/themes?page=0&sort=downloads&direction=desc>;`
       + ' rel="self", '
-      + `<${process.env.SERVERURL}/api/themes?page=0&sort=downloads&direction=desc>;`
+      + `<${context.config.server_url}/api/themes?page=0&sort=downloads&direction=desc>;`
       + ' rel="last"'
     );
   });
@@ -82,12 +82,12 @@ describe("Behaves as expected", () => {
     expect(sso.content.length).toBe(1);
     expect(sso.content[0].name).toBe("test-package");
     expect(sso.link).toBe(
-      `<${process.env.SERVERURL}/api/themes?page=1&sort=downloads&direction=desc>;`
+      `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;`
       + ' rel="self", '
-      + `<${process.env.SERVERURL}/api/themes?page=1&sort=downloads&direction=desc>;`
+      + `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;`
       + ' rel="last"'
     );
-
+    // TODO test object structure to known good
     await database.removePackageByName("test-package", true);
   });
 
