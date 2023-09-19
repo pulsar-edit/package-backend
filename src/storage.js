@@ -8,7 +8,7 @@
 const { Storage } = require("@google-cloud/storage");
 const logger = require("./logger.js");
 const { CacheObject } = require("./cache.js");
-const ServerStatus = require("./ServerStatusObject.js");
+const sso = require("./models/sso.js");
 const { GCLOUD_STORAGE_BUCKET, GOOGLE_APPLICATION_CREDENTIALS } =
   require("./config.js").getConfig();
 
@@ -72,13 +72,11 @@ async function getBanList() {
 
       cachedBanlist = new CacheObject(JSON.parse(contents));
       cachedBanlist.last_validate = Date.now();
-      return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
+      return new sso().isOk().addContent(cachedBanlist.data);
     } catch (err) {
-      return new ServerStatus()
-        .notOk()
-        .setShort("Server Error")
-        .setContent(err)
-        .build();
+      return new sso().notOk()
+                      .addShort("server_error")
+                      .addCalls("getGcpContent", err);
     }
   };
 
@@ -89,7 +87,7 @@ async function getBanList() {
 
   if (!cachedBanlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
+    return new sso().isOk().addContent(cachedBanlist.data);
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -112,16 +110,12 @@ async function getFeaturedPackages() {
 
       cachedFeaturedlist = new CacheObject(JSON.parse(contents));
       cachedFeaturedlist.last_validate = Date.now();
-      return new ServerStatus()
-        .isOk()
-        .setContent(cachedFeaturedlist.data)
-        .build();
+      return new sso().isOk()
+                      .addContent(cachedFeaturedlist.data);
     } catch (err) {
-      return new ServerStatus()
-        .notOk()
-        .setShort("Server Error")
-        .setContent(err)
-        .build();
+      return new sso().notOk()
+                      .addShort("server_error")
+                      .addCalls("getGcpContent", err);
     }
   };
 
@@ -132,10 +126,8 @@ async function getFeaturedPackages() {
 
   if (!cachedFeaturedlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return new ServerStatus()
-      .isOk()
-      .setContent(cachedFeaturedlist.data)
-      .build();
+    return new sso().isOk()
+                    .addContent(cachedFeaturedlist.data);
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -157,13 +149,11 @@ async function getFeaturedThemes() {
 
       cachedThemelist = new CacheObject(JSON.parse(contents));
       cachedThemelist.last_validate = Date.now();
-      return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
+      return new sso().isOk().addContent(cachedThemelist.data);
     } catch (err) {
-      return new ServerStatus()
-        .notOk()
-        .setShort("Server Error")
-        .setContent(err)
-        .build();
+      return new sso().notOk()
+                      .addShort("server_error")
+                      .addCalls("getGcpContent", err);
     }
   };
 
@@ -174,7 +164,7 @@ async function getFeaturedThemes() {
 
   if (!cachedThemelist.Expired) {
     logger.generic(5, "Theme List Cache NOT Expired.");
-    return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
+    return new sso().isOk().addContent(cachedThemelist.data);
   }
 
   logger.generic(5, "Theme List Cache IS Expired.");
