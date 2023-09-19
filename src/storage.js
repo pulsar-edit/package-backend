@@ -26,6 +26,34 @@ function setupGCS() {
   });
 }
 
+async function getGcpContent(file) {
+  if (
+    GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
+    process.env.PULSAR_STATUS === "dev"
+  ) {
+    // This catches the instance when tests are being run, without access
+    // or good reason to reach to 3rd party servers.
+    // We will instead return local data
+    // Setting GOOGLE_APPLICATION_CREDENTIALS to "nofile" will be the recommended
+    // method for running locally.
+    const fs = require("fs");
+    const path = require("path");
+
+    const contents = fs.readFileSync(path.resolve(`./docs/resources/${file}`), { encoding: "utf8" });
+    return contents;
+  } else {
+    // This is a production request
+    gcsStorage ??= setupGCS();
+
+    const contents = await gcsStorage
+      .bucket(GCLOUD_STORAGE_BUCKET)
+      .file(file)
+      .download();
+
+    return contents;
+  }
+}
+
 /**
  * @async
  * @function getBanList
@@ -36,31 +64,12 @@ function setupGCS() {
  * @returns {Array} Parsed JSON Array of all Banned Packages.
  */
 async function getBanList() {
-  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
-    if (
-      GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
-      process.env.PULSAR_STATUS === "dev"
-    ) {
-      // This catches the instance when tests are being run, without access
-      // or good reason to reach to 3rd party servers.
-      // We will log a warning, and return preset test data.
-      // Setting GOOGLE_APPLICATION_CREDENTIALS to "nofile" will be the recommended
-      // method for running locally.
-      // TODO: Have this read the data from the ban list locally
-      console.log("storage.js.getBanList() Returning Development Set of Data.");
-      let list = ["slothoki", "slot-pulsa", "slot-dana", "hoki-slot"];
-      cachedBanlist = new CacheObject(list);
-      cachedBanlist.last_validate = Date.now();
-      return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
-    }
 
     try {
-      let contents = await gcsStorage
-        .bucket(GCLOUD_STORAGE_BUCKET)
-        .file("name_ban_list.json")
-        .download();
+      const contents = await getGcpContent("name_ban_list.json");
+
       cachedBanlist = new CacheObject(JSON.parse(contents));
       cachedBanlist.last_validate = Date.now();
       return new ServerStatus().isOk().setContent(cachedBanlist.data).build();
@@ -95,34 +104,12 @@ async function getBanList() {
  * @returns {Array} Parsed JSON Array of all Featured Packages.
  */
 async function getFeaturedPackages() {
-  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
-    if (
-      GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
-      process.env.PULSAR_STATUS === "dev"
-    ) {
-      // This catches the instance when tests are being run, without access
-      // or good reason to reach to 3rd party servers.
-      // We will log a warning, and return preset test data.
-      // TODO: Have this read the featured packages locally
-      console.log(
-        "storage.js.getFeaturedPackages() Returning Development Set of Data."
-      );
-      let list = ["hydrogen", "atom-clock", "hey-pane"];
-      cachedFeaturedlist = new CacheObject(list);
-      cachedFeaturedlist.last_validate = Date.now();
-      return new ServerStatus()
-        .isOk()
-        .setContent(cachedFeaturedlist.data)
-        .build();
-    }
 
     try {
-      let contents = await gcsStorage
-        .bucket(GCLOUD_STORAGE_BUCKET)
-        .file("featured_packages.json")
-        .download();
+      const contents = await getGcpContent("featured_packages.json");
+
       cachedFeaturedlist = new CacheObject(JSON.parse(contents));
       cachedFeaturedlist.last_validate = Date.now();
       return new ServerStatus()
@@ -162,31 +149,12 @@ async function getFeaturedPackages() {
  * @returns {Array} JSON Parsed Array of Featured Theme Names.
  */
 async function getFeaturedThemes() {
-  gcsStorage ??= setupGCS();
 
   const getNew = async function () {
-    if (
-      GOOGLE_APPLICATION_CREDENTIALS === "nofile" ||
-      process.env.PULSAR_STATUS === "dev"
-    ) {
-      // This catches the instance when tests are being run, without access
-      // or good reason to reach to 3rd party servers.
-      // We will log a warning, and return preset test data.
-      // TODO: Have this read the featured themes locally
-      console.log(
-        "storage.js.getFeaturedThemes() Returning Development Set of Data."
-      );
-      let list = ["atom-material-ui", "atom-material-syntax"];
-      cachedThemelist = new CacheObject(list);
-      cachedThemelist.last_validate = Date.now();
-      return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
-    }
 
     try {
-      let contents = await gcsStorage
-        .bucket(GCLOUD_STORAGE_BUCKET)
-        .file("featured_themes.json")
-        .download();
+      const contents = await getGcpContent("featured_themes.json");
+
       cachedThemelist = new CacheObject(JSON.parse(contents));
       cachedThemelist.last_validate = Date.now();
       return new ServerStatus().isOk().setContent(cachedThemelist.data).build();
