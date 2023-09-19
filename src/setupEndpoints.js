@@ -111,14 +111,17 @@ for (const node of endpoints) {
         app.get(path, limiter, async (req, res) => {
           await endpointHandler(node, req, res);
         });
+        break;
       case "POST":
         app.post(path, limiter, async (req, res) => {
           await endpointHandler(node, req, res);
         });
+        break;
       case "DELETE":
         app.delete(path, limiter, async (req, res) => {
           await endpointHandler(node, req, res);
         });
+        break;
       default:
         console.log(`Unsupported method: ${node.endpoint.method} for ${path}`);
     }
