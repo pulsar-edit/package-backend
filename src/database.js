@@ -138,7 +138,7 @@ async function insertNewPackage(pack) {
           RETURNING pointer;
       `;
       } catch (e) {
-        throw `A constraint has been violated while inserting ${pack.name} in packages table.`;
+        throw `A constraint has been violated while inserting ${pack.name} in packages table: ${e.toString()}`;
       }
 
       if (!insertNewPack?.count) {
@@ -204,11 +204,11 @@ async function insertNewPackage(pack) {
     })
     .catch((err) => {
       return typeof err === "string"
-        ? { ok: false, content: err, short: "Server Error" }
+        ? { ok: false, content: err, short: "server_error" }
         : {
             ok: false,
             content: `A generic error occurred while inserting ${pack.name} package`,
-            short: "Server Error",
+            short: "server_error",
             error: err,
           };
     });
@@ -337,11 +337,11 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
     })
     .catch((err) => {
       return typeof err === "string"
-        ? { ok: false, content: err, short: "Server Error" }
+        ? { ok: false, content: err, short: "server_error" }
         : {
             ok: false,
             content: `A generic error occured while inserting the new package version ${packJSON.name}`,
-            short: "Server Error",
+            short: "server_error",
             error: err,
           };
     });
@@ -1437,7 +1437,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
       return {
         ok: false,
         content: `Unrecognized Sorting Method Provided: ${sort}`,
-        short: "Server Error",
+        short: "server_error",
       };
     }
 
@@ -1498,7 +1498,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }

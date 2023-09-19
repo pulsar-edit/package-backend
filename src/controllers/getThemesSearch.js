@@ -33,12 +33,6 @@ module.exports = {
     );
 
     if (!packs.ok) {
-      if (packs.short === "not_found") {
-        const sso = new context.ssoPaginate();
-
-        return sso.isOk().addContent([]);
-      }
-
       const sso = new context.sso();
 
       return sso.notOk().addContent(packs)

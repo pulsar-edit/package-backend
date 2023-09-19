@@ -54,7 +54,7 @@ describe("Behaves as expected", () => {
     });
 
     const sso = await endpoint.logic({}, context);
-
+    
     expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(1);

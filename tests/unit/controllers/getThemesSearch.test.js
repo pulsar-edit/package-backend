@@ -1,11 +1,11 @@
-const endpoint = require("../../../src/controllers/getThemes.js");
+const endpoint = require("../../../src/controllers/getThemesSearch.js");
 const context = require("../../../src/context.js");
 
 describe("Has features expected", () => {
   test("Has correct endpoint features", () => {
     const expected = {
       method: "GET",
-      paths: [ "/api/themes" ],
+      paths: [ "/api/themes/search" ],
       rateLimit: "generic",
       successStatus: 200
     };
@@ -19,34 +19,36 @@ describe("Has features expected", () => {
 });
 
 describe("Parameters behave as expected", () => {
-  test("Returns valid 'page'", () => {
-    const req = {
-      params: {
-        page: "1"
-      }
-    };
-
-    const res = endpoint.params.page(context, req);
-    expect(res).toBe("1");
-  });
   test("Returns valid 'sort'", () => {
     const req = {
-      params: {
-        sort: "downloads"
-      }
+      query: { sort: "downloads" }
     };
 
     const res = endpoint.params.sort(context, req);
     expect(res).toBe("downloads");
   });
+  test("Returns valid 'page'", () => {
+    const req = {
+      query: { page: "1" }
+    };
+
+    const res = endpoint.params.page(context, req);
+    expect(res).toBe(1);
+  });
   test("Returns valid 'direction'", () => {
     const req = {
-      params: {
-        direction: "desc"
-      }
+      query: { direction: "desc" }
     };
 
     const res = endpoint.params.direction(context, req);
     expect(res).toBe("desc");
+  });
+  test("Returns valid 'query'", () => {
+    const req = {
+      query: { q: "hello" }
+    };
+
+    const res = endpoint.params.query(context, req);
+    expect(res).toBe("hello");
   });
 });
