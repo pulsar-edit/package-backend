@@ -60,8 +60,6 @@ describe("Behaves as expected", () => {
     expect(sso.content.length).toBe(1);
     expect(sso.content[0].name).toBe("atom-material-ui");
     // TODO test object structure to known good
-    let res = await database.removePackageByName("atom-material-ui", true);
-    console.log("Res remove");
-    console.log(res);
+    await database.removePackageByName("atom-material-ui", true);
   });
 });
