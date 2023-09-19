@@ -1,5 +1,8 @@
 // Add `expect().toMatchSchema()` to Jest, for matching against Joi Schemas
-
+const Joi = require("joi");
+global.Joi = Joi;
+// We add Joi to the global context so that the `models/* .test` object doesn't need
+// to worry about `require`ing the module.
 const jestJoi = require("jest-joi");
 
 expect.extend(jestJoi.matchers);
@@ -61,7 +64,7 @@ expect.extend({
           obj = require(`../models/${obj.replace("$","")}.js`);
         }
 
-        expect(sso.content).toMatchObject(obj.test);
+        expect(sso.content).toMatchSchema(obj.test);
         done = true;
         break;
       }

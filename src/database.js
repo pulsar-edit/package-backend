@@ -605,14 +605,13 @@ async function getPackageByName(name, user = false) {
       : {
           ok: false,
           content: `package ${name} not found.`,
-          short: "Not Found",
+          short: "not_found",
         };
   } catch (err) {
     return {
       ok: false,
-      content: "Generic Error",
-      short: "Server Error",
-      error: err,
+      content: err,
+      short: "server_error"
     };
   }
 }

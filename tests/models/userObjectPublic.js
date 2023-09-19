@@ -30,11 +30,12 @@ module.exports = {
     created_at: "2023-09-16T00:58:36.755Z",
     packages: []
   },
-  test: {
-    username: expect.toBeTypeof("string"),
-    avatar: expect.toBeTypeof("string"),
-    data: {},
-    created_at: expect.toBeTypeof("string"),
-    packages: expect.toBeArray()
-  }
+  test:
+    Joi.object({
+      username: Joi.string().required(),
+      avatar: Joi.string().required(),
+      data: Joi.object().required(),
+      created_at: Joi.string().required(),
+      packages: Joi.array().required()
+    })
 };

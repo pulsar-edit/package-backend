@@ -14,7 +14,8 @@ module.exports = {
   example: {
     message: "This is some message content."
   },
-  test: {
-    message: expect.toBeTypeof("string")
-  }
+  test:
+    Joi.object({
+      message: Joi.string().required()
+    })
 };

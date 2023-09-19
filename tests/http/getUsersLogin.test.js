@@ -41,7 +41,6 @@ describe("Behaves as expected", () => {
 
     expect(res.ok).toBe(true);
     // First make sure the user object matches expectations broadly, then specifically
-    expect(res.content).toMatchObject(userObject.test);
     expect(res.content.username).toBe(userObj.username);
     expect(res.content.avatar).toBe(userObj.avatar);
     expect(res).toMatchEndpointSuccessObject(endpoint);

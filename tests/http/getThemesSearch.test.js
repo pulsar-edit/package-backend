@@ -35,7 +35,7 @@ describe("Behaves as expected", () => {
       releases: {
         latest: "1.1.0"
       },
-      reamde: "This is a readme!",
+      readme: "This is a readme!",
       metadata: {
         name: "atom-material-syntax",
         theme: "ui"

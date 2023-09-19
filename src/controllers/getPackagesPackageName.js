@@ -4,7 +4,15 @@
 
 module.exports = {
   docs: {
-    summary: "Show package details."
+    summary: "Show package details.",
+    responses: {
+      200: {
+        description: "A 'Package Object Full' of the requested package.",
+        content: {
+          "application/json": "$packageObjectFull"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
@@ -54,6 +62,6 @@ module.exports = {
 
     const sso = new context.sso();
 
-    return sso.isOk().addcontent(pack);
+    return sso.isOk().addContent(pack);
   }
 };
