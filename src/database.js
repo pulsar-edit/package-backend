@@ -715,12 +715,12 @@ async function getPackageCollectionByName(packArray) {
 
     return command.count !== 0
       ? { ok: true, content: command }
-      : { ok: false, content: "No packages found.", short: "Not Found" };
+      : { ok: false, content: "No packages found.", short: "not_found" };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }

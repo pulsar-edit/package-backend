@@ -4,7 +4,15 @@
 
 module.exports = {
   docs: {
-    summary: "Display featured packages that are themes."
+    summary: "Display featured packages that are themes.",
+    respones: {
+      200: {
+        description: "An array of featured themes.",
+        content: {
+          "application/json": "$packageObjectShortArray"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
@@ -29,7 +37,7 @@ module.exports = {
       return sso.notOk().addContent(col).addCalls("db.getFeaturedThemes", col);
     }
 
-    const newCol = await utils.constructPackageObjectShort(col.content);
+    const newCol = await context.utils.constructPackageObjectShort(col.content);
 
     const sso = new context.sso();
 
