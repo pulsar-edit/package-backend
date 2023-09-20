@@ -25,7 +25,10 @@ describe("Behaves as expected", () => {
     const addPack = await database.insertNewPackage({
       // We know a currently featured package is 'atom-material-ui'
       name: "atom-material-ui",
-      repository: "https://github.com/confused-Techie/package-backend",
+      repository: {
+        url: "https://github.com/confused-Techie/package-backend",
+        type: "git"
+      },
       creation_method: "Test Package",
       releases: {
         latest: "1.1.0"
@@ -54,12 +57,12 @@ describe("Behaves as expected", () => {
     });
 
     const sso = await endpoint.logic({}, context);
-    
+
     expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(1);
     expect(sso.content[0].name).toBe("atom-material-ui");
-    // TODO test object structure to known good
+    expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("atom-material-ui", true);
   });
 });

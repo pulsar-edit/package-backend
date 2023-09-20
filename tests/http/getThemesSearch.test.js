@@ -30,7 +30,10 @@ describe("Behaves as expected", () => {
   test("Returns array on success", async () => {
     const newPack = await database.insertNewPackage({
       name: "atom-material-syntax",
-      repository: "https://github.com/confused-Techie/package-backend",
+      repository: {
+        url: "https://github.com/confused-Techie/package-backend",
+        type: "git"
+      },
       creation_method: "Test Package",
       releases: {
         latest: "1.1.0"
@@ -69,7 +72,7 @@ describe("Behaves as expected", () => {
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(1);
     expect(sso.content[0].name).toBe("atom-material-syntax");
-    // TODO ensure it matches known good object
+    expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("atom-material-syntax", true);
   });
 

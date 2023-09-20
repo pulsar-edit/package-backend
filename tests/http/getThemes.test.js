@@ -40,7 +40,10 @@ describe("Behaves as expected", () => {
   test("Returns proper data on success", async () => {
     const addName = await database.insertNewPackage({
       name: "test-package",
-      repository: "https://github.com/confused-Techie/package-backend",
+      repository: {
+        url: "https://github.com/confused-Techie/package-backend",
+        type: "git"
+      },
       creation_method: "Test Package",
       releases: {
         latest: "1.1.0"
@@ -87,7 +90,7 @@ describe("Behaves as expected", () => {
       + `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;`
       + ' rel="last"'
     );
-    // TODO test object structure to known good
+    expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("test-package", true);
   });
 

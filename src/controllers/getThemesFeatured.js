@@ -5,7 +5,7 @@
 module.exports = {
   docs: {
     summary: "Display featured packages that are themes.",
-    respones: {
+    responses: {
       200: {
         description: "An array of featured themes.",
         content: {

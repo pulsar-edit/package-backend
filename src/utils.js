@@ -121,6 +121,9 @@ async function constructPackageObjectShort(pack) {
       newPack.badges.push({ title: "Made for Pulsar!", type: "success" });
     }
 
+    // Remove keys that aren't intended to exist in a Package Object Short
+    delete newPack.versions;
+
     return newPack;
   };
 

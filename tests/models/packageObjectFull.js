@@ -85,12 +85,29 @@ module.exports = {
       name: Joi.string().required(),
       readme: Joi.string().required(),
       metadata: Joi.object().required(),
-      releases: Joi.object().required(),
+      releases: Joi.object({
+        latest: Joi.string().required()
+      }).required(),
       versions: Joi.object().required(),
-      repository: Joi.object().required(),
-      creation_method: Joi.string().required(),
-      downloads: Joi.string().required(),
-      stargazers_count: Joi.string().required(),
+      repository: Joi.object({
+        url: Joi.string().required(),
+        type: Joi.string().valid(
+          "git",
+          "bit",
+          "sfr",
+          "lab",
+          "berg",
+          "unknown",
+          "na"
+        ).required()
+      }).required(),
+      creation_method: Joi.string().valid(
+        "User Made Package",
+        "Migrated from Atom.io",
+        "Test Package" // Should only be used during tests
+      ).required(),
+      downloads: Joi.string().pattern(/^[0-9]+$/).required(),
+      stargazers_count: Joi.string().pattern(/^[0-9]+$/).required(),
       badges: Joi.array().items(
         Joi.object({
           title: Joi.string().valid(
@@ -107,5 +124,5 @@ module.exports = {
           link: Joi.string()
         })
       ).required()
-    })
+    }).required()
 };

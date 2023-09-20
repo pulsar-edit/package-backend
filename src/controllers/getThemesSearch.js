@@ -4,7 +4,15 @@
 
 module.exports = {
   docs: {
-    summary: "Get featured packages that are themes. Previously undocumented."
+    summary: "Get featured packages that are themes. Previously undocumented.",
+    responses: {
+      200: {
+        description: "A paginated response of themes.",
+        content: {
+          "application/json": "$packageObjectShortArray"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
