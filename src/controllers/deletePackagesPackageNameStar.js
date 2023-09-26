@@ -4,7 +4,12 @@
 
 module.exports = {
   docs: {
-    summary: "Unstar a package."
+    summary: "Unstar a package.",
+    responses: {
+      204: {
+        description: "An empty response, indicating success."
+      }
+    }
   },
   endpoint: {
     method: "DELETE",

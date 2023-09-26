@@ -4,7 +4,15 @@
 
 module.exports = {
   docs: {
-    summary: "Returns all featured packages. Previously undocumented endpoint."
+    summary: "Returns all featured packages. Previously undocumented endpoint.",
+    responses: {
+      200: {
+        description: "An array of features packages.",
+        content: {
+          "application/json": "$packageObjectShortArray"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
