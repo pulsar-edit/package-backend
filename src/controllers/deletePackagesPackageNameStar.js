@@ -13,7 +13,7 @@ module.exports = {
       "/api/themes/:packageName/star"
     ],
     rateLimit: "auth",
-    successStatus: 201,
+    successStatus: 204,
     options: {
       Allow: "DELETE, POST",
       "X-Content-Type-Options": "nosniff"
