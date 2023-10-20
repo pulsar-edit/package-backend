@@ -59,42 +59,35 @@ function getConfig() {
   // But we will create a custom object here to return, with all values, and choosing between the env vars and config
   // Since if this is moved to Google App Engine, these variables will all be environment variables. So we will look for both.
 
+  const findValue = (key, def) => {
+    return process.env[key] ?? data.env_variables[key] ?? def ?? undefined;
+  };
+
   return {
-    port: process.env.PORT ?? data.env_variables.PORT,
-    server_url: process.env.SERVERURL ?? data.env_variables.SERVERURL,
-    paginated_amount: process.env.PAGINATE ?? data.env_variables.PAGINATE,
+    port: findValue("PORT", 8080),
+    server_url: findValue("SERVERURL"),
+    paginated_amount: findValue("PAGINATE", 30),
     prod: process.env.NODE_ENV === "production" ? true : false,
-    cache_time: process.env.CACHETIME ?? data.env_variables.CACHETIME,
-    GCLOUD_STORAGE_BUCKET:
-      process.env.GCLOUD_STORAGE_BUCKET ??
-      data.env_variables.GCLOUD_STORAGE_BUCKET,
-    GOOGLE_APPLICATION_CREDENTIALS:
-      process.env.GOOGLE_APPLICATION_CREDENTIALS ??
-      data.env_variables.GOOGLE_APPLICATION_CREDENTIALS,
-    GH_CLIENTID: process.env.GH_CLIENTID ?? data.env_variables.GH_CLIENTID,
-    GH_USERAGENT: process.env.GH_USERAGENT ?? data.env_variables.GH_USERAGENT,
-    GH_REDIRECTURI:
-      process.env.GH_REDIRECTURI ?? data.env_variables.GH_REDIRECTURI,
-    GH_CLIENTSECRET:
-      process.env.GH_CLIENTSECRET ?? data.env_variables.GH_CLIENTSECRET,
-    DB_HOST: process.env.DB_HOST ?? data.env_variables.DB_HOST,
-    DB_USER: process.env.DB_USER ?? data.env_variables.DB_USER,
-    DB_PASS: process.env.DB_PASS ?? data.env_variables.DB_PASS,
-    DB_DB: process.env.DB_DB ?? data.env_variables.DB_DB,
-    DB_PORT: process.env.DB_PORT ?? data.env_variables.DB_PORT,
-    DB_SSL_CERT: process.env.DB_SSL_CERT ?? data.env_variables.DB_SSL_CERT,
-    LOG_LEVEL: process.env.LOG_LEVEL ?? data.env_variables.LOG_LEVEL,
-    LOG_FORMAT: process.env.LOG_FORMAT ?? data.env_variables.LOG_FORMAT,
-    RATE_LIMIT_GENERIC:
-      process.env.RATE_LIMIT_GENERIC ?? data.env_variables.RATE_LIMIT_GENERIC,
-    RATE_LIMIT_AUTH:
-      process.env.RATE_LIMIT_AUTH ?? data.env_variables.RATE_LIMIT_AUTH,
-    WEBHOOK_PUBLISH:
-      process.env.WEBHOOK_PUBLISH ?? data.env_variables.WEBHOOK_PUBLISH,
-    WEBHOOK_VERSION:
-      process.env.WEBHOOK_VERSION ?? data.env_variables.WEBHOOK_VERSION,
-    WEBHOOK_USERNAME:
-      process.env.WEBHOOK_USERNAME ?? data.env_variables.WEBHOOK_USERNAME,
+    cache_time: findValue("CACHETIME"),
+    GCLOUD_STORAGE_BUCKET: findValue("GCLOUD_STORAGE_BUCKET"),
+    GOOGLE_APPLICATION_CREDENTIALS: findValue("GOOGLE_APPLICATION_CREDENTIALS"),
+    GH_CLIENTID: findValue("GH_CLIENTID"),
+    GH_CLIENTSECRET: findValue("GH_CLIENTSECRET"),
+    GH_USERAGENT: findValue("GH_USERAGENT"), // todo maybe default?
+    GH_REDIRECTURI: findValue("GH_REDIRECTURI"),
+    DB_HOST: findValue("DB_HOST"),
+    DB_USER: findValue("DB_USER"),
+    DB_PASS: findValue("DB_PASS"),
+    DB_DB: findValue("DB_DB"),
+    DB_PORT: findValue("DB_PORT"),
+    DB_SSL_CERT: findValue("DB_SSL_CERT"),
+    LOG_LEVEL: findValue("LOG_LEVEL", 6),
+    LOG_FORMAT: findValue("LOG_FORMAT", "stdout"),
+    RATE_LIMIT_GENERIC: findValue("RATE_LIMIT_GENERIC"),
+    RATE_LIMIT_AUTH: findValue("RATE_LIMIT_AUTH"),
+    WEBHOOK_PUBLISH: findValue("WEBHOOK_PUBLISH"),
+    WEBHOOK_VERSION: findValue("WEBHOOK_VERSION"),
+    WEBHOOK_USERNAME: findValue("WEBHOOK_USERNAME"),
   };
 }
 
