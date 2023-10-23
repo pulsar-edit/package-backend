@@ -6,4 +6,5 @@ queries:
 
 paths-ignore:
   - ./test
+  - ./tests
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors
