@@ -1,4 +1,4 @@
-const ServerStatus = require("../src/ServerStatusObject.js");
+const ServerStatus = require("../../src/ServerStatusObject.js");
 const Joi = require("joi");
 
 describe("Building Objects with ServerStatus Return as Expected", () => {

@@ -19,6 +19,10 @@ module.exports = {
       "X-Content-Type-Options": "nosniff"
     }
   },
+  params: {
+    repository: (context, req) => { return context.query.repo(req); },
+    auth: (context, req) => { return context.query.auth(req); }
+  },
   async postReturnHTTP(req, res, context, obj) {
     // Return to user before wbehook call, so user doesn't wait on it
     await context.webhook.alertPublishPackage(obj.webhook.pack, obj.webhook.user);
@@ -56,7 +60,7 @@ module.exports = {
   },
 
   async logic(params, context) {
-    const user = await auth.verifyAuth(params.auth, context.database);
+    const user = await context.auth.verifyAuth(params.auth, context.database);
     // Check authentication
     if (!user.ok) {
       const sso = new context.sso();

@@ -1,5 +1,5 @@
-const GitHub = require("../src/vcs_providers/github.js");
-const httpMock = require("./httpMock.helper.jest.js");
+const GitHub = require("../../src/vcs_providers/github.js");
+const httpMock = require("../helpers/httpMock.helper.jest.js");
 
 const webRequestMockHelper = (data) => {
   const tmpMock = jest

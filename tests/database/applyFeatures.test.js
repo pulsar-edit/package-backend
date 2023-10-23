@@ -16,7 +16,7 @@ describe("Exits properly", () => {
     expect(res.content).toBe(
       "Unable to find the pointer of this-name-doesn't-exist"
     );
-    expect(res.short).toBe("Not Found");
+    expect(res.short).toBe("not_found");
   });
 });
 

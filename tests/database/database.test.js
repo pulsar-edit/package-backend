@@ -1,3 +1,6 @@
+// This file has been moved directly from the old testing method.
+// Likely should be updated at one point
+
 // This is our secondary integration test.
 // Due to the difficulty in testing some aspects as full integration tests,
 // namely tests for publishing and updating packages (due to the varried responses expected by github)
@@ -6,8 +9,8 @@
 // Or at the very least that if there is a failure within these, it will not result in
 // bad data being entered into the database in production.
 
-let database = require("../src/database.js");
-let utils = require("../src/utils.js");
+let database = require("../../src/database.js");
+let utils = require("../../src/utils.js");
 
 afterAll(async () => {
   await database.shutdownSQL();
@@ -39,7 +42,7 @@ describe("insertNewPackageName", () => {
       "notARepo-Reborn"
     );
     expect(obj.ok).toBeFalsy();
-    expect(obj.short).toEqual("Not Found");
+    expect(obj.short).toEqual("not_found");
   });
   test("Should return Success for valid package", async () => {
     const obj = await database.insertNewPackageName(
@@ -57,12 +60,12 @@ describe("getPackageByName", () => {
   test("Should return Server Error for Package that doesn't exist", async () => {
     const obj = await database.getPackageByName("language-golang");
     expect(obj.ok).toBeFalsy();
-    expect(obj.short).toEqual("Not Found");
+    expect(obj.short).toEqual("not_found");
   });
   test("Should return Server Error for Package that doesn't exist, even with User", async () => {
     const obj = await database.getPackageByName("language-golang", true);
     expect(obj.ok).toBeFalsy();
-    expect(obj.short).toEqual("Not Found");
+    expect(obj.short).toEqual("not_found");
   });
 });
 
@@ -398,7 +401,7 @@ describe("Package Lifecycle Tests", () => {
     // === Can we get our now deleted package?
     const ghostPack = await database.getPackageByName(NEW_NAME);
     expect(ghostPack.ok).toBeFalsy();
-    expect(ghostPack.short).toEqual("Not Found");
+    expect(ghostPack.short).toEqual("not_found");
 
     // === Is the name of the deleted package available?
     const deletedNameAvailable = await database.packageNameAvailability(
@@ -412,7 +415,7 @@ describe("Package Lifecycle Tests", () => {
     // === Can we get our Non-Existant User?
     const noExistUser = await database.getUserByNodeID(user.userObj.node_id);
     expect(noExistUser.ok).toBeFalsy();
-    expect(noExistUser.short).toEqual("Not Found");
+    expect(noExistUser.short).toEqual("not_found");
 
     // === Can we create our User?
     const createUser = await database.insertNewUser(
@@ -469,10 +472,29 @@ describe("Package Lifecycle Tests", () => {
     expect(getFakeStars.content.length).toEqual(0);
 
     // === Can we star a package with our User?
+    // (After of course first creating the package to star)
+    await database.insertNewPackage({
+      name: "language-css",
+      repository: {
+        url: "https://github.com/confused-Techie/package-backend",
+        type: "git"
+      },
+      creation_method: "Test Package",
+      releases: { latest: "1.0.0" },
+      readme: "This is a readme!",
+      metadata: { name: "language-css" },
+      versions: {
+        "1.0.0": {
+          dist: { tarball: "download-url", sha: "1234" },
+          name: "language-css"
+        }
+      }
+    });
     const starPack = await database.updateIncrementStar(
       getUserID.content,
       "language-css"
     );
+
     expect(starPack.ok).toBeTruthy();
     expect(starPack.content).toEqual("Package Successfully Starred");
 
@@ -513,6 +535,9 @@ describe("Package Lifecycle Tests", () => {
     // === Can we remove our User?
     // TODO: Currently there is no way to delete a user account.
     // There is no supported endpoint for this, but is something that should be implemented.
+
+    // Lets cleanup by deleting the package we made
+    await database.removePackageByName("language-css", true);
   });
 });
 

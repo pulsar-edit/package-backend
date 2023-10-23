@@ -93,13 +93,13 @@ async function packageNameAvailability(name) {
       : {
           ok: false,
           content: `${name} is not available to be used for a new package.`,
-          short: "Not Found",
+          short: "not_found",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -371,7 +371,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
       return {
         ok: false,
         content: `Unable to find the pointer of ${packName}`,
-        short: "Not Found",
+        short: "not_found",
       };
     }
 
@@ -388,7 +388,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
         return {
           ok: false,
           content: `Unable to set 'has_snippets' flag to true for ${packName}`,
-          short: "Server Error",
+          short: "server_error",
         };
       }
     }
@@ -404,7 +404,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
         return {
           ok: false,
           content: `Unable to set 'has_grammar' flag to true for ${packName}`,
-          short: "Server Error",
+          short: "server_error",
         };
       }
     }
@@ -424,7 +424,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
         return {
           ok: false,
           content: `Unable to add supportedLanguages to ${packName}`,
-          short: "Server Error",
+          short: "server_error",
         };
       }
     }
@@ -436,7 +436,7 @@ async function applyFeatures(featureObj, packName, packVersion) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err.toString(), // TODO this must be implemented within the logger
       // seems the custom PostgreSQL error object doesn't have native to string methods
       // or otherwise logging the error within an object doesn't trigger the toString method
@@ -469,7 +469,7 @@ async function insertNewPackageName(newName, oldName) {
         return {
           ok: false,
           content: `Unable to find the original pointer of ${oldName}`,
-          short: "Not Found",
+          short: "not_found",
         };
       }
 
@@ -516,7 +516,7 @@ async function insertNewPackageName(newName, oldName) {
         : {
             ok: false,
             content: `A generic error occurred while inserting the new package name ${newName}`,
-            short: "Server Error",
+            short: "server_error",
             error: err,
           };
     });
@@ -552,7 +552,7 @@ async function insertNewUser(username, id, avatar) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -638,13 +638,13 @@ async function getPackageByNameSimple(name) {
       : {
           ok: false,
           content: `Package ${name} not found.`,
-          short: "Not Found",
+          short: "not_found",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -674,13 +674,13 @@ async function getPackageVersionByNameAndVersion(name, version) {
       : {
           ok: false,
           content: `Package ${name} and Version ${version} not found.`,
-          short: "Not Found",
+          short: "not_found",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -752,7 +752,7 @@ async function getPackageCollectionByID(packArray) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -800,13 +800,13 @@ async function updatePackageStargazers(name, pointer = null) {
       : {
           ok: false,
           content: "Unable to Update Package Stargazers",
-          short: "Server Error",
+          short: "server_error",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -842,7 +842,7 @@ async function updatePackageIncrementDownloadByName(name) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -872,13 +872,13 @@ async function updatePackageDecrementDownloadByName(name) {
       : {
           ok: false,
           content: "Unable to decrement Package Download Count",
-          short: "Server Error",
+          short: "server_error",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -954,11 +954,11 @@ async function removePackageByName(name, exterminate = false) {
     })
     .catch((err) => {
       return typeof err === "string"
-        ? { ok: false, content: err, short: "Server Error" }
+        ? { ok: false, content: err, short: "server_error" }
         : {
             ok: false,
             content: `A generic error occurred while inserting ${name} package`,
-            short: "Server Error",
+            short: "server_error",
             error: err,
           };
     });
@@ -987,7 +987,7 @@ async function removePackageVersion(packName, semVer) {
         return {
           ok: false,
           content: `Unable to find the pointer of ${packName}`,
-          short: "Not Found",
+          short: "not_found",
         };
       }
 
@@ -1018,7 +1018,7 @@ async function removePackageVersion(packName, semVer) {
         return {
           ok: false,
           content: `Unable to remove ${semVer} version of ${packName} package.`,
-          short: "Not Found",
+          short: "not_found",
         };
       }
 
@@ -1029,11 +1029,11 @@ async function removePackageVersion(packName, semVer) {
     })
     .catch((err) => {
       return typeof err === "string"
-        ? { ok: false, content: err, short: "Server Error" }
+        ? { ok: false, content: err, short: "server_error" }
         : {
             ok: false,
             content: `A generic error occurred while inserting ${packName} package`,
-            short: "Server Error",
+            short: "server_error",
             error: err,
           };
     });
@@ -1167,7 +1167,7 @@ async function getUserByID(id) {
       return {
         ok: false,
         content: `Unable to get user by ID: ${id}`,
-        short: "Server Error",
+        short: "server_error",
       };
     }
 
@@ -1176,13 +1176,13 @@ async function getUserByID(id) {
       : {
           ok: false,
           content: `Unable to get user by ID: ${id}`,
-          short: "Server Error",
+          short: "server_error",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -1206,7 +1206,7 @@ async function updateIncrementStar(user, pack) {
       return {
         ok: false,
         content: `Unable to find package ${pack} to star.`,
-        short: "Not Found",
+        short: "not_found",
       };
     }
 
@@ -1229,7 +1229,7 @@ async function updateIncrementStar(user, pack) {
         return {
           ok: false,
           content: `Failed to Star the Package`,
-          short: "Server Error",
+          short: "server_error",
         };
       }
 
@@ -1245,6 +1245,9 @@ async function updateIncrementStar(user, pack) {
         content: `Package Successfully Starred`,
       };
     } catch (e) {
+      // TODO: While the comment below is accurate
+      // It's also worth noting that this catch will return success
+      // If the starring user does not exist. Resulting in a false positive
       // Catch the primary key violation on (package, userid),
       // Sinche the package is already starred by the user, we return ok.
       return {
@@ -1256,7 +1259,7 @@ async function updateIncrementStar(user, pack) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -1280,7 +1283,7 @@ async function updateDecrementStar(user, pack) {
       return {
         ok: false,
         content: `Unable to find package ${pack} to unstar.`,
-        short: "Not Found",
+        short: "not_found",
       };
     }
 
@@ -1310,7 +1313,7 @@ async function updateDecrementStar(user, pack) {
       return {
         ok: false,
         content: "Failed to Unstar the Package",
-        short: "Server Error",
+        short: "server_error",
       };
     }
 
@@ -1329,7 +1332,7 @@ async function updateDecrementStar(user, pack) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -1366,7 +1369,7 @@ async function getStarredPointersByUserID(userid) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -1407,7 +1410,7 @@ async function getStarringUsersByPointer(pointer) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -1629,7 +1632,7 @@ async function getSortedPackages(opts, themes = false) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err.toString(),
     };
   }
@@ -1681,13 +1684,13 @@ async function authStoreStateKey(stateKey) {
       : {
           ok: false,
           content: `The state key has not been saved on the database.`,
-          short: "Server Error",
+          short: "server_error",
         };
   } catch (err) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }
@@ -1730,7 +1733,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
       return {
         ok: false,
         content: "The provided state key was not set for the auth login.",
-        short: "Not Found",
+        short: "not_found",
       };
     }
 
@@ -1742,7 +1745,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
       return {
         ok: false,
         content: "The provided state key is expired for the auth login.",
-        short: "Not Found",
+        short: "not_found",
       };
     }
 
@@ -1751,7 +1754,7 @@ async function authCheckAndDeleteStateKey(stateKey, timestamp = null) {
     return {
       ok: false,
       content: "Generic Error",
-      short: "Server Error",
+      short: "server_error",
       error: err,
     };
   }

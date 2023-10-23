@@ -1,6 +1,6 @@
-const httpMock = require("./httpMock.helper.jest.js");
+const httpMock = require("../helpers/httpMock.helper.jest.js");
 
-const vcs = require("../src/vcs.js");
+const vcs = require("../../src/vcs.js");
 
 let http_cache = {
   pack1: {}, // pack1 will be used for newPackageData tests
