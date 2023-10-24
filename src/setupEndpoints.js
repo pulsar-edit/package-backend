@@ -58,7 +58,7 @@ const endpointHandler = async function(node, req, res) {
   let obj;
 
   if (node.endpoint.endpointKind === "raw") {
-    obj = await node.logic(req, res, context);
+    await node.logic(req, res, context);
     // If it's a raw endpoint, they must handle all other steps manually
     return;
 

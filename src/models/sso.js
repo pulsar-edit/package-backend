@@ -77,7 +77,7 @@ class SSO {
 
   addShort(enumValue) {
     if (
-      !this.short?.length > 0 &&
+      this.short?.length <= 0 &&
       typeof enumValue === "string" &&
       validEnums.includes(enumValue)
     ) {
