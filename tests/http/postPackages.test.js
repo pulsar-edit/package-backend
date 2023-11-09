@@ -115,8 +115,89 @@ describe("POST /api/packages Behaves as expected", () => {
     await database.removePackageByName("post-packages-test-package", true);
   });
 
-  // This is the fully migrated test set that we previously had
-  // But with the changes made we should now be able to properly test
-  // everything here.
-  test.todo("post Packages test that actually modify data");
+  test("Successfully publishes a new package", async () => {
+    let addUser = await database.insertNewUser(
+      "post-pkg-test-user-node-id",
+      "post-pkg-test-user-node-id",
+      "https://roadtonowhere.com"
+    );
+
+    expect(addUser.ok).toBe(true);
+
+    const localContext = context;
+    localContext.auth.verifyAuth = () => {
+      return {
+        ok: true,
+        content: {
+          token: "valid-token",
+          // The user data must match whats in the db
+          id: addUser.content.id,
+          node_id: addUser.content.node_id,
+          username: addUser.content.username,
+          avatar: addUser.content.avatar
+        }
+      };
+    };
+    localContext.vcs.ownership = () => {
+      return {
+        ok: true,
+        content: "admin"
+      };
+    };
+    localContext.vcs.newPackageData = () => {
+      return {
+        ok: true,
+        content: {
+          name: "post-pkg-test-pkg-name",
+          repository: {
+            url: "https://github.com/confused-Techie/package-backend",
+            type: "git"
+          },
+          downloads: 0,
+          stargazers_count: 0,
+          creation_method: "Test Package",
+          releases: {
+            latest: "1.0.0"
+          },
+          readme: "This is a readme!",
+          metadata: { name: "post-pkg-test-pkg-name" },
+          versions: {
+            "1.0.0": {
+              dist: {
+                tarball: "download-url",
+                sha: "1234"
+              },
+              name: "post-pkg-test-pkg-name"
+            }
+          }
+        }
+      };
+    };
+
+    const sso = await endpoint.logic({
+      repository: "confused-Techie/post-pkg-test-pkg-name",
+      auth: "valid-token"
+    }, localContext);
+
+    expect(sso.ok).toBe(true);
+    expect(sso.content.name).toBe("post-pkg-test-pkg-name");
+    expect(sso.content.releases.latest).toBe("1.0.0");
+
+    // Can we get the package by a specific version
+    let packByVer = await database.getPackageVersionByNameAndVersion(
+      "post-pkg-test-pkg-name",
+      "1.0.0"
+    );
+
+    expect(packByVer.ok).toBe(true);
+
+    packByVer = await context.utils.constructPackageObjectJSON(packByVer.content);
+
+    expect(packByVer.name).toBe("post-pkg-test-pkg-name");
+    expect(packByVer.dist.tarball).toContain("/api/packages/post-pkg-test-pkg-name/versions/1.0.0");
+
+    // Cleanup
+    await database.removePackageByName("post-pkg-test-pkg-name", true);
+  });
+
 });
