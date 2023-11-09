@@ -39,7 +39,7 @@ async function test() {
     process.env.PORT = 8080;
   }
 
-  const app = require("./main.js");
+  const app = require("./setupEndpoints.js");
   const logger = require("./logger.js");
   const database = require("./database.js");
   // We can only require these items after we have set our env variables

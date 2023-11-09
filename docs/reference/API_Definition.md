@@ -1,3 +1,5 @@
+# WARNING This file is deprecated. And will soon be removed. Leaving our swagger instance to be the complete standard in the Pulsar backend API documentation.
+
 # **[GET]** /
 A non-essential endpoint, returning a status message, and the server version.
 
@@ -25,7 +27,7 @@ Parameters:
 
 
 ---
-* page _(optional)_ `[integer]` | Location: `query` | Defaults: `1` 
+* page _(optional)_ `[integer]` | Location: `query` | Defaults: `1`
   - Indicate the page number to return.
 
 

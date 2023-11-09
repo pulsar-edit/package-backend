@@ -5,13 +5,13 @@ node_modules/
 data/
 .gcloudignore
 test/
+tests/
+scripts/
 docs/reference
 docs/resources/
 docs/build.md
 docs/host_your_own.md
 docs/writingIntegrationTests.md
-scripts/
-health-check-output.json # Just in case it's output and not deleted
 # Git Tooling / NPM Tooling
 .git/
 .github/

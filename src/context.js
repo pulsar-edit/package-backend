@@ -9,7 +9,6 @@ module.exports = {
   query: require("./query.js"),
   vcs: require("./vcs.js"),
   config: require("./config.js").getConfig(),
-  common_handler: require("./handlers/common_handler.js"),
   utils: require("./utils.js"),
   auth: require("./auth.js"),
   sso: require("./models/sso.js"),

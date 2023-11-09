@@ -14,6 +14,8 @@ coverage/
 >   gcloudignore
 .gcloudignore
 test/
+tests/
+scripts/
 docs/reference
 docs/resources/
 docs/build.md
