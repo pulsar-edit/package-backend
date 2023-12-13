@@ -19,7 +19,7 @@ module.exports = {
   params: {
     sort: (context, req) => { return context.query.sort(req); },
     page: (context, req) => { return context.query.page(req); },
-    direction: (context, req) => { return context.qeury.dir(req); },
+    direction: (context, req) => { return context.query.dir(req); },
     query: (context, req) => { return context.query.query(req); }
   },
 
