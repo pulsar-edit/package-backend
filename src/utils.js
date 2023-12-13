@@ -52,7 +52,7 @@ async function constructPackageObjectFull(pack) {
     for (const v of vers) {
       retVer[v.semver] = v.meta;
       retVer[v.semver].license = v.license;
-      retVer[v.semver].engine = v.engine;
+      retVer[v.semver].engines = v.engines;
       retVer[v.semver].dist = {
         tarball: `${server_url}/api/packages/${pack.name}/versions/${v.semver}/tarball`,
       };
@@ -121,6 +121,9 @@ async function constructPackageObjectShort(pack) {
       newPack.badges.push({ title: "Made for Pulsar!", type: "success" });
     }
 
+    // Remove keys that aren't intended to exist in a Package Object Short
+    delete newPack.versions;
+
     return newPack;
   };
 
@@ -182,7 +185,7 @@ async function constructPackageObjectJSON(pack) {
     }
     newPack.dist ??= {};
     newPack.dist.tarball = `${server_url}/api/packages/${v.meta.name}/versions/${v.semver}/tarball`;
-    newPack.engines = v.engine;
+    newPack.engines = v.engines;
     logger.generic(6, "Single Package Object JSON finished without Error");
     return newPack;
   };

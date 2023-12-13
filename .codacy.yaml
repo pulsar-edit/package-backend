@@ -4,4 +4,4 @@ engines:
     minTokenMatch: 80
 exclude_paths:
   - "./docs/*"
-  - "./scripts/**"
+  - "./scripts/**/**"
