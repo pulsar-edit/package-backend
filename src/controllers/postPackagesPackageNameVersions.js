@@ -83,7 +83,7 @@ module.exports = {
 
     context.logger.generic(
       6,
-      `${user.content.username} Attempting to publish a new package version - ${param.packageName}`
+      `${user.content.username} Attempting to publish a new package version - ${params.packageName}`
     );
 
     // To support a rename, we need to check if they have permissions over this
