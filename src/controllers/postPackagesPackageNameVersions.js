@@ -108,7 +108,7 @@ module.exports = {
 
     // Using our new VCS Service
     // TODO: The "git" service shouldn't always be hardcoded.
-    let packMetadata = await vcs.newVersionData(user.content, ownerRepo, "git");
+    let packMetadata = await context.vcs.newVersionData(user.content, ownerRepo, "git");
 
     if (!packMetadata.ok) {
       const sso = new context.sso();
