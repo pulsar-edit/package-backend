@@ -57,13 +57,22 @@ const endpointHandler = async function(node, req, res) {
 
   let obj;
 
-  if (node.endpoint.endpointKind === "raw") {
-    await node.logic(req, res, context);
-    // If it's a raw endpoint, they must handle all other steps manually
-    return;
+  try {
+    if (node.endpoint.endpointKind === "raw") {
+      await node.logic(req, res, context);
+      // If it's a raw endpoint, they must handle all other steps manually
+      return;
 
-  } else {
-    obj = await node.logic(params, context);
+    } else {
+      obj = await node.logic(params, context);
+    }
+  } catch(err) {
+    // The main logic request has failed. We will generate our own return obj,
+    // and exit.
+    obj = new context.sso();
+    obj.notOk().addContent(err)
+        .addMessage("An unexpected error has occurred.")
+        .addShort("server_error");
   }
 
   if (typeof node.postLogic === "function") {
