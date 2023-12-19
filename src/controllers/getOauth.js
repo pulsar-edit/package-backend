@@ -47,7 +47,7 @@ module.exports = {
         client_secret: context.config.GH_CLIENTSECRET
       });
 
-      const accessToken = iniitalAuth.body?.access_token;
+      const accessToken = initialAuth.body?.access_token;
 
       if (accessToken === null || initialAuth.body?.token_type === null) {
         res.status(500).json({
