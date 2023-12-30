@@ -351,6 +351,6 @@ module.exports = {
   serviceType,
   serviceVersion,
   service,
-  user,
+  owner,
   fileExtension,
 };
