@@ -84,7 +84,8 @@ module.exports = {
 
     const ssoP = new context.ssoPaginate();
 
-    ssoP.total = packs.pagination.total;
+    ssoP.resultCount = packs.pagination.count;
+    ssoP.totalPages = packs.pagination.total;
     ssoP.limit = packs.pagination.limit;
     ssoP.buildLink(`${context.config.server_url}/api/packages/search`, packs.pagination.page, params);
 
