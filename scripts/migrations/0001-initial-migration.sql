@@ -14,6 +14,7 @@ CREATE TABLE packages (
     downloads BIGINT NOT NULL DEFAULT 0,
     stargazers_count BIGINT NOT NULL DEFAULT 0,
     original_stargazers BIGINT NOT NULL DEFAULT 0,
+    owner VARCHAR(60),
     data JSONB,
     -- constraints
     CONSTRAINT lowercase_names CHECK (name = LOWER(name))

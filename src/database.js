@@ -1602,6 +1602,11 @@ async function getSortedPackages(opts, themes = false) {
               ? sqlStorage`WHERE ${opts.fileExtension}=ANY(v.supported_languages)`
               : sqlStorage``
           }
+          ${
+            typeof opts.user === "string"
+              ? sqlStorage`WHERE p.owner = ${opts.user}`
+              : sqlStorage``
+          }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )
       SELECT *, COUNT(*) OVER() AS query_result_count

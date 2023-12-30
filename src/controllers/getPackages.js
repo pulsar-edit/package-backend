@@ -23,7 +23,10 @@ module.exports = {
     serviceType: (context, req) => { return context.query.serviceType(req); },
     service: (context, req) => { return context.query.service(req); },
     serviceVersion: (context, req) => { return context.query.serviceVersion(req); },
-    fileExtension: (context, req) => { return context.query.fileExtension(req); }
+    fileExtension: (context, req) => { return context.query.fileExtension(req); },
+    user: (context, req) => {
+      return context.query.user(req);
+    }
   },
 
   /**
@@ -51,7 +54,8 @@ module.exports = {
 
     const ssoP = new context.ssoPaginate();
 
-    ssoP.total = packages.pagination.total;
+    ssoP.resultCount = packages.pagination.count;
+    ssoP.totalPages = packages.pagination.total;
     ssoP.limit = packages.pagination.limit;
     ssoP.buildLink(`${context.config.server_url}/api/packages`, packages.pagination.page, params);
 

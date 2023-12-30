@@ -6,7 +6,8 @@ class SSOPaginate extends SSO {
     super();
 
     this.link = "";
-    this.total = 0;
+    this.totalPages = 0;
+    this.resultCount = 0;
     this.limit = 0;
   }
 
@@ -44,7 +45,7 @@ class SSOPaginate extends SSO {
   handleSuccess(req, res, context) {
 
     res.append("Link", this.link);
-    res.append("Query-Total", this.total);
+    res.append("Query-Total", this.resultCount);
     res.append("Query-Limit", this.limit);
 
     res.status(this.successStatusCode).json(this.content);
