@@ -12,7 +12,6 @@
     "test:unit": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Unit-Tests",
     "test:integration": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests",
     "start:dev": "cross-env PULSAR_STATUS=dev node ./src/dev_server.js",
-    "start:dev:run-task": "cross-env PULSAR_STATUS=dev TASK=1 node ./src/dev_server.js",
     "lint": "prettier --check -u -w .",
     "complex": "cr --newmi --config .complexrc .",
     "js-docs": "jsdoc2md -c ./jsdoc.conf.js ./src/*.js ./src/handlers/*.js ./docs/resources/jsdoc_typedef.js > ./docs/reference/Source_Documentation.md",
