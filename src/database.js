@@ -133,8 +133,8 @@ async function insertNewPackage(pack) {
         // No need to specify downloads and stargazers. They default at 0 on creation.
         // TODO: data column deprecated; to be removed
         insertNewPack = await sqlTrans`
-          INSERT INTO packages (name, creation_method, data, package_type)
-          VALUES (${pack.name}, ${pack.creation_method}, ${pack}, ${packageType})
+          INSERT INTO packages (name, creation_method, data, package_type, owner)
+          VALUES (${pack.name}, ${pack.creation_method}, ${pack}, ${packageType}, ${pack.owner})
           RETURNING pointer;
       `;
       } catch (e) {
@@ -236,13 +236,35 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
       // otherwise use the name in the package object directly.
       let packName = rename ? oldName : packJSON.name;
 
-      const packID = await getPackageByNameSimple(packName);
+      const pack = await getPackageByName(packName);
 
-      if (!packID.ok) {
-        return packID;
+      if (!pack.ok) {
+        return pack;
       }
 
-      const pointer = packID.content.pointer;
+      const pointer = pack.content.pointer;
+
+      if (packJSON.owner !== pack.owner) {
+        // The package owner has changed. Whether or not this is plausible in
+        // the real world, it's a good idea to handle it here.
+        let updateOwner = {};
+        let ownerUpdateFailed = false;
+        try {
+          updateOwner = await sqlTrans`
+            UPDATE PACKAGES
+            SET owner = ${packJSON.owner}
+            WHERE pointer = ${pointer}
+            RETURNING owner;
+          `
+        } catch (e) {
+          // There aren't constraints on the `owner` field, so if this were to
+          // fail, it wouldn't be clear why. But we're handling it anyway!
+          ownerUpdateFailed = true;
+        }
+        if (!updateOwner?.count || ownerUpdateFailed) {
+          throw `Unable to update the package owner to ${packJSON.owner}.`;
+        }
+      }
 
       if (rename) {
         // The flow for renaming the package.
@@ -545,7 +567,7 @@ async function insertNewUser(username, id, avatar) {
       ? { ok: true, content: command[0] }
       : {
           ok: false,
-          content: `Unable to create user: ${user}`,
+          content: `Unable to create user: ${username}`,
           short: "Server Error",
         };
   } catch (err) {
