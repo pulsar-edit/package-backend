@@ -177,3 +177,16 @@ describe("Verify fileExtension Returns", () => {
     expect(query.fileExtension(arg)).toBe(result);
   });
 });
+
+const ownerCases = [
+  [{ query: { owner: "savetheclocktower" } }, "savetheclocktower"],
+  [{ query: { owner: '' } }, false],
+  [{ query: { owner: 101 } }, false],
+  [{ query: {} }, false],
+];
+
+describe("Verify owner Returns", () => {
+  test.each(ownerCases)("Given %o Returns %p", (arg, result) => {
+    expect(query.owner(arg)).toBe(result);
+  });
+});
