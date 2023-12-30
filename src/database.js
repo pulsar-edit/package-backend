@@ -255,7 +255,7 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
             SET owner = ${packJSON.owner}
             WHERE pointer = ${pointer}
             RETURNING owner;
-          `
+          `;
         } catch (e) {
           // There aren't constraints on the `owner` field, so if this were to
           // fail, it wouldn't be clear why. But we're handling it anyway!
