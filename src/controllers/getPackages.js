@@ -24,8 +24,8 @@ module.exports = {
     service: (context, req) => { return context.query.service(req); },
     serviceVersion: (context, req) => { return context.query.serviceVersion(req); },
     fileExtension: (context, req) => { return context.query.fileExtension(req); },
-    user: (context, req) => {
-      return context.query.user(req);
+    owner: (context, req) => {
+      return context.query.owner(req);
     }
   },
 

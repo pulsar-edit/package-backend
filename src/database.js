@@ -1603,8 +1603,8 @@ async function getSortedPackages(opts, themes = false) {
               : sqlStorage``
           }
           ${
-            typeof opts.user === "string"
-              ? sqlStorage`WHERE p.owner = ${opts.user}`
+            typeof opts.owner === "string"
+              ? sqlStorage`WHERE p.owner = ${opts.owner}`
               : sqlStorage``
           }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC

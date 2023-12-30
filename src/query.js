@@ -297,8 +297,8 @@ function service(req) {
  * @returns {string|boolean} Returns false if the provided value is invalid or
  *   nonexistent. Returns the user name otherwise.
  */
-function user (req) {
-  return stringValidation(req.query.user);
+function owner (req) {
+  return stringValidation(req.query.owner);
 }
 
 /**
