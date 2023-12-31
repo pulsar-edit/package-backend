@@ -28,7 +28,7 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns array on success", async () => {
-    const newPack = await database.insertNewPackage({
+    await database.insertNewPackage({
       name: "atom-material-syntax",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
