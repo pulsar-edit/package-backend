@@ -49,6 +49,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
         url: "https://github.com/confused-Techie/package-backend",
         type: "git"
       },
+      owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
         latest: "1.0.1"

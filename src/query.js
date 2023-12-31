@@ -298,7 +298,13 @@ function service(req) {
  *   nonexistent. Returns the user name otherwise.
  */
 function owner (req) {
-  return stringValidation(req.query.owner);
+  if (!stringValidation(req.query.owner)) {
+    return false;
+  }
+  if (req.query.owner.length === 0) {
+    return false;
+  }
+  return req.query.owner;
 }
 
 /**

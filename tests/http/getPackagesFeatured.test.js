@@ -29,6 +29,7 @@ describe("Behaves as expected", () => {
         url: "https://github.com/Spiker985/x-terminal-reloaded",
         type: "git"
       },
+      owner: "Spiker985",
       creation_method: "Test Package",
       releases: {
         latest: "1.1.0"

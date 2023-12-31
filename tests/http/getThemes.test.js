@@ -53,6 +53,7 @@ describe("Behaves as expected", () => {
         name: "test-package",
         theme: "syntax"
       },
+      owner: "confused-Techie",
       versions: {
         "1.1.0": {
           dist: {
@@ -84,6 +85,7 @@ describe("Behaves as expected", () => {
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(1);
     expect(sso.content[0].name).toBe("test-package");
+    expect(sso.content[0].owner).toBe("confused-Techie");
     expect(sso.link).toBe(
       `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;`
       + ' rel="self", '

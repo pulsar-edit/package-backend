@@ -33,9 +33,9 @@ class SSOPaginate extends SSO {
     let linkString = "";
 
     linkString += `<${url}?page=${currentPage}${paramString}>; rel="self", `;
-    linkString += `<${url}?page=${this.total}${paramString}>; rel="last"`;
+    linkString += `<${url}?page=${this.totalPages}${paramString}>; rel="last"`;
 
-    if (currentPage !== this.total) {
+    if (currentPage !== this.totalPages) {
       linkString += `, <${url}?page=${parseInt(currentPage) + 1}${paramString}>; rel="next"`;
     }
 

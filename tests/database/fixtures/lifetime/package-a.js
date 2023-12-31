@@ -4,6 +4,7 @@ const createPack = {
     type: "git",
     url: "https://github.com/pulsar-edit/package-a-lifetime",
   },
+  owner: "pulsar-edit",
   creation_method: "Test Package",
   readme: "This is a readme!",
   metadata: {

@@ -11,6 +11,7 @@ module.exports = {
     license: "MIT",
     version: "1.0.0",
   },
+  owner: "confused-Techie",
   releases: {
     latest: "1.0.0",
   },

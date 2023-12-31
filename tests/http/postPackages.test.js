@@ -90,6 +90,7 @@ describe("POST /api/packages Behaves as expected", () => {
         type: "git"
       },
       creation_method: "Test Package",
+      owner: 'confused-Techie',
       releases: { latest: "1.1.0" },
       readme: "This is a readme!",
       metadata: { name: "post-packages-test-package" },
@@ -153,6 +154,7 @@ describe("POST /api/packages Behaves as expected", () => {
             url: "https://github.com/confused-Techie/package-backend",
             type: "git"
           },
+          owner: 'confused-Techie',
           downloads: 0,
           stargazers_count: 0,
           creation_method: "Test Package",

@@ -50,6 +50,7 @@ describe("POST /api/packages/:packageName/star", () => {
         url: "https://github.com/confused-Techie/package-backend",
         type: "git"
       },
+      owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
         latest: "1.0.0"

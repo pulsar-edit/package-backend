@@ -7,6 +7,19 @@ describe("Building Objects with PackageObject Return as Expected", () => {
     expect(obj.name).toBe("hello");
   });
 
+  test("Extracting owner", () => {
+    let obj = new PackageObject()
+      .setName("hello")
+      .setOwnerRepo("pulsar/hello")
+      .setDownloads(100)
+      .setStargazers(200)
+      .setReadme("## Hello this is a readme!")
+      .setRepositoryURL("https://github.com/pulsar-edit/hello")
+      .setRepositoryType("git");
+
+    expect(obj.owner).toBe("pulsar-edit");
+  });
+
   test("Adding multiple versions", () => {
     let obj = new PackageObject()
       .setName("hello")

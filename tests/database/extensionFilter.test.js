@@ -24,6 +24,7 @@ describe("Returns correct data when filtering by extension", () => {
         type: "git",
         url: "https://github.com/confused-Techie/extensionFilter-Returns",
       },
+      owner: "confused-Techie",
       downloads: 0,
       stargazers_count: 0,
       creation_method: "Test run",
