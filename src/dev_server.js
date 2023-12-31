@@ -9,8 +9,10 @@
 /**
  * This is the recommended and only way to mock how Jest would use the module.
  */
+/* eslint-disable node/no-unpublished-require */
 const dbSetup = require("../node_modules/@databases/pg-test/jest/globalSetup");
 const dbTeardown = require("../node_modules/@databases/pg-test/jest/globalTeardown");
+/* eslint-enable node/no-unpublished-require */
 
 async function test() {
   await processArgs();
