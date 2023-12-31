@@ -602,7 +602,7 @@ async function getPackageByName(name, user = false) {
       SELECT
         ${
           user ? sqlStorage`` : sqlStorage`p.pointer,`
-        } p.name, p.created, p.updated, p.creation_method, p.downloads, p.data,
+        } p.name, p.created, p.updated, p.creation_method, p.downloads, p.data, p.owner,
         (p.stargazers_count + p.original_stargazers) AS stargazers_count,
         JSONB_AGG(
           JSON_BUILD_OBJECT(
@@ -724,7 +724,7 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
+      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads, p.owner,
         (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
       FROM packages AS p
         INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
@@ -1479,7 +1479,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
 
     const command = await sqlStorage`
       WITH search_query AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads, p.owner,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
