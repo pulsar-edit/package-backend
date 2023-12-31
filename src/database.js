@@ -1597,7 +1597,7 @@ async function getSortedPackages(opts, themes = false) {
 
     const command = await sqlStorage`
       WITH latest_versions AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads, p.owner,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
