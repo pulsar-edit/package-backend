@@ -10,7 +10,7 @@
     "start": "node ./src/server.js",
     "test": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests Unit-Tests --runInBand",
     "test:unit": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Unit-Tests",
-    "test:integration": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests",
+    "test:integration": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests --runInBand",
     "start:dev": "cross-env PULSAR_STATUS=dev node ./src/dev_server.js",
     "lint": "prettier --check -u -w .",
     "complex": "cr --newmi --config .complexrc .",

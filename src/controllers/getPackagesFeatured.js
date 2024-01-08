@@ -7,7 +7,7 @@ module.exports = {
     summary: "Returns all featured packages. Previously undocumented endpoint.",
     responses: {
       200: {
-        description: "An array of features packages.",
+        description: "An array of featured packages.",
         content: {
           "application/json": "$packageObjectShortArray"
         }
