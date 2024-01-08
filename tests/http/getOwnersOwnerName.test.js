@@ -1,4 +1,4 @@
-const endpoint = require("../../src/controllers/getOwnerOwnerName.js");
+const endpoint = require("../../src/controllers/getOwnersOwnerName.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
