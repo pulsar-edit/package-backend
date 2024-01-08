@@ -1,3 +1,5 @@
+const parseGithubUrl = require('parse-github-url');
+
 /**
  * @module PackageObject
  * @desc This Module is used to aide in building Package Objects.
@@ -26,6 +28,7 @@ class PackageObject {
     this.stargazers_count = undefined;
     this.readme = undefined;
     this.creationMethod = undefined;
+    this.owner = undefined;
   }
 
   /**
@@ -167,6 +170,10 @@ class PackageObject {
    */
   setRepositoryURL(repoURL) {
     this.repository.url = repoURL;
+    let parsed = parseGithubUrl(repoURL);
+    if (parsed) {
+      this.owner = parsed.owner;
+    }
     return this;
   }
 

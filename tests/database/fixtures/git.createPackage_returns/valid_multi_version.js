@@ -6,6 +6,7 @@ module.exports = {
   },
   creation_method: "Test Package",
   readme: "This is a readme!",
+  owner: "pulsar-edit",
   metadata: {
     name: "publish-test-valid-multi-version",
     license: "MIT",

@@ -15,20 +15,11 @@ module.exports = {
       {
         allowModules: [
           "supertest",
-          "../node_modules/@databases/pg-test/jest/globalSetup",
-          "../node_modules/@databases/pg-test/jest/globalTeardown",
         ],
       },
     ],
     "no-process-exit": "off",
     // Custom Rules as Determined by the maintainers of package-backend
-    camelcase: [
-      "error",
-      {
-        ignoreGlobals: true,
-        ignoreImports: true,
-      },
-    ],
     complexity: ["error"],
     eqeqeq: ["error", "smart"],
     "max-depth": ["error", 4],

@@ -283,11 +283,28 @@ function serviceVersion(req) {
  * @function service
  * @desc Returns the service being requested.
  * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @returns {string|boolean} Returns false if the provided value is invalid, or
- * nonexistant. Returns the service string otherwise.
+ * @returns {string|boolean} Returns false if the provided value is invalid or
+ * nonexistent. Returns the service string otherwise.
  */
 function service(req) {
   return stringValidation(req.query.service);
+}
+
+/**
+ * @function user
+ * @param {object} req - The `Request` object inherited from the Express
+ *   endpoint.
+ * @returns {string|boolean} Returns false if the provided value is invalid or
+ *   nonexistent. Returns the user name otherwise.
+ */
+function owner (req) {
+  if (!stringValidation(req.query.owner)) {
+    return false;
+  }
+  if (req.query.owner.length === 0) {
+    return false;
+  }
+  return req.query.owner;
 }
 
 /**
@@ -340,5 +357,6 @@ module.exports = {
   serviceType,
   serviceVersion,
   service,
+  owner,
   fileExtension,
 };

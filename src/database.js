@@ -133,8 +133,8 @@ async function insertNewPackage(pack) {
         // No need to specify downloads and stargazers. They default at 0 on creation.
         // TODO: data column deprecated; to be removed
         insertNewPack = await sqlTrans`
-          INSERT INTO packages (name, creation_method, data, package_type)
-          VALUES (${pack.name}, ${pack.creation_method}, ${pack}, ${packageType})
+          INSERT INTO packages (name, creation_method, data, package_type, owner)
+          VALUES (${pack.name}, ${pack.creation_method}, ${pack}, ${packageType}, ${pack.owner})
           RETURNING pointer;
       `;
       } catch (e) {
@@ -236,13 +236,35 @@ async function insertNewPackageVersion(packJSON, oldName = null) {
       // otherwise use the name in the package object directly.
       let packName = rename ? oldName : packJSON.name;
 
-      const packID = await getPackageByNameSimple(packName);
+      const pack = await getPackageByName(packName);
 
-      if (!packID.ok) {
-        return packID;
+      if (!pack.ok) {
+        return pack;
       }
 
-      const pointer = packID.content.pointer;
+      const pointer = pack.content.pointer;
+
+      if (packJSON.owner !== pack.owner) {
+        // The package owner has changed. Whether or not this is plausible in
+        // the real world, it's a good idea to handle it here.
+        let updateOwner = {};
+        let ownerUpdateFailed = false;
+        try {
+          updateOwner = await sqlTrans`
+            UPDATE PACKAGES
+            SET owner = ${packJSON.owner}
+            WHERE pointer = ${pointer}
+            RETURNING owner;
+          `;
+        } catch (e) {
+          // There aren't constraints on the `owner` field, so if this were to
+          // fail, it wouldn't be clear why. But we're handling it anyway!
+          ownerUpdateFailed = true;
+        }
+        if (!updateOwner?.count || ownerUpdateFailed) {
+          throw `Unable to update the package owner to ${packJSON.owner}.`;
+        }
+      }
 
       if (rename) {
         // The flow for renaming the package.
@@ -545,7 +567,7 @@ async function insertNewUser(username, id, avatar) {
       ? { ok: true, content: command[0] }
       : {
           ok: false,
-          content: `Unable to create user: ${user}`,
+          content: `Unable to create user: ${username}`,
           short: "Server Error",
         };
   } catch (err) {
@@ -580,7 +602,7 @@ async function getPackageByName(name, user = false) {
       SELECT
         ${
           user ? sqlStorage`` : sqlStorage`p.pointer,`
-        } p.name, p.created, p.updated, p.creation_method, p.downloads, p.data,
+        } p.name, p.created, p.updated, p.creation_method, p.downloads, p.data, p.owner,
         (p.stargazers_count + p.original_stargazers) AS stargazers_count,
         JSONB_AGG(
           JSON_BUILD_OBJECT(
@@ -702,7 +724,7 @@ async function getPackageCollectionByName(packArray) {
     // which process the returned content with constructPackageObjectShort(),
     // we select only the needed columns.
     const command = await sqlStorage`
-      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads,
+      SELECT DISTINCT ON (p.name) p.name, v.semver, p.downloads, p.owner,
         (p.stargazers_count + p.original_stargazers) AS stargazers_count, p.data
       FROM packages AS p
         INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name IN ${sqlStorage(
@@ -1457,7 +1479,7 @@ async function simpleSearch(term, page, dir, sort, themes = false) {
 
     const command = await sqlStorage`
       WITH search_query AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads, p.owner,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
@@ -1575,7 +1597,7 @@ async function getSortedPackages(opts, themes = false) {
 
     const command = await sqlStorage`
       WITH latest_versions AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads,
+        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads, p.owner,
           (p.stargazers_count + p.original_stargazers) AS stargazers_count,
           v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
@@ -1600,6 +1622,11 @@ async function getSortedPackages(opts, themes = false) {
           ${
             typeof opts.fileExtension === "string"
               ? sqlStorage`WHERE ${opts.fileExtension}=ANY(v.supported_languages)`
+              : sqlStorage``
+          }
+          ${
+            typeof opts.owner === "string"
+              ? sqlStorage`WHERE p.owner = ${opts.owner}`
               : sqlStorage``
           }
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC

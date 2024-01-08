@@ -57,6 +57,7 @@ expect.extend({
     let done = false;
     for (const response in endpoint.docs.responses) {
       // We use `==` to facilitate type coercion
+      // eslint-disable-next-line eqeqeq
       if (response == endpoint.endpoint.successStatus) {
         let obj = endpoint.docs.responses[response].content["application/json"];
 

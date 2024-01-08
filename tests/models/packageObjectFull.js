@@ -4,7 +4,7 @@ module.exports = {
     type: "object",
     required: [
       "name", "readme", "metadata", "releases", "versions",
-      "repository", "creation_method", "downloads", "stargazers_count", "badges"
+      "repository", "creation_method", "downloads", "stargazers_count", "badges", "owner"
     ],
     properties: {
       name: { type: "string" },
@@ -16,13 +16,15 @@ module.exports = {
       creation_method: { type: "string" },
       downloads: { type: "string" },
       stargazers_count: { type: "string" },
-      badges: { type: "array" }
+      badges: { type: "array" },
+      owner: { type: "string" }
     }
   },
   example: {
     // This is nearly the full return of `language-powershell-revised`
     name: "language-powershell-revised",
     readme: "This is the full content of a readme file!",
+    owner: "confused-Techie",
     metadata: {
       // The metadata field is the `package.json` of the most recent version
       // With the `dist` object added
@@ -88,6 +90,7 @@ module.exports = {
       releases: Joi.object({
         latest: Joi.string().required()
       }).required(),
+      owner: Joi.string().required(),
       versions: Joi.object().required(),
       repository: Joi.object({
         url: Joi.string().required(),

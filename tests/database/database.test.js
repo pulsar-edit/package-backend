@@ -479,6 +479,7 @@ describe("Package Lifecycle Tests", () => {
         url: "https://github.com/confused-Techie/package-backend",
         type: "git"
       },
+      owner: "confused-Techie",
       creation_method: "Test Package",
       releases: { latest: "1.0.0" },
       readme: "This is a readme!",

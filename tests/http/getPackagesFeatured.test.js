@@ -22,13 +22,14 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns proper data on success", async () => {
-    const addPack = await database.insertNewPackage({
+    await database.insertNewPackage({
       // We know a currently featured package is 'x-terminal-reloaded'
       name: "x-terminal-reloaded",
       repository: {
         url: "https://github.com/Spiker985/x-terminal-reloaded",
         type: "git"
       },
+      owner: "Spiker985",
       creation_method: "Test Package",
       releases: {
         latest: "1.1.0"

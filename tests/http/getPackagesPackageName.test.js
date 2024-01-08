@@ -31,6 +31,7 @@ describe("Behaves as expected", () => {
         url: "https://github.com/confused-Techie/package-backend",
         type: "git"
       },
+      owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
         latest: "1.1.0"
@@ -64,6 +65,7 @@ describe("Behaves as expected", () => {
 
     expect(sso.ok).toBe(true);
     expect(sso.content.name).toBe("get-package-test");
+    expect(sso.content.owner).toBe("confused-Techie");
     expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("get-package-test", true);
   });

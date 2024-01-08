@@ -67,6 +67,7 @@ async function constructPackageObjectFull(pack) {
   let newPack = pack.data;
   newPack.name = pack.name;
   newPack.downloads = pack.downloads;
+  newPack.owner = pack.owner;
   newPack.stargazers_count = pack.stargazers_count;
   newPack.versions = parseVersions(pack.versions);
   // database.getPackageByName() sorts the JSON array versions in descending order,
@@ -124,6 +125,7 @@ async function constructPackageObjectShort(pack) {
     // Remove keys that aren't intended to exist in a Package Object Short
     delete newPack.versions;
 
+    newPack.owner = p.owner;
     return newPack;
   };
 
@@ -210,10 +212,11 @@ async function constructPackageObjectJSON(pack) {
  * @async
  * @function engineFilter
  * @desc A complex function that provides filtering by Atom engine version.
- * This should take a package with it's versions and retrieve whatever matches
+ * This should take a package with its versions and retrieve whatever matches
  * that engine version as provided.
  * @returns {object} The filtered object.
  */
+// eslint-disable-next-line complexity
 async function engineFilter(pack, engine) {
   // If a compatible version is found, we add its data to the metadata property of the package
   // Otherwise we return an unmodified package, so that it is usable to the consumer.
@@ -238,7 +241,8 @@ async function engineFilter(pack, engine) {
     return pack;
   }
 
-  // We will want to loop through each version of the package, and check its engine version against the specified one.
+  // We will want to loop through each version of the package, and check its
+  // engine version against the specified one.
   let compatibleVersion = "";
 
   for (const ver in pack.versions) {
@@ -247,13 +251,15 @@ async function engineFilter(pack, engine) {
       continue;
     }
 
-    // Core Atom Packages contain '*' as the engine type, and will require a manual check.
+    // Core Atom Packages contain '*' as the engine type, and will require a
+    // manual check.
     if (pack.versions[ver].engines.atom === "*") {
       break;
     }
 
     // Track the upper and lower end conditions.
-    // Null type means not available; Bool type means available with the relative result.
+    // Null type means not available; Bool type means available with the
+    // relative result.
     let lowerEnd = null;
     let upperEnd = null;
 

@@ -4,7 +4,7 @@ module.exports = {
     type: "object",
     required: [
       "name", "readme", "metadata", "repository", "downloads", "stargazers_count",
-      "releases", "badges"
+      "releases", "badges", "owner"
     ],
     properties: {
       name: { type: "string" },
@@ -15,13 +15,15 @@ module.exports = {
       downloads: { type: "string" },
       stargazers_count: { type: "string" },
       releases: { type: "object" },
-      badges: { type: "array" }
+      badges: { type: "array" },
+      owner: { type: "string" }
     }
   },
   example: {
     // Example taken from `platformio-ide-terminal`
     name: "platformio-ide-terminal",
     readme: "This is the full content of a readme file!",
+    owner: "platformio",
     metadata: {
       main: "./lib/plaformio-ide-terminal",
       name: "platformio-ide-terminal",
@@ -92,6 +94,7 @@ module.exports = {
       releases: Joi.object({
         latest: Joi.string().required()
       }).required(),
+      owner: Joi.string().required(),
       repository: Joi.object({
         url: Joi.string().required(),
         type: Joi.string().valid(

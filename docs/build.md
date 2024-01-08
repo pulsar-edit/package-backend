@@ -98,9 +98,9 @@ There are some additional scripts that you likely won't encounter or need during
 
 #### Limiting what's mocked in the dev server
 
-No additionally, when working locally if you need to test a feature where you have no option but to query the remote service (This is not recommended) you do have the option to enable some remote services as needed.
+When working locally if you need to test a feature where you have no option but to query the remote service (this is not recommended) you do have the option to enable some remote services as needed.
 
-Again setting any of the below values will contact remote services, meaning you must have the proper Configuration Values set to do so, and you become at risk of causing damage to external data, any deletions that occur here will cause permanent data loss to these services. Or may get you blocked by remote services if there is abuse.
+Again, setting any of the below values will contact remote services, meaning you must have the proper Configuration Values set to do so, and you become at risk of causing damage to external data, any deletions that occur here will cause permanent data loss to these services. Or may get you blocked by remote services if there is abuse.
 
 The following values can only ever be started when using `npm run start:dev` and will be ignored in all other instances.
 

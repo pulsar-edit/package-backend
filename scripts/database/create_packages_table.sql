@@ -60,3 +60,12 @@ CREATE TRIGGER trigger_now_on_updated
     BEFORE UPDATE ON packages
     FOR EACH ROW
 EXECUTE PROCEDURE now_on_updated_package();
+
+
+-- Add an `owner` field to the table
+
+-- GitHub username length limit is apparently 39. For future-proofing, we'll
+-- envision a prefix that specifies an alternative VCS, so let's build in some
+-- wiggle room.
+ALTER TABLE packages
+ADD COLUMN owner VARCHAR(60);
