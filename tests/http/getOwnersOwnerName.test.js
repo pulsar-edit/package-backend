@@ -16,7 +16,10 @@ describe("Behaves as expected", () => {
 
   test("Returns empty array with no matching results", async () => {
     const sso = await endpoint.logic({
-      owner: "i-dont-exist"
+      owner: "i-dont-exist",
+      page: "1",
+      sort: "downloads",
+      direction: "desc"
     }, context);
 
     expect(sso.ok).toBe(false);
