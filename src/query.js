@@ -300,7 +300,7 @@ function service(req) {
 function owner (req) {
   // Owner accepts the owner as an argument for things like search,
   // as well as a path, for the endpoint `/api/owners/:ownerName`
-  let prov = req.query.owner ?? req.params.ownerName;
+  let prov = req.query.owner ?? req.params?.ownerName ?? null;
 
   if (!stringValidation(prov)) {
     return false;
