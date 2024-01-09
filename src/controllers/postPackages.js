@@ -101,30 +101,6 @@ module.exports = {
                         .addMessage("This package name is banned.");
     }
 
-    // Check that the package does NOT exists
-    // We will utilize our database.packageNameAvailability to see if the name is available
-    const nameAvailable = await context.database.packageNameAvailability(repo);
-
-    if (!nameAvailable.ok) {
-      // We need to ensure the error is not found or otherwise
-      if (nameAvailable.short !== "not_found") {
-        // the server failed for some other bubbled reason
-        const sso = new context.sso();
-
-        return sso.notOk().addContent(nameAvailable)
-                          .addCalls("auth.verifyAuth", user)
-                          .addCalls("db.packageNameAvailability", nameAvailable);
-      }
-
-      // But if the short is in fact "not_found" we can report the package as not being
-      // available at this name
-      const sso = new context.sso();
-
-      return sso.notOk().addShort("package_exists")
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.packageNameAvailability", nameAvailable);
-    }
-
     // Now we know the package doesn't exist. And we want to check that the user
     // has permissions to this package
     const gitowner = await context.vcs.ownership(user.content, params.repository);
@@ -134,7 +110,6 @@ module.exports = {
 
       return sso.notOk().addContent(gitowner)
                         .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.packageNameAvailability", nameAvailable)
                         .addCalls("vcs.ownership", gitowner);
     }
 
@@ -151,9 +126,35 @@ module.exports = {
 
       return sso.notOk().addContent(newPack)
                         .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.packageNameAvailability", nameAvailable)
                         .addCalls("vcs.ownership", gitowner)
                         .addCalls("vcs.newPackageData", newPack);
+    }
+
+    // Now that we have the name the package will actually take, we want
+    // to make sure this doesn't exist
+    const nameAvailable = await context.database.packageNameAvailability(newPack.content.name);
+
+    if (!nameAvailable.ok) {
+      // We need to ensure the error is not found or otherwise
+      if (nameAvailable.short !== "not_found") {
+        // the server failed for some other bubbled reason
+        const sso = new context.sso();
+
+        return sso.notOk().addContent(nameAvailable)
+                          .addCalls("auth.verifyAuth", user)
+                          .addCalls("vcs.ownership", gitowner)
+                          .addCalls("vcs.newPackageData", newPack)
+                          .addCalls("db.packageNameAvailability", nameAvailable);
+      }
+      // But if the short is in fact "not_found" we can report the package as
+      // not being available at this name
+      const sso = new context.sso();
+
+      return sso.noOk().addShort("package_exists")
+                       .addCalls("auth.verifyAuth", user)
+                       .addCalls("vcs.ownership", gitowner)
+                       .addCalls("vcs.newPackageData", newPack)
+                       .addCalls("db.packageNameAvailability", nameAvailable);
     }
 
     // Now with valid package data, we can insert them into the DB
@@ -164,26 +165,26 @@ module.exports = {
 
       return sso.notOk().addContent(insertedNewPack)
                         .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.packageNameAvailability", nameAvailable)
                         .addCalls("vcs.ownership", gitowner)
                         .addCalls("vcs.newPackageData", newPack)
+                        .addCalls("db.packageNameAvailability", nameAvailable)
                         .addCalls("db.insertNewPackage", insertedNewPack);
     }
 
     // Finally we can return what was actually put into the databse.
     // Retreive the data from database.getPackageByName() and
     // convert it inot a package object full format
-    const newDbPack = await context.database.getPackageByName(repo, true);
+    const newDbPack = await context.database.getPackageByName(newPack.content.name, true);
 
     if (!newDbPack.ok) {
       const sso = new context.sso();
 
       return sso.notOk().addContent(newDbPack)
                         .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.packageNameAvailability", nameAvailable)
                         .addCalls("vcs.ownership", gitowner)
                         .addCalls("vcs.newPackageData", newPack)
                         .addCalls("db.insertNewPackage", insertedNewPack)
+                        .addCalls("db.packageNameAvailability", nameAvailable)
                         .addCalls("db.getPackageByName", newDbPack);
     }
 
