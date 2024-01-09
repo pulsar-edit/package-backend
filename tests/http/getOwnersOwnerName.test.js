@@ -22,7 +22,7 @@ describe("Behaves as expected", () => {
       direction: "desc"
     }, context);
 
-    expect(sso.ok).toBe(false);
+    expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(0);
   });
@@ -55,7 +55,10 @@ describe("Behaves as expected", () => {
     });
 
     const sso = await endpoint.logic({
-      owner: "pulsar-edit"
+      owner: "pulsar-edit",
+      page: "1",
+      sort: "downloads",
+      direction: "desc"
     }, context);
 
     expect(sso.ok).toBe(true);
