@@ -4,7 +4,15 @@
 
 module.exports = {
   docs: {
-    summary: "List all packages"
+    summary: "List all packages",
+    responses: {
+      200: {
+        description: "An array of packages.",
+        content: {
+          "application/json": "$packageObjectShortArray"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
