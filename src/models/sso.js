@@ -1,4 +1,5 @@
 const { performance } = require("node:perf_hooks");
+const util = require("util");
 
 const validEnums = [
   "not_found",
@@ -108,7 +109,7 @@ class SSO {
   }
 
   handleError(req, res, context) {
-    console.log(this);
+    console.log(util.inspect(this, { showHidden: false, depth: null }));
 
     let shortToUse, msgToUse, codeToUse;
 

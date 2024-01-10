@@ -82,38 +82,74 @@ describe("POST /api/packages Behaves as expected", () => {
         }
       };
     };
+    localContext.vcs.ownership = () => {
+      return {
+        ok: true,
+        content: "admin"
+      };
+    };
+    localContext.vcs.newPackageData = () => {
+      return {
+        ok: true,
+        content: {
+          name: "post-pkg-test-pkg-exists",
+          repository: {
+            url: "https://github.com/confused-Techie/post-pkg-test-pkg-exists",
+            type: "git"
+          },
+          owner: 'confused-Techie',
+          downloads: 0,
+          stargazers_count: 0,
+          creation_method: "Test Package",
+          releases: {
+            latest: "1.0.0"
+          },
+          readme: "This is a readme!",
+          metadata: { name: "post-pkg-test-pkg-exists" },
+          versions: {
+            "1.0.0": {
+              dist: {
+                tarball: "download-url",
+                sha: "1234"
+              },
+              name: "post-pkg-test-pkg-exists"
+            }
+          }
+        }
+      };
+    };
 
     await database.insertNewPackage({
-      name: "post-packages-test-package",
+      name: "post-pkg-test-pkg-exists",
       repository: {
-        url: "https://github.com/confused-Techie/package-backend",
+        url: "https://github.com/confused-Techie/post-pkg-test-pkg-exists",
         type: "git"
       },
       creation_method: "Test Package",
       owner: 'confused-Techie',
       releases: { latest: "1.1.0" },
       readme: "This is a readme!",
-      metadata: { name: "post-packages-test-package" },
+      metadata: { name: "post-pkg-test-pkg-exists" },
       versions: {
         "1.1.0": {
           dist: {
             tarball: "download-url",
             sha: "1234"
           },
-          name: "post-packages-test-package"
+          name: "post-pkg-test-pkg-exists"
         }
       }
     });
 
     const sso = await endpoint.logic({
-      repository: "confused-Techie/post-packages-test-package",
+      repository: "confused-Techie/post-pkg-test-pkg-exists",
       auth: "valid-token"
     }, localContext);
 
     expect(sso.ok).toBe(false);
     expect(sso.short).toBe("package_exists");
 
-    await database.removePackageByName("post-packages-test-package", true);
+    await database.removePackageByName("post-pkg-test-pkg-exists", true);
   });
 
   test("Successfully publishes a new package", async () => {
@@ -180,7 +216,7 @@ describe("POST /api/packages Behaves as expected", () => {
       repository: "confused-Techie/post-pkg-test-pkg-name",
       auth: "valid-token"
     }, localContext);
-
+    
     expect(sso.ok).toBe(true);
     expect(sso.content.name).toBe("post-pkg-test-pkg-name");
     expect(sso.content.releases.latest).toBe("1.0.0");

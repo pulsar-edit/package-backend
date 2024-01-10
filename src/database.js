@@ -925,9 +925,9 @@ async function removePackageByName(name, exterminate = false) {
       const packID = await getPackageByNameSimple(name);
 
       if (!packID.ok) {
-        // The package does not exists, but we return ok since it's like
+        // The package does not exist, but we return ok since it's like
         // it has been deleted.
-        return { ok: true, content: `${name} package does not exists.` };
+        return { ok: true, content: `${name} package does not exist.` };
       }
 
       const pointer = packID.content.pointer;
@@ -1559,6 +1559,42 @@ async function getUserCollectionById(ids) {
   return { ok: true, content: userArray };
 }
 
+let emptyClause;
+
+function getEmptyClause () {
+  emptyClause ??= sqlStorage``;
+  return emptyClause;
+}
+
+function ownerClause (opts) {
+  if (typeof opts.owner !== 'string') {
+    return getEmptyClause();
+  }
+  return sqlStorage`AND p.owner = ${opts.owner}`;
+}
+
+function serviceClause (opts) {
+  if (typeof opts.service !== 'string' || typeof opts.serviceType !== 'string') {
+    return getEmptyClause();
+  }
+  let versionClause;
+  if (typeof opts.serviceVersion !== 'string') {
+    versionClause = sqlStorage`IS NOT NULL`;
+  } else {
+    versionClause = sqlStorage`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`;
+  }
+
+  return sqlStorage`AND v.meta -> ${opts.serviceType} -> ${opts.service} ${versionClause}`;
+}
+
+function fileExtensionClause (opts) {
+  if (typeof opts.fileExtension !== 'string') {
+    return getEmptyClause();
+  }
+
+  return sqlStorage`AND ${opts.fileExtension}=ANY(v.supported_languages)`;
+}
+
 /**
  * @async
  * @function getSortedPackages
@@ -1607,28 +1643,13 @@ async function getSortedPackages(opts, themes = false) {
               ? sqlStorage`AND p.package_type = 'theme'`
               : sqlStorage``
           })
-          ${
-            typeof opts.service === "string" &&
-            typeof opts.serviceType === "string"
-              ? sqlStorage`WHERE v.meta -> ${opts.serviceType} -> ${
-                  opts.service
-                } ${
-                  typeof opts.serviceVersion === "string"
-                    ? sqlStorage`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`
-                    : sqlStorage`IS NOT NULL`
-                }`
-              : sqlStorage``
-          }
-          ${
-            typeof opts.fileExtension === "string"
-              ? sqlStorage`WHERE ${opts.fileExtension}=ANY(v.supported_languages)`
-              : sqlStorage``
-          }
-          ${
-            typeof opts.owner === "string"
-              ? sqlStorage`WHERE p.owner = ${opts.owner}`
-              : sqlStorage``
-          }
+
+        WHERE p.name IS NOT NULL
+
+        ${serviceClause(opts)}
+        ${fileExtensionClause(opts)}
+        ${ownerClause(opts)}
+
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )
       SELECT *, COUNT(*) OVER() AS query_result_count

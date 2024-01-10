@@ -26,7 +26,7 @@ describe("Behaves as expected", () => {
       // We know a currently featured package is 'atom-material-ui'
       name: "atom-material-ui",
       repository: {
-        url: "https://github.com/confused-Techie/package-backend",
+        url: "https://github.com/confused-Techie/atom-material-ui",
         type: "git"
       },
       owner: "confused-Techie",

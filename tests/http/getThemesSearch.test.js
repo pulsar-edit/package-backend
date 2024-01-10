@@ -31,7 +31,7 @@ describe("Behaves as expected", () => {
     await database.insertNewPackage({
       name: "atom-material-syntax",
       repository: {
-        url: "https://github.com/confused-Techie/package-backend",
+        url: "https://github.com/confused-Techie/atom-material-syntax",
         type: "git"
       },
       owner: "confused-Techie",
