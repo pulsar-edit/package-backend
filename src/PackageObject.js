@@ -207,6 +207,7 @@ class PackageObject {
     // And should be considered our master reference for the Package Object Short Data Structure
     let obj = {
       name: this.name,
+      owner: this.owner,
       repository: this.repository,
       downloads: this.downloads,
       stargazers_count: this.stargazers_count,
@@ -233,6 +234,7 @@ class PackageObject {
     // Should be considered the master Package Object Full data structure
     let obj = {
       name: this.name,
+      owner: this.owner,
       repository: this.repository,
       downloads: this.downloads,
       stargazers_count: this.stargazers_count,
