@@ -150,7 +150,7 @@ module.exports = {
       // not being available at this name
       const sso = new context.sso();
 
-      return sso.noOk().addShort("package_exists")
+      return sso.notOk().addShort("package_exists")
                        .addCalls("auth.verifyAuth", user)
                        .addCalls("vcs.ownership", gitowner)
                        .addCalls("vcs.newPackageData", newPack)
