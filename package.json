@@ -53,7 +53,6 @@
   },
   "devDependencies": {
     "@confused-techie/compactignore": "^2.0.3",
-    "@confused-techie/quick-webserver-docs": "^0.1.6",
     "@databases/pg-migrations": "^5.0.1",
     "@databases/pg-test": "^3.1.2",
     "all-contributors-cli": "^6.20.0",
