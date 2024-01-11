@@ -7,4 +7,5 @@ queries:
 paths-ignore:
   - ./test
   - ./tests
+  - ./scripts/deprecated/test
 # https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors
