@@ -31,10 +31,10 @@ describe("Behaves as expected", () => {
     await database.insertNewPackage({
       name: "get-owner-test",
       repository: {
-        url: "https://github.com/pulsar-edit/pulsar",
+        url: "https://github.com/pulsar-cooperative/get-owner-test",
         type: "git"
       },
-      owner: "pulsar-edit",
+      owner: "pulsar-cooperative",
       creation_method: "Test Package",
       releases: {
         latest: "1.0.0"
@@ -55,12 +55,12 @@ describe("Behaves as expected", () => {
     });
 
     const sso = await endpoint.logic({
-      owner: "pulsar-edit",
+      owner: "pulsar-cooperative",
       page: 1,
       sort: "downloads",
       direction: "desc"
     }, context);
-console.log(sso);
+
     expect(sso.ok).toBe(true);
     expect(sso.content[0].name).toBe("get-owner-test");
     expect(sso.content).toBeArray();
