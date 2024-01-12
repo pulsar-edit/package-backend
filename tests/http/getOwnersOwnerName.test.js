@@ -60,7 +60,7 @@ describe("Behaves as expected", () => {
       sort: "downloads",
       direction: "desc"
     }, context);
-
+console.log(sso);
     expect(sso.ok).toBe(true);
     expect(sso.content[0].name).toBe("get-owner-test");
     expect(sso.content).toBeArray();
