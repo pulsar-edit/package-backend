@@ -28,7 +28,7 @@ module.exports = {
   },
 
   async logic(params, context) {
-    const packages = await context.database.getSortedPackages(params, true);
+    const packages = await context.database.getSortedPackages(params);
 
     if (!packages.ok) {
       const sso = new context.sso();

@@ -30,7 +30,7 @@ describe("Behaves as expected", () => {
   test("Returns package with matching owner entry", async () => {
     await database.insertNewPackage({
       name: "get-owner-test",
-      respository: {
+      repository: {
         url: "https://github.com/pulsar-edit/pulsar",
         type: "git"
       },
@@ -40,7 +40,7 @@ describe("Behaves as expected", () => {
         latest: "1.0.0"
       },
       readme: "This is a readme!",
-      metdata: {
+      metadata: {
         name: "get-owner-test"
       },
       versions: {
@@ -56,7 +56,7 @@ describe("Behaves as expected", () => {
 
     const sso = await endpoint.logic({
       owner: "pulsar-edit",
-      page: "1",
+      page: 1,
       sort: "downloads",
       direction: "desc"
     }, context);
@@ -64,8 +64,9 @@ describe("Behaves as expected", () => {
     expect(sso.ok).toBe(true);
     expect(sso.content[0].name).toBe("get-owner-test");
     expect(sso.content).toBeArray();
-    expect(sso.content.length).toBe(0);
+    expect(sso.content.length).toBe(1);
     expect(sso).toMatchEndpointSuccessObject(endpoint);
+
     await database.removePackageByName("get-owner-test", true);
   });
 });
