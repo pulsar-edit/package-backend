@@ -23,9 +23,9 @@ const config = {
         "<rootDir>/tests/helpers/global.setup.jest.js"
       ],
       testMatch: [
-        "<rootDir>/tests/database/**.test.js",
         "<rootDir>/tests/http/**.test.js",
-        "<rootDir>/tests/vcs/**.test.js"
+        "<rootDir>/tests/vcs/**.test.js",
+        "<rootDir>/tests/database/**.test.js",
       ]
     },
     {
