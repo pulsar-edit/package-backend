@@ -29,12 +29,12 @@ expect.extend({
     if (typeof actual === want) {
       return {
         pass: true,
-        message: () => ""
+        message: () => "",
       };
     } else {
       return {
         pass: false,
-        message: () => `Expected "${want}" but got "${typeof actual}"`
+        message: () => `Expected "${want}" but got "${typeof actual}"`,
       };
     }
   },
@@ -43,12 +43,12 @@ expect.extend({
     if (Array.isArray(want) && want.includes(actual)) {
       return {
         pass: true,
-        message: () => ""
+        message: () => "",
       };
     } else {
       return {
         pass: false,
-        message: () => `Expected ${want} to include ${actual}`
+        message: () => `Expected ${want} to include ${actual}`,
       };
     }
   },
@@ -62,7 +62,7 @@ expect.extend({
         let obj = endpoint.docs.responses[response].content["application/json"];
 
         if (obj.startsWith("$")) {
-          obj = require(`../models/${obj.replace("$","")}.js`);
+          obj = require(`../models/${obj.replace("$", "")}.js`);
         }
 
         expect(sso.content).toMatchSchema(obj.test);
@@ -72,13 +72,13 @@ expect.extend({
     }
     if (done) {
       return {
-        pass: true, message: () => ""
+        pass: true,
+        message: () => "",
       };
     } else {
       return {
         pass: false,
-        message: () =>
-          `Unable to find ${endpoint.endpoint.successStatus}.`
+        message: () => `Unable to find ${endpoint.endpoint.successStatus}.`,
       };
     }
   },

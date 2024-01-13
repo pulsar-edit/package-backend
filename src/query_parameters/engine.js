@@ -9,11 +9,12 @@ module.exports = {
     name: "engine",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "1.0.0",
     allowEmptyValue: true,
-    description: "Only show packages compatible with this Pulsar version. Must be a valid Semver."
+    description:
+      "Only show packages compatible with this Pulsar version. Must be a valid Semver.",
   },
   // TODO: Why does this accept `semver` and not a request object?
   logic: (semver) => {
@@ -31,5 +32,5 @@ module.exports = {
     } catch (e) {
       return false;
     }
-  }
+  },
 };

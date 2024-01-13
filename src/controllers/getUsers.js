@@ -4,36 +4,44 @@
 
 module.exports = {
   docs: {
-    summary: "Display details of the currently authenticated user. This endpoint is undocumented and is somewhat strange.",
-    description: "This endpoint only exists on the web version of the upstream API. Having no backend equivolent.",
+    summary:
+      "Display details of the currently authenticated user. This endpoint is undocumented and is somewhat strange.",
+    description:
+      "This endpoint only exists on the web version of the upstream API. Having no backend equivolent.",
     responses: {
       200: {
         description: "Details of the Authenticated User Account.",
         content: {
-          "application/json": "$userObjectPrivate"
-        }
-      }
-    }
+          "application/json": "$userObjectPrivate",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/users" ],
+    paths: ["/api/users"],
     rateLimit: "auth",
     successStatus: 200,
     options: {
       Allow: "GET",
       "Access-Control-Allow-Methods": "GET",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Credentials",
+      "Access-Control-Allow-Headers":
+        "Content-Type, Authorization, Access-Control-Allow-Credentials",
       "Access-Control-Allow-Origin": "https://web.pulsar-edit.dev",
-      "Access-Control-Allow-Credentials": true
-    }
+      "Access-Control-Allow-Credentials": true,
+    },
   },
   params: {
-    auth: (context, req) => { return context.query.auth(req); }
+    auth: (context, req) => {
+      return context.query.auth(req);
+    },
   },
   async preLogic(req, res, context) {
     res.header("Access-Control-Allow-Methods", "GET");
-    res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Access-Control-Allow-Credentials");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization, Access-Control-Allow-Credentials"
+    );
     res.header("Access-Control-Allow-Origin", "https://web.pulsar-edit.dev");
     res.header("Access-Control-Allow-Credentials", true);
   },
@@ -52,8 +60,7 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user)
-                        .addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
     }
 
     // TODO We need to find a way to add the users published pacakges here
@@ -74,5 +81,5 @@ module.exports = {
     const sso = new context.sso();
 
     return sso.isOk().addContent(returnUser);
-  }
+  },
 };

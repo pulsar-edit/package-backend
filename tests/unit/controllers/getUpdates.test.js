@@ -6,7 +6,7 @@ describe("Has features expected", () => {
       method: "GET",
       rateLimit: "generic",
       successStatus: 200,
-      paths: [ "/api/updates" ]
+      paths: ["/api/updates"],
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);
@@ -19,13 +19,9 @@ describe("Has features expected", () => {
 
 describe("Functions as expected", () => {
   test("Returns correct SSO Object", async () => {
-    const sso = await endpoint.logic(
-      {},
-      require("../../../src/context.js")
-    );
+    const sso = await endpoint.logic({}, require("../../../src/context.js"));
 
     expect(sso.ok).toBe(false);
     expect(sso.short).toBe("not_supported");
-
   });
 });

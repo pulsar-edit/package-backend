@@ -10,14 +10,15 @@ module.exports = {
     name: "packageName",
     in: "path",
     schema: {
-      type: "string"
+      type: "string",
     },
     required: true,
     allowEmptyValue: false,
     example: "autocomplete-powershell",
-    description: "The name of the package to reutrn details for. Must be URL escaped."
+    description:
+      "The name of the package to reutrn details for. Must be URL escaped.",
   },
   logic: (req) => {
     return req.params.packageName.toLowerCase();
-  }
+  },
 };

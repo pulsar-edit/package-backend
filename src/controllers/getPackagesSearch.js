@@ -9,27 +9,37 @@ module.exports = {
       200: {
         description: "Any array of packages.",
         content: {
-          "application/json": "$packageObjectShortArray"
-        }
-      }
-    }
+          "application/json": "$packageObjectShortArray",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/packages/search" ],
+    paths: ["/api/packages/search"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    sort: (context, req) => { return context.query.sort(req); },
-    page: (context, req) => { return context.query.page(req); },
-    direction: (context, req) => { return context.query.direction(req); },
-    query: (context, req) => { return context.query.query(req); },
-    filter: (context, req) => { return context.query.filter(req); }
+    sort: (context, req) => {
+      return context.query.sort(req);
+    },
+    page: (context, req) => {
+      return context.query.page(req);
+    },
+    direction: (context, req) => {
+      return context.query.direction(req);
+    },
+    query: (context, req) => {
+      return context.query.query(req);
+    },
+    filter: (context, req) => {
+      return context.query.filter(req);
+    },
   },
 
   /**
@@ -53,7 +63,7 @@ module.exports = {
       params.page,
       params.direction,
       params.sort,
-      (params.filter === "theme")
+      params.filter === "theme"
     );
 
     if (!packs.ok) {
@@ -72,11 +82,12 @@ module.exports = {
 
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packs)
-                        .addCalls("db.simpleSearch", packs);
+      return sso.notOk().addContent(packs).addCalls("db.simpleSearch", packs);
     }
 
-    const newPacks = await context.utils.constructPackageObjectShort(packs.content);
+    const newPacks = await context.utils.constructPackageObjectShort(
+      packs.content
+    );
 
     let packArray = null;
 
@@ -96,8 +107,12 @@ module.exports = {
     ssoP.resultCount = packs.pagination.count;
     ssoP.totalPages = packs.pagination.total;
     ssoP.limit = packs.pagination.limit;
-    ssoP.buildLink(`${context.config.server_url}/api/packages/search`, packs.pagination.page, params);
+    ssoP.buildLink(
+      `${context.config.server_url}/api/packages/search`,
+      packs.pagination.page,
+      params
+    );
 
     return ssoP.isOk().addContent(packArray);
-  }
+  },
 };

@@ -1,31 +1,34 @@
 /**
  * @module getStars
  */
- 
+
 module.exports = {
   docs: {
     summary: "List the authenticated users' starred packages.",
     responses: [
       {
         200: {
-          description: "Return a value similar to `GET /api/packages`, an array of package objects.",
-          content: {}
-        }
-      }
-    ]
+          description:
+            "Return a value similar to `GET /api/packages`, an array of package objects.",
+          content: {},
+        },
+      },
+    ],
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/stars" ],
+    paths: ["/api/stars"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    auth: (context, req) => { return context.query.auth(req); }
+    auth: (context, req) => {
+      return context.query.auth(req);
+    },
   },
 
   /**
@@ -40,19 +43,25 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user)
-                        .addMessage("Please update your token if you haven't done so recently.")
-                        .addCalls("auth.verifyAuth", user);
+      return sso
+        .notOk()
+        .addContent(user)
+        .addMessage("Please update your token if you haven't done so recently.")
+        .addCalls("auth.verifyAuth", user);
     }
 
-    let userStars = await context.database.getStarredPointersByUserID(user.content.id);
+    let userStars = await context.database.getStarredPointersByUserID(
+      user.content.id
+    );
 
     if (!userStars.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(userStars)
-                .addCalls("auth.verifyAuth", user)
-                .addCalls("db.getStarredPointersByUserID", userStars);
+      return sso
+        .notOk()
+        .addContent(userStars)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getStarredPointersByUserID", userStars);
     }
 
     if (userStars.content.length === 0) {
@@ -64,21 +73,27 @@ module.exports = {
       return sso.isOk().addContent([]);
     }
 
-    let packCol = await context.database.getPackageCollectionByID(userStars.content);
+    let packCol = await context.database.getPackageCollectionByID(
+      userStars.content
+    );
 
     if (!packCol.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packCol)
-                .addCalls("auth.verifyAuth", user)
-                .addCalls("db.getStarredPointersByUserID", userStars)
-                .addCalls("db.getPackageCollectionByID", packCol);
+      return sso
+        .notOk()
+        .addContent(packCol)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getStarredPointersByUserID", userStars)
+        .addCalls("db.getPackageCollectionByID", packCol);
     }
 
-    let newCol = await context.utils.constructPackageObjectShort(packCol.content);
+    let newCol = await context.utils.constructPackageObjectShort(
+      packCol.content
+    );
 
     const sso = new context.sso();
 
     return sso.isOk().addContent(newCol);
-  }
+  },
 };

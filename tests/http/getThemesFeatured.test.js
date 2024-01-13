@@ -27,34 +27,34 @@ describe("Behaves as expected", () => {
       name: "atom-material-ui",
       repository: {
         url: "https://github.com/confused-Techie/atom-material-ui",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
-        latest: "1.1.0"
+        latest: "1.1.0",
       },
       readme: "This is a readme!",
       metadata: {
         name: "atom-material-ui",
-        theme: "ui"
+        theme: "ui",
       },
       versions: {
         "1.1.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "atom-material-ui"
+          name: "atom-material-ui",
         },
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "atom-material-ui"
-        }
-      }
+          name: "atom-material-ui",
+        },
+      },
     });
 
     const sso = await endpoint.logic({}, context);

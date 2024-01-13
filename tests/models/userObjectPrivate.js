@@ -2,32 +2,30 @@ module.exports = {
   schema: {
     description: "Privately returned information of users on Pulsar.",
     type: "object",
-    required: [
-      "username", "avatar", "data", "created_at", "packages"
-    ],
+    required: ["username", "avatar", "data", "created_at", "packages"],
     properties: {
       username: {
-        type: "string"
+        type: "string",
       },
       avatar: {
-        type: "string"
+        type: "string",
       },
       data: {
-        type: "object"
+        type: "object",
       },
       node_id: {
-        type: "string"
+        type: "string",
       },
       token: {
-        type: "string"
+        type: "string",
       },
       created_at: {
-        type: "string"
+        type: "string",
       },
       packages: {
-        type: "array"
-      }
-    }
+        type: "array",
+      },
+    },
   },
   example: {
     username: "confused-Techie",
@@ -36,16 +34,15 @@ module.exports = {
     node_id: "users-node-id",
     token: "user-api-token",
     created_at: "2023-09-16T00:58:36.755Z",
-    packages: []
+    packages: [],
   },
-  test:
-    Joi.object({
-      username: Joi.string().required(),
-      avatar: Joi.string().required(),
-      data: Joi.object().required(),
-      node_id: Joi.string().required(),
-      token: Joi.string().required(),
-      created_at: Joi.string().required(),
-      packages: Joi.array().required()
-    })
+  test: Joi.object({
+    username: Joi.string().required(),
+    avatar: Joi.string().required(),
+    data: Joi.object().required(),
+    node_id: Joi.string().required(),
+    token: Joi.string().required(),
+    created_at: Joi.string().required(),
+    packages: Joi.array().required(),
+  }),
 };

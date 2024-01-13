@@ -4,23 +4,25 @@
 
 module.exports = {
   docs: {
-    summary: "List the users that have starred a package."
+    summary: "List the users that have starred a package.",
   },
   endpoint: {
     method: "GET",
     paths: [
       "/api/packages/:packageName/stargazers",
-      "/api/themes/:packageName/stargazers"
+      "/api/themes/:packageName/stargazers",
     ],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    packageName: (context, req) => { return context.query.packageName(req); }
+    packageName: (context, req) => {
+      return context.query.packageName(req);
+    },
   },
 
   /**
@@ -39,18 +41,21 @@ module.exports = {
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(pack)
-                        .addCalls("db.getPackageByName", pack);
+      return sso.notOk().addContent(pack).addCalls("db.getPackageByName", pack);
     }
 
-    const stars = await context.database.getStarringUsersByPointer(pack.content);
+    const stars = await context.database.getStarringUsersByPointer(
+      pack.content
+    );
 
     if (!stars.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(stars)
-                        .addCalls("db.getPackageByName", pack)
-                        .addCalls("db.getStarringUsersByPointer", stars);
+      return sso
+        .notOk()
+        .addContent(stars)
+        .addCalls("db.getPackageByName", pack)
+        .addCalls("db.getStarringUsersByPointer", stars);
     }
 
     const gazers = await context.database.getUserCollectionById(stars.content);
@@ -58,14 +63,16 @@ module.exports = {
     if (!gazers.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(gazers)
-                        .addCalls("db.getPackageByName", pack)
-                        .addCalls("db.getStarringUsersByPointer", stars)
-                        .addCalls("db.getUserCollectionById", gazers);
+      return sso
+        .notOk()
+        .addContent(gazers)
+        .addCalls("db.getPackageByName", pack)
+        .addCalls("db.getStarringUsersByPointer", stars)
+        .addCalls("db.getUserCollectionById", gazers);
     }
 
     const sso = new context.sso();
 
     return sso.isOk().addContent(gazers.content);
-  }
+  },
 };

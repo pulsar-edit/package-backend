@@ -9,20 +9,20 @@ module.exports = {
       200: {
         description: "An array of featured themes.",
         content: {
-          "application/json": "$packageObjectShortArray"
-        }
-      }
-    }
+          "application/json": "$packageObjectShortArray",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/themes/featured" ],
+    paths: ["/api/themes/featured"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
     // Currently we don't seem to utilize any query parameters here.
@@ -42,5 +42,5 @@ module.exports = {
     const sso = new context.sso();
 
     return sso.isOk().addContent(newCol);
-  }
+  },
 };

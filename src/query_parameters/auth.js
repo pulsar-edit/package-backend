@@ -9,15 +9,15 @@ module.exports = {
     name: "auth",
     in: "header",
     schema: {
-      type: "string"
+      type: "string",
     },
     required: true,
     allowEmptyValue: false,
-    description: "Authorization Headers"
+    description: "Authorization Headers",
   },
   logic: (req) => {
     const token = req.get("Authorization");
 
     return token ?? "";
-  }
+  },
 };

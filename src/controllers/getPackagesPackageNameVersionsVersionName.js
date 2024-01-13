@@ -4,24 +4,28 @@
 
 module.exports = {
   docs: {
-    summary: "Get the details of a specific package version."
+    summary: "Get the details of a specific package version.",
   },
   endpoint: {
     method: "GET",
     paths: [
       "/api/packages/:packageName/versions/:versionName",
-      "/api/themes/:packageName/versions/:versionName"
+      "/api/themes/:packageName/versions/:versionName",
     ],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET, DELETE",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    packageName: (context, req) => { return context.query.packageName(req); },
-    versionName: (context, req) => { return context.query.engine(req.params.versionName); }
+    packageName: (context, req) => {
+      return context.query.packageName(req);
+    },
+    versionName: (context, req) => {
+      return context.query.engine(req.params.versionName);
+    },
   },
 
   /**
@@ -38,8 +42,10 @@ module.exports = {
     if (params.versionName === false) {
       const sso = new context.sso();
 
-      return sso.notOk().addShort("not_found")
-                        .addMessage("The version provided is invalid.");
+      return sso
+        .notOk()
+        .addShort("not_found")
+        .addMessage("The version provided is invalid.");
     }
 
     // Now we know the version is a valid semver.
@@ -52,14 +58,18 @@ module.exports = {
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(pack)
-                        .addCalls("db.getPackageVersionByNameAndVersion", pack);
+      return sso
+        .notOk()
+        .addContent(pack)
+        .addCalls("db.getPackageVersionByNameAndVersion", pack);
     }
 
-    const packRes = await context.utils.constructPackageObjectJSON(pack.content);
+    const packRes = await context.utils.constructPackageObjectJSON(
+      pack.content
+    );
 
     const sso = new context.sso();
 
     return sso.isOk().addContent(packRes);
-  }
-}
+  },
+};

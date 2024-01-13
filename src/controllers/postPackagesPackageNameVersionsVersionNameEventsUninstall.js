@@ -1,7 +1,7 @@
 /**
  * @module postPackagesPackageNameVersionsVersionNameEventsUninstall
  */
- 
+
 module.exports = {
   docs: {
     summary: "Previously undocumented endpoint. Since v1.0.2 has no effect.",
@@ -10,14 +10,14 @@ module.exports = {
     method: "POST",
     paths: [
       "/api/packages/:packageName/versions/:versionName/events/uninstall",
-      "/api/themes/:packageName/versions/:versionName/events/uninstall"
+      "/api/themes/:packageName/versions/:versionName/events/uninstall",
     ],
     rateLimit: "auth",
     successStatus: 201,
     options: {
       Allow: "POST",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {},
   async logic(params, context) {
@@ -38,5 +38,5 @@ module.exports = {
     const sso = new context.sso();
 
     return sso.isOk().addContent({ ok: true });
-  }
-}
+  },
+};

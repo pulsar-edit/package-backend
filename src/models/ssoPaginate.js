@@ -1,7 +1,6 @@
 const SSO = require("./sso.js");
 
-module.exports =
-class SSOPaginate extends SSO {
+module.exports = class SSOPaginate extends SSO {
   constructor() {
     super();
 
@@ -36,14 +35,15 @@ class SSOPaginate extends SSO {
     linkString += `<${url}?page=${this.totalPages}${paramString}>; rel="last"`;
 
     if (currentPage !== this.totalPages) {
-      linkString += `, <${url}?page=${parseInt(currentPage) + 1}${paramString}>; rel="next"`;
+      linkString += `, <${url}?page=${
+        parseInt(currentPage) + 1
+      }${paramString}>; rel="next"`;
     }
 
     this.link = linkString;
   }
 
   handleSuccess(req, res, context) {
-
     res.append("Link", this.link);
     res.append("Query-Total", this.resultCount);
     res.append("Query-Limit", this.limit);
@@ -52,4 +52,4 @@ class SSOPaginate extends SSO {
     context.logger.httpLog(req, res);
     return;
   }
-}
+};

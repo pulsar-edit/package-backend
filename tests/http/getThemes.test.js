@@ -3,7 +3,6 @@ const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
 describe("Behaves as expected", () => {
-
   test("Calls the correct function", async () => {
     const context = require("../../src/context.js");
     const localContext = context;
@@ -22,7 +21,7 @@ describe("Behaves as expected", () => {
       {
         page: "1",
         sort: "downloads",
-        direction: "desc"
+        direction: "desc",
       },
       context
     );
@@ -31,10 +30,10 @@ describe("Behaves as expected", () => {
     expect(sso.content).toBeArray();
     expect(sso.content.length).toBe(0);
     expect(sso.link).toBe(
-      `<${context.config.server_url}/api/themes?page=0&sort=downloads&direction=desc>;`
-      + ' rel="self", '
-      + `<${context.config.server_url}/api/themes?page=0&sort=downloads&direction=desc>;`
-      + ' rel="last"'
+      `<${context.config.server_url}/api/themes?page=0&sort=downloads&direction=desc>;` +
+        ' rel="self", ' +
+        `<${context.config.server_url}/api/themes?page=0&sort=downloads&direction=desc>;` +
+        ' rel="last"'
     );
   });
   test("Returns proper data on success", async () => {
@@ -42,41 +41,41 @@ describe("Behaves as expected", () => {
       name: "test-package",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
-        type: "git"
+        type: "git",
       },
       creation_method: "Test Package",
       releases: {
-        latest: "1.1.0"
+        latest: "1.1.0",
       },
       readme: "This is a readme!",
       metadata: {
         name: "test-package",
-        theme: "syntax"
+        theme: "syntax",
       },
       owner: "confused-Techie",
       versions: {
         "1.1.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "test-package"
+          name: "test-package",
         },
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "test-package"
-        }
-      }
+          name: "test-package",
+        },
+      },
     });
 
     const sso = await endpoint.logic(
       {
         page: "1",
         sort: "downloads",
-        direction: "desc"
+        direction: "desc",
       },
       context
     );
@@ -87,10 +86,10 @@ describe("Behaves as expected", () => {
     expect(sso.content[0].name).toBe("test-package");
     expect(sso.content[0].owner).toBe("confused-Techie");
     expect(sso.link).toBe(
-      `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;`
-      + ' rel="self", '
-      + `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;`
-      + ' rel="last"'
+      `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;` +
+        ' rel="self", ' +
+        `<${context.config.server_url}/api/themes?page=1&sort=downloads&direction=desc>;` +
+        ' rel="last"'
     );
     expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("test-package", true);
@@ -99,14 +98,16 @@ describe("Behaves as expected", () => {
   test("Returns bad SSO on failure", async () => {
     const localContext = context;
     localContext.database = {
-      getSortedPackages: () => { return { ok: false, content: "Test Failure" }; }
+      getSortedPackages: () => {
+        return { ok: false, content: "Test Failure" };
+      },
     };
 
     const sso = await endpoint.logic(
       {
         page: "1",
         sort: "downloads",
-        direction: "desc"
+        direction: "desc",
       },
       localContext
     );

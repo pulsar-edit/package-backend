@@ -5,9 +5,9 @@ describe("Has features expected", () => {
   test("Has correct endpoint features", () => {
     const expected = {
       method: "GET",
-      paths: [ "/api/users" ],
+      paths: ["/api/users"],
       rateLimit: "auth",
-      successStatus: 200
+      successStatus: 200,
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);
@@ -29,7 +29,7 @@ describe("Parameters function as expected", () => {
         } else {
           return "";
         }
-      }
+      },
     };
 
     const res = endpoint.params.auth(context, req);
@@ -39,7 +39,9 @@ describe("Parameters function as expected", () => {
 
   test("Returns params when missing", () => {
     const req = {
-      get: () => { return ""; }
+      get: () => {
+        return "";
+      },
     };
 
     const res = endpoint.params.auth(context, req);

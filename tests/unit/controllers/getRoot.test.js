@@ -4,9 +4,9 @@ describe("Has features expected", () => {
   test("Has correct endpoint features", () => {
     const expected = {
       method: "GET",
-      paths: [ "/" ],
+      paths: ["/"],
       rateLimit: "generic",
-      successStatus: 200
+      successStatus: 200,
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);

@@ -3,61 +3,59 @@ const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
 describe("Behaves as expected", () => {
-
   beforeAll(async () => {
     await database.insertNewPackage({
       name: "get-packages-search-theme-test",
       repository: {
         url: "https://github.com/getPackagesSearch/get-packages-search-theme-test",
-        type: "git"
+        type: "git",
       },
       owner: "getPackagesSearch",
       creation_method: "Test Package",
       releases: {
-        latest: "1.0.0"
+        latest: "1.0.0",
       },
       readme: "This is a readme!",
       metadata: {
         name: "get-packages-search-theme-test",
-        theme: "syntax"
+        theme: "syntax",
       },
       versions: {
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "get-packages-search-theme-test"
-        }
-      }
+          name: "get-packages-search-theme-test",
+        },
+      },
     });
 
     await database.insertNewPackage({
       name: "get-packages-search-test",
       repository: {
         url: "https://github.com/getPackagesSearch/get-packages-search-test",
-        type: "git"
+        type: "git",
       },
       owner: "getPackagesSearch",
       creation_method: "Test Package",
       releases: {
-        latest: "1.0.0"
+        latest: "1.0.0",
       },
       readme: "This is a readme!",
       metadata: {
-        name: "get-packages-search-test"
+        name: "get-packages-search-test",
       },
       versions: {
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "get-packages-search-test"
-        }
-      }
+          name: "get-packages-search-test",
+        },
+      },
     });
-
   });
 
   afterAll(async () => {
@@ -66,13 +64,16 @@ describe("Behaves as expected", () => {
   });
 
   test("Successfully searches", async () => {
-    let sso = await endpoint.logic({
-      sort: "downloads",
-      page: 1,
-      direction: "desc",
-      query: "get packages search",
-      filter: "package"
-    }, context);
+    let sso = await endpoint.logic(
+      {
+        sort: "downloads",
+        page: 1,
+        direction: "desc",
+        query: "get packages search",
+        filter: "package",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content.length).toBe(2);
@@ -82,13 +83,16 @@ describe("Behaves as expected", () => {
   });
 
   test("Successfully searches and filters by theme", async () => {
-    let sso = await endpoint.logic({
-      sort: "downloads",
-      page: 1,
-      direction: "desc",
-      query: "get packages search",
-      filter: "theme"
-    }, context);
+    let sso = await endpoint.logic(
+      {
+        sort: "downloads",
+        page: 1,
+        direction: "desc",
+        query: "get packages search",
+        filter: "theme",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content.length).toBe(1);

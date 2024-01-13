@@ -9,7 +9,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
       return {
         ok: false,
         short: "unauthorized",
-        content: "Bad Auth Mock Return"
+        content: "Bad Auth Mock Return",
       };
     };
 
@@ -28,16 +28,19 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
           id: 9999,
           node_id: "dlt-pkg-ver-user-node-id",
           username: "dlt-pkg-ver-user-node-id",
-          avatar: "https://roadtonowhere.com"
-        }
+          avatar: "https://roadtonowhere.com",
+        },
       };
     };
 
-    const sso = await endpoint.logic({
-      auth: "valid-token",
-      packageName: "no-exist",
-      versionName: "1.0.0"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        auth: "valid-token",
+        packageName: "no-exist",
+        versionName: "1.0.0",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(false);
     expect(sso.content.short).toBe("not_found");
@@ -47,12 +50,12 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
       name: "dlt-pkg-ver-by-name-test",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
-        latest: "1.0.1"
+        latest: "1.0.1",
       },
       readme: "This is a readme!",
       metadata: { name: "dlt-pkg-ver-by-name-test" },
@@ -60,18 +63,18 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
         "1.0.1": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "dlt-pkg-ver-by-name-test"
+          name: "dlt-pkg-ver-by-name-test",
         },
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "dlt-pkg-ver-by-name-test"
-        }
-      }
+          name: "dlt-pkg-ver-by-name-test",
+        },
+      },
     });
 
     let addUser = await database.insertNewUser(
@@ -92,31 +95,38 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
           id: addUser.content.id,
           node_id: addUser.content.node_id,
           username: addUser.content.username,
-          avatar: addUser.content.avatar
-        }
+          avatar: addUser.content.avatar,
+        },
       };
     };
     localContext.vcs.ownership = () => {
       return {
         ok: true,
-        content: "admin"
+        content: "admin",
       };
     };
 
-    const sso = await endpoint.logic({
-      auth: "valid-token",
-      packageName: "dlt-pkg-ver-by-name-test",
-      versionName: "1.0.1"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        auth: "valid-token",
+        packageName: "dlt-pkg-ver-by-name-test",
+        versionName: "1.0.1",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content).toBe(false);
 
-    let currentPackageData = await database.getPackageByName("dlt-pkg-ver-by-name-test");
+    let currentPackageData = await database.getPackageByName(
+      "dlt-pkg-ver-by-name-test"
+    );
 
     expect(currentPackageData.ok).toBe(true);
 
-    currentPackageData = await context.utils.constructPackageObjectFull(currentPackageData.content);
+    currentPackageData = await context.utils.constructPackageObjectFull(
+      currentPackageData.content
+    );
 
     expect(currentPackageData.name).toBe("dlt-pkg-ver-by-name-test");
     // Does it modify the latest package version

@@ -9,26 +9,34 @@ module.exports = {
       200: {
         description: "A paginated response of themes.",
         content: {
-          "application/json": "$packageObjectShortArray"
-        }
-      }
-    }
+          "application/json": "$packageObjectShortArray",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/themes/search" ],
+    paths: ["/api/themes/search"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    sort: (context, req) => { return context.query.sort(req); },
-    page: (context, req) => { return context.query.page(req); },
-    direction: (context, req) => { return context.query.direction(req); },
-    query: (context, req) => { return context.query.query(req); }
+    sort: (context, req) => {
+      return context.query.sort(req);
+    },
+    page: (context, req) => {
+      return context.query.page(req);
+    },
+    direction: (context, req) => {
+      return context.query.direction(req);
+    },
+    query: (context, req) => {
+      return context.query.query(req);
+    },
   },
 
   async logic(params, context) {
@@ -43,11 +51,12 @@ module.exports = {
     if (!packs.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packs)
-                        .addCalls("db.simpleSearch", packs);
+      return sso.notOk().addContent(packs).addCalls("db.simpleSearch", packs);
     }
 
-    const newPacks = await context.utils.constructPackageObjectShort(packs.content);
+    const newPacks = await context.utils.constructPackageObjectShort(
+      packs.content
+    );
 
     let packArray = null;
 
@@ -56,15 +65,19 @@ module.exports = {
     } else if (Object.keys(newPacks).length < 1) {
       packArray = [];
     } else {
-      packArray = [ newPacks ];
+      packArray = [newPacks];
     }
 
     const ssoP = new context.ssoPaginate();
 
     ssoP.total = packs.pagination.total;
     ssoP.limit = packs.pagination.limit;
-    ssoP.buildLink(`${context.config.server_url}/api/themes/search`, packs.pagination.page, params);
+    ssoP.buildLink(
+      `${context.config.server_url}/api/themes/search`,
+      packs.pagination.page,
+      params
+    );
 
     return ssoP.isOk().addContent(packArray);
-  }
+  },
 };

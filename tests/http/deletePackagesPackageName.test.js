@@ -9,7 +9,7 @@ describe("DELETE /api/packages/:packageName", () => {
       return {
         ok: false,
         short: "unauthorized",
-        content: "Bad Auth Mock Return"
+        content: "Bad Auth Mock Return",
       };
     };
 
@@ -28,15 +28,18 @@ describe("DELETE /api/packages/:packageName", () => {
           id: 9999,
           node_id: "dlt-pkg-test-user-node-id",
           username: "dlt-pkg-test-user-node-id",
-          avatar: "https://roadtonowhere.com"
-        }
+          avatar: "https://roadtonowhere.com",
+        },
       };
     };
 
-    const sso = await endpoint.logic({
-      auth: "valid-token",
-      packageName: "no-exist"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        auth: "valid-token",
+        packageName: "no-exist",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(false);
     expect(sso.content.short).toBe("not_found");
@@ -47,12 +50,12 @@ describe("DELETE /api/packages/:packageName", () => {
       name: "dlt-pkg-by-name-test",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
-        latest: "1.0.0"
+        latest: "1.0.0",
       },
       readme: "This is a readme!",
       metadata: { name: "dlt-pkg-by-name-test" },
@@ -60,11 +63,11 @@ describe("DELETE /api/packages/:packageName", () => {
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "dlt-pkg-by-name-test"
-        }
-      }
+          name: "dlt-pkg-by-name-test",
+        },
+      },
     });
 
     let addUser = await database.insertNewUser(
@@ -85,35 +88,44 @@ describe("DELETE /api/packages/:packageName", () => {
           id: addUser.content.id,
           node_id: addUser.content.node_id,
           username: addUser.content.username,
-          avatar: addUser.content.avatar
-        }
+          avatar: addUser.content.avatar,
+        },
       };
     };
 
     localContext.vcs.ownership = () => {
       return {
         ok: true,
-        content: "admin"
+        content: "admin",
       };
     };
 
-    const sso = await endpoint.logic({
-      auth: "valid-token",
-      packageName: "dlt-pkg-by-name-test"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        auth: "valid-token",
+        packageName: "dlt-pkg-by-name-test",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content).toBe(false);
 
-    let doesPackageStillExist = await database.getPackageByName("dlt-pkg-by-name-test");
+    let doesPackageStillExist = await database.getPackageByName(
+      "dlt-pkg-by-name-test"
+    );
 
     expect(doesPackageStillExist.ok).toBe(false);
     expect(doesPackageStillExist.short).toBe("not_found");
 
-    let isPackageNameAvailable = await database.packageNameAvailability("dlt-pkg-by-name-test");
+    let isPackageNameAvailable = await database.packageNameAvailability(
+      "dlt-pkg-by-name-test"
+    );
 
     expect(isPackageNameAvailable.ok).toBe(false);
     expect(isPackageNameAvailable.short).toBe("not_found");
-    expect(isPackageNameAvailable.content).toBe("dlt-pkg-by-name-test is not available to be used for a new package.");
+    expect(isPackageNameAvailable.content).toBe(
+      "dlt-pkg-by-name-test is not available to be used for a new package."
+    );
   });
 });

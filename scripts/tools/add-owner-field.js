@@ -6,30 +6,29 @@ const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
 
 let sqlStorage;
 
-const LIMIT = parseInt(process.env.LIMIT ?? '-1', 10);
-const OFFSET = parseInt(process.env.OFFSET ?? '0', 10);
-const VERBOSE = (process.env.VERBOSE ?? '0') !== '0';
+const LIMIT = parseInt(process.env.LIMIT ?? "-1", 10);
+const OFFSET = parseInt(process.env.OFFSET ?? "0", 10);
+const VERBOSE = (process.env.VERBOSE ?? "0") !== "0";
 
-function log (...args) {
+function log(...args) {
   if (!VERBOSE) return;
   return console.log(...args);
 }
 
-function debug (...args) {
+function debug(...args) {
   if (!VERBOSE) return;
   return console.debug(...args);
 }
 
-function warn (...args) {
+function warn(...args) {
   if (!VERBOSE) return;
   return console.warn(...args);
 }
 
-
-async function init () {
+async function init() {
   let allPointers = await getPointers();
   let totalPointers = allPointers.length;
-  log('Package count:', totalPointers);
+  log("Package count:", totalPointers);
 
   for (let { name, pointer } of allPointers) {
     log(`Checking: ${name}::${pointer}`);
@@ -41,9 +40,7 @@ async function init () {
       continue;
     }
     if (typeof pointer !== "string") {
-      console.error(
-        `The package ${name}::${pointer} likely has been deleted.`
-      );
+      console.error(`The package ${name}::${pointer} likely has been deleted.`);
       continue;
     }
 
@@ -62,7 +59,9 @@ async function init () {
 
     let parsed = parseGithubUrl(repositoryUrl);
     if (parsed === null) {
-      console.error(`Could not parse repo URL for package: ${name}: ${repositoryUrl}`);
+      console.error(
+        `Could not parse repo URL for package: ${name}: ${repositoryUrl}`
+      );
       continue;
     }
 
@@ -72,7 +71,7 @@ async function init () {
       continue;
     }
 
-    log('Updating owner field of package:', name);
+    log("Updating owner field of package:", name);
     await sqlStorage`
       UPDATE packages SET owner = ${owner} WHERE pointer = ${pointer};
     `;
@@ -107,7 +106,7 @@ async function getPointers() {
 }
 
 async function getPackageData(pointer) {
-  console.log('getting package data:', pointer);
+  console.log("getting package data:", pointer);
 
   try {
     sqlStorage ??= setupSQL();

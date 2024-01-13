@@ -1,7 +1,6 @@
 const SSO = require("./sso.js");
 
-module.exports =
-class SSOHTML extends SSO {
+module.exports = class SSOHTML extends SSO {
   constructor() {
     super();
   }
@@ -10,4 +9,4 @@ class SSOHTML extends SSO {
     res.send(this.content);
     context.logger.httpLog(req, res);
   }
-}
+};

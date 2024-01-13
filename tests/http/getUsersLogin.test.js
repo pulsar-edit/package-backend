@@ -4,7 +4,6 @@ const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPublic.js");
 
 describe("Behaves as expected", () => {
-
   test("Calls the correct db function", async () => {
     const localContext = context;
     const spy = jest.spyOn(localContext.database, "getUserByName");
@@ -34,7 +33,7 @@ describe("Behaves as expected", () => {
 
     const res = await endpoint.logic(
       {
-        login: userObj.username
+        login: userObj.username,
       },
       context
     );

@@ -64,5 +64,5 @@ module.exports = {
     sort: sort.schema,
     tag: tag.schema,
     versionName: versionName.schema,
-  }
+  },
 };

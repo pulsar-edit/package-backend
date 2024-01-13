@@ -1,22 +1,22 @@
-# Complexity report, 9/19/2023
+# Complexity report, 1/13/2024
 
-* Mean per-function logical LOC: 14.272727272727273
-* Mean per-function parameter count: 0.2840909090909091
-* Mean per-function cyclomatic complexity: 1.3863636363636365
-* Mean per-function Halstead effort: 3943.557748871758
-* Mean per-module maintainability index: 69.41048329189348
-* First-order density: 0.4132231404958678%
-* Change cost: 4.958677685950414%
+* Mean per-function logical LOC: 14.271929824561404
+* Mean per-function parameter count: 0.1324561403508772
+* Mean per-function cyclomatic complexity: 1.1736842105263159
+* Mean per-function Halstead effort: 3371.505283870604
+* Mean per-module maintainability index: 69.2796371850002
+* First-order density: 0.9233610341643583%
+* Change cost: 5.786395814096645%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
 
-* Physical LOC: 53
-* Logical LOC: 24
+* Physical LOC: 35
+* Logical LOC: 16
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 4.166666666666666%
-* Maintainability index: 53.406190105164676
+* Cyclomatic complexity density: 6.25%
+* Maintainability index: 58.62281095645006
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/jsdoc.conf.js
@@ -41,13 +41,13 @@
 
 ## /home/runner/work/package-backend/package-backend/src/PackageObject.js
 
-* Physical LOC: 468
-* Logical LOC: 3
+* Physical LOC: 485
+* Logical LOC: 4
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 33.33333333333333%
-* Maintainability index: 79.75031095891569
-* Dependency count: 2
+* Cyclomatic complexity density: 25%
+* Maintainability index: 76.17088968963267
+* Dependency count: 3
 
 ## /home/runner/work/package-backend/package-backend/src/cache.js
 
@@ -59,7 +59,27 @@
 * Maintainability index: 78.8444767459975
 * Dependency count: 1
 
-## /home/runner/work/package-backend/package-backend/src/debug_utils.js
+## /home/runner/work/package-backend/package-backend/src/context.js
+
+* Physical LOC: 15
+* Logical LOC: 14
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 7.142857142857142%
+* Maintainability index: 60.516428793372064
+* Dependency count: 13
+
+## /home/runner/work/package-backend/package-backend/docs/resources/jsdoc_typedef.js
+
+* Physical LOC: 1
+* Logical LOC: 0
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: Infinity%
+* Maintainability index: 100
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/scripts/deprecated/debug_utils.js
 
 * Physical LOC: 30
 * Logical LOC: 22
@@ -78,116 +98,6 @@
     * Halstead difficulty: 18.857142857142858
     * Halstead volume: 475.6861996976024
     * Halstead effort: 8970.082622869073
-
-## /home/runner/work/package-backend/package-backend/test/PackageObject.unit.test.js
-
-* Physical LOC: 41
-* Logical LOC: 2
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 50%
-* Maintainability index: 86.03073855173344
-* Dependency count: 1
-
-## /home/runner/work/package-backend/package-backend/test/ServerStatusObject.unit.test.js
-
-* Physical LOC: 40
-* Logical LOC: 3
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 33.33333333333333%
-* Maintainability index: 80.69690997202572
-* Dependency count: 2
-
-## /home/runner/work/package-backend/package-backend/test/debug_utils.unit.test.js
-
-* Physical LOC: 31
-* Logical LOC: 2
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 50%
-* Maintainability index: 86.03073855173344
-* Dependency count: 1
-
-## /home/runner/work/package-backend/package-backend/test/global.setup.jest.js
-
-* Physical LOC: 38
-* Logical LOC: 21
-* Mean parameter count: 1.5
-* Cyclomatic complexity: 3
-* Cyclomatic complexity density: 14.285714285714285%
-* Maintainability index: 67.68423518589408
-* Dependency count: 1
-* Function: **toBeArray**
-    * Line No.: 10
-    * Physical LOC: 14
-    * Logical LOC: 8
-    * Parameter count: 1
-    * Cyclomatic complexity: 2
-    * Cyclomatic complexity density: 25%
-    * Halstead difficulty: 5.25
-    * Halstead volume: 93.76537429460444
-    * Halstead effort: 492.26821504667333
-* Function: **toHaveHTTPCode**
-    * Line No.: 25
-    * Physical LOC: 15
-    * Logical LOC: 8
-    * Parameter count: 2
-    * Cyclomatic complexity: 2
-    * Cyclomatic complexity density: 25%
-    * Halstead difficulty: 5.6875
-    * Halstead volume: 97.67226489021297
-    * Halstead effort: 555.5110065630863
-
-## /home/runner/work/package-backend/package-backend/test/handlers.setup.jest.js
-
-* Physical LOC: 35
-* Logical LOC: 18
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 5.555555555555555%
-* Maintainability index: 57.15938083859105
-* Dependency count: 0
-
-## /home/runner/work/package-backend/package-backend/test/logger.unit.test.js
-
-* Physical LOC: 95
-* Logical LOC: 4
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 25%
-* Maintainability index: 76.39879935103494
-* Dependency count: 1
-
-## /home/runner/work/package-backend/package-backend/test/query.unit.test.js
-
-* Physical LOC: 179
-* Logical LOC: 99
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 1.0101010101010102%
-* Maintainability index: 34.86610584264533
-* Dependency count: 1
-
-## /home/runner/work/package-backend/package-backend/test/vcs.unit.test.js
-
-* Physical LOC: 66
-* Logical LOC: 2
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 50%
-* Maintainability index: 86.03073855173344
-* Dependency count: 1
-
-## /home/runner/work/package-backend/package-backend/docs/resources/jsdoc_typedef.js
-
-* Physical LOC: 1
-* Logical LOC: 0
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: Infinity%
-* Maintainability index: 100
-* Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/scripts/deprecated/search.js
 
@@ -309,47 +219,537 @@
     * Halstead volume: 91.37651812938249
     * Halstead effort: 186.9065143555551
 
-## /home/runner/work/package-backend/package-backend/src/handlers/package_handler.js
+## /home/runner/work/package-backend/package-backend/src/controllers/endpoints.js
 
-* Physical LOC: 20
-* Logical LOC: 18
+* Physical LOC: 30
+* Logical LOC: 1
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 5.555555555555555%
-* Maintainability index: 56.530575217792624
+* Cyclomatic complexity density: 100%
+* Maintainability index: 85.19382950159975
+* Dependency count: 27
+
+## /home/runner/work/package-backend/package-backend/src/models/ssoHTML.js
+
+* Physical LOC: 12
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 85.13446209533382
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/models/ssoPaginate.js
+
+* Physical LOC: 55
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 85.13446209533382
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/models/ssoRedirect.js
+
+* Physical LOC: 12
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 85.13446209533382
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/engine.js
+
+* Physical LOC: 30
+* Logical LOC: 10
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 10%
+* Maintainability index: 66.46226874267799
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/fileExtension.js
+
+* Physical LOC: 18
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 64.33327792249773
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/filter.js
+
+* Physical LOC: 32
+* Logical LOC: 13
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 7.6923076923076925%
+* Maintainability index: 62.60994532732379
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/index.js
+
+* Physical LOC: 61
+* Logical LOC: 57
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 1.7543859649122806%
+* Maintainability index: 41.85471679977376
+* Dependency count: 18
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/packageName.js
+
+* Physical LOC: 17
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 65.36316082704943
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/page.js
+
+* Physical LOC: 32
+* Logical LOC: 13
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 7.6923076923076925%
+* Maintainability index: 63.29354678537644
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/query.js
+
+* Physical LOC: 38
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 64.33327792249773
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/rename.js
+
+* Physical LOC: 33
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 65.2835832019749
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/repo.js
+
+* Physical LOC: 30
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 65.36316082704943
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/service.js
+
+* Physical LOC: 17
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 64.33327792249773
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/serviceType.js
+
+* Physical LOC: 33
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 64.55996348727876
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/serviceVersion.js
+
+* Physical LOC: 24
+* Logical LOC: 10
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 10%
+* Maintainability index: 66.46226874267799
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/tag.js
+
+* Physical LOC: 16
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 65.19959506149854
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/utils.js
+
+* Physical LOC: 40
+* Logical LOC: 12
+* Mean parameter count: 1
+* Cyclomatic complexity: 3
+* Cyclomatic complexity density: 25%
+* Maintainability index: 75.35244691757542
+* Dependency count: 0
+* Function: **stringValidation**
+    * Line No.: 10
+    * Physical LOC: 10
+    * Logical LOC: 5
+    * Parameter count: 1
+    * Cyclomatic complexity: 3
+    * Cyclomatic complexity density: 60%
+    * Halstead difficulty: 7.2
+    * Halstead volume: 131.68575291675114
+    * Halstead effort: 948.1374210006082
+* Function: **pathTraversalAttempt**
+    * Line No.: 29
+    * Physical LOC: 16
+    * Logical LOC: 2
+    * Parameter count: 1
+    * Cyclomatic complexity: 1
+    * Cyclomatic complexity density: 50%
+    * Halstead difficulty: 4.199999999999999
+    * Halstead volume: 44.97261104228487
+    * Halstead effort: 188.8849663775964
+
+## /home/runner/work/package-backend/package-backend/src/query_parameters/versionName.js
+
+* Physical LOC: 16
+* Logical LOC: 12
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 8.333333333333332%
+* Maintainability index: 63.05438887045247
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/helpers/global.setup.jest.js
+
+* Physical LOC: 100
+* Logical LOC: 60
+* Mean parameter count: 1.8
+* Cyclomatic complexity: 8
+* Cyclomatic complexity density: 13.333333333333334%
+* Maintainability index: 63.41842305529267
 * Dependency count: 3
+* Function: **toBeArray**
+    * Line No.: 13
+    * Physical LOC: 14
+    * Logical LOC: 8
+    * Parameter count: 1
+    * Cyclomatic complexity: 2
+    * Cyclomatic complexity density: 25%
+    * Halstead difficulty: 5.25
+    * Halstead volume: 93.76537429460444
+    * Halstead effort: 492.26821504667333
+* Function: **toBeTypeof**
+    * Line No.: 28
+    * Physical LOC: 13
+    * Logical LOC: 8
+    * Parameter count: 2
+    * Cyclomatic complexity: 2
+    * Cyclomatic complexity density: 25%
+    * Halstead difficulty: 6
+    * Halstead volume: 91.37651812938249
+    * Halstead effort: 548.259108776295
+* Function: **toBeIncludedBy**
+    * Line No.: 42
+    * Physical LOC: 13
+    * Logical LOC: 8
+    * Parameter count: 2
+    * Cyclomatic complexity: 2
+    * Cyclomatic complexity density: 25%
+    * Halstead difficulty: 6.4
+    * Halstead volume: 129.26767504471167
+    * Halstead effort: 827.3131202861547
+* Function: **toMatchEndpointSuccessObject**
+    * Line No.: 56
+    * Physical LOC: 29
+    * Logical LOC: 18
+    * Parameter count: 2
+    * Cyclomatic complexity: 4
+    * Cyclomatic complexity density: 22.22222222222222%
+    * Halstead difficulty: 12.69047619047619
+    * Halstead volume: 406.9970273000272
+    * Halstead effort: 5164.986084545583
+* Function: **toHaveHTTPCode**
+    * Line No.: 86
+    * Physical LOC: 15
+    * Logical LOC: 8
+    * Parameter count: 2
+    * Cyclomatic complexity: 2
+    * Cyclomatic complexity density: 25%
+    * Halstead difficulty: 5.6875
+    * Halstead volume: 97.67226489021297
+    * Halstead effort: 555.5110065630863
 
-## /home/runner/work/package-backend/package-backend/test/fixtures/git.createPackage_returns/valid_multi_version.js
+## /home/runner/work/package-backend/package-backend/tests/helpers/handlers.setup.jest.js
 
-* Physical LOC: 43
-* Logical LOC: 34
+* Physical LOC: 33
+* Logical LOC: 17
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 2.941176470588235%
-* Maintainability index: 50.83192723928399
+* Cyclomatic complexity density: 5.88235294117647%
+* Maintainability index: 57.795357898379244
 * Dependency count: 0
 
-## /home/runner/work/package-backend/package-backend/test/fixtures/git.createPackage_returns/valid_one_version.js
+## /home/runner/work/package-backend/package-backend/tests/models/message.js
 
-* Physical LOC: 25
-* Logical LOC: 19
+* Physical LOC: 19
+* Logical LOC: 12
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 5.263157894736842%
-* Maintainability index: 58.378034894518755
+* Cyclomatic complexity density: 8.333333333333332%
+* Maintainability index: 62.226244150536175
 * Dependency count: 0
 
-## /home/runner/work/package-backend/package-backend/test/fixtures/lifetime/package-a.js
+## /home/runner/work/package-backend/package-backend/tests/models/packageObjectFull.js
 
-* Physical LOC: 53
-* Logical LOC: 25
+* Physical LOC: 147
+* Logical LOC: 86
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 4%
-* Maintainability index: 54.4848955157022
+* Cyclomatic complexity density: 1.1627906976744187%
+* Maintainability index: 37.52288274528104
 * Dependency count: 0
 
-## /home/runner/work/package-backend/package-backend/test/fixtures/lifetime/user-a.js
+## /home/runner/work/package-backend/package-backend/tests/models/packageObjectFullArray.js
+
+* Physical LOC: 5
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 73.83569622868538
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/models/packageObjectShort.js
+
+* Physical LOC: 137
+* Logical LOC: 88
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 1.1363636363636365%
+* Maintainability index: 37.62685787133425
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/models/packageObjectShortArray.js
+
+* Physical LOC: 5
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 73.83569622868538
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/models/userObjectPrivate.js
+
+* Physical LOC: 48
+* Logical LOC: 36
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 2.7777777777777777%
+* Maintainability index: 48.1797728952525
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/models/userObjectPublic.js
+
+* Physical LOC: 38
+* Logical LOC: 28
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 3.571428571428571%
+* Maintainability index: 51.33890916054792
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/unit/PackageObject.test.js
+
+* Physical LOC: 54
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/ServerStatusObject.test.js
+
+* Physical LOC: 40
+* Logical LOC: 3
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 33.33333333333333%
+* Maintainability index: 80.69690997202572
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/unit/endpoints.test.js
+
+* Physical LOC: 40
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/logger.test.js
+
+* Physical LOC: 95
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 76.39879935103494
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/query.test.js
+
+* Physical LOC: 192
+* Logical LOC: 108
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 0.9259259259259258%
+* Maintainability index: 33.49221524957683
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/vcs/vcs.unit.test.js
+
+* Physical LOC: 66
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/deletePackagesPackageName.test.js
+
+* Physical LOC: 18
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/deletePackagesPackageNameStar.js
+
+* Physical LOC: 21
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/deletePackagesPackageNameVersionsVersionName.test.js
+
+* Physical LOC: 21
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/getRoot.test.js
+
+* Physical LOC: 18
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/getThemes.test.js
+
+* Physical LOC: 52
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 77.34651555826905
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/getThemesSearch.test.js
+
+* Physical LOC: 54
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 77.34651555826905
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/getUsers.test.js
+
+* Physical LOC: 51
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 77.34651555826905
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/getUsersLogin.test.js
+
+* Physical LOC: 37
+* Logical LOC: 4
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 25%
+* Maintainability index: 77.34651555826905
+* Dependency count: 2
+
+## /home/runner/work/package-backend/package-backend/tests/unit/controllers/postPackagesPackageNameVersions.test.js
+
+* Physical LOC: 13
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/database/fixtures/git.createPackage_returns/valid_multi_version.js
+
+* Physical LOC: 44
+* Logical LOC: 35
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 2.857142857142857%
+* Maintainability index: 50.54467615127807
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/database/fixtures/git.createPackage_returns/valid_one_version.js
+
+* Physical LOC: 26
+* Logical LOC: 20
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 5%
+* Maintainability index: 57.81245775166893
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/database/fixtures/lifetime/package-a.js
+
+* Physical LOC: 54
+* Logical LOC: 26
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 3.8461538461538463%
+* Maintainability index: 54.06517395834382
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/database/fixtures/lifetime/user-a.js
 
 * Physical LOC: 9
 * Logical LOC: 6
@@ -359,7 +759,7 @@
 * Maintainability index: 71.67165455570546
 * Dependency count: 0
 
-## /home/runner/work/package-backend/package-backend/test/handlers/common_handler/express_fakes.js
+## /home/runner/work/package-backend/package-backend/scripts/deprecated/test/handlers/common_handler/express_fakes.js
 
 * Physical LOC: 26
 * Logical LOC: 3

@@ -10,12 +10,12 @@ module.exports = {
     name: "repository",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "pulsar-edit/pulsar",
     allowEmptyValue: false,
     required: true,
-    description: "Repository to publish."
+    description: "Repository to publish.",
   },
   logic: (req) => {
     const prov = req.query.repository;
@@ -33,5 +33,5 @@ module.exports = {
     // - cannot begin with a dot or an underscore
     // - cannot contain a space.
     return prov.match(re) !== null ? prov : "";
-  }
+  },
 };

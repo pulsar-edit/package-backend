@@ -10,14 +10,14 @@ module.exports = {
     name: "tag",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "TODO",
     allowEmptyValue: false,
     required: false,
-    description: "TODO"
+    description: "TODO",
   },
   logic: (req) => {
     return typeof req.query.tag !== "string" ? "" : req.query.tag;
-  }
+  },
 };

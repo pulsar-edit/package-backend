@@ -4,9 +4,12 @@ describe("Has features expected", () => {
   test("endpoint features", () => {
     const expected = {
       method: "DELETE",
-      paths: [ "/api/packages/:packageName/versions/:versionName", "/api/themes/:packageName/versions/:versionName" ],
+      paths: [
+        "/api/packages/:packageName/versions/:versionName",
+        "/api/themes/:packageName/versions/:versionName",
+      ],
       rateLimit: "auth",
-      successStatus: 204
+      successStatus: 204,
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);

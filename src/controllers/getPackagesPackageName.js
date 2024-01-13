@@ -9,27 +9,28 @@ module.exports = {
       200: {
         description: "A 'Package Object Full' of the requested package.",
         content: {
-          "application/json": "$packageObjectFull"
-        }
-      }
-    }
+          "application/json": "$packageObjectFull",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [
-      "/api/packages/:packageName",
-      "/api/themes/:packageName"
-    ],
+    paths: ["/api/packages/:packageName", "/api/themes/:packageName"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "DELETE, GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    engine: (context, req) => { return context.query.engine(req.query.engine); },
-    packageName: (context, req) => { return context.query.packageName(req); }
+    engine: (context, req) => {
+      return context.query.engine(req.query.engine);
+    },
+    packageName: (context, req) => {
+      return context.query.packageName(req);
+    },
   },
 
   /**
@@ -42,13 +43,15 @@ module.exports = {
    * @returns {sso}
    */
   async logic(params, context) {
-    let pack = await context.database.getPackageByName(params.packageName, true);
+    let pack = await context.database.getPackageByName(
+      params.packageName,
+      true
+    );
 
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(pack)
-                        .addCalls("db.getPackageByName", pack);
+      return sso.notOk().addContent(pack).addCalls("db.getPackageByName", pack);
     }
 
     pack = await context.utils.constructPackageObjectFull(pack.content);
@@ -63,5 +66,5 @@ module.exports = {
     const sso = new context.sso();
 
     return sso.isOk().addContent(pack);
-  }
+  },
 };

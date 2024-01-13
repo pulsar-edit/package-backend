@@ -17,7 +17,9 @@ describe("GET /api/stars", () => {
       .get("/api/stars")
       .set("Authorization", "invalid");
     expect(res).toHaveHTTPCode(401);
-    expect(res.body.message).toEqual("Unauthorized: Please update your token if you haven't done so recently.");
+    expect(res.body.message).toEqual(
+      "Unauthorized: Please update your token if you haven't done so recently."
+    );
 
     tmpMock.mockClear();
   });

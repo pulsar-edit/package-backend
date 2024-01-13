@@ -5,22 +5,21 @@ describe("Has features expected", () => {
   test("Has correct endpoint features", () => {
     const expected = {
       method: "GET",
-      paths: [ "/api/users/:login" ],
+      paths: ["/api/users/:login"],
       rateLimit: "generic",
-      successStatus: 200
+      successStatus: 200,
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);
   });
-
 });
 
 describe("Parameters function as expected", () => {
   test("Returns params as provided", () => {
     const req = {
       params: {
-        login: "test-user"
-      }
+        login: "test-user",
+      },
     };
 
     const res = endpoint.params.login(context, req);

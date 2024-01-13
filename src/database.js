@@ -138,7 +138,9 @@ async function insertNewPackage(pack) {
           RETURNING pointer;
       `;
       } catch (e) {
-        throw `A constraint has been violated while inserting ${pack.name} in packages table: ${e.toString()}`;
+        throw `A constraint has been violated while inserting ${
+          pack.name
+        } in packages table: ${e.toString()}`;
       }
 
       if (!insertNewPack?.count) {
@@ -633,7 +635,7 @@ async function getPackageByName(name, user = false) {
     return {
       ok: false,
       content: err,
-      short: "server_error"
+      short: "server_error",
     };
   }
 }
@@ -1123,7 +1125,7 @@ async function getUserByName(username) {
     return {
       ok: false,
       content: err,
-      short: "server_error"
+      short: "server_error",
     };
   }
 }
@@ -1561,24 +1563,27 @@ async function getUserCollectionById(ids) {
 
 let emptyClause;
 
-function getEmptyClause () {
+function getEmptyClause() {
   emptyClause ??= sqlStorage``;
   return emptyClause;
 }
 
-function ownerClause (opts) {
-  if (typeof opts.owner !== 'string') {
+function ownerClause(opts) {
+  if (typeof opts.owner !== "string") {
     return getEmptyClause();
   }
   return sqlStorage`AND p.owner = ${opts.owner}`;
 }
 
-function serviceClause (opts) {
-  if (typeof opts.service !== 'string' || typeof opts.serviceType !== 'string') {
+function serviceClause(opts) {
+  if (
+    typeof opts.service !== "string" ||
+    typeof opts.serviceType !== "string"
+  ) {
     return getEmptyClause();
   }
   let versionClause;
-  if (typeof opts.serviceVersion !== 'string') {
+  if (typeof opts.serviceVersion !== "string") {
     versionClause = sqlStorage`IS NOT NULL`;
   } else {
     versionClause = sqlStorage`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`;
@@ -1587,8 +1592,8 @@ function serviceClause (opts) {
   return sqlStorage`AND v.meta -> ${opts.serviceType} -> ${opts.service} ${versionClause}`;
 }
 
-function fileExtensionClause (opts) {
-  if (typeof opts.fileExtension !== 'string') {
+function fileExtensionClause(opts) {
+  if (typeof opts.fileExtension !== "string") {
     return getEmptyClause();
   }
 

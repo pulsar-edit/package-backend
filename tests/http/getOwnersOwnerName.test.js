@@ -15,12 +15,15 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns empty array with no matching results", async () => {
-    const sso = await endpoint.logic({
-      owner: "i-dont-exist",
-      page: "1",
-      sort: "downloads",
-      direction: "desc"
-    }, context);
+    const sso = await endpoint.logic(
+      {
+        owner: "i-dont-exist",
+        page: "1",
+        sort: "downloads",
+        direction: "desc",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
@@ -32,34 +35,37 @@ describe("Behaves as expected", () => {
       name: "get-owner-test",
       repository: {
         url: "https://github.com/pulsar-cooperative/get-owner-test",
-        type: "git"
+        type: "git",
       },
       owner: "pulsar-cooperative",
       creation_method: "Test Package",
       releases: {
-        latest: "1.0.0"
+        latest: "1.0.0",
       },
       readme: "This is a readme!",
       metadata: {
-        name: "get-owner-test"
+        name: "get-owner-test",
       },
       versions: {
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "get-owner-test"
-        }
-      }
+          name: "get-owner-test",
+        },
+      },
     });
 
-    const sso = await endpoint.logic({
-      owner: "pulsar-cooperative",
-      page: 1,
-      sort: "downloads",
-      direction: "desc"
-    }, context);
+    const sso = await endpoint.logic(
+      {
+        owner: "pulsar-cooperative",
+        page: 1,
+        sort: "downloads",
+        direction: "desc",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content[0].name).toBe("get-owner-test");

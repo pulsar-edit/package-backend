@@ -15,12 +15,15 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns zero length array when not found", async () => {
-    const sso = await endpoint.logic({
-      sort: "downloads",
-      page: "1",
-      direction: "desc",
-      query: "hello-world"
-    }, context);
+    const sso = await endpoint.logic(
+      {
+        sort: "downloads",
+        page: "1",
+        direction: "desc",
+        query: "hello-world",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
@@ -32,42 +35,45 @@ describe("Behaves as expected", () => {
       name: "atom-material-syntax",
       repository: {
         url: "https://github.com/confused-Techie/atom-material-syntax",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
-        latest: "1.1.0"
+        latest: "1.1.0",
       },
       readme: "This is a readme!",
       metadata: {
         name: "atom-material-syntax",
-        theme: "ui"
+        theme: "ui",
       },
       versions: {
         "1.1.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "atom-material-syntax"
+          name: "atom-material-syntax",
         },
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "atom-material-syntax"
-        }
-      }
+          name: "atom-material-syntax",
+        },
+      },
     });
 
-    const sso = await endpoint.logic({
-      sort: "downloads",
-      page: "1",
-      direction: "desc",
-      query: "atom-material"
-    }, context);
+    const sso = await endpoint.logic(
+      {
+        sort: "downloads",
+        page: "1",
+        direction: "desc",
+        query: "atom-material",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content).toBeArray();
@@ -81,15 +87,20 @@ describe("Behaves as expected", () => {
     // Moved to last position, since it modifies our shallow copied context
     const localContext = context;
     localContext.database = {
-      simpleSearch: () => { return { ok: false, content: "Test Error" } }
+      simpleSearch: () => {
+        return { ok: false, content: "Test Error" };
+      },
     };
 
-    const sso = await endpoint.logic({
-      sort: "downloads",
-      page: "1",
-      direction: "desc",
-      query: "hello-world"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        sort: "downloads",
+        page: "1",
+        direction: "desc",
+        query: "hello-world",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(false);
     expect(sso.content.content).toBe("Test Error");

@@ -4,18 +4,18 @@
 
 module.exports = {
   docs: {
-    summary: "OAuth callback URL."
+    summary: "OAuth callback URL.",
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/login" ],
+    paths: ["/api/login"],
     rateLimit: "auth",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
+      "X-Content-Type-Options": "nosniff",
     },
-    endpointKind: "raw"
+    endpointKind: "raw",
   },
 
   async logic(req, res, context) {
@@ -32,17 +32,19 @@ module.exports = {
 
     if (!saveStateKey.ok) {
       res.status(500).json({
-        message: "Application Error: Failed to generate secure state key."
+        message: "Application Error: Failed to generate secure state key.",
       });
       context.logger.httpLog(req, res);
       return;
     }
 
-    res.status(302).redirect(
-      `https://github.com/login/oauth/authorize?client_id=${context.config.GH_CLIENTID}&redirect_uri=${context.config.GH_REDIRECTURI}&state=${stateKey}&scope=public_repo%20read:org`
-    );
+    res
+      .status(302)
+      .redirect(
+        `https://github.com/login/oauth/authorize?client_id=${context.config.GH_CLIENTID}&redirect_uri=${context.config.GH_REDIRECTURI}&state=${stateKey}&scope=public_repo%20read:org`
+      );
 
     context.logger.httpLog(req, res);
     return;
-  }
+  },
 };

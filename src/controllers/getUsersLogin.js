@@ -4,35 +4,38 @@
 
 module.exports = {
   docs: {
-    summary: "Display the details of any user, as well as the packages they have published.",
+    summary:
+      "Display the details of any user, as well as the packages they have published.",
     responses: {
       200: {
         description: "The public details of a specific user.",
         content: {
           // This references the file name of a `./tests/models` model
-          "application/json": "$userObjectPublic"
-        }
+          "application/json": "$userObjectPublic",
+        },
       },
       404: {
         description: "The User requested cannot be found.",
         content: {
-          "application/json": "$message"
-        }
-      }
-    }
+          "application/json": "$message",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/users/:login" ],
+    paths: ["/api/users/:login"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    login: (context, req) => { return context.query.login(req); }
+    login: (context, req) => {
+      return context.query.login(req);
+    },
   },
 
   /**
@@ -47,8 +50,7 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user)
-                .addCalls("db.getUserByName", user);
+      return sso.notOk().addContent(user).addCalls("db.getUserByName", user);
     }
 
     // TODO We need to find a way to add the users published pacakges here
@@ -65,9 +67,8 @@ module.exports = {
       packages: [], // included as it should be used in the future
     };
 
-
     const sso = new context.sso();
 
     return sso.isOk().addContent(returnUser);
-  }
+  },
 };

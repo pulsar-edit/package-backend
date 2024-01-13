@@ -9,20 +9,20 @@ module.exports = {
       200: {
         description: "An array of featured packages.",
         content: {
-          "application/json": "$packageObjectShortArray"
-        }
-      }
-    }
+          "application/json": "$packageObjectShortArray",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/packages/featured" ],
+    paths: ["/api/packages/featured"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {},
 
@@ -39,17 +39,23 @@ module.exports = {
     if (!packs.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packs)
-                        .addCalls("db.getFeaturedPackages", packs);
+      return sso
+        .notOk()
+        .addContent(packs)
+        .addCalls("db.getFeaturedPackages", packs);
     }
 
-    const packObjShort = await context.utils.constructPackageObjectShort(packs.content);
+    const packObjShort = await context.utils.constructPackageObjectShort(
+      packs.content
+    );
 
     // The endpoint using this ufnction needs an array
-    const packArray = Array.isArray(packObjShort) ? packObjShort : [ packObjShort ];
+    const packArray = Array.isArray(packObjShort)
+      ? packObjShort
+      : [packObjShort];
 
     const sso = new context.sso();
 
     return sso.isOk().addContent(packArray);
-  }
+  },
 };

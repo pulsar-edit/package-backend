@@ -6,7 +6,7 @@ describe("Has features expected", () => {
     const expected = {
       method: "POST",
       rateLimit: "auth",
-      successStatus: 201
+      successStatus: 201,
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);

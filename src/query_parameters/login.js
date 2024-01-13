@@ -10,14 +10,14 @@ module.exports = {
     name: "login",
     in: "path",
     schema: {
-      type: "string"
+      type: "string",
     },
     required: true,
     allowEmptyValue: false,
     example: "confused-Techie",
-    description: "The User from the URL Path"
+    description: "The User from the URL Path",
   },
   logic: (req) => {
     return req.params.login ?? "";
-  }
+  },
 };

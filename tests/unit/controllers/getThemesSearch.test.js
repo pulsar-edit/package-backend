@@ -5,9 +5,9 @@ describe("Has features expected", () => {
   test("Has correct endpoint features", () => {
     const expected = {
       method: "GET",
-      paths: [ "/api/themes/search" ],
+      paths: ["/api/themes/search"],
       rateLimit: "generic",
-      successStatus: 200
+      successStatus: 200,
     };
 
     expect(endpoint.endpoint).toMatchObject(expected);
@@ -21,7 +21,7 @@ describe("Has features expected", () => {
 describe("Parameters behave as expected", () => {
   test("Returns valid 'sort'", () => {
     const req = {
-      query: { sort: "downloads" }
+      query: { sort: "downloads" },
     };
 
     const res = endpoint.params.sort(context, req);
@@ -29,7 +29,7 @@ describe("Parameters behave as expected", () => {
   });
   test("Returns valid 'page'", () => {
     const req = {
-      query: { page: "1" }
+      query: { page: "1" },
     };
 
     const res = endpoint.params.page(context, req);
@@ -37,7 +37,7 @@ describe("Parameters behave as expected", () => {
   });
   test("Returns valid 'direction'", () => {
     const req = {
-      query: { direction: "desc" }
+      query: { direction: "desc" },
     };
 
     const res = endpoint.params.direction(context, req);
@@ -45,7 +45,7 @@ describe("Parameters behave as expected", () => {
   });
   test("Returns valid 'query'", () => {
     const req = {
-      query: { q: "hello" }
+      query: { q: "hello" },
     };
 
     const res = endpoint.params.query(context, req);

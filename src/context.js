@@ -14,5 +14,5 @@ module.exports = {
   sso: require("./models/sso.js"),
   ssoPaginate: require("./models/ssoPaginate.js"),
   ssoRedirect: require("./models/ssoRedirect.js"),
-  ssoHTML: require("./models/ssoHTML.js")
+  ssoHTML: require("./models/ssoHTML.js"),
 };

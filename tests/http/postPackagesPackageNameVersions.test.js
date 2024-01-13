@@ -9,7 +9,7 @@ describe("POST /api/packages/:packageName/versions", () => {
       return {
         ok: false,
         short: "unauthorized",
-        context: "Bad Auth Mock Return"
+        context: "Bad Auth Mock Return",
       };
     };
 

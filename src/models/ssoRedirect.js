@@ -1,7 +1,6 @@
 const SSO = require("./sso.js");
 
-module.exports =
-class SSORedirect extends SSO {
+module.exports = class SSORedirect extends SSO {
   constructor() {
     super();
   }
@@ -10,4 +9,4 @@ class SSORedirect extends SSO {
     res.redirect(this.content);
     context.logger.httpLog(req, res);
   }
-}
+};

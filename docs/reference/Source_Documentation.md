@@ -27,11 +27,6 @@ But this does provide an opportunity to allow multiple caching systems.</p>
 <dd><p>Provides an interface of a large collection of functions to interact
 with and retrieve data from the cloud hosted database instance.</p>
 </dd>
-<dt><a href="#module_debug_util">debug_util</a></dt>
-<dd><p>A collection of simple functions to help devs debug the application during runtime,
-to better assist in tracking down bugs. Since many sets of data cannot be reliably output to the console
-this can help to view the transmutations of data as its handled.</p>
-</dd>
 <dt><a href="#module_dev_server">dev_server</a></dt>
 <dd><p>The Development initializer of <code>main.js</code> as well as managing the startup of a locally created Docker SQL
 Server. This uses pg-test to set up a database hosted on local Docker. Migrating all data as needed,
@@ -41,15 +36,6 @@ the backend API server as normal.</p>
 <dt><a href="#module_logger">logger</a></dt>
 <dd><p>Allows easy logging of the server. Allowing it to become simple to add additional
 logging methods if a log server is ever implemented.</p>
-</dd>
-<dt><a href="#module_main">main</a></dt>
-<dd><p>The Main functionality for the entire server. Sets up the Express server, providing
-all endpoints it listens on. With those endpoints being further documented in <code>api.md</code>.</p>
-</dd>
-<dt><a href="#module_query">query</a></dt>
-<dd><p>Home to parsing all query parameters from the <code>Request</code> object. Ensuring a valid response.
-While most values will just return their default there are some expecptions:
-engine(): Returns false if not defined, to allow a fast way to determine if results need to be pruned.</p>
 </dd>
 <dt><a href="#module_server">server</a></dt>
 <dd><p>The initializer of <code>main.js</code> starting up the Express Server, and setting the port
@@ -72,37 +58,62 @@ function.</p>
 <dt><a href="#module_webhook">webhook</a></dt>
 <dd><p>Handles sending out webhooks based on function calls.</p>
 </dd>
-<dt><a href="#module_common_handler">common_handler</a></dt>
-<dd><p>Provides a simplistic way to refer to implement common endpoint returns.
-So these can be called as an async function without more complex functions, reducing
-verbosity, and duplication within the codebase.</p>
-</dd>
-<dt><a href="#module_delete_package_handler">delete_package_handler</a></dt>
-<dd><p>Endpoint Handlers for every DELETE Request that relates to packages themselves</p>
-</dd>
-<dt><a href="#module_get_package_handler">get_package_handler</a></dt>
-<dd><p>Endpoint Handlers for every GET Request that relates to packages themselves</p>
-</dd>
-<dt><a href="#module_oauth_handler">oauth_handler</a></dt>
-<dd><p>Endpoint Handlers for Authentication URLs</p>
-</dd>
-<dt><a href="#module_package_handler">package_handler</a></dt>
-<dd><p>Exports individual files handling endpoints relating to Packages</p>
-</dd>
-<dt><a href="#module_post_package_handler">post_package_handler</a></dt>
-<dd><p>Endpoint Handlers for every POST Request that relates to packages themselves</p>
-</dd>
-<dt><a href="#module_star_handler">star_handler</a></dt>
-<dd><p>Handler for any endpoints whose slug after <code>/api/</code> is <code>star</code>.</p>
-</dd>
-<dt><a href="#module_theme_handler">theme_handler</a></dt>
-<dd><p>Endpoint Handlers relating to themes only.</p>
-</dd>
-<dt><a href="#module_update_handler">update_handler</a></dt>
-<dd><p>Endpoint Handlers relating to updating the editor.</p>
-</dd>
-<dt><a href="#module_user_handler">user_handler</a></dt>
-<dd><p>Handler for endpoints whose slug after <code>/api/</code> is <code>user</code>.</p>
+<dt><a href="#module_deletePackagesPackageName">deletePackagesPackageName</a></dt>
+<dd></dd>
+<dt><a href="#module_DeletePackagesPackageNameStar">DeletePackagesPackageNameStar</a></dt>
+<dd></dd>
+<dt><a href="#module_deletePackagesPackageNameVersionsVersionName">deletePackagesPackageNameVersionsVersionName</a></dt>
+<dd></dd>
+<dt><a href="#module_getLogin">getLogin</a></dt>
+<dd></dd>
+<dt><a href="#module_getOauth">getOauth</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackages">getPackages</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackagesFeatured">getPackagesFeatured</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackagesPackageName">getPackagesPackageName</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackagesPackageNameStargazers">getPackagesPackageNameStargazers</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackagesPackageNameVersionsVersionName">getPackagesPackageNameVersionsVersionName</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackagesPackageNameVersionsVersionNameTarball">getPackagesPackageNameVersionsVersionNameTarball</a></dt>
+<dd></dd>
+<dt><a href="#module_getPackagesSearch">getPackagesSearch</a></dt>
+<dd></dd>
+<dt><a href="#module_getPat">getPat</a></dt>
+<dd></dd>
+<dt><a href="#module_getRoot">getRoot</a></dt>
+<dd></dd>
+<dt><a href="#module_getStars">getStars</a></dt>
+<dd></dd>
+<dt><a href="#module_getThemes">getThemes</a></dt>
+<dd></dd>
+<dt><a href="#module_getThemesFeatured">getThemesFeatured</a></dt>
+<dd></dd>
+<dt><a href="#module_getThemesSearch">getThemesSearch</a></dt>
+<dd></dd>
+<dt><a href="#module_getUpdates">getUpdates</a></dt>
+<dd></dd>
+<dt><a href="#module_getUsers">getUsers</a></dt>
+<dd></dd>
+<dt><a href="#module_getUsersLogin">getUsersLogin</a></dt>
+<dd></dd>
+<dt><a href="#module_getUsersLoginStars">getUsersLoginStars</a></dt>
+<dd></dd>
+<dt><a href="#module_postPackages">postPackages</a></dt>
+<dd></dd>
+<dt><a href="#module_postPackagesPackageNameStar">postPackagesPackageNameStar</a></dt>
+<dd></dd>
+<dt><a href="#module_postPackagesPackageNameVersions">postPackagesPackageNameVersions</a></dt>
+<dd></dd>
+<dt><a href="#module_postPackagesPackageNameVersionsVersionNameEventsUninstall">postPackagesPackageNameVersionsVersionNameEventsUninstall</a></dt>
+<dd></dd>
+<dt><a href="#module_query">query</a></dt>
+<dd><p>Home to parsing all query parameters from the <code>Request</code> object. Ensuring a valid response.
+While most values will just return their default there are some expecptions:
+engine(): Returns false if not defined, to allow a fast way to determine if results need to be pruned.</p>
 </dd>
 </dl>
 
@@ -116,6 +127,67 @@ and use it to check GitHub for the details of whoever owns this token.
 Once that is done, we can go ahead and search for said user within the database.
 If the user exists, then we can confirm that they are both locally and globally
 authenticated, and execute whatever action it is they wanted to.</p>
+</dd>
+<dt><a href="#auth">auth(req)</a> ⇒ <code>string</code></dt>
+<dd><p>Retrieves Authorization Headers from Request, and Checks for Undefined.</p>
+</dd>
+<dt><a href="#direction">direction(req)</a> ⇒ <code>string</code></dt>
+<dd><p>Parser for either &#39;direction&#39; or &#39;order&#39; query parameter, prioritizing
+&#39;direction&#39;.</p>
+</dd>
+<dt><a href="#engine">engine(semver)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd><p>Parses the &#39;engine&#39; query parameter to ensure it&#39;s valid, otherwise returning false.</p>
+</dd>
+<dt><a href="#fileExtension">fileExtension(req)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd><p>Returns the file extension being requested.</p>
+</dd>
+<dt><a href="#login">login(req)</a> ⇒ <code>string</code></dt>
+<dd><p>Returns the User from the URL Path, otherwise &#39;&#39;</p>
+</dd>
+<dt><a href="#user">user(req)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd></dd>
+<dt><a href="#packageName">packageName(req)</a> ⇒ <code>string</code></dt>
+<dd><p>This function will convert a user provided package name into a safe format.
+It ensures the name is converted to lower case. As is the requirement of all package names.</p>
+</dd>
+<dt><a href="#page">page(req)</a> ⇒ <code>number</code></dt>
+<dd><p>Parser of the Page query parameter. Defaulting to 1.</p>
+</dd>
+<dt><a href="#query">query(req)</a> ⇒ <code>string</code></dt>
+<dd><p>Checks the &#39;q&#39; query parameter, trunicating it at 50 characters, and checking simplisticly that
+it is not a malicious request. Returning &quot;&quot; if an unsafe or invalid query is passed.</p>
+</dd>
+<dt><a href="#rename">rename(req)</a> ⇒ <code>boolean</code></dt>
+<dd><p>Since this is intended to be returning a boolean value, returns false
+if invalid, otherwise returns true. Checking for mixed captilization.</p>
+</dd>
+<dt><a href="#repo">repo(req)</a> ⇒ <code>string</code></dt>
+<dd><p>Parses the &#39;repository&#39; query parameter, returning it if valid, otherwise returning &#39;&#39;.</p>
+</dd>
+<dt><a href="#service">service(req)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd><p>Returns the service being requested.</p>
+</dd>
+<dt><a href="#serviceType">serviceType(req)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd><p>Returns the service type being requested.</p>
+</dd>
+<dt><a href="#serviceVersion">serviceVersion(req)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd><p>Returns the version of whatever service is being requested.</p>
+</dd>
+<dt><a href="#sort">sort(req, [def])</a> ⇒ <code>string</code></dt>
+<dd><p>Parser for the &#39;sort&#39; query parameter. Defaulting usually to downloads.</p>
+</dd>
+<dt><a href="#tag">tag(req)</a> ⇒ <code>string</code></dt>
+<dd><p>Parses the &#39;tag&#39; query parameter, returning it if valid, otherwise returning &#39;&#39;.</p>
+</dd>
+<dt><a href="#stringValidation">stringValidation(value)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
+<dd><p>Provides a generic Query Utility that validates if a provided value
+is a string, as well as trimming it to the safe max length of query strings,
+while additionally passing it through the Path Traversal Detection function.</p>
+</dd>
+<dt><a href="#pathTraversalAttempt">pathTraversalAttempt(data)</a> ⇒ <code>boolean</code></dt>
+<dd><p>Completes some short checks to determine if the data contains a malicious
+path traversal attempt. Returning a boolean indicating if a path traversal attempt
+exists in the data.</p>
 </dd>
 </dl>
 
@@ -1034,26 +1106,6 @@ A custom timestamp can be passed as argument for testing purpose, otherwise the 
 | stateKey | <code>string</code> | The key code string to delete. |
 | timestamp | <code>string</code> | A string in SQL timestamp format to check against the created timestamp of the given state key. If not provided, the current UNIX timestamp is used. |
 
-<a name="module_debug_util"></a>
-
-## debug\_util
-A collection of simple functions to help devs debug the application during runtime,
-to better assist in tracking down bugs. Since many sets of data cannot be reliably output to the console
-this can help to view the transmutations of data as its handled.
-
-<a name="module_debug_util..roughSizeOfObject"></a>
-
-### debug_util~roughSizeOfObject(obj) ⇒ <code>integer</code>
-Returns the rough size of the object in memory, in Bytes. Can be used
-to help determine how an object changes over time.
-
-**Kind**: inner method of [<code>debug\_util</code>](#module_debug_util)  
-**Returns**: <code>integer</code> - Returns the integer value of the object in Bytes.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| obj | <code>object</code> | The Object to inspect. |
-
 <a name="module_dev_server"></a>
 
 ## dev\_server
@@ -1062,17 +1114,6 @@ Server. This uses pg-test to set up a database hosted on local Docker. Migrating
 to allow the real server feel, without having access or the risk of the production database. But otherwise runs
 the backend API server as normal.
 
-
-* [dev_server](#module_dev_server)
-    * [~dbSetup](#module_dev_server..dbSetup)
-    * [~localExterminate(callee, serve, db)](#module_dev_server..localExterminate)
-
-<a name="module_dev_server..dbSetup"></a>
-
-### dev_server~dbSetup
-This is the recommended and only way to mock how Jest would use the module.
-
-**Kind**: inner constant of [<code>dev\_server</code>](#module_dev_server)  
 <a name="module_dev_server..localExterminate"></a>
 
 ### dev_server~localExterminate(callee, serve, db)
@@ -1177,260 +1218,6 @@ provided.
 | Param | Type | Description |
 | --- | --- | --- |
 | meta | <code>string</code> | An object containing `req`, and `res` |
-
-<a name="module_main"></a>
-
-## main
-The Main functionality for the entire server. Sets up the Express server, providing
-all endpoints it listens on. With those endpoints being further documented in `api.md`.
-
-<a name="module_query"></a>
-
-## query
-Home to parsing all query parameters from the `Request` object. Ensuring a valid response.
-While most values will just return their default there are some expecptions:
-engine(): Returns false if not defined, to allow a fast way to determine if results need to be pruned.
-
-
-* [query](#module_query)
-    * [~page(req)](#module_query..page) ⇒ <code>number</code>
-    * [~sort(req, [def])](#module_query..sort) ⇒ <code>string</code>
-    * [~dir(req)](#module_query..dir) ⇒ <code>string</code>
-    * [~query(req)](#module_query..query) ⇒ <code>string</code>
-    * [~engine(semver)](#module_query..engine) ⇒ <code>string</code> \| <code>boolean</code>
-    * [~auth(req)](#module_query..auth) ⇒ <code>string</code>
-    * [~repo(req)](#module_query..repo) ⇒ <code>string</code>
-    * [~tag(req)](#module_query..tag) ⇒ <code>string</code>
-    * [~rename(req)](#module_query..rename) ⇒ <code>boolean</code>
-    * [~packageName(req)](#module_query..packageName) ⇒ <code>string</code>
-    * [~pathTraversalAttempt(data)](#module_query..pathTraversalAttempt) ⇒ <code>boolean</code>
-    * [~login(req)](#module_query..login) ⇒ <code>string</code>
-    * [~serviceType(req)](#module_query..serviceType) ⇒ <code>string</code> \| <code>boolean</code>
-    * [~serviceVersion(req)](#module_query..serviceVersion) ⇒ <code>string</code> \| <code>boolean</code>
-    * [~service(req)](#module_query..service) ⇒ <code>string</code> \| <code>boolean</code>
-    * [~fileExtension(req)](#module_query..fileExtension) ⇒ <code>string</code> \| <code>boolean</code>
-    * [~stringValidation(value)](#module_query..stringValidation) ⇒ <code>string</code> \| <code>boolean</code>
-
-<a name="module_query..page"></a>
-
-### query~page(req) ⇒ <code>number</code>
-Parser of the Page query parameter. Defaulting to 1.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>number</code> - Returns the valid page provided in the query parameter or 1, as the default.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..sort"></a>
-
-### query~sort(req, [def]) ⇒ <code>string</code>
-Parser for the 'sort' query parameter. Defaulting usually to downloads.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Either the user provided 'sort' query parameter, or the default specified.  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| req | <code>object</code> |  | The `Request` object inherited from the Express endpoint. |
-| [def] | <code>string</code> | <code>&quot;\&quot;downloads\&quot;&quot;</code> | The default provided for sort. Allowing The search function to use "relevance" instead of the default "downloads". |
-
-<a name="module_query..dir"></a>
-
-### query~dir(req) ⇒ <code>string</code>
-Parser for either 'direction' or 'order' query parameter, prioritizing
-'direction'.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - The valid direction value from the 'direction' or 'order'
-query parameter.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..query"></a>
-
-### query~query(req) ⇒ <code>string</code>
-Checks the 'q' query parameter, trunicating it at 50 characters, and checking simplisticly that
-it is not a malicious request. Returning "" if an unsafe or invalid query is passed.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Implements**: <code>pathTraversalAttempt</code>  
-**Returns**: <code>string</code> - A valid search string derived from 'q' query parameter. Or '' if invalid.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..engine"></a>
-
-### query~engine(semver) ⇒ <code>string</code> \| <code>boolean</code>
-Parses the 'engine' query parameter to ensure it's valid, otherwise returning false.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns the valid 'engine' specified, or if none, returns false.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| semver | <code>string</code> | The engine string. |
-
-<a name="module_query..auth"></a>
-
-### query~auth(req) ⇒ <code>string</code>
-Retrieves Authorization Headers from Request, and Checks for Undefined.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Returning a valid Authorization Token, or '' if invalid/not found.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | = The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..repo"></a>
-
-### query~repo(req) ⇒ <code>string</code>
-Parses the 'repository' query parameter, returning it if valid, otherwise returning ''.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Returning the valid 'repository' query parameter, or '' if invalid.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..tag"></a>
-
-### query~tag(req) ⇒ <code>string</code>
-Parses the 'tag' query parameter, returning it if valid, otherwise returning ''.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Returns a valid 'tag' query parameter. Or '' if invalid.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..rename"></a>
-
-### query~rename(req) ⇒ <code>boolean</code>
-Since this is intended to be returning a boolean value, returns false
-if invalid, otherwise returns true. Checking for mixed captilization.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>boolean</code> - Returns false if invalid, or otherwise returns the boolean value of the string.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..packageName"></a>
-
-### query~packageName(req) ⇒ <code>string</code>
-This function will convert a user provided package name into a safe format.
-It ensures the name is converted to lower case. As is the requirement of all package names.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Returns the package name in a safe format that can be worked with further.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` Object inherited from the Express endpoint. |
-
-<a name="module_query..pathTraversalAttempt"></a>
-
-### query~pathTraversalAttempt(data) ⇒ <code>boolean</code>
-Completes some short checks to determine if the data contains a malicious
-path traversal attempt. Returning a boolean indicating if a path traversal attempt
-exists in the data.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>boolean</code> - True indicates a path traversal attempt was found. False otherwise.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| data | <code>string</code> | The data to check for possible malicious data. |
-
-<a name="module_query..login"></a>
-
-### query~login(req) ⇒ <code>string</code>
-Returns the User from the URL Path, otherwise ''
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> - Returns a valid specified user or ''.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..serviceType"></a>
-
-### query~serviceType(req) ⇒ <code>string</code> \| <code>boolean</code>
-Returns the service type being requested.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
-nonexistent. Returns `providedServices` if the query is `provided` or returns
-`consumedServices` if the query is `consumed`  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..serviceVersion"></a>
-
-### query~serviceVersion(req) ⇒ <code>string</code> \| <code>boolean</code>
-Returns the version of whatever service is being requested.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
-nonexistant. Returns the version as a string otherwise.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express Endpoint. |
-
-<a name="module_query..service"></a>
-
-### query~service(req) ⇒ <code>string</code> \| <code>boolean</code>
-Returns the service being requested.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
-nonexistant. Returns the service string otherwise.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..fileExtension"></a>
-
-### query~fileExtension(req) ⇒ <code>string</code> \| <code>boolean</code>
-Returns the file extension being requested.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
-nonexistant. Returns the service string otherwise.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="module_query..stringValidation"></a>
-
-### query~stringValidation(value) ⇒ <code>string</code> \| <code>boolean</code>
-Provides a generic Query Utility that validates if a provided value
-is a string, as well as trimming it to the safe max length of query strings,
-while additionally passing it through the Path Traversal Detection function.
-
-**Kind**: inner method of [<code>query</code>](#module_query)  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if any check fails, otherwise returns
-the valid string.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| value | <code>string</code> | The value to check |
 
 <a name="module_server"></a>
 
@@ -1588,7 +1375,7 @@ to this server for download.
 
 ### utils~engineFilter() ⇒ <code>object</code>
 A complex function that provides filtering by Atom engine version.
-This should take a package with it's versions and retrieve whatever matches
+This should take a package with its versions and retrieve whatever matches
 that engine version as provided.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
@@ -1853,840 +1640,90 @@ Used to preform the actual sending of the webhook.
 | obj | <code>object</code> | The Object to send via the webhook |
 | webhookURL | <code>string</code> | The URL to send the webhook to. |
 
-<a name="module_common_handler"></a>
+<a name="module_deletePackagesPackageName"></a>
 
-## common\_handler
-Provides a simplistic way to refer to implement common endpoint returns.
-So these can be called as an async function without more complex functions, reducing
-verbosity, and duplication within the codebase.
+## deletePackagesPackageName
+<a name="module_DeletePackagesPackageNameStar"></a>
 
-**Implements**: <code>logger</code>  
+## DeletePackagesPackageNameStar
+<a name="module_deletePackagesPackageNameVersionsVersionName"></a>
 
-* [common_handler](#module_common_handler)
-    * [~handleError(req, res, obj)](#module_common_handler..handleError)
-    * [~handleDetailedError(req, res, obj)](#module_common_handler..handleDetailedError)
-    * [~authFail(req, res, user)](#module_common_handler..authFail)
-    * [~serverError(req, res, err)](#module_common_handler..serverError)
-    * [~notFound(req, res)](#module_common_handler..notFound)
-    * [~notSupported(req, res)](#module_common_handler..notSupported)
-    * [~siteWideNotFound(req, res)](#module_common_handler..siteWideNotFound)
-    * [~badRepoJSON(req, res)](#module_common_handler..badRepoJSON)
-    * [~badPackageJSON(req, res)](#module_common_handler..badPackageJSON)
-    * [~packageExists(req, res)](#module_common_handler..packageExists)
-    * [~missingAuthJSON(req, res)](#module_common_handler..missingAuthJSON)
+## deletePackagesPackageNameVersionsVersionName
+<a name="module_getLogin"></a>
 
-<a name="module_common_handler..handleError"></a>
+## getLogin
+<a name="module_getOauth"></a>
 
-### common_handler~handleError(req, res, obj)
-Generic error handler mostly used to reduce the duplication of error handling in other modules.
-It checks the short error string and calls the relative endpoint.
-Note that it's designed to be called as the last async function before the return.
+## getOauth
+<a name="module_getPackages"></a>
 
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
+## getPackages
+<a name="module_getPackagesFeatured"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-| obj | <code>object</code> | the Raw Status Object of the User, expected to return from `VerifyAuth`. |
+## getPackagesFeatured
+<a name="module_getPackagesPackageName"></a>
 
-<a name="module_common_handler..handleDetailedError"></a>
+## getPackagesPackageName
+<a name="module_getPackagesPackageNameStargazers"></a>
 
-### common_handler~handleDetailedError(req, res, obj)
-Less generic error handler than `handleError()`. Used for returned the
-improved error messages to users. Where instead of only returning an error
-`message` it will return `message` and `details`. Providing better insight into
-what has gone wrong with the server.
-Additionally this will aim to simplify error handling by not handing off the
-handling to additional functions.
+## getPackagesPackageNameStargazers
+<a name="module_getPackagesPackageNameVersionsVersionName"></a>
 
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
+## getPackagesPackageNameVersionsVersionName
+<a name="module_getPackagesPackageNameVersionsVersionNameTarball"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-| obj | <code>object</code> | The Object provided to return the error message. |
-| obj.short | <code>string</code> | The recognized Short Code string for error handling. |
-| obj.content | <code>string</code> | The detailed user friendly content of what's gone wrong. |
+## getPackagesPackageNameVersionsVersionNameTarball
+<a name="module_getPackagesSearch"></a>
 
-<a name="module_common_handler..authFail"></a>
+## getPackagesSearch
+<a name="module_getPat"></a>
 
-### common_handler~authFail(req, res, user)
-Will take the <b>failed</b> user object from VerifyAuth, and respond for the endpoint as
-either a "Server Error" or a "Bad Auth", whichever is correct based on the Error bubbled from VerifyAuth.
+## getPat
+<a name="module_getRoot"></a>
 
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>MissingAuthJSON</code>, <code>ServerErrorJSON</code>, <code>logger.HTTPLog</code>  
+## getRoot
+<a name="module_getStars"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-| user | <code>object</code> | The Raw Status Object of the User, expected to return from `VerifyAuth`. |
+## getStars
+<a name="module_getThemes"></a>
 
-<a name="module_common_handler..serverError"></a>
+## getThemes
+<a name="module_getThemesFeatured"></a>
 
-### common_handler~serverError(req, res, err)
-Returns a standard Server Error to the user as JSON. Logging the detailed error message to the server.
-###### Setting:
-* Status Code: 500
-* JSON Response Body: message: "Application Error"
+## getThemesFeatured
+<a name="module_getThemesSearch"></a>
 
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>, <code>logger.generic</code>  
+## getThemesSearch
+<a name="module_getUpdates"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-| err | <code>string</code> | The detailed error message to log server side. |
+## getUpdates
+<a name="module_getUsers"></a>
 
-<a name="module_common_handler..notFound"></a>
+## getUsers
+<a name="module_getUsersLogin"></a>
 
-### common_handler~notFound(req, res)
-Standard endpoint to return the JSON Not Found error to the user.
-###### Setting:
-* Status Code: 404
-* JSON Respone Body: message: "Not Found"
+## getUsersLogin
+<a name="module_getUsersLoginStars"></a>
 
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
+## getUsersLoginStars
+<a name="module_postPackages"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
+## postPackages
+<a name="module_postPackagesPackageNameStar"></a>
 
-<a name="module_common_handler..notSupported"></a>
+## postPackagesPackageNameStar
+<a name="module_postPackagesPackageNameVersions"></a>
 
-### common_handler~notSupported(req, res)
-Returns a Not Supported message to the user.
-###### Setting:
-* Status Code: 501
-* JSON Response Body: message: "While under development this feature is not supported."
+## postPackagesPackageNameVersions
+<a name="module_postPackagesPackageNameVersionsVersionNameEventsUninstall"></a>
 
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
+## postPackagesPackageNameVersionsVersionNameEventsUninstall
+<a name="module_query"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-<a name="module_common_handler..siteWideNotFound"></a>
-
-### common_handler~siteWideNotFound(req, res)
-Returns the SiteWide 404 page to the end user.
-###### Setting Currently:
-* Status Code: 404
-* JSON Response Body: message: "This is a standin for the proper site wide 404 page."
-
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-<a name="module_common_handler..badRepoJSON"></a>
-
-### common_handler~badRepoJSON(req, res)
-Returns the BadRepoJSON message to the user.
-###### Setting:
-* Status Code: 400
-* JSON Response Body: message: That repo does not exist, isn't an atom package, or atombot does not have access.
-
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-<a name="module_common_handler..badPackageJSON"></a>
-
-### common_handler~badPackageJSON(req, res)
-Returns the BadPackageJSON message to the user.
-###### Setting:
-* Status Code: 400
-* JSON Response Body: message: The package.json at owner/repo isn't valid.
-
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-<a name="module_common_handler..packageExists"></a>
-
-### common_handler~packageExists(req, res)
-Returns the PackageExist message to the user.
-###### Setting:
-* Status Code: 409
-* JSON Response Body: message: "A Package by that name already exists."
-
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-<a name="module_common_handler..missingAuthJSON"></a>
-
-### common_handler~missingAuthJSON(req, res)
-Returns the MissingAuth message to the user.
-###### Setting:
-* Status Code: 401
-* JSON Response Body: message: "Requires authentication. Please update your token if you haven't done so recently."
-
-**Kind**: inner method of [<code>common\_handler</code>](#module_common_handler)  
-**Implements**: <code>logger.HTTPLog</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-<a name="module_delete_package_handler"></a>
-
-## delete\_package\_handler
-Endpoint Handlers for every DELETE Request that relates to packages themselves
-
-
-* [delete_package_handler](#module_delete_package_handler)
-    * [~deletePackagesName(params, db, auth, vcs)](#module_delete_package_handler..deletePackagesName)
-    * [~deletePackageStar(params, db, auth)](#module_delete_package_handler..deletePackageStar)
-    * [~deletePackageVersion(params, db, auth, vcs)](#module_delete_package_handler..deletePackageVersion)
-
-<a name="module_delete_package_handler..deletePackagesName"></a>
-
-### delete_package_handler~deletePackagesName(params, db, auth, vcs)
-Allows the user to delete a repo they have ownership of.
-
-**Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.auth | <code>string</code> | The API key for the user |
-| params.packageName | <code>string</code> | The name of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-| vcs | <code>module</code> | An instance of the `vcs.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | DELETE |
-| <code>http\_endpoint</code> | /api/packages/:packageName |
-
-<a name="module_delete_package_handler..deletePackageStar"></a>
-
-### delete_package_handler~deletePackageStar(params, db, auth)
-Used to remove a star from a specific package for the authenticated usesr.
-
-**Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.auth | <code>string</code> | The API Key of the user |
-| params.packageName | <code>string</code> | The name of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | DELETE |
-| <code>http\_endpoint</code> | /api/packages/:packageName/star |
-
-<a name="module_delete_package_handler..deletePackageVersion"></a>
-
-### delete_package_handler~deletePackageVersion(params, db, auth, vcs)
-Allows a user to delete a specific version of their package.
-
-**Kind**: inner method of [<code>delete\_package\_handler</code>](#module_delete_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.auth | <code>string</code> | The API key of the user |
-| params.packageName | <code>string</code> | The name of the package |
-| params.versionName | <code>string</code> | The version of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-| vcs | <code>module</code> | An instance of the `vcs.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | DELETE |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName |
-
-<a name="module_get_package_handler"></a>
-
-## get\_package\_handler
-Endpoint Handlers for every GET Request that relates to packages themselves
-
-
-* [get_package_handler](#module_get_package_handler)
-    * [~getPackages(params, db)](#module_get_package_handler..getPackages)
-    * [~getPackagesFeatured(db)](#module_get_package_handler..getPackagesFeatured)
-    * [~getPackagesSearch(params, db)](#module_get_package_handler..getPackagesSearch)
-    * [~getPackagesDetails(param, db)](#module_get_package_handler..getPackagesDetails)
-    * [~getPackagesStargazers(params, db)](#module_get_package_handler..getPackagesStargazers)
-    * [~getPackagesVersion(params, db)](#module_get_package_handler..getPackagesVersion)
-    * [~getPackagesVersionTarball(params, db)](#module_get_package_handler..getPackagesVersionTarball)
-
-<a name="module_get_package_handler..getPackages"></a>
-
-### get_package_handler~getPackages(params, db)
-Endpoint to return all packages to the user. Based on any filtering
-theyved applied via query parameters.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters for this endpoint. |
-| params.page | <code>integer</code> | The page to retreive |
-| params.sort | <code>string</code> | The method to sort by |
-| params.direction | <code>string</code> | The direction to sort with |
-| params.serviceType | <code>string</code> | The service type to display |
-| params.service | <code>string</code> | The service to display |
-| params.serviceVersion | <code>string</code> | The service version to show |
-| params.fileExtension | <code>string</code> | File extension to only show compatible grammar package's of. |
-| db | <code>module</code> | An instance of the database |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages |
-
-<a name="module_get_package_handler..getPackagesFeatured"></a>
-
-### get_package_handler~getPackagesFeatured(db)
-Allows the user to retrieve the featured packages, as package object shorts.
-This endpoint was originally undocumented. The decision to return 200 is based off similar endpoints.
-Additionally for the time being this list is created manually, the same method used
-on Atom.io for now. Although there are plans to have this become automatic later on.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-**See**
-
-- [Source Code](https://github.com/atom/apm/blob/master/src/featured.coffee)
-- [Discussion](https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23)
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/featured |
-
-<a name="module_get_package_handler..getPackagesSearch"></a>
-
-### get_package_handler~getPackagesSearch(params, db)
-Allows user to search through all packages. Using their specified
-query parameter.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-**Todo**
-
-- [ ] Note: This **has** been migrated to the new DB, and is fully functional.
-The TODO here is to eventually move this to use the custom built in LCS search,
-rather than simple search.
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.page | <code>integer</code> | The page to retreive |
-| params.sort | <code>string</code> | The method to sort by |
-| params.direction | <code>string</code> | The direction to sort with |
-| params.query | <code>string</code> | The search query |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/search |
-
-<a name="module_get_package_handler..getPackagesDetails"></a>
-
-### get_package_handler~getPackagesDetails(param, db)
-Allows the user to request a single package object full, depending
-on the package included in the path parameter.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| param | <code>object</code> | The query parameters |
-| param.engine | <code>string</code> | The version of Pulsar to check compatibility with |
-| param.name | <code>string</code> | The package name |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName |
-
-<a name="module_get_package_handler..getPackagesStargazers"></a>
-
-### get_package_handler~getPackagesStargazers(params, db)
-Endpoint returns the array of `star_gazers` from a specified package.
-Taking only the package wanted, and returning it directly.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.packageName | <code>string</code> | The name of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName/stargazers |
-
-<a name="module_get_package_handler..getPackagesVersion"></a>
-
-### get_package_handler~getPackagesVersion(params, db)
-Used to retrieve a specific version from a package.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.packageName | <code>string</code> | The Package name we care about |
-| params.versionName | <code>string</code> | The package version we care about |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName |
-
-<a name="module_get_package_handler..getPackagesVersionTarball"></a>
-
-### get_package_handler~getPackagesVersionTarball(params, db)
-Allows the user to get the tarball for a specific package version.
-Which should initiate a download of said tarball on their end.
-
-**Kind**: inner method of [<code>get\_package\_handler</code>](#module_get_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.packageName | <code>string</code> | The name of the package |
-| params.versionName | <code>string</code> | The version of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions/:versionName/tarball |
-
-<a name="module_oauth_handler"></a>
-
-## oauth\_handler
-Endpoint Handlers for Authentication URLs
-
-**Implements**: <code>config</code>, <code>common\_handler</code>  
-
-* [oauth_handler](#module_oauth_handler)
-    * [~getLogin(req, res)](#module_oauth_handler..getLogin)
-    * [~getOauth(req, res)](#module_oauth_handler..getOauth)
-    * [~getPat(req, res)](#module_oauth_handler..getPat)
-
-<a name="module_oauth_handler..getLogin"></a>
-
-### oauth_handler~getLogin(req, res)
-Endpoint used to redirect users to login. Users will reach GitHub OAuth Page
-based on the backends client id. A key from crypto module is retrieved and used as
-state parameter for GH authentication.
-
-**Kind**: inner method of [<code>oauth\_handler</code>](#module_oauth_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/lgoin |
-
-<a name="module_oauth_handler..getOauth"></a>
-
-### oauth_handler~getOauth(req, res)
-Endpoint intended to use as the actual return from GitHub to login.
-
-**Kind**: inner method of [<code>oauth\_handler</code>](#module_oauth_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/oath |
-
-<a name="module_oauth_handler..getPat"></a>
-
-### oauth_handler~getPat(req, res)
-Endpoint intended to Allow users to sign up with a Pat Token.
-
-**Kind**: inner method of [<code>oauth\_handler</code>](#module_oauth_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-| res | <code>object</code> | The `Response` object inherited from the Express endpoint. |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/pat |
-
-<a name="module_package_handler"></a>
-
-## package\_handler
-Exports individual files handling endpoints relating to Packages
-
-<a name="module_post_package_handler"></a>
-
-## post\_package\_handler
-Endpoint Handlers for every POST Request that relates to packages themselves
-
-
-* [post_package_handler](#module_post_package_handler)
-    * [~postPackages(params, db, auth, vcs)](#module_post_package_handler..postPackages) ⇒ <code>string</code>
-    * [~postPackagesStar(params, db, auth)](#module_post_package_handler..postPackagesStar)
-    * [~postPackagesVersion(params, db, auth, vcs)](#module_post_package_handler..postPackagesVersion)
-
-<a name="module_post_package_handler..postPackages"></a>
-
-### post_package_handler~postPackages(params, db, auth, vcs) ⇒ <code>string</code>
-This endpoint is used to publish a new package to the backend server.
-Taking the repo, and your authentication for it, determines if it can be published,
-then goes about doing so.
-
-**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
-**Returns**: <code>string</code> - JSON object of new data pushed into the database, but stripped of
-sensitive informations like primary and foreign keys.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.repository | <code>string</code> | The `owner/repo` combo of the remote package |
-| params.auth | <code>string</code> | The API key of the user |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-| vcs | <code>module</code> | An instance of the `vcs.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | POST |
-| <code>http\_endpoint</code> | /api/packages |
-
-<a name="module_post_package_handler..postPackagesStar"></a>
-
-### post_package_handler~postPackagesStar(params, db, auth)
-Used to submit a new star to a package from the authenticated user.
-
-**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.auth | <code>string</code> | The API key of the user |
-| params.packageName | <code>string</code> | The name of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | POST |
-| <code>http\_endpoint</code> | /api/packages/:packageName/star |
-
-<a name="module_post_package_handler..postPackagesVersion"></a>
-
-### post_package_handler~postPackagesVersion(params, db, auth, vcs)
-Allows a new version of a package to be published. But also can allow
-a user to rename their application during this process.
-
-**Kind**: inner method of [<code>post\_package\_handler</code>](#module_post_package_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.rename | <code>boolean</code> | Whether or not to preform a rename |
-| params.auth | <code>string</code> | The API key of the user |
-| params.packageName | <code>string</code> | The name of the package |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-| vcs | <code>module</code> | An instance of the `vcs.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | POST |
-| <code>http\_endpoint</code> | /api/packages/:packageName/versions |
-
-<a name="module_star_handler"></a>
-
-## star\_handler
-Handler for any endpoints whose slug after `/api/` is `star`.
-
-<a name="module_star_handler..getStars"></a>
-
-### star_handler~getStars(param, db, auth)
-Endpoint for `GET /api/stars`. Whose endgoal is to return an array of all packages
-the authenticated user has stared.
-
-**Kind**: inner method of [<code>star\_handler</code>](#module_star_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| param | <code>object</code> | The supported query parameters. |
-| param.auth | <code>string</code> | The authentication API token |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/stars |
-
-<a name="module_theme_handler"></a>
-
-## theme\_handler
-Endpoint Handlers relating to themes only.
-
-**Implements**: <code>database</code>, <code>utils</code>, <code>logger</code>, <code>config</code>  
-
-* [theme_handler](#module_theme_handler)
-    * [~getThemeFeatured(db)](#module_theme_handler..getThemeFeatured)
-    * [~getThemes(params, db)](#module_theme_handler..getThemes) ⇒ <code>object</code>
-    * [~getThemesSearch(params, db)](#module_theme_handler..getThemesSearch)
-
-<a name="module_theme_handler..getThemeFeatured"></a>
-
-### theme_handler~getThemeFeatured(db)
-Used to retrieve all Featured Packages that are Themes. Originally an undocumented
-endpoint. Returns a 200 response based on other similar responses.
-Additionally for the time being this list is created manually, the same method used
-on Atom.io for now. Although there are plans to have this become automatic later on.
-
-**Kind**: inner method of [<code>theme\_handler</code>](#module_theme_handler)  
-**See**
-
-- [Source Code](https://github.com/atom/apm/blob/master/src/featured.coffee)
-- [Discussion](https://github.com/confused-Techie/atom-community-server-backend-JS/issues/23)
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/themes/featured |
-
-<a name="module_theme_handler..getThemes"></a>
-
-### theme_handler~getThemes(params, db) ⇒ <code>object</code>
-Endpoint to return all Themes to the user. Based on any filtering
-they'ved applied via query parameters.
-
-**Kind**: inner method of [<code>theme\_handler</code>](#module_theme_handler)  
-**Returns**: <code>object</code> - An HTTP ServerStatus.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters that can operate on this endpoint. |
-| params.page | <code>integer</code> | The page of results to retreive. |
-| params.sort | <code>string</code> | The sort method to use. |
-| params.direction | <code>string</code> | The direction to sort results. |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/themes |
-
-<a name="module_theme_handler..getThemesSearch"></a>
-
-### theme_handler~getThemesSearch(params, db)
-Endpoint to Search from all themes on the registry.
-
-**Kind**: inner method of [<code>theme\_handler</code>](#module_theme_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters from the initial request. |
-| params.page | <code>integer</code> | The page number to return |
-| params.sort | <code>string</code> | The method to use to sort |
-| params.direction | <code>string</code> | The direction to sort |
-| params.query | <code>string</code> | The search query to use |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/themes/search |
-
-<a name="module_update_handler"></a>
-
-## update\_handler
-Endpoint Handlers relating to updating the editor.
-
-**Implments**: <code>command\_handler</code>  
-<a name="module_update_handler..getUpdates"></a>
-
-### update_handler~getUpdates()
-Used to retrieve new editor update information.
-
-**Kind**: inner method of [<code>update\_handler</code>](#module_update_handler)  
-**Todo**
-
-- [ ] This function has never been implemented on this system. Since there is currently no
-update methodology.
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/updates |
-
-<a name="module_user_handler"></a>
-
-## user\_handler
-Handler for endpoints whose slug after `/api/` is `user`.
-
-
-* [user_handler](#module_user_handler)
-    * [~getLoginStars(params, db)](#module_user_handler..getLoginStars)
-    * [~getAuthUser(params, db, auth)](#module_user_handler..getAuthUser)
-    * [~getUser(params, db)](#module_user_handler..getUser)
-
-<a name="module_user_handler..getLoginStars"></a>
-
-### user_handler~getLoginStars(params, db)
-Endpoint that returns another users Star Gazers List.
-
-**Kind**: inner method of [<code>user\_handler</code>](#module_user_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters for the request |
-| params.login | <code>string</code> | The username |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/users/:login/stars |
-
-<a name="module_user_handler..getAuthUser"></a>
-
-### user_handler~getAuthUser(params, db, auth)
-Endpoint that returns the currently authenticated Users User Details
-
-**Kind**: inner method of [<code>user\_handler</code>](#module_user_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters for this endpoint |
-| params.auth | <code>string</code> | The API Key |
-| db | <code>module</code> | An instance of the `database.js` module |
-| auth | <code>module</code> | An instance of the `auth.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/users |
-
-<a name="module_user_handler..getUser"></a>
-
-### user_handler~getUser(params, db)
-Endpoint that returns the user account details of another user. Including all packages
-published.
-
-**Kind**: inner method of [<code>user\_handler</code>](#module_user_handler)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>object</code> | The query parameters |
-| params.login | <code>string</code> | The Username we want to look for |
-| db | <code>module</code> | An instance of the `database.js` module |
-
-**Properties**
-
-| Type | Description |
-| --- | --- |
-| <code>http\_method</code> | GET |
-| <code>http\_endpoint</code> | /api/users/:login |
+## query
+Home to parsing all query parameters from the `Request` object. Ensuring a valid response.
+While most values will just return their default there are some expecptions:
+engine(): Returns false if not defined, to allow a fast way to determine if results need to be pruned.
 
 <a name="verifyAuth"></a>
 
@@ -2701,6 +1738,238 @@ authenticated, and execute whatever action it is they wanted to.
 **Kind**: global function  
 **Returns**: <code>object</code> - A server status object.  
 **Params**: <code>string</code> token - The token the user provided.  
+<a name="auth"></a>
+
+## auth(req) ⇒ <code>string</code>
+Retrieves Authorization Headers from Request, and Checks for Undefined.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Returning a valid Authorization Token, or '' if invalid/not found.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="direction"></a>
+
+## direction(req) ⇒ <code>string</code>
+Parser for either 'direction' or 'order' query parameter, prioritizing
+'direction'.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - The valid direction value from the 'direction' or 'order'
+query parameter.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="engine"></a>
+
+## engine(semver) ⇒ <code>string</code> \| <code>boolean</code>
+Parses the 'engine' query parameter to ensure it's valid, otherwise returning false.
+
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns the valid 'engine' specified, or if none, returns false.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| semver | <code>string</code> | The engine string. |
+
+<a name="fileExtension"></a>
+
+## fileExtension(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the file extension being requested.
+
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistant. Returns the service string otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="login"></a>
+
+## login(req) ⇒ <code>string</code>
+Returns the User from the URL Path, otherwise ''
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Returns a valid specified user or ''.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="user"></a>
+
+## user(req) ⇒ <code>string</code> \| <code>boolean</code>
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid or
+  nonexistent. Returns the user name otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express   endpoint. |
+
+<a name="packageName"></a>
+
+## packageName(req) ⇒ <code>string</code>
+This function will convert a user provided package name into a safe format.
+It ensures the name is converted to lower case. As is the requirement of all package names.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Returns the package name in a safe format that can be worked with further.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` Object inherited from the Express endpoint. |
+
+<a name="page"></a>
+
+## page(req) ⇒ <code>number</code>
+Parser of the Page query parameter. Defaulting to 1.
+
+**Kind**: global function  
+**Returns**: <code>number</code> - Returns the valid page provided in the query parameter or 1, as the default.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="query"></a>
+
+## query(req) ⇒ <code>string</code>
+Checks the 'q' query parameter, trunicating it at 50 characters, and checking simplisticly that
+it is not a malicious request. Returning "" if an unsafe or invalid query is passed.
+
+**Kind**: global function  
+**Implements**: [<code>pathTraversalAttempt</code>](#pathTraversalAttempt)  
+**Returns**: <code>string</code> - A valid search string derived from 'q' query parameter. Or '' if invalid.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="rename"></a>
+
+## rename(req) ⇒ <code>boolean</code>
+Since this is intended to be returning a boolean value, returns false
+if invalid, otherwise returns true. Checking for mixed captilization.
+
+**Kind**: global function  
+**Returns**: <code>boolean</code> - Returns false if invalid, or otherwise returns the boolean value of the string.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="repo"></a>
+
+## repo(req) ⇒ <code>string</code>
+Parses the 'repository' query parameter, returning it if valid, otherwise returning ''.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Returning the valid 'repository' query parameter, or '' if invalid.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="service"></a>
+
+## service(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the service being requested.
+
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid or
+nonexistent. Returns the service string otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="serviceType"></a>
+
+## serviceType(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the service type being requested.
+
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistent. Returns `providedServices` if the query is `provided` or returns
+`consumedServices` if the query is `consumed`  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="serviceVersion"></a>
+
+## serviceVersion(req) ⇒ <code>string</code> \| <code>boolean</code>
+Returns the version of whatever service is being requested.
+
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid, or
+nonexistant. Returns the version as a string otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express Endpoint. |
+
+<a name="sort"></a>
+
+## sort(req, [def]) ⇒ <code>string</code>
+Parser for the 'sort' query parameter. Defaulting usually to downloads.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Either the user provided 'sort' query parameter, or the default specified.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| req | <code>object</code> |  | The `Request` object inherited from the Express endpoint. |
+| [def] | <code>string</code> | <code>&quot;\&quot;downloads\&quot;&quot;</code> | The default provided for sort. Allowing The search function to use "relevance" instead of the default "downloads". |
+
+<a name="tag"></a>
+
+## tag(req) ⇒ <code>string</code>
+Parses the 'tag' query parameter, returning it if valid, otherwise returning ''.
+
+**Kind**: global function  
+**Returns**: <code>string</code> - Returns a valid 'tag' query parameter. Or '' if invalid.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
+
+<a name="stringValidation"></a>
+
+## stringValidation(value) ⇒ <code>string</code> \| <code>boolean</code>
+Provides a generic Query Utility that validates if a provided value
+is a string, as well as trimming it to the safe max length of query strings,
+while additionally passing it through the Path Traversal Detection function.
+
+**Kind**: global function  
+**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if any check fails, otherwise returns
+the valid string.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| value | <code>string</code> | The value to check |
+
+<a name="pathTraversalAttempt"></a>
+
+## pathTraversalAttempt(data) ⇒ <code>boolean</code>
+Completes some short checks to determine if the data contains a malicious
+path traversal attempt. Returning a boolean indicating if a path traversal attempt
+exists in the data.
+
+**Kind**: global function  
+**Returns**: <code>boolean</code> - True indicates a path traversal attempt was found. False otherwise.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| data | <code>string</code> | The data to check for possible malicious data. |
+
 <a name="ServerStatusObject"></a>
 
 ## ServerStatusObject : <code>object</code>

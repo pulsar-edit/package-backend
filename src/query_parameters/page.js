@@ -12,12 +12,12 @@ module.exports = {
     schema: {
       type: "number",
       minimum: 1,
-      default: 1
+      default: 1,
     },
     example: 1,
     allowEmptyValue: true,
     required: false,
-    description: "The page of available results to return."
+    description: "The page of available results to return.",
   },
   logic: (req) => {
     const def = 1;
@@ -35,5 +35,5 @@ module.exports = {
       default:
         return def;
     }
-  }
+  },
 };

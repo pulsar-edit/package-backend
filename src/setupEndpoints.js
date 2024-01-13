@@ -11,7 +11,8 @@ const app = express();
 const genericLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   // Limit each IP per window, 0 disables rate limit
-  max: process.env.PULSAR_STATUS === "dev" ? 0 : context.config.RATE_LIMIT_GENERIC,
+  max:
+    process.env.PULSAR_STATUS === "dev" ? 0 : context.config.RATE_LIMIT_GENERIC,
   standardHeaders: true, // Return rate limit info in headers
   legacyHeaders: true, // Legacy rate limit info in headers
   store: new MemoryStore(), // use default memory store
@@ -20,12 +21,12 @@ const genericLimit = rateLimit({
   handler: (request, response, next, options) => {
     response.status(options.statusCode).json({ message: options.message });
     context.logger.httpLog(request, response);
-  }
+  },
 });
 
 const authLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-   // Limit each IP per window, 0 disables rate limit.
+  // Limit each IP per window, 0 disables rate limit.
   max: process.env.PULSAR_STATUS === "dev" ? 0 : context.config.RATE_LIMIT_AUTH,
   standardHeaders: true, // Return rate limit info on headers
   legacyHeaders: true, // Legacy rate limit info in headers
@@ -35,7 +36,7 @@ const authLimit = rateLimit({
   handler: (request, response, next, options) => {
     response.status(options.statusCode).json({ message: options.message });
     context.logger.httpLog(request, response);
-  }
+  },
 });
 
 // Set express defaults
@@ -44,7 +45,7 @@ app.set("trust proxy", true);
 
 app.use("/swagger-ui", express.static("docs/swagger"));
 
-const endpointHandler = async function(node, req, res) {
+const endpointHandler = async function (node, req, res) {
   let params = {};
 
   for (const param in node.params) {
@@ -62,17 +63,18 @@ const endpointHandler = async function(node, req, res) {
       await node.logic(req, res, context);
       // If it's a raw endpoint, they must handle all other steps manually
       return;
-
     } else {
       obj = await node.logic(params, context);
     }
-  } catch(err) {
+  } catch (err) {
     // The main logic request has failed. We will generate our own return obj,
     // and exit.
     obj = new context.sso();
-    obj.notOk().addContent(err)
-        .addMessage("An unexpected error has occurred.")
-        .addShort("server_error");
+    obj
+      .notOk()
+      .addContent(err)
+      .addMessage("An unexpected error has occurred.")
+      .addShort("server_error");
   }
 
   if (typeof node.postLogic === "function") {
@@ -96,7 +98,6 @@ const pathOptions = [];
 
 for (const node of endpoints) {
   for (const path of node.endpoint.paths) {
-
     let limiter = genericLimit;
 
     if (node.endpoint.rateLimit === "auth") {
@@ -115,7 +116,7 @@ for (const node of endpoints) {
       pathOptions.push(path);
     }
 
-    switch(node.endpoint.method) {
+    switch (node.endpoint.method) {
       case "GET":
         app.get(path, limiter, async (req, res) => {
           await endpointHandler(node, req, res);
@@ -134,7 +135,6 @@ for (const node of endpoints) {
       default:
         console.log(`Unsupported method: ${node.endpoint.method} for ${path}`);
     }
-
   }
 }
 

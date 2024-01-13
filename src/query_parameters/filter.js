@@ -4,20 +4,18 @@ module.exports = {
     in: "query",
     schema: {
       type: "string",
-      enum: [
-        "package",
-        "theme"
-      ],
-      default: "pacakge"
+      enum: ["package", "theme"],
+      default: "pacakge",
     },
     required: false,
     allowEmptyValue: false,
     example: "package",
-    description: "Deprecated method to display packages or themes. Use `/api/themes/search` or `/api/packages/search` instead."
+    description:
+      "Deprecated method to display packages or themes. Use `/api/themes/search` or `/api/packages/search` instead.",
   },
   logic: (req) => {
     const def = "package";
-    const valid = [ "theme", "package" ];
+    const valid = ["theme", "package"];
 
     const prov = req.query.filter;
 
@@ -30,5 +28,5 @@ module.exports = {
     }
 
     return prov;
-  }
+  },
 };

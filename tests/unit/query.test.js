@@ -180,7 +180,7 @@ describe("Verify fileExtension Returns", () => {
 
 const ownerCases = [
   [{ query: { owner: "savetheclocktower" } }, "savetheclocktower"],
-  [{ query: { owner: '' } }, false],
+  [{ query: { owner: "" } }, false],
   [{ query: { owner: 101 } }, false],
   [{ query: {} }, false],
 ];

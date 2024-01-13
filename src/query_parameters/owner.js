@@ -11,28 +11,28 @@ const utils = require("./utils.js");
 module.exports = {
   schema: {
     name: "multiSchema", // Special name to indicate multi support
-    "owner": {
+    owner: {
       name: "owner",
       in: "query",
       schema: {
-        type: "string"
+        type: "string",
       },
       example: "pulsar-edit",
       allowEmptyValue: false,
       required: false,
-      description: "Owner to filter results by."
+      description: "Owner to filter results by.",
     },
-    "ownerName": {
+    ownerName: {
       name: "ownerName",
       in: "path",
       schema: {
-        type: "string"
+        type: "string",
       },
       example: "pulsar-edit",
       allowEmptyValue: false,
       required: true,
-      description: "Owner of packages to retreive."
-    }
+      description: "Owner of packages to retreive.",
+    },
   },
   logic: (req) => {
     // Owner accepts the owner as an argument for things like search,
@@ -46,5 +46,5 @@ module.exports = {
       return false;
     }
     return prov;
-  }
+  },
 };

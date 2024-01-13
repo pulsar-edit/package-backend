@@ -13,9 +13,7 @@ module.exports = {
     "node/no-unpublished-require": [
       "error",
       {
-        allowModules: [
-          "supertest",
-        ],
+        allowModules: ["supertest"],
       },
     ],
     "no-process-exit": "off",

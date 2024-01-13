@@ -11,11 +11,11 @@ module.exports = {
     name: "serviceVersion",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "0.0.1",
     allowEmptyValue: true,
-    description: "Filter by a specific version of the 'service'"
+    description: "Filter by a specific version of the 'service'",
   },
   logic: (req) => {
     const semver = req.query.serviceVersion;
@@ -28,5 +28,5 @@ module.exports = {
     } catch (err) {
       return false;
     }
-  }
+  },
 };

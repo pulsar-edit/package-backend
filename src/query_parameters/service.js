@@ -12,13 +12,13 @@ module.exports = {
     name: "service",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "autocomplete.watchEditor",
     allowEmptyValue: true,
-    description: "The service of which to filter packages by"
+    description: "The service of which to filter packages by",
   },
   logic: (req) => {
     return utils.stringValidation(req.query.service);
-  }
+  },
 };

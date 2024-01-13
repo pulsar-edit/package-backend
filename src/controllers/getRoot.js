@@ -4,17 +4,18 @@
 
 module.exports = {
   docs: {
-    summary: "Non-Essential endpoint to return status message, and link to Swagger Instance."
+    summary:
+      "Non-Essential endpoint to return status message, and link to Swagger Instance.",
   },
   endpoint: {
     method: "GET",
-    paths: [ "/" ],
+    paths: ["/"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {},
   async logic(params, context) {
@@ -27,5 +28,5 @@ module.exports = {
     const sso = new context.ssoHTML();
 
     return sso.isOk().addContent(str);
-  }
+  },
 };

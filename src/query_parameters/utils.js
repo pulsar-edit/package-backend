@@ -46,4 +46,4 @@ function pathTraversalAttempt(data) {
 module.exports = {
   stringValidation,
   pathTraversalAttempt,
-}
+};

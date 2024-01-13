@@ -13,14 +13,12 @@ module.exports = {
     in: "query",
     schema: {
       type: "string",
-      enum: [
-        "consumed",
-        "provided"
-      ]
+      enum: ["consumed", "provided"],
     },
     example: "consumed",
     allowEmptyValue: true,
-    deescription: "Choos whether to display 'consumer' or 'providers' of the specified service."
+    deescription:
+      "Choos whether to display 'consumer' or 'providers' of the specified service.",
   },
   logic: (req) => {
     // TODO determine if there's a way to indicate this is a required
@@ -40,5 +38,5 @@ module.exports = {
     }
 
     return false; // fallback
-  }
+  },
 };

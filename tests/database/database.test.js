@@ -477,7 +477,7 @@ describe("Package Lifecycle Tests", () => {
       name: "language-css",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
@@ -487,9 +487,9 @@ describe("Package Lifecycle Tests", () => {
       versions: {
         "1.0.0": {
           dist: { tarball: "download-url", sha: "1234" },
-          name: "language-css"
-        }
-      }
+          name: "language-css",
+        },
+      },
     });
     const starPack = await database.updateIncrementStar(
       getUserID.content,

@@ -13,11 +13,11 @@ module.exports = {
     name: "q",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "generic-lsp",
     required: true,
-    description: "Search Query"
+    description: "Search Query",
   },
   logic: (req) => {
     const maxLength = 50; // While package.json names according to NPM can be up to 214 characters,
@@ -31,6 +31,8 @@ module.exports = {
 
     // If there is a path traversal attach detected return empty query.
     // Additionally do not allow strings longer than `maxLength`
-    return utils.pathTraversalAttempt(prov) ? "" : prov.slice(0, maxLength).trim();
-  }
+    return utils.pathTraversalAttempt(prov)
+      ? ""
+      : prov.slice(0, maxLength).trim();
+  },
 };

@@ -39,7 +39,9 @@ async function getGcpContent(file) {
     const fs = require("fs");
     const path = require("path");
 
-    const contents = fs.readFileSync(path.resolve(`./docs/resources/${file}`), { encoding: "utf8" });
+    const contents = fs.readFileSync(path.resolve(`./docs/resources/${file}`), {
+      encoding: "utf8",
+    });
     return contents;
   } else {
     // This is a production request
@@ -64,9 +66,7 @@ async function getGcpContent(file) {
  * @returns {Array} Parsed JSON Array of all Banned Packages.
  */
 async function getBanList() {
-
   const getNew = async function () {
-
     try {
       const contents = await getGcpContent("name_ban_list.json");
 
@@ -74,9 +74,10 @@ async function getBanList() {
       cachedBanlist.last_validate = Date.now();
       return new sso().isOk().addContent(cachedBanlist.data);
     } catch (err) {
-      return new sso().notOk()
-                      .addShort("server_error")
-                      .addCalls("getGcpContent", err);
+      return new sso()
+        .notOk()
+        .addShort("server_error")
+        .addCalls("getGcpContent", err);
     }
   };
 
@@ -102,20 +103,18 @@ async function getBanList() {
  * @returns {Array} Parsed JSON Array of all Featured Packages.
  */
 async function getFeaturedPackages() {
-
   const getNew = async function () {
-
     try {
       const contents = await getGcpContent("featured_packages.json");
 
       cachedFeaturedlist = new CacheObject(JSON.parse(contents));
       cachedFeaturedlist.last_validate = Date.now();
-      return new sso().isOk()
-                      .addContent(cachedFeaturedlist.data);
+      return new sso().isOk().addContent(cachedFeaturedlist.data);
     } catch (err) {
-      return new sso().notOk()
-                      .addShort("server_error")
-                      .addCalls("getGcpContent", err);
+      return new sso()
+        .notOk()
+        .addShort("server_error")
+        .addCalls("getGcpContent", err);
     }
   };
 
@@ -126,8 +125,7 @@ async function getFeaturedPackages() {
 
   if (!cachedFeaturedlist.Expired) {
     logger.generic(5, "Ban List Cache NOT Expired.");
-    return new sso().isOk()
-                    .addContent(cachedFeaturedlist.data);
+    return new sso().isOk().addContent(cachedFeaturedlist.data);
   }
 
   logger.generic(5, "Ban List Cache IS Expired.");
@@ -141,9 +139,7 @@ async function getFeaturedPackages() {
  * @returns {Array} JSON Parsed Array of Featured Theme Names.
  */
 async function getFeaturedThemes() {
-
   const getNew = async function () {
-
     try {
       const contents = await getGcpContent("featured_themes.json");
 
@@ -151,9 +147,10 @@ async function getFeaturedThemes() {
       cachedThemelist.last_validate = Date.now();
       return new sso().isOk().addContent(cachedThemelist.data);
     } catch (err) {
-      return new sso().notOk()
-                      .addShort("server_error")
-                      .addCalls("getGcpContent", err);
+      return new sso()
+        .notOk()
+        .addShort("server_error")
+        .addCalls("getGcpContent", err);
     }
   };
 

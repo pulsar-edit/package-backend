@@ -27,33 +27,33 @@ describe("Behaves as expected", () => {
       name: "x-terminal-reloaded",
       repository: {
         url: "https://github.com/Spiker985/x-terminal-reloaded",
-        type: "git"
+        type: "git",
       },
       owner: "Spiker985",
       creation_method: "Test Package",
       releases: {
-        latest: "1.1.0"
+        latest: "1.1.0",
       },
       readme: "This is a readme!",
       metadata: {
-        name: "atom-material-ui"
+        name: "atom-material-ui",
       },
       versions: {
         "1.1.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "x-terminal-reloaded"
+          name: "x-terminal-reloaded",
         },
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "x-terminal-reloaded"
-        }
-      }
+          name: "x-terminal-reloaded",
+        },
+      },
     });
 
     const sso = await endpoint.logic({}, context);

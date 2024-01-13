@@ -4,29 +4,38 @@
 
 module.exports = {
   docs: {
-    summary: "Creates a new package version."
+    summary: "Creates a new package version.",
   },
   endpoint: {
     method: "POST",
     paths: [
       "/api/packages/:packageName/versions",
-      "/api/themes/:packageName/versions"
+      "/api/themes/:packageName/versions",
     ],
     rateLimit: "auth",
     successStatus: 201,
     options: {
       Allow: "POST",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    rename: (context, req) => { return context.query.rename(req); },
-    auth: (context, req) => { return context.query.auth(req); },
-    packageName: (context, req) => { return context.query.packageName(req); }
+    rename: (context, req) => {
+      return context.query.rename(req);
+    },
+    auth: (context, req) => {
+      return context.query.auth(req);
+    },
+    packageName: (context, req) => {
+      return context.query.packageName(req);
+    },
   },
   async postReturnHTTP(req, res, context, obj) {
     // We use postReturnHTTP to ensure the user doesn't wait on these other actions
-    await context.webhook.alertPublishVersion(obj.webhook.pack, obj.webhook.user);
+    await context.webhook.alertPublishVersion(
+      obj.webhook.pack,
+      obj.webhook.user
+    );
 
     // Now to call for feature detection
     let features = await context.vcs.featureDetection(
@@ -75,10 +84,14 @@ module.exports = {
       // TODO LOG
       const sso = new context.sso();
 
-      return sso.notOk().addShort("unauthorized")
-                        .addContent(user)
-                        .addCalls("auth.verifyAuth", user)
-                        .addMessage("User Authentication Failed when attempting to publish package version!");
+      return sso
+        .notOk()
+        .addShort("unauthorized")
+        .addContent(user)
+        .addCalls("auth.verifyAuth", user)
+        .addMessage(
+          "User Authentication Failed when attempting to publish package version!"
+        );
     }
 
     context.logger.generic(
@@ -90,33 +103,48 @@ module.exports = {
     // packages new name. Which means we have to check if they have ownership AFTER
     // we collect it's data.
 
-    const packExists = await context.database.getPackageByName(params.packageName, true);
+    const packExists = await context.database.getPackageByName(
+      params.packageName,
+      true
+    );
 
     if (!packExists.ok) {
       // TODO LOG
       const sso = new context.sso();
 
-      return sso.notOk().addShort("not_found")
-                        .addContent(packExists)
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.getPackageByName", packExists)
-                        .addMessage("The server was unable to locate your package when publishing a new version.");
+      return sso
+        .notOk()
+        .addShort("not_found")
+        .addContent(packExists)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getPackageByName", packExists)
+        .addMessage(
+          "The server was unable to locate your package when publishing a new version."
+        );
     }
 
     // Get `owner/repo` string format from package.
-    let ownerRepo = context.utils.getOwnerRepoFromPackage(packExists.content.data);
+    let ownerRepo = context.utils.getOwnerRepoFromPackage(
+      packExists.content.data
+    );
 
     // Using our new VCS Service
     // TODO: The "git" service shouldn't always be hardcoded.
-    let packMetadata = await context.vcs.newVersionData(user.content, ownerRepo, "git");
+    let packMetadata = await context.vcs.newVersionData(
+      user.content,
+      ownerRepo,
+      "git"
+    );
 
     if (!packMetadata.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packMetadata)
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.getPackageByName", packExists)
-                        .addCalls("vcs.newVersionData", packMetadata);
+      return sso
+        .notOk()
+        .addContent(packMetadata)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getPackageByName", packExists)
+        .addCalls("vcs.newVersionData", packMetadata);
     }
 
     const newName = packMetadata.content.name;
@@ -125,11 +153,15 @@ module.exports = {
     if (newName !== currentName && !params.rename) {
       const sso = new context.sso();
 
-      return sso.notOk().addShort("bad_repo")
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.getPackageByName", packExists)
-                        .addCalls("vcs.newVersionData", packMetadata)
-                        .addMessage("Package name doesn't match local name, with rename false.");
+      return sso
+        .notOk()
+        .addShort("bad_repo")
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getPackageByName", packExists)
+        .addCalls("vcs.newVersionData", packMetadata)
+        .addMessage(
+          "Package name doesn't match local name, with rename false."
+        );
     }
 
     // Else we will continue, and trust the name provided from the package as being accurate.
@@ -138,18 +170,23 @@ module.exports = {
     // By passing `packMetadata` explicitely, it ensures that data we use to check
     // ownership is fresh, allowing for things like a package rename.
 
-    const gitowner = await context.vcs.ownership(user.content, packMetadata.content);
+    const gitowner = await context.vcs.ownership(
+      user.content,
+      packMetadata.content
+    );
 
     if (!gitowner.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addShort("unauthorized")
-                        .addContent(gitowner)
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.getPackageByName", packExists)
-                        .addCalls("vcs.newVersionData", packMetadata)
-                        .addCalls("vcs.ownership", gitowner)
-                        .addMessage("User failed git ownership check!");
+      return sso
+        .notOk()
+        .addShort("unauthorized")
+        .addContent(gitowner)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getPackageByName", packExists)
+        .addCalls("vcs.newVersionData", packMetadata)
+        .addCalls("vcs.ownership", gitowner)
+        .addMessage("User failed git ownership check!");
     }
 
     // Now the only thing left to do, is add this new version with the name from the package.
@@ -164,28 +201,34 @@ module.exports = {
       if (isBanned.ok) {
         const sso = new context.sso();
 
-        return sso.notOk().addShort("server_error")
-                          .addContent(isBanned)
-                          .addCalls("auth.verifyAuth", user)
-                          .addCalls("db.getPackageByName", packExists)
-                          .addCalls("vcs.newVersionData", packMetadata)
-                          .addCalls("vcs.ownership", gitowner)
-                          .addMessage("This package Name is Banned on the Pulsar Registry");
+        return sso
+          .notOk()
+          .addShort("server_error")
+          .addContent(isBanned)
+          .addCalls("auth.verifyAuth", user)
+          .addCalls("db.getPackageByName", packExists)
+          .addCalls("vcs.newVersionData", packMetadata)
+          .addCalls("vcs.ownership", gitowner)
+          .addMessage("This package Name is Banned on the Pulsar Registry");
       }
 
-      const isAvailable = await context.database.packageNameAvailability(newName);
+      const isAvailable = await context.database.packageNameAvailability(
+        newName
+      );
 
       if (isAvailable.ok) {
         const sso = new context.sso();
 
-        return sso.notOk().addShort("server_error")
-                          .addContent(isAvailable)
-                          .addCalls("auth.verifyAuth", user)
-                          .addCalls("db.getPackageByName", packExists)
-                          .addCalls("vcs.newVersionData", packMetadata)
-                          .addCalls("vcs.ownership", gitowner)
-                          .addCalls("db.packageNameAvailability", isAvailable)
-                          .addMessage(`The Package Name: ${newName} is not available.`);
+        return sso
+          .notOk()
+          .addShort("server_error")
+          .addContent(isAvailable)
+          .addCalls("auth.verifyAuth", user)
+          .addCalls("db.getPackageByName", packExists)
+          .addCalls("vcs.newVersionData", packMetadata)
+          .addCalls("vcs.ownership", gitowner)
+          .addCalls("db.packageNameAvailability", isAvailable)
+          .addMessage(`The Package Name: ${newName} is not available.`);
       }
     }
 
@@ -199,15 +242,17 @@ module.exports = {
       // TODO Use hardcoded message until we can verify messages from db are safe
       const sso = new context.sso();
 
-      return sso.notOk().addShort("server_error")
-                        .addContent(addVer)
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.getPackageByName", packExists)
-                        .addCalls("vcs.newVersionData", packMetadata)
-                        .addCalls("vcs.ownership", gitowner)
-                        .addCalls("db.packageNameAvailability", isAvailable)
-                        .addCalls("db.insertNewPackageVersion", addVer)
-                        .addMessage("Failed to add the new package version to the database.");
+      return sso
+        .notOk()
+        .addShort("server_error")
+        .addContent(addVer)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.getPackageByName", packExists)
+        .addCalls("vcs.newVersionData", packMetadata)
+        .addCalls("vcs.ownership", gitowner)
+        .addCalls("db.packageNameAvailability", isAvailable)
+        .addCalls("db.insertNewPackageVersion", addVer)
+        .addMessage("Failed to add the new package version to the database.");
     }
 
     const sso = new context.sso();
@@ -215,15 +260,15 @@ module.exports = {
     // TODO the following reduces the good things an object builder gets us
     sso.webhook = {
       pack: packMetadata.content,
-      user: user.content
+      user: user.content,
     };
 
     sso.featureDetection = {
       user: user.content,
       service: "git", // TODO stop hardcoding git
-      ownerRepo: ownerRepo
+      ownerRepo: ownerRepo,
     };
 
     return sso.isOk().addContent(addVer.content);
-  }
+  },
 };

@@ -1,29 +1,31 @@
 /**
  * @module getUpdates
  */
- 
+
 module.exports = {
   docs: {
     summary: "List Pulsar Updates",
-    description: "Currently returns 'Not Implemented' as Squirrel AutoUpdate is not supported.",
+    description:
+      "Currently returns 'Not Implemented' as Squirrel AutoUpdate is not supported.",
     responses: [
       {
         200: {
-          description: "Atom update feed, following the format expected by Squirrel.",
-          content: {}
-        }
-      }
-    ]
+          description:
+            "Atom update feed, following the format expected by Squirrel.",
+          content: {},
+        },
+      },
+    ],
   },
   endpoint: {
     method: "GET",
-    paths: [ "/api/updates" ],
+    paths: ["/api/updates"],
     rateLimit: "generic",
     successStatus: 200,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {},
 
@@ -38,5 +40,5 @@ module.exports = {
     const sso = new context.sso();
 
     return sso.notOk().addShort("not_supported");
-  }
+  },
 };

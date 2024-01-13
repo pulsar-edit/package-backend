@@ -7,26 +7,27 @@ module.exports = {
     summary: "Unstar a package.",
     responses: {
       204: {
-        description: "An empty response, indicating success."
-      }
-    }
+        description: "An empty response, indicating success.",
+      },
+    },
   },
   endpoint: {
     method: "DELETE",
-    paths: [
-      "/api/packages/:packageName/star",
-      "/api/themes/:packageName/star"
-    ],
+    paths: ["/api/packages/:packageName/star", "/api/themes/:packageName/star"],
     rateLimit: "auth",
     successStatus: 204,
     options: {
       Allow: "DELETE, POST",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    auth: (context, req) => { return context.query.auth(req); },
-    packageName: (context, req) => { return context.query.packageName(req); }
+    auth: (context, req) => {
+      return context.query.auth(req);
+    },
+    packageName: (context, req) => {
+      return context.query.packageName(req);
+    },
   },
   async logic(params, context) {
     const user = await context.auth.verifyAuth(params.auth, context.database);
@@ -34,22 +35,26 @@ module.exports = {
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user)
-                        .addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
     }
 
-    const unstar = await context.database.updateDecrementStar(user.content, params.packageName);
+    const unstar = await context.database.updateDecrementStar(
+      user.content,
+      params.packageName
+    );
 
     if (!unstar.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(unstar)
-                        .addCalls("auth.verifyAuth", user)
-                        .addCalls("db.updateDecrementStar", unstar);
+      return sso
+        .notOk()
+        .addContent(unstar)
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("db.updateDecrementStar", unstar);
     }
 
     const sso = new context.sso();
 
     return sso.isOk().addContent(false);
-  }
+  },
 };

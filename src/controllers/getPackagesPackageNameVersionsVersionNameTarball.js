@@ -6,31 +6,36 @@ const { URL } = require("node:url");
 
 module.exports = {
   docs: {
-    summary: "Previously undocumented endpoint. Allows for installation of a package.",
+    summary:
+      "Previously undocumented endpoint. Allows for installation of a package.",
     responses: [
       {
         302: {
-          description: "Redirect to the GitHub tarball URL."
-        }
-      }
-    ]
+          description: "Redirect to the GitHub tarball URL.",
+        },
+      },
+    ],
   },
   endpoint: {
     method: "GET",
     paths: [
       "/api/packages/:packageName/versions/:versionName/tarball",
-      "/api/themes/:packageName/versions/:versionName/tarball"
+      "/api/themes/:packageName/versions/:versionName/tarball",
     ],
     rateLimit: "generic",
     successStatus: 302,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
-    packageName: (context, req) => { return context.query.packageName(req); },
-    versionName: (context, req) => { return context.query.engine(req.params.versionName); }
+    packageName: (context, req) => {
+      return context.query.packageName(req);
+    },
+    versionName: (context, req) => {
+      return context.query.engine(req.params.versionName);
+    },
   },
 
   /**
@@ -43,15 +48,16 @@ module.exports = {
    * @returns {sso}
    */
   async logic(params, context) {
-
     // First ensure our version is valid
     if (params.versionName === false) {
       // since query.engine gives false if invalid, we can check the truthiness
       // but returning early uses less compute, as a false version will never be found
       const sso = new context.sso();
 
-      return sso.notOk().addShort("not_found")
-                        .addMessage("The version provided is invalid.");
+      return sso
+        .notOk()
+        .addShort("not_found")
+        .addMessage("The version provided is invalid.");
     }
 
     const pack = await context.database.getPackageVersionByNameAndVersion(
@@ -62,16 +68,20 @@ module.exports = {
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(pack)
-                       .addCalls("db.getPackageVersionByNameAndVersion", pack);
+      return sso
+        .notOk()
+        .addContent(pack)
+        .addCalls("db.getPackageVersionByNameAndVersion", pack);
     }
 
-    const save = await context.database.updatePackageIncrementDownloadByName(params.packageName);
+    const save = await context.database.updatePackageIncrementDownloadByName(
+      params.packageName
+    );
 
     if (!save.ok) {
       context.logger.generic(3, "Failed to Update Downloads Count", {
         type: "object",
-        obj: save.content
+        obj: save.content,
       });
       // TODO We will probably want to revisit this after rewriting logging
       // We don't want to exit on failed update to download count, only log
@@ -95,29 +105,35 @@ module.exports = {
       );
       const sso = new context.sso();
 
-      return sso.notOk().addContent(err)
-                        .addShort("server_error")
-                        .addMessage(`The URL to download this package seems invalid: ${tarballURL}.`);
+      return sso
+        .notOk()
+        .addContent(err)
+        .addShort("server_error")
+        .addMessage(
+          `The URL to download this package seems invalid: ${tarballURL}.`
+        );
     }
 
     const allowedHostnames = [
       "codeload.github.com",
       "api.github.com",
       "github.com",
-      "raw.githubusercontent.com"
+      "raw.githubusercontent.com",
     ];
 
     if (
       !allowedHostnames.includes(hostname) &&
-        process.env.PULSAR_STATUS !== "dev"
+      process.env.PULSAR_STATUS !== "dev"
     ) {
       const sso = new context.sso();
 
-      return sso.notOk().addShort("server_error")
-                        .addMessage(`Invalid Domain for Download Redirect: ${hostname}`);
+      return sso
+        .notOk()
+        .addShort("server_error")
+        .addMessage(`Invalid Domain for Download Redirect: ${hostname}`);
     }
 
     const sso = new context.ssoRedirect();
     return sso.isOk().addContent(tarballURL);
-  }
+  },
 };

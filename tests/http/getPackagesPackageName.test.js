@@ -15,10 +15,13 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns 'not_found' when package doesn't exist", async () => {
-    const sso = await endpoint.logic({
-      engine: false,
-      packageName: "anything"
-    }, context);
+    const sso = await endpoint.logic(
+      {
+        engine: false,
+        packageName: "anything",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(false);
     expect(sso.content.short).toBe("not_found");
@@ -29,39 +32,42 @@ describe("Behaves as expected", () => {
       name: "get-package-test",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
-        latest: "1.1.0"
+        latest: "1.1.0",
       },
       readme: "This is a readme!",
       metadata: {
-        name: "get-package-test"
+        name: "get-package-test",
       },
       versions: {
         "1.1.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "get-package-test"
+          name: "get-package-test",
         },
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "get-package-test"
-        }
-      }
+          name: "get-package-test",
+        },
+      },
     });
 
-    const sso = await endpoint.logic({
-      engine: false,
-      packageName: "get-package-test"
-    }, context);
+    const sso = await endpoint.logic(
+      {
+        engine: false,
+        packageName: "get-package-test",
+      },
+      context
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content.name).toBe("get-package-test");
@@ -69,6 +75,4 @@ describe("Behaves as expected", () => {
     expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("get-package-test", true);
   });
-
-
 });

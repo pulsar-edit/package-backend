@@ -9,7 +9,7 @@ describe("POST /api/packages/:packageName/star", () => {
       return {
         ok: false,
         short: "unauthorized",
-        content: "Bad Auth Mock Return"
+        content: "Bad Auth Mock Return",
       };
     };
 
@@ -29,15 +29,18 @@ describe("POST /api/packages/:packageName/star", () => {
           id: 99999,
           node_id: "post-pkg-star-test-user-node-id",
           username: "post-pkg-star-test-user-node-id",
-          avatar: "https://roadtonowhere.com"
-        }
+          avatar: "https://roadtonowhere.com",
+        },
       };
     };
 
-    const sso = await endpoint.logic({
-      auth: "valid-token",
-      packageName: "no-exist"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        auth: "valid-token",
+        packageName: "no-exist",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(false);
     expect(sso.content.short).toBe("not_found");
@@ -48,12 +51,12 @@ describe("POST /api/packages/:packageName/star", () => {
       name: "post-packages-star-test",
       repository: {
         url: "https://github.com/confused-Techie/package-backend",
-        type: "git"
+        type: "git",
       },
       owner: "confused-Techie",
       creation_method: "Test Package",
       releases: {
-        latest: "1.0.0"
+        latest: "1.0.0",
       },
       readme: "This is a readme!",
       metadata: { name: "post-packages-star-test" },
@@ -61,14 +64,18 @@ describe("POST /api/packages/:packageName/star", () => {
         "1.0.0": {
           dist: {
             tarball: "download-url",
-            sha: "1234"
+            sha: "1234",
           },
-          name: "post-packages-star-test"
-        }
-      }
+          name: "post-packages-star-test",
+        },
+      },
     });
 
-    let addUser = await database.insertNewUser("post-pkg-star-test-user-node-id", "post-pkg-star-test-user-node-id", "https://roadtonowhere.com");
+    let addUser = await database.insertNewUser(
+      "post-pkg-star-test-user-node-id",
+      "post-pkg-star-test-user-node-id",
+      "https://roadtonowhere.com"
+    );
 
     expect(addUser.ok).toBe(true);
 
@@ -82,15 +89,18 @@ describe("POST /api/packages/:packageName/star", () => {
           id: addUser.content.id,
           node_id: addUser.content.node_id,
           username: addUser.content.username,
-          avatar: addUser.content.avatar
-        }
-      }
+          avatar: addUser.content.avatar,
+        },
+      };
     };
 
-    const sso = await endpoint.logic({
-      auth: "valid-token",
-      packageName: "post-packages-star-test"
-    }, localContext);
+    const sso = await endpoint.logic(
+      {
+        auth: "valid-token",
+        packageName: "post-packages-star-test",
+      },
+      localContext
+    );
 
     expect(sso.ok).toBe(true);
     expect(sso.content.name).toBe("post-packages-star-test");

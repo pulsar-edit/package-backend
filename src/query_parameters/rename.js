@@ -11,12 +11,12 @@ module.exports = {
     name: "rename",
     in: "query",
     schema: {
-      type: "string"
+      type: "string",
     },
     example: "new-package-name",
     allowEmptyValue: false,
     required: false,
-    description: "The new package name to rename to, if applicable."
+    description: "The new package name to rename to, if applicable.",
   },
   logic: (req) => {
     const prov = req.query.rename;
@@ -37,5 +37,5 @@ module.exports = {
     }
 
     return false;
-  }
+  },
 };
