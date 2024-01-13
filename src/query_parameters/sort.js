@@ -22,7 +22,8 @@ module.exports = {
       ]
     }
   },
-  logic: (req) => {
+  logic: (req, def = "downloads") => {
+    // TODO: Determine if allowing `def` value here makes any sense still
     // using sort with a default def value of downloads, means when using the generic sort parameter
     // it will default to downloads, but if we pass the default, such as during search we can provide
     // the default relevance

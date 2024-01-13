@@ -27,7 +27,7 @@ module.exports = {
   params: {
     page: (context, req) => { return context.query.page(req); },
     sort: (context, req) => { return context.query.sort(req); },
-    direction: (context, req) => { return context.query.dir(req); },
+    direction: (context, req) => { return context.query.direction(req); },
     serviceType: (context, req) => { return context.query.serviceType(req); },
     service: (context, req) => { return context.query.service(req); },
     serviceVersion: (context, req) => { return context.query.serviceVersion(req); },

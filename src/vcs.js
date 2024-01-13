@@ -6,7 +6,7 @@
  * function.
  */
 
-const query = require("./query.js");
+const query = require("./query_parameters/index.js").logic;
 const utils = require("./utils.js");
 const PackageObject = require("./PackageObject.js");
 const GitHub = require("./vcs_providers/github.js");

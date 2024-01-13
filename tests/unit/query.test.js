@@ -1,4 +1,4 @@
-const query = require("../../src/query.js");
+const query = require("../../src/query_parameters/index.js").logic;
 
 // Page Testing
 
@@ -40,7 +40,7 @@ const dirCases = [
 
 describe("Verify Direction Query Returns", () => {
   test.each(dirCases)("Given %o Returns %p", (arg, result) => {
-    expect(query.dir(arg)).toBe(result);
+    expect(query.direction(arg)).toBe(result);
   });
 });
 
@@ -52,7 +52,7 @@ const orderCases = [
 
 describe("Verify Order Query Returns", () => {
   test.each(orderCases)("Given %o Returns %p", (arg, result) => {
-    expect(query.dir(arg)).toBe(result);
+    expect(query.direction(arg)).toBe(result);
   });
 });
 

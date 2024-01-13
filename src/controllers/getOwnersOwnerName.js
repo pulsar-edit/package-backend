@@ -23,7 +23,7 @@ module.exports = {
   params: {
     page: (context, req) => { return context.query.page(req); },
     sort: (context, req) => { return context.query.sort(req); },
-    direction: (context, req) => { return context.query.dir(req); },
+    direction: (context, req) => { return context.query.direction(req); },
     owner: (context, req) => { return context.query.owner(req); }
   },
 
