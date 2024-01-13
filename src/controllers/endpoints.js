@@ -32,4 +32,5 @@ module.exports = [
   require("./postPackagesPackageNameStar.js"),
   require("./getUsersLoginStars.js"),
   require("./getUsersLogin.js"),
+  require("./getOwnersOwnerName.js"),
 ];
