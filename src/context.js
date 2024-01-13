@@ -6,7 +6,7 @@ module.exports = {
   database: require("./database.js"),
   webhook: require("./webhook.js"),
   server_version: require("../package.json").version,
-  query: require("./query.js"),
+  query: require("./query_parameters/index.js").logic,
   vcs: require("./vcs.js"),
   config: require("./config.js").getConfig(),
   utils: require("./utils.js"),
