@@ -9,6 +9,7 @@ const auth = require("./auth.js");
 const direction = require("./direction.js");
 const engine = require("./engine.js");
 const fileExtension = require("./fileExtension.js");
+const filter = require("./filter.js");
 const login = require("./login.js");
 const owner = require("./owner.js");
 const packageName = require("./packageName.js");
@@ -29,6 +30,7 @@ module.exports = {
     direction: direction.logic,
     engine: engine.logic,
     fileExtension: fileExtension.logic,
+    filter: filter.logic,
     login: login.logic,
     owner: owner.logic,
     packageName: packageName.logic,
@@ -48,6 +50,7 @@ module.exports = {
     direction: direction.schema,
     engine: engine.schema,
     fileExtension: fileExtension.schema,
+    filter: filter.schema,
     login: login.schema,
     owner: owner.schema,
     packageName: packageName.schema,
