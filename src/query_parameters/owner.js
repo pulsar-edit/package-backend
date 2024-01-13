@@ -13,12 +13,16 @@ module.exports = {
 
   },
   logic: (req) => {
-    if (!utils.stringValidation(req.query.owner)) {
+    // Owner accepts the owner as an argument for things like search,
+    // as well as a path, for the endpoint `/api/owners/:ownerName`
+    let prov = req.query.owner ?? req.params?.ownerName ?? null;
+
+    if (!utils.stringValidation(prov)) {
       return false;
     }
-    if (req.query.owner.length === 0) {
+    if (prov.length === 0) {
       return false;
     }
-    return req.query.owner;
+    return prov;
   }
 };
