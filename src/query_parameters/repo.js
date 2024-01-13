@@ -7,7 +7,15 @@
 
 module.exports = {
   schema: {
-
+    name: "repository",
+    in: "query",
+    schema: {
+      type: "string"
+    },
+    example: "pulsar-edit/pulsar",
+    allowEmptyValue: false,
+    required: true,
+    description: "Repository to publish."
   },
   logic: (req) => {
     const prov = req.query.repository;

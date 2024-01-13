@@ -24,7 +24,7 @@ module.exports = {
   },
   logic: (req) => {
     // TODO determine if there's a way to indicate this is a required
-    // field moo 
+    // field moo
     const prov = req.query.serviceType;
 
     if (prov === undefined) {

@@ -16,6 +16,7 @@ module.exports = {
     },
     example: 1,
     allowEmptyValue: true,
+    required: false,
     description: "The page of available results to return."
   },
   logic: (req) => {

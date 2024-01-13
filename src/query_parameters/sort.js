@@ -19,8 +19,13 @@ module.exports = {
         "updated_at",
         "stars",
         "relevance"
-      ]
-    }
+      ],
+      default: "downloads"
+    },
+    example: "downloads",
+    required: false,
+    allowEmptyValue: false,
+    description: "Value to sort search results by."
   },
   logic: (req, def = "downloads") => {
     // TODO: Determine if allowing `def` value here makes any sense still
