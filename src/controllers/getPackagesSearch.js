@@ -4,7 +4,15 @@
 
 module.exports = {
   docs: {
-    summary: "Searches all packages."
+    summary: "Searches all packages.",
+    responses: {
+      200: {
+        description: "Any array of packages.",
+        content: {
+          "application/json": "$packageObjectShortArray"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
@@ -20,7 +28,8 @@ module.exports = {
     sort: (context, req) => { return context.query.sort(req); },
     page: (context, req) => { return context.query.page(req); },
     direction: (context, req) => { return context.query.direction(req); },
-    query: (context, req) => { return context.query.query(req); }
+    query: (context, req) => { return context.query.query(req); },
+    filter: (context, req) => { return context.query.filter(req); }
   },
 
   /**
@@ -43,9 +52,9 @@ module.exports = {
       params.query,
       params.page,
       params.direction,
-      params.sort
+      params.sort,
+      (params.filter === "theme")
     );
-
 
     if (!packs.ok) {
       if (packs.short === "not_found") {
