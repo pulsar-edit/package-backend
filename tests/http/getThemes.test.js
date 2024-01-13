@@ -39,7 +39,7 @@ describe("Behaves as expected", () => {
     );
   });
   test("Returns proper data on success", async () => {
-    const addName = await database.insertNewPackage(
+    await database.insertNewPackage(
       genPackage("https://github.com/confused-Techie/test-package", {
         versions: [ "1.1.0", "1.0.0" ],
         extraVersionData: {
