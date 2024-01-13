@@ -2,6 +2,8 @@ const endpoint = require("../../src/controllers/deletePackagesPackageName.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("DELETE /api/packages/:packageName", () => {
   test("Fails with bad auth", async () => {
     const localContext = context;
@@ -46,29 +48,9 @@ describe("DELETE /api/packages/:packageName", () => {
   });
 
   test("Successfully deletes a package", async () => {
-    await database.insertNewPackage({
-      name: "dlt-pkg-by-name-test",
-      repository: {
-        url: "https://github.com/confused-Techie/package-backend",
-        type: "git",
-      },
-      owner: "confused-Techie",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.0.0",
-      },
-      readme: "This is a readme!",
-      metadata: { name: "dlt-pkg-by-name-test" },
-      versions: {
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "dlt-pkg-by-name-test",
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage("https://github.com/confused-Techie/dlt-pkg-by-name-test")
+    );
 
     let addUser = await database.insertNewUser(
       "dlt-pkg-test-user-node-id",

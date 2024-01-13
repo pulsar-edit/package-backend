@@ -2,6 +2,8 @@ const endpoint = require("../../src/controllers/getPackagesFeatured.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("Behaves as expected", () => {
   test("Calls the correct function", async () => {
     const localContext = context;
@@ -22,39 +24,15 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns proper data on success", async () => {
-    await database.insertNewPackage({
-      // We know a currently featured package is 'x-terminal-reloaded'
-      name: "x-terminal-reloaded",
-      repository: {
-        url: "https://github.com/Spiker985/x-terminal-reloaded",
-        type: "git",
-      },
-      owner: "Spiker985",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.1.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "atom-material-ui",
-      },
-      versions: {
-        "1.1.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "x-terminal-reloaded",
-        },
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "x-terminal-reloaded",
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage(
+        // We know a currently featured package is 'x-terminal-reloaded'
+        "https://github.com/Spiker985/x-terminal-reloaded",
+        {
+          versions: [ "1.1.0", "1.0.0" ]
+        }
+      )
+    );
 
     const sso = await endpoint.logic({}, context);
 

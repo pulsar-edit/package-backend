@@ -2,6 +2,8 @@ const endpoint = require("../../src/controllers/getThemes.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("Behaves as expected", () => {
   test("Calls the correct function", async () => {
     const context = require("../../src/context.js");
@@ -37,39 +39,14 @@ describe("Behaves as expected", () => {
     );
   });
   test("Returns proper data on success", async () => {
-    const addName = await database.insertNewPackage({
-      name: "test-package",
-      repository: {
-        url: "https://github.com/confused-Techie/package-backend",
-        type: "git",
-      },
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.1.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "test-package",
-        theme: "syntax",
-      },
-      owner: "confused-Techie",
-      versions: {
-        "1.1.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "test-package",
-        },
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "test-package",
-        },
-      },
-    });
+    const addName = await database.insertNewPackage(
+      genPackage("https://github.com/confused-Techie/test-package", {
+        versions: [ "1.1.0", "1.0.0" ],
+        extraVersionData: {
+          theme: "syntax"
+        }
+      })
+    );
 
     const sso = await endpoint.logic(
       {

@@ -2,6 +2,8 @@ const endpoint = require("../../src/controllers/getThemesFeatured.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("Behaves as expected", () => {
   test("Calls the correct function", async () => {
     const localContext = context;
@@ -22,40 +24,14 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns proper data on success", async () => {
-    const addPack = await database.insertNewPackage({
+    const addPack = await database.insertNewPackage(
       // We know a currently featured package is 'atom-material-ui'
-      name: "atom-material-ui",
-      repository: {
-        url: "https://github.com/confused-Techie/atom-material-ui",
-        type: "git",
-      },
-      owner: "confused-Techie",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.1.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "atom-material-ui",
-        theme: "ui",
-      },
-      versions: {
-        "1.1.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "atom-material-ui",
-        },
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "atom-material-ui",
-        },
-      },
-    });
+      genPackage("https://github.com/confused-Techie/atom-material-ui", {
+        extraVersionData: {
+          theme: "ui"
+        }
+      })
+    );
 
     const sso = await endpoint.logic({}, context);
 
