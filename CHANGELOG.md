@@ -7,6 +7,18 @@
 
 * Decouple HTTP Handling from backend logic
 * Added webhooks to be triggered after a package, or package version are published. Allowing notifications of these events to other services. Like the Pulsar Discord.
+* Fixed a bug where a 0 result search could provide incorrect pagination.
+* Fixed a bug where the incorrect webhook was triggered during package version publication.
+* Added "Feature Detection", where the backend will determine what languages a grammar package supports, as well as if this package provides any snippets.
+* Prevented a bug where uncaught errors during HTTP handling could crash the whole server instance.
+* Rewrote nearly all HTTP server startup, replacing ExpressJS common syntax with a novel endpoint object schema, allowing an endpoint object to define not only the logic needed for each endpoint, but it's parameters, it's OpenAPI schema information, as well as ensuring every endpoint is easily testable against it's intended returns.
+* Fixed a bug that could prevent publication of new package versions.
+* Added an `owner` field to packages, allowing the owner of a package to be collected during publication, as well as a filterable item during package listings.
+* Fixed a bug that could prevent the combination of multiple search criteria during package search.
+* Ensured the backend uses the name of a backend as determined by it's `package.json` when checking for availability of a package name, rather than the name of the repository.
+* Added a new `/api/owners/:ownerName` endpoint.
+* Modularized Query Parameters, to have them also define their OpenAPI schema directly within the queries module.
+* Added `filter` query parameter support to `/api/packages/search`.
 
 ## [v1.1.0](https://github.com/pulsar-edit/package-backend/releases/tag/v1.1.0)
 
