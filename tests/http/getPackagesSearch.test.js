@@ -2,60 +2,22 @@ const endpoint = require("../../src/controllers/getPackagesSearch.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("Behaves as expected", () => {
   beforeAll(async () => {
-    await database.insertNewPackage({
-      name: "get-packages-search-theme-test",
-      repository: {
-        url: "https://github.com/getPackagesSearch/get-packages-search-theme-test",
-        type: "git",
-      },
-      owner: "getPackagesSearch",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.0.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "get-packages-search-theme-test",
-        theme: "syntax",
-      },
-      versions: {
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "get-packages-search-theme-test",
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage("https://github.com/getPackagesSearch/get-packages-search-theme-test", {
+        extraVersionData: {
+          theme: "syntax"
+        }
+      })
+    );
 
-    await database.insertNewPackage({
-      name: "get-packages-search-test",
-      repository: {
-        url: "https://github.com/getPackagesSearch/get-packages-search-test",
-        type: "git",
-      },
-      owner: "getPackagesSearch",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.0.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "get-packages-search-test",
-      },
-      versions: {
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "get-packages-search-test",
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage("https://github.com/getPackagesSearch/get-packages-search-test")
+    );
+
   });
 
   afterAll(async () => {

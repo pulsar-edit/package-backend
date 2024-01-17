@@ -2,101 +2,42 @@ const endpoint = require("../../src/controllers/getPackages.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("Behaves as expected", () => {
   beforeAll(async () => {
-    await database.insertNewPackage({
-      name: "get-packages-test",
-      repository: {
-        url: "https://github.com/unique_user/package-backend",
-        type: "git",
-      },
-      owner: "unique_user",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.1.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "get-packages-test",
-        providedServices: {
-          refactor: {
-            versions: {
-              "0.0.1": "provideRefactor",
-            },
-          },
-        },
-      },
-      versions: {
-        "1.1.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "get-packages-test",
-          providedServices: {
-            refactor: {
-              versions: {
-                "0.0.1": "provideRefactor",
-              },
-            },
-          },
-        },
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "get-packages-test",
-          providedServices: {
-            refactor: {
-              versions: {
-                "0.0.1": "provideRefactor",
-              },
-            },
-          },
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage(
+        "https://github.com/unique_user/get-packages-test",
+        {
+          versions: [ "1.1.0", "1.0.0" ],
+          extraVersionData: {
+            providedServices: {
+              refactor: {
+                versions: { "0.0.1": "provideRefactor" }
+              }
+            }
+          }
+        }
+      )
+    );
 
-    await database.insertNewPackage({
-      name: "calculator-light-ui",
-      repository: {
-        url: "https://github.com/savetheclocktower/calculator-light-ui",
-        type: "git",
-      },
-      owner: "savetheclocktower",
-      creation_method: "Test Package",
-      releases: {
-        latest: "9.0.0",
-      },
-      readme: "This is a second readme!",
-      metadata: {
-        name: "get-packages-test",
-        providedServices: {
-          another: {
-            versions: {
-              "0.1.1": "provideanother",
-            },
-          },
-        },
-      },
-      versions: {
-        "9.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "5678",
-          },
-          name: "get-packages-test",
-          providedServices: {
-            another: {
-              versions: {
-                "0.1.1": "provideanother",
-              },
-            },
-          },
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage(
+        "https://github.com/savetheclocktower/calculator-light-ui",
+        {
+          versions: [ "9.0.0" ],
+          extraVersionData: {
+            providedServices: {
+              another: {
+                versions: { "0.1.1": "provideanother" }
+              }
+            }
+          }
+        }
+      )
+    );
+
   });
 
   afterAll(async () => {

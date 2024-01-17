@@ -2,6 +2,8 @@ const endpoint = require("../../src/controllers/deletePackagesPackageNameVersion
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
   test("Fails with bad auth", async () => {
     const localContext = context;
@@ -46,36 +48,14 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     expect(sso.content.short).toBe("not_found");
   });
   test("Successfully deletes a package version", async () => {
-    await database.insertNewPackage({
-      name: "dlt-pkg-ver-by-name-test",
-      repository: {
-        url: "https://github.com/confused-Techie/package-backend",
-        type: "git",
-      },
-      owner: "confused-Techie",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.0.1",
-      },
-      readme: "This is a readme!",
-      metadata: { name: "dlt-pkg-ver-by-name-test" },
-      versions: {
-        "1.0.1": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "dlt-pkg-ver-by-name-test",
-        },
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "dlt-pkg-ver-by-name-test",
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage(
+        "https://github.com/confused-Techie/dlt-pkg-ver-by-name-test",
+        {
+          versions: [ "1.0.1", "1.0.0" ]
+        }
+      )
+    );
 
     let addUser = await database.insertNewUser(
       "dlt-pkg-ver-test-user-node-id",

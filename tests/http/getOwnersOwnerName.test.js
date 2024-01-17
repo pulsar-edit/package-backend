@@ -2,6 +2,8 @@ const endpoint = require("../../src/controllers/getOwnersOwnerName.js");
 const database = require("../../src/database.js");
 const context = require("../../src/context.js");
 
+const genPackage = require("../helpers/package.jest.js");
+
 describe("Behaves as expected", () => {
   test("Calls the correct function", async () => {
     const localContext = context;
@@ -31,31 +33,9 @@ describe("Behaves as expected", () => {
   });
 
   test("Returns package with matching owner entry", async () => {
-    await database.insertNewPackage({
-      name: "get-owner-test",
-      repository: {
-        url: "https://github.com/pulsar-cooperative/get-owner-test",
-        type: "git",
-      },
-      owner: "pulsar-cooperative",
-      creation_method: "Test Package",
-      releases: {
-        latest: "1.0.0",
-      },
-      readme: "This is a readme!",
-      metadata: {
-        name: "get-owner-test",
-      },
-      versions: {
-        "1.0.0": {
-          dist: {
-            tarball: "download-url",
-            sha: "1234",
-          },
-          name: "get-owner-test",
-        },
-      },
-    });
+    await database.insertNewPackage(
+      genPackage("https://github.com/pulsar-cooperative/get-owner-test")
+    );
 
     const sso = await endpoint.logic(
       {
