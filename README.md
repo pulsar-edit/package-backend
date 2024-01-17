@@ -7,7 +7,7 @@
 [![CI - Standards](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml)
 [![CI - Tests](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-tests.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-10-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-11-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 
@@ -59,6 +59,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/PolariTOON"><img src="https://avatars.githubusercontent.com/u/36267812?v=4?s=100" width="100px;" alt="PolariTOON"/><br /><sub><b>PolariTOON</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=PolariTOON" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://andrewdupont.net/"><img src="https://avatars.githubusercontent.com/u/3450?v=4?s=100" width="100px;" alt="Andrew Dupont"/><br /><sub><b>Andrew Dupont</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/issues?q=author%3Asavetheclocktower" title="Bug reports">🐛</a> <a href="https://github.com/confused-Techie/atom-backend/commits?author=savetheclocktower" title="Code">💻</a> <a href="#userTesting-savetheclocktower" title="User Testing">📓</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://joanvicens.github.io/"><img src="https://avatars.githubusercontent.com/u/38570230?v=4?s=100" width="100px;" alt="Joan Vicens"/><br /><sub><b>Joan Vicens</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=JoanVicens" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/matbme"><img src="https://avatars.githubusercontent.com/u/48367298?v=4?s=100" width="100px;" alt="Mateus Melchiades"/><br /><sub><b>Mateus Melchiades</b></sub></a><br /><a href="https://github.com/confused-Techie/atom-backend/commits?author=matbme" title="Documentation">📖</a></td>
     </tr>
   </tbody>
 </table>

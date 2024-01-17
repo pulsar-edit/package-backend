@@ -101,6 +101,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "matbme",
+      "name": "Mateus Melchiades",
+      "avatar_url": "https://avatars.githubusercontent.com/u/48367298?v=4",
+      "profile": "https://github.com/matbme",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
