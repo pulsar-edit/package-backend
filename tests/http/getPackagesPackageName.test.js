@@ -31,12 +31,9 @@ describe("Behaves as expected", () => {
 
   test("Returns package on success", async () => {
     await database.insertNewPackage(
-      genPackage(
-        "https://github.com/confused-Techie/get-package-test",
-        {
-          versions: [ "1.1.0", "1.0.0" ]
-        }
-      )
+      genPackage("https://github.com/confused-Techie/get-package-test", {
+        versions: ["1.1.0", "1.0.0"],
+      })
     );
 
     const sso = await endpoint.logic(

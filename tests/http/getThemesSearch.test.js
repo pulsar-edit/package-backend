@@ -36,8 +36,8 @@ describe("Behaves as expected", () => {
     await database.insertNewPackage(
       genPackage("https://github.com/confused-Techie/atom-material-syntax", {
         extraVersionData: {
-          theme: "ui"
-        }
+          theme: "ui",
+        },
       })
     );
 

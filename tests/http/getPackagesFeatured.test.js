@@ -29,7 +29,7 @@ describe("Behaves as expected", () => {
         // We know a currently featured package is 'x-terminal-reloaded'
         "https://github.com/Spiker985/x-terminal-reloaded",
         {
-          versions: [ "1.1.0", "1.0.0" ]
+          versions: ["1.1.0", "1.0.0"],
         }
       )
     );

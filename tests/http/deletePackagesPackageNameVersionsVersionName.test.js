@@ -52,7 +52,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
       genPackage(
         "https://github.com/confused-Techie/dlt-pkg-ver-by-name-test",
         {
-          versions: [ "1.0.1", "1.0.0" ]
+          versions: ["1.0.1", "1.0.0"],
         }
       )
     );

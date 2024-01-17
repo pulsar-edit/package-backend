@@ -13,8 +13,7 @@ const gh = require("parse-github-url");
 // opts:
 //  * versions: An array of different versions, optional.
 //  * extraVersionData: An object that should be added to every single version
-module.exports =
-function genPackage(repo, opts = {}) {
+module.exports = function genPackage(repo, opts = {}) {
   let pack = {};
 
   // Repo Info
@@ -23,7 +22,7 @@ function genPackage(repo, opts = {}) {
   pack.name = parsedGH.name;
   pack.repository = {
     url: repo,
-    type: "git" // TODO stop hardcoding git
+    type: "git", // TODO stop hardcoding git
   };
   pack.owner = parsedGH.owner;
 
@@ -38,8 +37,8 @@ function genPackage(repo, opts = {}) {
     name: pack.name,
     dist: {
       tarball: "download-url",
-      sha: "1234"
-    }
+      sha: "1234",
+    },
   };
 
   if (opts.extraVersionData) {
@@ -61,7 +60,7 @@ function genPackage(repo, opts = {}) {
 
   // Construct Metadata
   let metadata = {
-    name: pack.name
+    name: pack.name,
   };
 
   if (opts.extraVersionData) {
@@ -71,7 +70,7 @@ function genPackage(repo, opts = {}) {
   pack.metadata = metadata;
 
   return pack;
-}
+};
 
 /**
 Example Usage:

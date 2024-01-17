@@ -28,8 +28,8 @@ describe("Behaves as expected", () => {
       // We know a currently featured package is 'atom-material-ui'
       genPackage("https://github.com/confused-Techie/atom-material-ui", {
         extraVersionData: {
-          theme: "ui"
-        }
+          theme: "ui",
+        },
       })
     );
 

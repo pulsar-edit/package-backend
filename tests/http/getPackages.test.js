@@ -7,37 +7,30 @@ const genPackage = require("../helpers/package.jest.js");
 describe("Behaves as expected", () => {
   beforeAll(async () => {
     await database.insertNewPackage(
-      genPackage(
-        "https://github.com/unique_user/get-packages-test",
-        {
-          versions: [ "1.1.0", "1.0.0" ],
-          extraVersionData: {
-            providedServices: {
-              refactor: {
-                versions: { "0.0.1": "provideRefactor" }
-              }
-            }
-          }
-        }
-      )
+      genPackage("https://github.com/unique_user/get-packages-test", {
+        versions: ["1.1.0", "1.0.0"],
+        extraVersionData: {
+          providedServices: {
+            refactor: {
+              versions: { "0.0.1": "provideRefactor" },
+            },
+          },
+        },
+      })
     );
 
     await database.insertNewPackage(
-      genPackage(
-        "https://github.com/savetheclocktower/calculator-light-ui",
-        {
-          versions: [ "9.0.0" ],
-          extraVersionData: {
-            providedServices: {
-              another: {
-                versions: { "0.1.1": "provideanother" }
-              }
-            }
-          }
-        }
-      )
+      genPackage("https://github.com/savetheclocktower/calculator-light-ui", {
+        versions: ["9.0.0"],
+        extraVersionData: {
+          providedServices: {
+            another: {
+              versions: { "0.1.1": "provideanother" },
+            },
+          },
+        },
+      })
     );
-
   });
 
   afterAll(async () => {

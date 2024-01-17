@@ -7,17 +7,21 @@ const genPackage = require("../helpers/package.jest.js");
 describe("Behaves as expected", () => {
   beforeAll(async () => {
     await database.insertNewPackage(
-      genPackage("https://github.com/getPackagesSearch/get-packages-search-theme-test", {
-        extraVersionData: {
-          theme: "syntax"
+      genPackage(
+        "https://github.com/getPackagesSearch/get-packages-search-theme-test",
+        {
+          extraVersionData: {
+            theme: "syntax",
+          },
         }
-      })
+      )
     );
 
     await database.insertNewPackage(
-      genPackage("https://github.com/getPackagesSearch/get-packages-search-test")
+      genPackage(
+        "https://github.com/getPackagesSearch/get-packages-search-test"
+      )
     );
-
   });
 
   afterAll(async () => {
