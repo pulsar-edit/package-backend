@@ -114,7 +114,7 @@ To reflect this status, `busy-signal` will additionally receive the [`Outdated`]
 To install `busy-signal` for end users, it's recommended to run the following command:
 
 ```shell
-pulsar -p install https://github.com/steelbreain/busy-signal
+pulsar -p install https://github.com/steelbrain/busy-signal
 ```
 
 ## 2023 - April 22
