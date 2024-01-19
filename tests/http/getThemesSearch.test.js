@@ -7,7 +7,7 @@ const genPackage = require("../helpers/package.jest.js");
 describe("Behaves as expected", () => {
   test("Calls the correct function", async () => {
     const localContext = context;
-    const spy = jest.spyOn(localContext.database, "simpleSearch");
+    const spy = jest.spyOn(localContext.database, "getSortedPackages");
 
     await endpoint.logic({}, localContext);
 
@@ -63,7 +63,7 @@ describe("Behaves as expected", () => {
     // Moved to last position, since it modifies our shallow copied context
     const localContext = context;
     localContext.database = {
-      simpleSearch: () => {
+      getSortedPackages: () => {
         return { ok: false, content: "Test Error" };
       },
     };
