@@ -61,7 +61,7 @@ module.exports = {
          }
 
          if (exterminate) {
-           const commandName = await sqlTrans`
+           await sqlTrans`
              DELETE FROM names
              WHERE pointer = ${pointer}
            `; // We can't return name here, since it's set to null on package deletion
