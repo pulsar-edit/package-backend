@@ -667,7 +667,6 @@ with and retrieve data from the cloud hosted database instance.
     * [~updateDecrementStar(user, pack)](#module_database..updateDecrementStar) ⇒ <code>object</code>
     * [~getStarredPointersByUserID(userid)](#module_database..getStarredPointersByUserID) ⇒ <code>object</code>
     * [~getStarringUsersByPointer(pointer)](#module_database..getStarringUsersByPointer) ⇒ <code>object</code>
-    * [~simpleSearch(term, dir, sort, [themes])](#module_database..simpleSearch) ⇒ <code>object</code>
     * [~getUserCollectionById(ids)](#module_database..getUserCollectionById) ⇒ <code>object</code>
     * [~getSortedPackages(page, dir, method, [themes])](#module_database..getSortedPackages) ⇒ <code>object</code>
     * [~getOrderField(method, sqlStorage)](#module_database..getOrderField) ⇒ <code>object</code> \| <code>null</code>
@@ -1016,22 +1015,6 @@ Use the pointer of a package to collect all users that have starred it.
 | Param | Type | Description |
 | --- | --- | --- |
 | pointer | <code>string</code> | The ID of the package. |
-
-<a name="module_database..simpleSearch"></a>
-
-### database~simpleSearch(term, dir, sort, [themes]) ⇒ <code>object</code>
-The current Fuzzy-Finder implementation of search. Ideally eventually
-will use a more advanced search method.
-
-**Kind**: inner method of [<code>database</code>](#module_database)  
-**Returns**: <code>object</code> - A server status object containing the results and the pagination object.  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| term | <code>string</code> |  | The search term. |
-| dir | <code>string</code> |  | String flag for asc/desc order. |
-| sort | <code>string</code> |  | The sort method. |
-| [themes] | <code>boolean</code> | <code>false</code> | Optional Parameter to specify if this should only return themes. |
 
 <a name="module_database..getUserCollectionById"></a>
 

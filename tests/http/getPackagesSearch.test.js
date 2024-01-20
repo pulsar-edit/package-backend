@@ -71,7 +71,7 @@ describe("Behaves as expected", () => {
       {
         hasSnippets: false,
         hasGrammar: true,
-        supportedLanguages: ["js", "ts"]
+        supportedLanguages: ["js", "ts"],
       },
       "get-packages-search-test",
       "1.0.0"
@@ -84,7 +84,7 @@ describe("Behaves as expected", () => {
         direction: "desc",
         query: "get packages search",
         filter: "package",
-        fileExtension: "js"
+        fileExtension: "js",
       },
       context
     );
@@ -102,13 +102,12 @@ describe("Behaves as expected", () => {
         direction: "desc",
         query: "get packages search",
         filter: "package",
-        fileExtension: "sql"
+        fileExtension: "sql",
       },
       context
     );
 
     expect(ssoEmpty.ok).toBe(true);
     expect(ssoEmpty.content.length).toBe(0);
-
   });
 });

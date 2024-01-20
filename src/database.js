@@ -1492,7 +1492,7 @@ function queryClause(opts) {
   const searchTerm = lcterm.replace(wordSeparators, "_");
   // Replaces all word separators with '_' which matches any single character
 
-  return sqlStorage`AND p.name LIKE ${"%" + searchTerm + "%" }`;
+  return sqlStorage`AND p.name LIKE ${"%" + searchTerm + "%"}`;
 }
 
 function filterClause(opts) {
@@ -1591,11 +1591,7 @@ async function getSortedPackages(opts, themes = false) {
           INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE
           ${queryClause(opts)}
           ${filterClause(opts)}
-          ${
-            themes === true
-              ? filterClause({ filter: "theme" })
-              : sqlStorage``
-          })
+          ${themes === true ? filterClause({ filter: "theme" }) : sqlStorage``})
 
         WHERE p.name IS NOT NULL
 

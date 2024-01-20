@@ -91,7 +91,10 @@ module.exports = {
 
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packs).addCalls("db.getSortedPackages", packs);
+      return sso
+        .notOk()
+        .addContent(packs)
+        .addCalls("db.getSortedPackages", packs);
     }
 
     const newPacks = await context.utils.constructPackageObjectShort(
