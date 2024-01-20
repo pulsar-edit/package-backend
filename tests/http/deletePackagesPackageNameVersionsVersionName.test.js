@@ -104,7 +104,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
 
     expect(currentPackageData.ok).toBe(true);
 
-    currentPackageData = await context.utils.constructPackageObjectFull(
+    currentPackageData = await context.models.constructPackageObjectFull(
       currentPackageData.content
     );
 

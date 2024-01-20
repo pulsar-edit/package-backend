@@ -5,6 +5,14 @@
 module.exports = {
   docs: {
     summary: "Get the details of a specific package version.",
+    responses: {
+      200: {
+        description: "The `package.json` among other details of the package.",
+        content: {
+          "application/json": "$packageObjectJSON"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
@@ -64,7 +72,7 @@ module.exports = {
         .addCalls("db.getPackageVersionByNameAndVersion", pack);
     }
 
-    const packRes = await context.utils.constructPackageObjectJSON(
+    const packRes = await context.models.constructPackageObjectJSON(
       pack.content
     );
 

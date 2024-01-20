@@ -47,7 +47,7 @@ module.exports = {
         .addCalls("db.getSortedPackages", packages);
     }
 
-    const packObjShort = await context.utils.constructPackageObjectShort(
+    const packObjShort = await context.models.constructPackageObjectShort(
       packages.content
     );
 

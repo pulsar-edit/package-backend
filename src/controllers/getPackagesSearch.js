@@ -85,7 +85,7 @@ module.exports = {
       return sso.notOk().addContent(packs).addCalls("db.simpleSearch", packs);
     }
 
-    const newPacks = await context.utils.constructPackageObjectShort(
+    const newPacks = await context.models.constructPackageObjectShort(
       packs.content
     );
 

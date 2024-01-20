@@ -240,7 +240,7 @@ describe("POST /api/packages Behaves as expected", () => {
 
     expect(packByVer.ok).toBe(true);
 
-    packByVer = await context.utils.constructPackageObjectJSON(
+    packByVer = await context.models.constructPackageObjectJSON(
       packByVer.content
     );
 
