@@ -1,5 +1,5 @@
 const endpoint = require("../../src/controllers/postPackages.js");
-const database = require("../../src/database.js");
+const database = require("../../src/database/_export.js");
 const context = require("../../src/context.js");
 
 describe("POST /api/packages Behaves as expected", () => {

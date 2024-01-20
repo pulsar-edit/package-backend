@@ -9,7 +9,7 @@
 // Or at the very least that if there is a failure within these, it will not result in
 // bad data being entered into the database in production.
 
-let database = require("../../src/database.js");
+let database = require("../../src/database/_export.js");
 let utils = require("../../src/utils.js");
 
 afterAll(async () => {

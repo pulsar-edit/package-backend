@@ -1,5 +1,5 @@
 const endpoint = require("../../src/controllers/getPackagesFeatured.js");
-const database = require("../../src/database.js");
+const database = require("../../src/database/_export.js");
 const context = require("../../src/context.js");
 
 const genPackage = require("../helpers/package.jest.js");
