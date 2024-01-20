@@ -40,6 +40,21 @@ module.exports = {
     filter: (context, req) => {
       return context.query.filter(req);
     },
+    fileExtension: (context, req) => {
+      return context.query.fileExtension(req);
+    },
+    serviceType: (context, req) => {
+      return context.query.serviceType(req);
+    },
+    service: (context, req) => {
+      return context.query.service(req);
+    },
+    serviceVersion: (context, req) => {
+      return context.query.serviceVersion(req);
+    },
+    owner: (context, req) => {
+      return context.query.owner(req);
+    },
   },
 
   /**
@@ -58,13 +73,7 @@ module.exports = {
     // This is only an effort to get this working quickly and should be changed later.
     // This also means for now, the default sorting method will be downloads, not relevance.
 
-    const packs = await context.database.simpleSearch(
-      params.query,
-      params.page,
-      params.direction,
-      params.sort,
-      params.filter === "theme"
-    );
+    const packs = await context.database.getSortedPackages(params);
 
     if (!packs.ok) {
       if (packs.short === "not_found") {
@@ -82,7 +91,7 @@ module.exports = {
 
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packs).addCalls("db.simpleSearch", packs);
+      return sso.notOk().addContent(packs).addCalls("db.getSortedPackages", packs);
     }
 
     const newPacks = await context.utils.constructPackageObjectShort(

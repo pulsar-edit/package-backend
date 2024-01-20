@@ -1442,96 +1442,6 @@ async function getStarringUsersByPointer(pointer) {
 
 /**
  * @async
- * @function simpleSearch
- * @description The current Fuzzy-Finder implementation of search. Ideally eventually
- * will use a more advanced search method.
- * @param {string} term - The search term.
- * @param {string} dir - String flag for asc/desc order.
- * @param {string} sort - The sort method.
- * @param {boolean} [themes=false] - Optional Parameter to specify if this should only return themes.
- * @returns {object} A server status object containing the results and the pagination object.
- */
-async function simpleSearch(term, page, dir, sort, themes = false) {
-  try {
-    sqlStorage ??= setupSQL();
-
-    // Parse the sort method
-    const orderType = getOrderField(sort, sqlStorage);
-
-    if (orderType === null) {
-      logger.generic(3, `Unrecognized Sorting Method Provided: ${sort}`);
-      return {
-        ok: false,
-        content: `Unrecognized Sorting Method Provided: ${sort}`,
-        short: "server_error",
-      };
-    }
-
-    // We obtain the lowercase version of term since names should be in
-    // lowercase format (see atom-backend issue #86).
-    const lcterm = term.toLowerCase();
-
-    const wordSeparators = /[-. ]/g; // Word Separators: - . SPACE
-
-    const searchTerm = lcterm.replace(wordSeparators, "_");
-    // Replaces all word separators with '_' which matches any single character
-
-    const limit = paginated_amount;
-    const offset = page > 1 ? (page - 1) * limit : 0;
-
-    const command = await sqlStorage`
-      WITH search_query AS (
-        SELECT DISTINCT ON (p.name) p.name, p.data, p.downloads, p.owner,
-          (p.stargazers_count + p.original_stargazers) AS stargazers_count,
-          v.semver, p.created, v.updated, p.creation_method
-        FROM packages AS p
-          INNER JOIN names AS n ON (p.pointer = n.pointer AND n.name LIKE ${
-            "%" + searchTerm + "%"
-          }
-          ${
-            themes === true
-              ? sqlStorage`AND p.package_type = 'theme'`
-              : sqlStorage``
-          })
-          INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE)
-        ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
-      )
-      SELECT *, COUNT(*) OVER() AS query_result_count
-      FROM search_query
-      ORDER BY ${orderType} ${
-      dir === "desc" ? sqlStorage`DESC` : sqlStorage`ASC`
-    }
-      LIMIT ${limit}
-      OFFSET ${offset};
-    `;
-
-    const resultCount = command[0]?.query_result_count ?? 0;
-    const quotient = Math.trunc(resultCount / limit);
-    const remainder = resultCount % limit;
-    const totalPages = quotient + (remainder > 0 ? 1 : 0);
-
-    return {
-      ok: true,
-      content: command,
-      pagination: {
-        count: resultCount,
-        page: page < totalPages ? page : totalPages,
-        total: totalPages,
-        limit: limit,
-      },
-    };
-  } catch (err) {
-    return {
-      ok: false,
-      content: "Generic Error",
-      short: "server_error",
-      error: err,
-    };
-  }
-}
-
-/**
- * @async
  * @function getUserCollectionById
  * @description Returns an array of Users and their associated data via the ids.
  * @param {array} ids - The IDs of users to collect the data of.
@@ -1566,6 +1476,42 @@ let emptyClause;
 function getEmptyClause() {
   emptyClause ??= sqlStorage``;
   return emptyClause;
+}
+
+function queryClause(opts) {
+  if (typeof opts.query !== "string") {
+    return getEmptyClause();
+  }
+
+  // We obtain the lowercase version of the query since names should be in
+  // lowercase format (see atom-backend issue #86)
+  const lcterm = opts.query.toLowerCase();
+
+  const wordSeparators = /[-. ]/g; // Word Separators: - . SPACE
+
+  const searchTerm = lcterm.replace(wordSeparators, "_");
+  // Replaces all word separators with '_' which matches any single character
+
+  return sqlStorage`AND p.name LIKE ${"%" + searchTerm + "%" }`;
+}
+
+function filterClause(opts) {
+  if (typeof opts.filter !== "string") {
+    return getEmptyClause();
+  }
+
+  if (opts.filter === "theme") {
+    return sqlStorage`AND p.package_type = 'theme'`;
+  } else if (opts.filter === "package") {
+    // Since our fork from Atom, we have made the choice to return themes and packages
+    // on basic searches, meaning that `ppm`s filter of `package` has always returned
+    // packages and themes.
+    // If we decide to change this, uncomment the below line.
+    //return sqlStorage`AND p.package_type = 'package'`;
+    return getEmptyClause();
+  } else {
+    return getEmptyClause();
+  }
 }
 
 function ownerClause(opts) {
@@ -1643,9 +1589,11 @@ async function getSortedPackages(opts, themes = false) {
           v.semver, p.created, v.updated, p.creation_method
         FROM packages AS p
           INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE
+          ${queryClause(opts)}
+          ${filterClause(opts)}
           ${
             themes === true
-              ? sqlStorage`AND p.package_type = 'theme'`
+              ? filterClause({ filter: "theme" })
               : sqlStorage``
           })
 
@@ -1834,7 +1782,6 @@ module.exports = {
   updatePackageIncrementDownloadByName,
   updatePackageDecrementDownloadByName,
   getFeaturedThemes,
-  simpleSearch,
   updateIncrementStar,
   updateDecrementStar,
   insertNewUser,

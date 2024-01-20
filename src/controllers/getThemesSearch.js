@@ -40,18 +40,16 @@ module.exports = {
   },
 
   async logic(params, context) {
-    const packs = await context.database.simpleSearch(
-      params.query,
-      params.page,
-      params.direction,
-      params.sort,
+
+    const packs = await context.database.getSortedPackages(
+      params,
       true
     );
 
     if (!packs.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packs).addCalls("db.simpleSearch", packs);
+      return sso.notOk().addContent(packs).addCalls("db.getSortedPackages", packs);
     }
 
     const newPacks = await context.utils.constructPackageObjectShort(
