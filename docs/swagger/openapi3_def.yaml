@@ -1,440 +1,471 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
-  version: "1.0.0"
+  version: 1.1.0
   title: Pulsar
-  description: Allows for the management, viewing, and downloading of packages and themes for use within the Pulsar editor (primarily)
+  description: >-
+    Allows for the management, viewing, and downloading of packages and themes
+    for use within the Pulsar editor.
+  license:
+    name: MIT
+    identifier: MIT
 servers:
   - url: https://api.pulsar-edit.dev
+    description: Production Server
   - url: http://localhost:8080
-security:
-  - ApiKey: []
+    description: Locally hosted development server
 paths:
-  /:
+  /api/login:
     get:
-      summary: Server Status/Version
-      description: Returns a status message containing the server version
-      responses:
-        200:
-          description: The server is running
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Message"
-        404:
-          $ref: "#/components/responses/404"
-          description: The server is not running or you have entered an improper query
-        500:
-          $ref: "#/components/responses/500"
+      summary: OAuth callback URL.
+      responses: {}
+      parameters: []
   /api/oauth:
     get:
-      summary: Get OAuth information
-      description: Currently not implemented
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
+      summary: OAuth Callback URL.
+      responses: {}
+      parameters: []
   /api/packages:
-    get:
-      summary: Retrieve a paginated list of all packages
-      description: Packages are returned 30 at a time
-      parameters:
-        - $ref: "#/components/parameters/queryPageIndex"
-        - $ref: "#/components/parameters/queryFilterType"
-        - $ref: "#/components/parameters/querySortDir"
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PackageArray"
-          headers:
-            link:
-              schema:
-                type: string
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-
     post:
-      summary: Publish a new package
-      description: Currently not implemented
-      security:
-        - GitHub:
-            - packages:publish
+      summary: Publishes a new Package.
+      responses: {}
       parameters:
-        - name: repository
-          in: query
-          schema:
-            type: string
-          example: Spiker985/generic-lsp
-      responses:
-        201:
-          description: Successfully created package
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        400:
-          $ref: "#/components/responses/404"
-        404:
-          $ref: "#/components/responses/404"
-        409:
-          description: A package by the provided name already exists
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        500:
-          $ref: "#/components/responses/500"
+        - $ref: '#/components/parameters/repository'
+        - $ref: '#/components/parameters/auth'
   /api/packages/featured:
     get:
-      summary: Retrieve the currently featured packages
-      description: Returns a maximum of 10 packages
+      summary: Returns all featured packages. Previously undocumented endpoint.
       responses:
-        200:
-          description: ""
+        '200':
+          description: An array of featured packages.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PackageArray"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
+                $ref: '#/components/schemas/packageObjectShortArray'
+      parameters: []
   /api/packages/search:
     get:
-      summary: Search for a package
-      description: Primary method of finding packages to install
-      parameters:
-        - name: q
-          in: query
-          schema:
-            type: string
-          example: generic-lsp
-        - $ref: "#/components/parameters/queryPageIndex"
-        - $ref: "#/components/parameters/queryFilterType"
-        - $ref: "#/components/parameters/querySortDir"
+      summary: Searches all packages.
       responses:
-        200:
-          description: ""
+        '200':
+          description: Any array of packages.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PackageArray"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}:
+                $ref: '#/components/schemas/packageObjectShortArray'
+      parameters:
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/direction'
+        - $ref: '#/components/parameters/query'
+        - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/fileExtension'
+        - $ref: '#/components/parameters/serviceType'
+        - $ref: '#/components/parameters/service'
+        - $ref: '#/components/parameters/serviceVersion'
+        - $ref: '#/components/parameters/owner'
+  /api/pat:
     get:
-      summary: Retrieve the details of a package
-      description: Shows extended information about a package
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-        - name: engine
-          description: Only show packages compatible with a given SemVer
-          in: query
-          schema:
-            type: string
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/PackageDetails"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-    delete:
-      summary: Delete a package entirely
-      description: Deletes an entire package entry. Packages will be flagged for deletion for 30 days to allow time to restore if necessary
-      security:
-        - GitHub:
-            - packages:delete
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-      responses:
-        204:
-          description: Successfully deleted package
-        400:
-          $ref: "#/components/responses/404"
-        401:
-          description: User is not authorized to delete the requested resource
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}/star:
-    post:
-      summary: Star a package
-      description: Watch a package
-      security:
-        - GitHub:
-            - stars:write
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-    delete:
-      summary: Unstar a package
-      description: Stop watching a package
-      security:
-        - GitHub:
-            - stars:write
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-      responses:
-        201:
-          description: An empty response indicates a successful action
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}/stargazers:
+      summary: PAT Token Signup URL.
+      responses: {}
+      parameters: []
+  /:
     get:
-      summary: Retrieve a list of usernames watching a package
-      description: Contains a list of user objects
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserArray"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}/versions:
-    post:
-      summary: Add a new version of a package
-      description: Creates a new package version from a git tag. If rename is not "true" the name field within the package.json must match the existing package name
-      security:
-        - GitHub:
-            - versions:publish
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-        - name: rename
-          in: query
-          schema:
-            type: boolean
-          example: false
-        - name: tag
-          in: query
-          schema:
-            type: string
-          example: 0.0.1
-      responses:
-        201:
-          description: Package version successfully created
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        409:
-          description: A package version by the provided name already exists
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}/versions/{version}:
-    get:
-      summary: Retrieve the details of a specified package version
-      description: ""
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-        - $ref: "#/components/parameters/pathPackageVersion"
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                allOf:
-                  - $ref: "#/components/schemas/PackageMetadata"
-                  - type: object
-                    properties:
-                      dist:
-                        type: string
-
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-    delete:
-      summary: Deletes a package version
-      description: ""
-      security:
-        - GitHub:
-            - versions:delete
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-        - $ref: "#/components/parameters/pathPackageVersion"
-      responses:
-        200:
-          description: Package version successfully deleted
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Message"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}/versions/{version}/events/uninstall:
-    post:
-      summary: Uninstall a package version
-      description: Decrement the download count for the selected package and version
-      security:
-        - GitHub:
-            - packages:uninstall
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-        - $ref: "#/components/parameters/pathPackageVersion"
-          required: false
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-  /api/packages/{packageName}/versions/{version}/tarball:
-    get:
-      summary: Download a specified package version
-      description: ""
-      parameters:
-        - $ref: "#/components/parameters/pathPackageName"
-        - $ref: "#/components/parameters/pathPackageVersion"
-      responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
+      summary: >-
+        Non-Essential endpoint to return status message, and link to Swagger
+        Instance.
+      responses: {}
+      parameters: []
   /api/stars:
     get:
-      summary: Retrieve your starred packages
-      description: ""
-      security:
-        - GitHub:
-            - stars:read
+      summary: List the authenticated users' starred packages.
       responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
+        '200':
+          description: >-
+            Return a value similar to `GET /api/packages`, an array of package
+            objects.
+          content: {}
+      parameters:
+        - $ref: '#/components/parameters/auth'
+  /api/themes:
+    post:
+      summary: Publishes a new Package.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/repository'
+        - $ref: '#/components/parameters/auth'
   /api/themes/featured:
     get:
-      summary: Retrieve the currently featured themes
-      description: ""
+      summary: Display featured packages that are themes.
       responses:
-        200:
-          description: ""
+        '200':
+          description: An array of featured themes.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PackageArray"
+                $ref: '#/components/schemas/packageObjectShortArray'
+      parameters: []
+  /api/themes/search:
+    get:
+      summary: Get featured packages that are themes. Previously undocumented.
+      responses:
+        '200':
+          description: A paginated response of themes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectShortArray'
+      parameters:
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/direction'
+        - $ref: '#/components/parameters/query'
   /api/updates:
     get:
-      summary: Retrieve latest application version
-      description: Currently not implemented
+      summary: List Pulsar Updates
+      description: >-
+        Currently returns 'Not Implemented' as Squirrel AutoUpdate is not
+        supported.
       responses:
-        200:
-          description: ""
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
-        501:
-          $ref: "#/components/responses/501"
-  /api/users/{user}/stars:
+        '200':
+          description: Atom update feed, following the format expected by Squirrel.
+          content: {}
+      parameters: []
+  /api/users:
     get:
-      summary: Retrieve a user's starred packages
-      description: ""
-      parameters:
-        - $ref: "#/components/parameters/pathUsername"
+      summary: >-
+        Display details of the currently authenticated user. This endpoint is
+        undocumented and is somewhat strange.
+      description: >-
+        This endpoint only exists on the web version of the upstream API. Having
+        no backend equivolent.
       responses:
-        200:
-          description: ""
+        '200':
+          description: Details of the Authenticated User Account.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Placeholder"
-        404:
-          $ref: "#/components/responses/404"
-        500:
-          $ref: "#/components/responses/500"
+                $ref: '#/components/schemas/userObjectPrivate'
+      parameters:
+        - $ref: '#/components/parameters/auth'
+  /api/packages/{packageName}/versions/{versionName}:
+    get:
+      summary: Get the details of a specific package version.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/versionName'
+  /api/themes/{packageName}/versions/{versionName}:
+    get:
+      summary: Get the details of a specific package version.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/versionName'
+  /api/packages/{packageName}/star:
+    post:
+      summary: Star a package.
+      responses:
+        '200':
+          description: A 'Package Object Full' of the modified package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+  /api/themes/{packageName}/star:
+    post:
+      summary: Star a package.
+      responses:
+        '200':
+          description: A 'Package Object Full' of the modified package
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+  /api/packages/{packageName}:
+    get:
+      summary: Show package details.
+      responses:
+        '200':
+          description: A 'Package Object Full' of the requested package.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+      parameters:
+        - $ref: '#/components/parameters/engine'
+        - $ref: '#/components/parameters/packageName'
+  /api/themes/{packageName}:
+    get:
+      summary: Show package details.
+      responses:
+        '200':
+          description: A 'Package Object Full' of the requested package.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+      parameters:
+        - $ref: '#/components/parameters/engine'
+        - $ref: '#/components/parameters/packageName'
+  /api/packages/{packageName}/versions/{versionName}/tarball:
+    get:
+      summary: Previously undocumented endpoint. Allows for installation of a package.
+      responses:
+        '0':
+          '302':
+            description: Redirect to the GitHub tarball URL.
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/versionName'
+  /api/themes/{packageName}/versions/{versionName}/tarball:
+    get:
+      summary: Previously undocumented endpoint. Allows for installation of a package.
+      responses:
+        '0':
+          '302':
+            description: Redirect to the GitHub tarball URL.
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/versionName'
+  /api/packages/{packageName}/stargazers:
+    get:
+      summary: List the users that have starred a package.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+  /api/themes/{packageName}/stargazers:
+    get:
+      summary: List the users that have starred a package.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+  /api/packages/{packageName}/versions/{versionName}/events/uninstall:
+    post:
+      summary: Previously undocumented endpoint. Since v1.0.2 has no effect.
+      deprecated: true
+      responses: {}
+      parameters: []
+  /api/themes/{packageName}/versions/{versionName}/events/uninstall:
+    post:
+      summary: Previously undocumented endpoint. Since v1.0.2 has no effect.
+      deprecated: true
+      responses: {}
+      parameters: []
+  /api/packages/{packageName}/versions:
+    post:
+      summary: Creates a new package version.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/rename'
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+  /api/themes/{packageName}/versions:
+    post:
+      summary: Creates a new package version.
+      responses: {}
+      parameters:
+        - $ref: '#/components/parameters/rename'
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+  /api/users/{login}/stars:
+    get:
+      summary: List a user's starred packages.
+      responses:
+        '0':
+          '200':
+            description: Return value is similar to `GET /api/packages`.
+            content: {}
+      parameters:
+        - $ref: '#/components/parameters/login'
+  /api/users/{login}:
+    get:
+      summary: >-
+        Display the details of any user, as well as the packages they have
+        published.
+      responses:
+        '200':
+          description: The public details of a specific user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userObjectPublic'
+        '404':
+          description: The User requested cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/message'
+      parameters:
+        - $ref: '#/components/parameters/login'
+  /api/owners/{ownerName}:
+    get:
+      summary: List all packages published under a single owner.
+      responses:
+        '200':
+          description: A paginated response of packages.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectShortArray'
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/direction'
+        - $ref: '#/components/parameters/owner'
 components:
   parameters:
-    pathPackageName:
-      name: packageName
-      description: The name of the package to use, URL escaped
-      in: path
+    auth:
+      name: auth
+      in: header
+      schema:
+        type: string
       required: true
+      allowEmptyValue: false
+      description: Authorization Headers
+    multiSchema:
+      name: multiSchema
+      owner:
+        name: owner
+        in: query
+        schema:
+          type: string
+        example: pulsar-edit
+        allowEmptyValue: false
+        required: false
+        description: Owner to filter results by.
+      ownerName:
+        name: ownerName
+        in: path
+        schema:
+          type: string
+        example: pulsar-edit
+        allowEmptyValue: false
+        required: true
+        description: Owner of packages to retreive.
+    engine:
+      name: engine
+      in: query
+      schema:
+        type: string
+      example: 1.0.0
+      allowEmptyValue: true
+      description: >-
+        Only show packages compatible with this Pulsar version. Must be a valid
+        Semver.
+    fileExtension:
+      name: fileExtension
+      in: query
+      schema:
+        type: string
+      example: coffee
+      allowEmptyValue: true
+      description: File extension of which to only show compatible grammar package's of.
+    filter:
+      name: filter
+      in: query
+      schema:
+        type: string
+        enum:
+          - package
+          - theme
+        default: pacakge
+      required: false
+      allowEmptyValue: false
+      example: package
+      description: >-
+        Deprecated method to display packages or themes. Use
+        `/api/themes/search` or `/api/packages/search` instead.
+    login:
+      name: login
+      in: path
+      schema:
+        type: string
+      required: true
+      allowEmptyValue: false
+      example: confused-Techie
+      description: The User from the URL Path
+    packageName:
+      name: packageName
+      in: path
+      schema:
+        type: string
+      required: true
+      allowEmptyValue: false
+      example: autocomplete-powershell
+      description: The name of the package to reutrn details for. Must be URL escaped.
+    page:
+      name: page
+      in: query
+      schema:
+        type: number
+        minimum: 1
+        default: 1
+      example: 1
+      allowEmptyValue: true
+      required: false
+      description: The page of available results to return.
+    q:
+      name: q
+      in: query
       schema:
         type: string
       example: generic-lsp
-    pathPackageVersion:
-      name: version
-      in: path
       required: true
+      description: Search Query
+    rename:
+      name: rename
+      in: query
+      schema:
+        type: string
+      example: new-package-name
+      allowEmptyValue: false
+      required: false
+      description: The new package name to rename to, if applicable.
+    repository:
+      name: repository
+      in: query
+      schema:
+        type: string
+      example: pulsar-edit/pulsar
+      allowEmptyValue: false
+      required: true
+      description: Repository to publish.
+    service:
+      name: service
+      in: query
+      schema:
+        type: string
+      example: autocomplete.watchEditor
+      allowEmptyValue: true
+      description: The service of which to filter packages by
+    serviceType:
+      name: serviceType
+      in: query
+      schema:
+        type: string
+        enum:
+          - consumed
+          - provided
+      example: consumed
+      allowEmptyValue: true
+      deescription: >-
+        Choos whether to display 'consumer' or 'providers' of the specified
+        service.
+    serviceVersion:
+      name: serviceVersion
+      in: query
       schema:
         type: string
       example: 0.0.1
-    pathUsername:
-      name: user
-      in: path
-      required: true
-      schema:
-        type: string
-      example: Spiker985
-    queryFilterType:
+      allowEmptyValue: true
+      description: Filter by a specific version of the 'service'
+    sort:
       name: sort
       in: query
       schema:
@@ -444,178 +475,162 @@ components:
           - created_at
           - updated_at
           - stars
+          - relevance
+        default: downloads
       example: downloads
-    queryPageIndex:
-      name: page
-      in: query
-      schema:
-        type: number
-        minimum: 1
-      example: 1
-    querySortDir:
-      name: direction
+      required: false
+      allowEmptyValue: false
+      description: Value to sort search results by.
+    tag:
+      name: tag
       in: query
       schema:
         type: string
-        enum:
-          - desc
-          - asc
-      example: desc
-  responses:
-    404:
-      description: "Requested resource was not found"
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
-    500:
-      description: Unexpected error
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
-    501:
-      description: Feature is not implemented at this time
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Error"
+      example: TODO
+      allowEmptyValue: false
+      required: false
+      description: TODO
+    versionName:
+      name: versionName
+      in: path
+      schema:
+        type: string"
+      required: true
+      allowEmptyValue: false
+      example: 1.0.0
+      description: The version of the package to access
   schemas:
-    Error:
-      type: object
-      required:
-        - message
-      properties:
-        message:
-          description: A human readable error message
-          type: string
-    Message:
-      description: Provides the formatting for API messages
+    message:
+      description: >-
+        A generic object that could contain status information or error
+        messages.
       type: object
       required:
         - message
       properties:
         message:
           type: string
-    Package:
-      description: Defines the base package properties
+    packageObjectFull:
+      description: A 'Package Object Full' of a package on the PPR.
       type: object
       required:
         - name
-        - repository
         - readme
+        - metadata
+        - releases
+        - versions
+        - repository
+        - creation_method
+        - downloads
+        - stargazers_count
+        - badges
+        - owner
       properties:
         name:
           type: string
         readme:
           type: string
         metadata:
-          $ref: "#/components/schemas/PackageMetadata"
-        repository:
-          $ref: "#/components/schemas/PackageRepository"
-        downloads:
-          type: number
-        stargazers_count:
-          type: number
-          nullable: true
+          type: object
         releases:
           type: object
-          properties:
-            latest:
-              type: string
-    PackageArray:
-      description: An array of package objects
-      type: array
-      items:
-        $ref: "#/components/schemas/Package"
-    PackageMetadata:
-      description: Defines the properties provided via the metadata property
-      type: object
-      required:
-        - name
-        - main
-        - version
-        - engines
-      properties:
-        name:
-          type: string
-        main:
-          type: string
-        version:
-          type: string
-        engines:
+        versions:
           type: object
-        theme:
+        repository:
+          type: object
+        creation_method:
           type: string
-          enum:
-            - syntax
-            - ui
-        license:
+        downloads:
           type: string
-    PackageRepository:
-      description: Defines the properties provided via the repository property
-      type: object
-      required:
-        - type
-        - url
-      properties:
-        type:
+        stargazers_count:
           type: string
-        url:
+        badges:
+          type: array
+        owner:
           type: string
-    PackageVersion:
-      description: Defines the properties required by each entry in the versions property
+    packageObjectFullArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/packageObjectFull'
+    packageObjectShort:
+      description: A 'Package Object Short' of a package on the PPR.
       type: object
       required:
         - name
-        - main
-        - version
-        - description
+        - readme
+        - metadata
         - repository
+        - downloads
+        - stargazers_count
+        - releases
+        - badges
+        - owner
       properties:
         name:
           type: string
-        main:
+        readme:
           type: string
-        version:
-          type: string
-        description:
-          type: string
+        metadata:
+          type: object
         repository:
+          type: object
+        creation_method:
           type: string
-    PackageVersionArray:
-      description: An array of package version objects
+        downloads:
+          type: string
+        stargazers_count:
+          type: string
+        releases:
+          type: object
+        badges:
+          type: array
+        owner:
+          type: string
+    packageObjectShortArray:
       type: array
       items:
-        $ref: "#/components/schemas/PackageVersion"
-    Placeholder:
-      description: Hold the place of a yet-to-be-updated schema
-    User:
+        $ref: '#/components/schemas/packageObjectShort'
+    userObjectPrivate:
+      description: Privately returned information of users on Pulsar.
       type: object
       required:
-        - login
+        - username
+        - avatar
+        - data
+        - created_at
+        - packages
       properties:
-        login:
-          description: The username of the user
+        username:
           type: string
-    UserArray:
-      description: An array of user objects
-      type: array
-      items:
-        $ref: "#/components/schemas/User"
-  securitySchemes:
-    GitHub:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: http://yourauthurl.com
-          refreshUrl: http://yourrefreshurl.com
-          scopes:
-            packages:read: Read packages in your account
-            packages:publish: Publish packages in your account
-            packages:delete: Delete packages in your account
-            packages:uninstall: Update uninstall counts in your account
-            versions:publish: Publish package versions in your account
-            versions:delete: Delete package versions in your account
-            stars:read: Read stars in your account
-            stars:write: Update stars in your account
+        avatar:
+          type: string
+        data:
+          type: object
+        node_id:
+          type: string
+        token:
+          type: string
+        created_at:
+          type: string
+        packages:
+          type: array
+    userObjectPublic:
+      description: Publicaly returned information of users on Pulsar.
+      type: object
+      required:
+        - username
+        - avatar
+        - data
+        - created_at
+        - packages
+      properties:
+        username:
+          type: string
+        avatar:
+          type: string
+        data:
+          type: object
+        created_at:
+          type: string
+        packages:
+          type: array
