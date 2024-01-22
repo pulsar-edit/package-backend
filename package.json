@@ -15,6 +15,7 @@
     "lint": "prettier --check -u -w .",
     "complex": "cr --newmi --config .complexrc .",
     "js-docs": "jsdoc2md -c ./jsdoc.conf.js ./src/*.js ./src/controllers/*.js ./src/query_parameters/*.js ./docs/resources/jsdoc_typedef.js > ./docs/reference/Source_Documentation.md",
+    "openapi-docs": "node ./scripts/openapi/main.js",
     "contributors:add": "all-contributors add",
     "migrations": "pg-migrations apply --directory ./scripts/migrations",
     "ignore": "compactignore",
