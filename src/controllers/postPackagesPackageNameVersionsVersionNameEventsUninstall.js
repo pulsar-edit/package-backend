@@ -5,6 +5,7 @@
 module.exports = {
   docs: {
     summary: "Previously undocumented endpoint. Since v1.0.2 has no effect.",
+    deprecated: true
   },
   endpoint: {
     method: "POST",

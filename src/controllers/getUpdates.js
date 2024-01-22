@@ -7,15 +7,13 @@ module.exports = {
     summary: "List Pulsar Updates",
     description:
       "Currently returns 'Not Implemented' as Squirrel AutoUpdate is not supported.",
-    responses: [
-      {
-        200: {
-          description:
-            "Atom update feed, following the format expected by Squirrel.",
-          content: {},
-        },
+    responses: {
+      200: {
+        description:
+          "Atom update feed, following the format expected by Squirrel.",
+        content: {},
       },
-    ],
+    },
   },
   endpoint: {
     method: "GET",
