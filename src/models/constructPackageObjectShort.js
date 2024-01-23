@@ -12,8 +12,7 @@
 
 const logger = require("../logger.js");
 
-module.exports =
-async function constructPackageObjectShort(pack) {
+module.exports = async function constructPackageObjectShort(pack) {
   const parsePackageObject = (p) => {
     let newPack = p.data;
     newPack.downloads = p.downloads;
@@ -77,4 +76,4 @@ async function constructPackageObjectShort(pack) {
 
   logger.generic(6, "Single Package Object Short Constructor without Error");
   return parsePackageObject(pack);
-}
+};

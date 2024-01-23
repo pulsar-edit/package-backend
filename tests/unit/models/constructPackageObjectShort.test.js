@@ -2,7 +2,6 @@ const pos = require("../../../src/models/constructPackageObjectShort.js");
 const schema = require("../../models/packageObjectShort.js").test;
 
 describe("Parses Data, as expected to be returned by the Database", () => {
-
   test("Correctly Parses normal data", async () => {
     const data = {
       name: "test-package",
@@ -13,7 +12,7 @@ describe("Parses Data, as expected to be returned by the Database", () => {
         metadata: {
           name: "test-package",
           license: "MIT",
-          version: "1.0.0"
+          version: "1.0.0",
         },
         releases: { latest: "1.0.0" },
         versions: {
@@ -21,14 +20,14 @@ describe("Parses Data, as expected to be returned by the Database", () => {
             sha: "1234",
             name: "test-package",
             version: "1.0.0",
-            tarball_url: "https://nowhere.com"
-          }
+            tarball_url: "https://nowhere.com",
+          },
         },
         repository: {
           url: "https://github.com/pulsar-edit/test-package",
-          type: "git"
+          type: "git",
         },
-        creation_method: "Test Package"
+        creation_method: "Test Package",
       },
       downloads: "0",
       owner: "pulsar-edit",
@@ -36,7 +35,7 @@ describe("Parses Data, as expected to be returned by the Database", () => {
       semver: "1.0.0",
       created: "2024-01-20T00:46:57.014Z",
       updated: "2024-01-20T00:46:57.014Z",
-      creation_method: "Test Package"
+      creation_method: "Test Package",
     };
 
     const parsed = await pos(data);

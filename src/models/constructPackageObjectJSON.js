@@ -12,8 +12,7 @@
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
 
-module.exports =
-async function constructPackageObjectJSON(pack) {
+module.exports = async function constructPackageObjectJSON(pack) {
   const parseVersionObject = (v) => {
     let newPack = v.meta;
     if (newPack.sha) {
@@ -43,4 +42,4 @@ async function constructPackageObjectJSON(pack) {
 
   logger.generic(66, "Array Package Object JSON finished without Error");
   return arrPack;
-}
+};

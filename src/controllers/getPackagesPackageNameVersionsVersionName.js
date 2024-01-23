@@ -9,10 +9,10 @@ module.exports = {
       200: {
         description: "The `package.json` among other details of the package.",
         content: {
-          "application/json": "$packageObjectJSON"
-        }
-      }
-    }
+          "application/json": "$packageObjectJSON",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",

@@ -10,9 +10,9 @@ module.exports = {
       "Previously undocumented endpoint. Allows for installation of a package.",
     responses: {
       302: {
-        description: "Redirect to the GitHub tarball URL."
-      }
-    }
+        description: "Redirect to the GitHub tarball URL.",
+      },
+    },
   },
   endpoint: {
     method: "GET",

@@ -19,5 +19,5 @@ module.exports = {
     constructPackageObjectFull: require("./models/constructPackageObjectFull.js"),
     constructPackageObjectShort: require("./models/constructPackageObjectShort.js"),
     constructPackageObjectJSON: require("./models/constructPackageObjectJSON.js"),
-  }
+  },
 };

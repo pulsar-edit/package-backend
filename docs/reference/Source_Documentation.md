@@ -1274,9 +1274,6 @@ A helper for any functions that are agnostic in handlers.
 
 * [utils](#module_utils)
     * [~isPackageNameBanned(name)](#module_utils..isPackageNameBanned) ⇒ <code>object</code>
-    * [~constructPackageObjectFull(pack)](#module_utils..constructPackageObjectFull) ⇒ <code>object</code>
-    * [~constructPackageObjectShort(pack)](#module_utils..constructPackageObjectShort) ⇒ <code>object</code> \| <code>array</code>
-    * [~constructPackageObjectJSON(pack)](#module_utils..constructPackageObjectJSON) ⇒ <code>object</code>
     * [~engineFilter()](#module_utils..engineFilter) ⇒ <code>object</code>
     * [~semverArray(semver)](#module_utils..semverArray) ⇒ <code>array</code> \| <code>null</code>
     * [~semverGt(a1, a2)](#module_utils..semverGt) ⇒ <code>boolean</code>
@@ -1300,59 +1297,6 @@ false otherwise.
 | Param | Type | Description |
 | --- | --- | --- |
 | name | <code>string</code> | The name of the package to check if it is banned. |
-
-<a name="module_utils..constructPackageObjectFull"></a>
-
-### utils~constructPackageObjectFull(pack) ⇒ <code>object</code>
-Takes the raw return of a full row from database.getPackageByName() and
-constructs a standardized package object full from it.
-This should be called only on the data provided by database.getPackageByName(),
-otherwise the behavior is unexpected.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>object</code> - A properly formatted and converted Package Object Full.  
-**See**
-
-- [https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-full](https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-full)
-- [https://github.com/confused-Techie/atom-backend/blob/main/docs/queries.md#retrieve-single-package--package-object-full](https://github.com/confused-Techie/atom-backend/blob/main/docs/queries.md#retrieve-single-package--package-object-full)
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| pack | <code>object</code> | The anticipated raw SQL return that contains all data to construct a Package Object Full. |
-
-<a name="module_utils..constructPackageObjectShort"></a>
-
-### utils~constructPackageObjectShort(pack) ⇒ <code>object</code> \| <code>array</code>
-Takes a single or array of rows from the db, and returns a JSON
-construction of package object shorts
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>object</code> \| <code>array</code> - A properly formatted and converted Package Object Short.  
-**See**
-
-- [https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-short](https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-short)
-- [https://github.com/confused-Techie/atom-backend/blob/main/docs/queries.md#retrieve-many-sorted-packages--package-object-short](https://github.com/confused-Techie/atom-backend/blob/main/docs/queries.md#retrieve-many-sorted-packages--package-object-short)
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| pack | <code>object</code> | The anticipated raw SQL return that contains all data to construct a Package Object Short. |
-
-<a name="module_utils..constructPackageObjectJSON"></a>
-
-### utils~constructPackageObjectJSON(pack) ⇒ <code>object</code>
-Takes the return of getPackageVersionByNameAndVersion and returns
-a recreation of the package.json with a modified dist.tarball key, pointing
-to this server for download.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>object</code> - A properly formatted Package Object Mini.  
-**See**: [https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-mini](https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-mini)  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| pack | <code>object</code> | The expected raw SQL return of `getPackageVersionByNameAndVersion` |
 
 <a name="module_utils..engineFilter"></a>
 
