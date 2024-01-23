@@ -5,6 +5,14 @@
 module.exports = {
   docs: {
     summary: "Publishes a new Package.",
+    responses: {
+      201: {
+        description: "The package's details indicating success.",
+        content: {
+          "application/json": "$packageObjectFull"
+        }
+      }
+    }
   },
   endpoint: {
     method: "POST",

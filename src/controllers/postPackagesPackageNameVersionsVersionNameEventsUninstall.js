@@ -5,7 +5,13 @@
 module.exports = {
   docs: {
     summary: "Previously undocumented endpoint. Since v1.0.2 has no effect.",
-    deprecated: true
+    deprecated: true,
+    responses: {
+      201: {
+        description: "A generic message indicating success, included only for backwards compatibility.",
+        content: {}
+      }
+    }
   },
   endpoint: {
     method: "POST",
