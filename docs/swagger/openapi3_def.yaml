@@ -17,12 +17,16 @@ paths:
   /api/login:
     get:
       summary: OAuth callback URL.
-      responses: {}
+      responses:
+        '302':
+          description: A redirect to the GitHub OAuth Authorization login flow.
       parameters: []
   /api/oauth:
     get:
       summary: OAuth Callback URL.
-      responses: {}
+      responses:
+        '302':
+          description: A redirect to the Pulsar Package Website User page.
       parameters: []
   /api/packages:
     post:
@@ -83,7 +87,10 @@ paths:
           description: >-
             Return a value similar to `GET /api/packages`, an array of package
             objects.
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectShortArray'
       parameters:
         - $ref: '#/components/parameters/auth'
   /api/themes:
@@ -150,14 +157,26 @@ paths:
   /api/packages/{packageName}/versions/{versionName}:
     get:
       summary: Get the details of a specific package version.
-      responses: {}
+      responses:
+        '200':
+          description: The 'package.json' plus more details of a single package version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectJSON'
       parameters:
         - $ref: '#/components/parameters/packageName'
         - $ref: '#/components/parameters/versionName'
   /api/themes/{packageName}/versions/{versionName}:
     get:
       summary: Get the details of a specific package version.
-      responses: {}
+      responses:
+        '200':
+          description: The 'package.json' plus more details of a single package version.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectJSON'
       parameters:
         - $ref: '#/components/parameters/packageName'
         - $ref: '#/components/parameters/versionName'
@@ -234,13 +253,25 @@ paths:
   /api/packages/{packageName}/stargazers:
     get:
       summary: List the users that have starred a package.
-      responses: {}
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userObjectPublicArray'
       parameters:
         - $ref: '#/components/parameters/packageName'
   /api/themes/{packageName}/stargazers:
     get:
       summary: List the users that have starred a package.
-      responses: {}
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/userObjectPublicArray'
       parameters:
         - $ref: '#/components/parameters/packageName'
   /api/packages/{packageName}/versions/{versionName}/events/uninstall:
@@ -277,7 +308,10 @@ paths:
       responses:
         '200':
           description: Return value is similar to `GET /api/packages`.
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectShortArray'
       parameters:
         - $ref: '#/components/parameters/login'
   /api/users/{login}:
@@ -631,3 +665,7 @@ components:
           type: string
         packages:
           type: array
+    userObjectPublicArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/userObjectPublic'

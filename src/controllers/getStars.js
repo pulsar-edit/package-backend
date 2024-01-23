@@ -9,7 +9,9 @@ module.exports = {
       200: {
         description:
           "Return a value similar to `GET /api/packages`, an array of package objects.",
-        content: {},
+        content: {
+          "application/json": "$packageObjectShortArray"
+        },
       },
     },
   },

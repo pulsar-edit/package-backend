@@ -7,6 +7,11 @@ const superagent = require("superagent");
 module.exports = {
   docs: {
     summary: "OAuth Callback URL.",
+    responses: {
+      302: {
+        description: "A redirect to the Pulsar Package Website User page."
+      }
+    }
   },
   endpoint: {
     method: "GET",

@@ -5,6 +5,14 @@
 module.exports = {
   docs: {
     summary: "Get the details of a specific package version.",
+    responses: {
+      200: {
+        description: "The 'package.json' plus more details of a single package version.",
+        content: {
+          "application/json": "$packageObjectJSON"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",
