@@ -158,6 +158,12 @@ function craftParametersFromObject(node) {
     });
   }
 
+  for (const param in node.manualParams) {
+    params.push({
+      [param]: node.manualParams[param]
+    });
+  }
+
   return params;
 }
 

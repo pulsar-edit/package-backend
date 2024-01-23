@@ -36,7 +36,7 @@ components:
       name: filter
       required: false
       schema:
-        default: pacakge
+        default: package
         enum:
           - package
           - theme
@@ -362,7 +362,17 @@ paths:
       summary: OAuth callback URL.
   /api/oauth:
     get:
-      parameters: []
+      parameters:
+        - state:
+            allowEmptyValue: false
+            description: >-
+              An unguessable random string. It is used to protect against
+              cross-site request forgery attacks.
+            in: query
+            name: state
+            required: true
+            schema:
+              type: string
       responses:
         '302':
           description: A redirect to the Pulsar Package Website User page.
@@ -387,7 +397,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/repository'
         - $ref: '#/components/parameters/auth'
-      responses: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+          description: The package's details indicating success.
       summary: Publishes a new Package.
   /api/packages/featured:
     get:
@@ -465,7 +481,13 @@ paths:
         - $ref: '#/components/parameters/rename'
         - $ref: '#/components/parameters/auth'
         - $ref: '#/components/parameters/packageName'
-      responses: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+          description: The package details indicating success.
       summary: Creates a new package version.
   /api/packages/{packageName}/versions/{versionName}:
     get:
@@ -484,7 +506,12 @@ paths:
     post:
       deprecated: true
       parameters: []
-      responses: {}
+      responses:
+        '201':
+          content: {}
+          description: >-
+            A generic message indicating success, included only for backwards
+            compatibility.
       summary: Previously undocumented endpoint. Since v1.0.2 has no effect.
   /api/packages/{packageName}/versions/{versionName}/tarball:
     get:
@@ -519,7 +546,13 @@ paths:
       parameters:
         - $ref: '#/components/parameters/repository'
         - $ref: '#/components/parameters/auth'
-      responses: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+          description: The package's details indicating success.
       summary: Publishes a new Package.
   /api/themes/featured:
     get:
@@ -591,7 +624,13 @@ paths:
         - $ref: '#/components/parameters/rename'
         - $ref: '#/components/parameters/auth'
         - $ref: '#/components/parameters/packageName'
-      responses: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectFull'
+          description: The package details indicating success.
       summary: Creates a new package version.
   /api/themes/{packageName}/versions/{versionName}:
     get:
@@ -610,7 +649,12 @@ paths:
     post:
       deprecated: true
       parameters: []
-      responses: {}
+      responses:
+        '201':
+          content: {}
+          description: >-
+            A generic message indicating success, included only for backwards
+            compatibility.
       summary: Previously undocumented endpoint. Since v1.0.2 has no effect.
   /api/themes/{packageName}/versions/{versionName}/tarball:
     get:

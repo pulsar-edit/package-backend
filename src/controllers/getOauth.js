@@ -24,6 +24,18 @@ module.exports = {
     },
     endpointKind: "raw",
   },
+  manualParams: {
+    state: {
+      name: "state",
+      in: "query",
+      schema: {
+        type: "string"
+      },
+      required: true,
+      allowEmptyValue: false,
+      description: "An unguessable random string. It is used to protect against cross-site request forgery attacks."
+    }
+  },
 
   async logic(req, res, context) {
     let params = {
