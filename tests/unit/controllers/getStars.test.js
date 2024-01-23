@@ -107,7 +107,7 @@ describe("Returns as expected", () => {
         return { ok: true, content: {} };
       },
     };
-    localContext.utils = {
+    localContext.models = {
       constructPackageObjectShort: () => {
         return { item: "is_a_package" };
       },

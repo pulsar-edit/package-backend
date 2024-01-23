@@ -8,13 +8,11 @@ module.exports = {
   docs: {
     summary:
       "Previously undocumented endpoint. Allows for installation of a package.",
-    responses: [
-      {
-        302: {
-          description: "Redirect to the GitHub tarball URL.",
-        },
-      },
-    ],
+    responses: {
+      302: {
+        description: "Redirect to the GitHub tarball URL."
+      }
+    }
   },
   endpoint: {
     method: "GET",

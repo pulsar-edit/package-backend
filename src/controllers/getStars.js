@@ -88,7 +88,7 @@ module.exports = {
         .addCalls("db.getPackageCollectionByID", packCol);
     }
 
-    let newCol = await context.utils.constructPackageObjectShort(
+    let newCol = await context.models.constructPackageObjectShort(
       packCol.content
     );
 
