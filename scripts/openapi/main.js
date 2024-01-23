@@ -62,7 +62,8 @@ constructAndAddSchemas();
 
 // Now to write out file
 const specFile = yaml.dump(spec, {
-  noRefs: true
+  noRefs: true,
+  sortKeys: true
 });
 
 fs.writeFileSync(SPEC_LOC, specFile, { encoding: "utf8" });
