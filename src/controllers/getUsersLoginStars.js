@@ -5,14 +5,12 @@
 module.exports = {
   docs: {
     summary: "List a user's starred packages.",
-    responses: [
-      {
-        200: {
-          description: "Return value is similar to `GET /api/packages`.",
-          content: {},
-        },
+    responses: {
+      200: {
+        description: "Return value is similar to `GET /api/packages`.",
+        content: {},
       },
-    ],
+    },
   },
   endpoint: {
     method: "GET",
