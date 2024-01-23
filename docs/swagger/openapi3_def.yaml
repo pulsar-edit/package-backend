@@ -583,6 +583,23 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/packageObjectFull'
+    packageObjectJSON:
+      description: The `package.json` of a package with an added `dist.tarball` object.
+      type: object
+      required:
+        - name
+        - version
+        - engines
+        - dist
+      properties:
+        name:
+          type: string
+        version:
+          type: object
+        engines:
+          type: object
+        dist:
+          type: object
     packageObjectShort:
       description: A 'Package Object Short' of a package on the PPR.
       type: object
