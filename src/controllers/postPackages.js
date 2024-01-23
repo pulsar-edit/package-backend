@@ -219,7 +219,7 @@ module.exports = {
         .addCalls("db.getPackageByName", newDbPack);
     }
 
-    const packageObjectFull = await context.utils.constructPackageObjectFull(
+    const packageObjectFull = await context.models.constructPackageObjectFull(
       newDbPack.content
     );
 

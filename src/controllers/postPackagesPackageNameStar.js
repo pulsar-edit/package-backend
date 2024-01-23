@@ -73,7 +73,7 @@ module.exports = {
         .addCalls("db.getPackageByName", pack);
     }
 
-    pack = await context.utils.constructPackageObjectFull(pack.content);
+    pack = await context.models.constructPackageObjectFull(pack.content);
 
     const sso = new context.sso();
 

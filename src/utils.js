@@ -4,7 +4,6 @@
  */
 const logger = require("./logger.js");
 const storage = require("./storage.js");
-const { server_url } = require("./config.js").getConfig();
 const crypto = require("crypto");
 
 /**
@@ -30,182 +29,6 @@ async function isPackageNameBanned(name) {
 
   logger.generic(6, "Success Status while retrieving Name Ban List.");
   return banList.content.find((b) => name === b) ? { ok: true } : { ok: false };
-}
-
-/**
- * @async
- * @function constructPackageObjectFull
- * @desc Takes the raw return of a full row from database.getPackageByName() and
- * constructs a standardized package object full from it.
- * This should be called only on the data provided by database.getPackageByName(),
- * otherwise the behavior is unexpected.
- * @param {object} pack - The anticipated raw SQL return that contains all data
- * to construct a Package Object Full.
- * @returns {object} A properly formatted and converted Package Object Full.
- * @see {@link https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-full}
- * @see {@link https://github.com/confused-Techie/atom-backend/blob/main/docs/queries.md#retrieve-single-package--package-object-full}
- */
-async function constructPackageObjectFull(pack) {
-  const parseVersions = (vers) => {
-    let retVer = {};
-
-    for (const v of vers) {
-      retVer[v.semver] = v.meta;
-      retVer[v.semver].license = v.license;
-      retVer[v.semver].engines = v.engines;
-      retVer[v.semver].dist = {
-        tarball: `${server_url}/api/packages/${pack.name}/versions/${v.semver}/tarball`,
-      };
-    }
-
-    return retVer;
-  };
-
-  // We need to copy the metadata of the latest version in order to avoid an
-  // auto-reference in the versions array that leads to a freeze in JSON stringify stage.
-  //let newPack = structuredClone(pack?.versions[0]?.meta ?? {});
-  let newPack = pack.data;
-  newPack.name = pack.name;
-  newPack.downloads = pack.downloads;
-  newPack.owner = pack.owner;
-  newPack.stargazers_count = pack.stargazers_count;
-  newPack.versions = parseVersions(pack.versions);
-  // database.getPackageByName() sorts the JSON array versions in descending order,
-  // so no need to find the latest semver, it's the first one (index 0).
-  newPack.releases = { latest: pack?.versions[0]?.semver ?? "" };
-
-  if (!Array.isArray(newPack.badges)) {
-    // A package that has yet to receive any permenant badges
-    newPack.badges = [];
-  }
-
-  // Apply any custom deliver time badges
-  if (pack.creation_method === "User Made Package") {
-    newPack.badges.push({
-      title: "Made for Pulsar!",
-      type: "success",
-    });
-  }
-
-  logger.generic(6, "Built Package Object Full without Error");
-
-  return newPack;
-}
-
-/**
- * @async
- * @function constructPackageObjectShort
- * @desc Takes a single or array of rows from the db, and returns a JSON
- * construction of package object shorts
- * @param {object} pack - The anticipated raw SQL return that contains all data
- * to construct a Package Object Short.
- * @returns {object|array} A properly formatted and converted Package Object Short.
- * @see {@link https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-short}
- * @see {@link https://github.com/confused-Techie/atom-backend/blob/main/docs/queries.md#retrieve-many-sorted-packages--package-object-short}
- */
-async function constructPackageObjectShort(pack) {
-  const parsePackageObject = (p) => {
-    let newPack = p.data;
-    newPack.downloads = p.downloads;
-    newPack.stargazers_count = p.stargazers_count;
-    newPack.releases = {
-      latest: p.semver,
-    };
-
-    if (!Array.isArray(newPack.badges)) {
-      // A package that has yet to receive any permenant badges
-      newPack.badges = [];
-    }
-
-    // Apply any custom deliver time badges
-    if (p.creation_method === "User Made Package") {
-      newPack.badges.push({ title: "Made for Pulsar!", type: "success" });
-    }
-
-    // Remove keys that aren't intended to exist in a Package Object Short
-    delete newPack.versions;
-
-    newPack.owner = p.owner;
-    return newPack;
-  };
-
-  if (Array.isArray(pack)) {
-    if (pack.length === 0) {
-      // Sometimes it seems an empty array will be passed here, in that case we will protect against
-      // manipulation of `undefined` objects
-      logger.generic(
-        5,
-        "Package Object Short Constructor Protected against 0 Length Array"
-      );
-
-      return pack;
-    }
-
-    let retPacks = [];
-    for (const p of pack) {
-      retPacks.push(parsePackageObject(p));
-    }
-
-    logger.generic(6, "Array Package Object Short Constructor without Error");
-    return retPacks;
-  }
-
-  // Not an array
-  if (
-    pack.data === undefined ||
-    pack.downloads === undefined ||
-    pack.stargazers_count === undefined ||
-    pack.semver === undefined
-  ) {
-    logger.generic(
-      5,
-      "Package Object Short Constructor Protected against Undefined Required Values"
-    );
-
-    return {};
-  }
-
-  logger.generic(6, "Single Package Object Short Constructor without Error");
-  return parsePackageObject(pack);
-}
-
-/**
- * @async
- * @function constructPackageObjectJSON
- * @desc Takes the return of getPackageVersionByNameAndVersion and returns
- * a recreation of the package.json with a modified dist.tarball key, pointing
- * to this server for download.
- * @param {object} pack - The expected raw SQL return of `getPackageVersionByNameAndVersion`
- * @returns {object} A properly formatted Package Object Mini.
- * @see {@link https://github.com/confused-Techie/atom-backend/blob/main/docs/returns.md#package-object-mini}
- */
-async function constructPackageObjectJSON(pack) {
-  const parseVersionObject = (v) => {
-    let newPack = v.meta;
-    if (newPack.sha) {
-      delete newPack.sha;
-    }
-    newPack.dist ??= {};
-    newPack.dist.tarball = `${server_url}/api/packages/${v.meta.name}/versions/${v.semver}/tarball`;
-    newPack.engines = v.engines;
-    logger.generic(6, "Single Package Object JSON finished without Error");
-    return newPack;
-  };
-
-  if (!Array.isArray(pack)) {
-    const newPack = parseVersionObject(pack);
-
-    logger.generic(6, "Single Package Object JSON finished without Error");
-    return newPack;
-  }
-
-  let arrPack = [];
-  for (const p of pack) {
-    arrPack.push(parseVersionObject(p));
-  }
-
-  logger.generic(66, "Array Package Object JSON finished without Error");
-  return arrPack;
 }
 
 /**
@@ -538,9 +361,6 @@ function generateRandomString(n) {
 
 module.exports = {
   isPackageNameBanned,
-  constructPackageObjectFull,
-  constructPackageObjectShort,
-  constructPackageObjectJSON,
   engineFilter,
   semverArray,
   semverGt,

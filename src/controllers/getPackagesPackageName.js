@@ -54,7 +54,7 @@ module.exports = {
       return sso.notOk().addContent(pack).addCalls("db.getPackageByName", pack);
     }
 
-    pack = await context.utils.constructPackageObjectFull(pack.content);
+    pack = await context.models.constructPackageObjectFull(pack.content);
 
     if (params.engine !== false) {
       // query.engine returns false if no valid query param is found.

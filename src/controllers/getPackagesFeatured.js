@@ -45,7 +45,7 @@ module.exports = {
         .addCalls("db.getFeaturedPackages", packs);
     }
 
-    const packObjShort = await context.utils.constructPackageObjectShort(
+    const packObjShort = await context.models.constructPackageObjectShort(
       packs.content
     );
 

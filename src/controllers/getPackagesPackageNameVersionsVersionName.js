@@ -72,7 +72,7 @@ module.exports = {
         .addCalls("db.getPackageVersionByNameAndVersion", pack);
     }
 
-    const packRes = await context.utils.constructPackageObjectJSON(
+    const packRes = await context.models.constructPackageObjectJSON(
       pack.content
     );
 
