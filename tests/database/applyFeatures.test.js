@@ -1,4 +1,4 @@
-const database = require("../../src/database.js");
+const database = require("../../src/database/_export.js");
 
 afterAll(async () => {
   await database.shutdownSQL();

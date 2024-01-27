@@ -3,7 +3,7 @@
 // but greater control in mocking these later on
 module.exports = {
   logger: require("./logger.js"),
-  database: require("./database.js"),
+  database: require("./database/_export.js"),
   webhook: require("./webhook.js"),
   server_version: require("../package.json").version,
   query: require("./query_parameters/index.js").logic,
