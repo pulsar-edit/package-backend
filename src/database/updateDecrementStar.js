@@ -64,5 +64,5 @@ module.exports = {
       ok: true,
       content: "Package Successfully Unstarred",
     };
-  }
+  },
 };

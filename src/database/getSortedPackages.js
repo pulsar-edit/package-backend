@@ -48,7 +48,11 @@ module.exports = {
           INNER JOIN versions AS v ON (p.pointer = v.package AND v.deleted IS FALSE
           ${clause.queryClause(sql, opts)}
           ${clause.filterClause(sql, opts)}
-          ${themes === true ? clause.filterClause(sql, { filter: "theme" }) : sql``})
+          ${
+            themes === true
+              ? clause.filterClause(sql, { filter: "theme" })
+              : sql``
+          })
 
         WHERE p.name IS NOT NULL
 
@@ -60,9 +64,7 @@ module.exports = {
       )
       SELECT *, COUNT(*) OVER() AS query_result_count
       FROM latest_versions
-      ORDER BY ${orderType} ${
-      opts.direction === "desc" ? sql`DESC` : sql`ASC`
-    }
+      ORDER BY ${orderType} ${opts.direction === "desc" ? sql`DESC` : sql`ASC`}
       LIMIT ${limit}
       OFFSET ${offset};
     `;
@@ -82,5 +84,5 @@ module.exports = {
         limit,
       },
     };
-  }
+  },
 };

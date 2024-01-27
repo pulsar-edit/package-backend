@@ -23,5 +23,5 @@ function getOrderField(method, sql) {
 }
 
 module.exports = {
-  getOrderField
+  getOrderField,
 };

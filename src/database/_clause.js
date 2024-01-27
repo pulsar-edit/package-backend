@@ -79,5 +79,5 @@ module.exports = {
   filterClause,
   ownerClause,
   serviceClause,
-  fileExtensionClause
-}
+  fileExtensionClause,
+};

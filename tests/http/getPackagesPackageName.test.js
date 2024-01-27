@@ -5,7 +5,6 @@ const context = require("../../src/context.js");
 const genPackage = require("../helpers/package.jest.js");
 
 describe("Behaves as expected", () => {
-
   test("Returns 'not_found' when package doesn't exist", async () => {
     const sso = await endpoint.logic(
       {

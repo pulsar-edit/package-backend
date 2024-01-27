@@ -52,5 +52,5 @@ module.exports = {
     }
 
     return { ok: true, content: command[0].keycode };
-  }
+  },
 };

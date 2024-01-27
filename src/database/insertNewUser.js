@@ -24,5 +24,5 @@ module.exports = {
           content: `Unable to create user: ${username}`,
           short: "Server Error",
         };
-  }
+  },
 };

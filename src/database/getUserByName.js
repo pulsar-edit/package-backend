@@ -21,5 +21,5 @@ module.exports = {
           content: `Unable to query for user: ${username}`,
           short: "not_found",
         };
-  }
+  },
 };

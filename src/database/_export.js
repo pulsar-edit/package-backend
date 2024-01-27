@@ -6,14 +6,8 @@
 const fs = require("fs");
 const postgres = require("postgres");
 const logger = require("../logger.js");
-const {
-  DB_HOST,
-  DB_USER,
-  DB_PASS,
-  DB_DB,
-  DB_PORT,
-  DB_SSL_CERT
-} = require("../config.js").getConfig();
+const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
+  require("../config.js").getConfig();
 
 // While the below method of exporting the additional database modules is nonstandard
 // it lets us accomplish several things:
@@ -28,27 +22,27 @@ let sqlStorage; // SQL Object to interact with the DB
 
 function setupSQL() {
   return process.env.PULSAR_STATUS === "dev" && process.env.MOCK_DB !== "false"
-  ? postgres({
-      host: DB_HOST,
-      username: DB_USER,
-      database: DB_DB,
-      port: DB_PORT
-  })
-  : postgres({
-      host: DB_HOST,
-      username: DB_USER,
-      password: DB_PASS,
-      database: DB_DB,
-      port: DB_PORT,
-      ssl: {
-        rejectUnauthorized: true,
-        ca: fs.readFileSync(DB_SSL_CERT).toString()
-      }
-  });
+    ? postgres({
+        host: DB_HOST,
+        username: DB_USER,
+        database: DB_DB,
+        port: DB_PORT,
+      })
+    : postgres({
+        host: DB_HOST,
+        username: DB_USER,
+        password: DB_PASS,
+        database: DB_DB,
+        port: DB_PORT,
+        ssl: {
+          rejectUnauthorized: true,
+          ca: fs.readFileSync(DB_SSL_CERT).toString(),
+        },
+      });
 }
 
 function getSqlStorage() {
-  return sqlStorage ??= setupSQL();
+  return (sqlStorage ??= setupSQL());
 }
 
 function wrapper(modToUse) {
@@ -56,22 +50,19 @@ function wrapper(modToUse) {
   return async (...args) => {
     // Wrap all function calls in a try catch with a singular error handler
     try {
-
       // Call the function passing the `sqlStorage` object can other provided params
       return modToUse.exec(getSqlStorage(), ...args);
-
-    } catch(err) {
+    } catch (err) {
       // Generic Error Catcher for all database modules
       return {
         ok: false,
         content: "Generic Error",
         short: "server_error",
-        error: err
+        error: err,
       };
-
     }
   };
-};
+}
 
 const exportObj = {
   shutdownSQL: async () => {
@@ -79,7 +70,7 @@ const exportObj = {
       await sqlStorage.end();
       logger.generic(1, "SQL Server Shutdown!");
     }
-  }
+  },
 };
 
 // Add all other modules here:

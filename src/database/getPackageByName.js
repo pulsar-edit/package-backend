@@ -25,9 +25,7 @@ module.exports = {
         JSONB_AGG(
           JSON_BUILD_OBJECT(
             ${
-              user
-                ? sql``
-                : sql`'id', v.id, 'package', v.package,`
+              user ? sql`` : sql`'id', v.id, 'package', v.package,`
             } 'semver', v.semver, 'license', v.license, 'engine', v.engine, 'meta', v.meta,
             'hasGrammar', v.has_grammar, 'hasSnippets', v.has_snippets,
             'supportedLanguages', v.supported_languages
@@ -47,5 +45,5 @@ module.exports = {
           content: `package ${name} not found.`,
           short: "not_found",
         };
-  }
+  },
 };

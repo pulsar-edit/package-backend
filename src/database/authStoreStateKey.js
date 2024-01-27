@@ -22,5 +22,5 @@ module.exports = {
           content: `The state key has not been saved on the database.`,
           short: "server_error",
         };
-  }
+  },
 };

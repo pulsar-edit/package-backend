@@ -21,13 +21,12 @@ module.exports = {
     return command.count === 0
       ? {
           ok: true,
-          content: `${name} is available to be used for a new package.`
+          content: `${name} is available to be used for a new package.`,
         }
       : {
           ok: false,
           content: `${name} is not available to be used for a new package.`,
-          short: "not_found"
+          short: "not_found",
         };
-      
-  }
+  },
 };

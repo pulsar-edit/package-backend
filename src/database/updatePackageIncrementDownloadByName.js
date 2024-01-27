@@ -24,5 +24,5 @@ module.exports = {
           content: "Unable to Update Package Download",
           short: "Server Error",
         };
-  }
+  },
 };

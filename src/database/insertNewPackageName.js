@@ -76,5 +76,5 @@ module.exports = {
               error: err,
             };
       });
-  }
+  },
 };

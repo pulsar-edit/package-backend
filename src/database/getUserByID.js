@@ -29,5 +29,5 @@ module.exports = {
           content: `Unable to get user by ID: ${id}`,
           short: "server_error",
         };
-  }
+  },
 };

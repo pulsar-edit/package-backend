@@ -44,5 +44,5 @@ module.exports = {
           content: "Unable to Update Package Stargazers",
           short: "server_error",
         };
-  }
+  },
 };

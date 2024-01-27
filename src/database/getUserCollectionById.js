@@ -33,5 +33,5 @@ module.exports = {
     }
 
     return { ok: true, content: userArray };
-  }
+  },
 };

@@ -24,5 +24,5 @@ module.exports = {
           content: `Package ${name} and Version ${version} not found.`,
           short: "not_found",
         };
-  }
+  },
 };

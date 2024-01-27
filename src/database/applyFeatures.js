@@ -85,5 +85,5 @@ module.exports = {
     return {
       ok: true,
     };
-  }
+  },
 };

@@ -27,5 +27,5 @@ module.exports = {
     return command.count !== 0
       ? { ok: true, content: command }
       : { ok: false, content: "No packages found.", short: "not_found" };
-  }
+  },
 };

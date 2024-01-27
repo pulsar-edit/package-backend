@@ -3,6 +3,6 @@
 module.exports = {
   defaults: {
     engine: { atom: "*" },
-    license: "NONE"
-  }
+    license: "NONE",
+  },
 };

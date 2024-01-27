@@ -4,7 +4,6 @@ const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPublic.js");
 
 describe("Behaves as expected", () => {
-
   test("Returns bad SSO on failure", async () => {
     const userName = "our-test-user";
 

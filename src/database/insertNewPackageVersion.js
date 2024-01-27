@@ -102,7 +102,8 @@ module.exports = {
         // The only requirement is that the provided semver is not already present
         // in the database for the targeted package.
 
-        const license = packJSON.metadata.license ?? _constants.defaults.license;
+        const license =
+          packJSON.metadata.license ?? _constants.defaults.license;
         const engine = packJSON.metadata.engines ?? _constants.defaults.engine;
 
         let addVer = {};
@@ -155,5 +156,5 @@ module.exports = {
               error: err,
             };
       });
-  }
+  },
 };

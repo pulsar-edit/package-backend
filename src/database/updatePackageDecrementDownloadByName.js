@@ -24,5 +24,5 @@ module.exports = {
           content: "Unable to decrement Package Download Count",
           short: "server_error",
         };
-  }
+  },
 };

@@ -68,5 +68,5 @@ module.exports = {
         content: `Package Already Starred`,
       };
     }
-  }
+  },
 };

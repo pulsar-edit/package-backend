@@ -25,5 +25,5 @@ module.exports = {
         : [];
 
     return { ok: true, content: packArray };
-  }
+  },
 };

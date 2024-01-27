@@ -8,7 +8,8 @@
  */
 
 const storage = require("../storage.js");
-const getPackageCollectionByName = require("./getPackageCollectionByName.js").exec;
+const getPackageCollectionByName =
+  require("./getPackageCollectionByName.js").exec;
 
 module.exports = {
   safe: false,
@@ -20,5 +21,5 @@ module.exports = {
     }
 
     return await getPackageCollectionByName(sql, featuredArray.content);
-  }
+  },
 };
