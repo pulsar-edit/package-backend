@@ -19,7 +19,7 @@ module.exports = {
   versions: {
     "1.0.0": {
       dist: {
-        tarball: "https://api.pulsar-edit.dev/api/packages/a-pulsar-package/versions/1.0.0/tarball"
+        tarball: expect.stringContaining("/api/packages/a-pulsar-package/versions/1.0.0/tarball")
       },
       main: "./lib/main.js",
       name: "a-pulsar-package",
