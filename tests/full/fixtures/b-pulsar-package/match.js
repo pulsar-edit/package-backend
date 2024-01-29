@@ -19,7 +19,7 @@ module.exports = {
   versions: {
     "2.0.0": {
       dist: {
-        tarball: expect.stringContaining("api/packages/b-pulsar-package/versions/2.0.0/tarball")
+        tarball: expect.stringContaining("/api/packages/b-pulsar-package/versions/2.0.0/tarball")
       },
       main: "./lib/main.js",
       name: "b-pulsar-package",
@@ -30,7 +30,7 @@ module.exports = {
     },
     "1.0.0": {
       dist: {
-        tarball: expect.stringContaining("api/packages/b-pulsar-package/versions/1.0.0/tarball")
+        tarball: expect.stringContaining("/api/packages/b-pulsar-package/versions/1.0.0/tarball")
       },
       //main: "./lib/main.js",
       // Since building the package.json of v1.0.0 is an absent build, we

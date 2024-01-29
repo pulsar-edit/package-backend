@@ -30,6 +30,7 @@ module.exports = {
     expect: "readonly",
     describe: "readonly",
     beforeAll: "readonly",
+    beforeEach: "readonly",
     afterEach: "readonly",
     afterAll: "readonly",
     process: "writeable",
