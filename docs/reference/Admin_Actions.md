@@ -18,7 +18,7 @@ As this package is now permanently broken, and archived, it'll receive the [`Arc
 
 The community package `linter-remark` has been discovered to be broken. The source code contains an [error](https://github.com/pulsar-edit/package-backend/issues/212). This package's source code has since been archived as of June 18, 2022. So it is now impossible for this package to ever receive an update to resolve its issue.
 
-As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect it's status.
+As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect its status.
 
 ### atom-ternjs
 
