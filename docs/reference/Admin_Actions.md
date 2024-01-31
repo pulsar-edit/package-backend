@@ -12,7 +12,7 @@ The community package `linter-shellcheck` has been discovered to be broken. The 
 
 But the package has been forked to the [`pulsar-cooperative`](https://github.com/pulsar-cooperative) organization. This forked package is now recommended to download.
 
-As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken), as well as [`Deprecated`](./badge-spec.md#deprecated) badges to reflect it's status, with installation of [`linter-shellcheck-pulsar`](https://web.pulsar-edit.dev/packages/linter-shellcheck-pulsar) instead recommended.
+As this package is now permanently broken, and archived, it'll receive the [`Archived`](./badge-spec.md#archived), [`Broken`](./badge-spec.md#broken) and [`Deprecated`](./badge-spec.md#deprecated) badges to reflect its status, with installation of [`linter-shellcheck-pulsar`](https://web.pulsar-edit.dev/packages/linter-shellcheck-pulsar) instead recommended.
 
 ### linter-remark
 
