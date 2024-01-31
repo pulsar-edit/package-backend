@@ -32,7 +32,7 @@ So this package will receive the [`Deprecated`](./badge-spec.md#deprecated) badg
 
 ### compare-files
 
-The community package `compare-files` has been discovered to be broken. The source code contains an [error](https://github.com/atom-compare-files/atom-compare-files/issues) that was originally reported before Pulsar had ever been created. This package's source code has since been archived as of January 21, 2019. So it is now impossible for this package to ever receive an update to resolve it's issue.
+The community package `compare-files` has been discovered to be broken. The source code contains an [error](https://github.com/atom-compare-files/atom-compare-files/issues) that was originally reported before Pulsar had ever been created. This package's source code has since been archived as of January 21, 2019. So it is now impossible for this package to ever receive an update to resolve its issue.
 
 As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect it's status.
 
