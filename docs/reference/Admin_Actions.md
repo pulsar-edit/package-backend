@@ -8,7 +8,7 @@ With that said this document will serve as the ongoing history of administrative
 
 ### linter-shellcheck
 
-The community package `linter-shellcheck` has been discovered to be broken. The source code contains an [error](https://github.com/AtomLinter/linter-shellcheck/issues/160). This package's source code has since been archived as of August 7, 2023. So it is now impossible for this package to ever receive an update to resolve it's issue.
+The community package `linter-shellcheck` has been discovered to be broken. The source code contains an [error](https://github.com/AtomLinter/linter-shellcheck/issues/160). This package's source code has since been archived as of August 7, 2023. So it is now impossible for this package to ever receive an update to resolve its issue.
 
 But the package has been forked to the [`pulsar-cooperative`](https://github.com/pulsar-cooperative) organization. This forked package is now recommended to download.
 
