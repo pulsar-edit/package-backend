@@ -47,7 +47,7 @@ const spec = {
   ],
 };
 
-// With our initial setup done, lets add our paths onto the schema
+// With our initial setup done, let's add our paths onto the schema
 spec.paths = {};
 constructAndAddPaths();
 
