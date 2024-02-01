@@ -34,6 +34,16 @@ module.exports = {
       required: true,
       allowEmptyValue: false,
       description: "An unguessable random string. It is used to protect against cross-site request forgery attacks."
+    },
+    code: {
+      name: "code",
+      in: "query",
+      schema: {
+        type: "string"
+      },
+      required: true,
+      allowEmptyValue: false,
+      description: "Temporary code from GitHub to authorize a request."
     }
   },
 

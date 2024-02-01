@@ -19,6 +19,18 @@ module.exports = {
     },
     endpointKind: "raw",
   },
+  manualParams: {
+    token: {
+      name: "token",
+      in: "query",
+      schema: {
+        type: "string"
+      },
+      required: true,
+      allowEmptyValue: false,
+      description: "The PAT token to use for account signup."
+    }
+  },
 
   async logic(req, res, context) {
     let params = {
