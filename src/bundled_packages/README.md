@@ -2,7 +2,7 @@
 
 Originally packages that were bundled within the Pulsar editor (Atom at the time) were available to install on the backend. As such those same packages were originally migrated along with community packages.
 
-Under Pulsar bundled packages no longer actually exist on the community package database, and instead and manually handled here.
+Under Pulsar, bundled packages no longer actually exist on the community package database, and instead are manually handled here.
 
 This avoids having to store data about bundled packages, and avoids having to update information in the database, where instead it can now be updated as JSON in code.
 
