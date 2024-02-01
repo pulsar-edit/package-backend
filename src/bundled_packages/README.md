@@ -21,7 +21,7 @@ Essentially these keys will be used to overwrite the generic `package.json` that
 ### Required Keys
 
 * `name`: The name of the package.
-* `description`: The description of the package as shown in it's `package.json`
+* `description`: The description of the package as shown in its `package.json`
 * `version`: The version of the package to show.
 
 ### Supported Optional Keys
