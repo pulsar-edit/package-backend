@@ -8,6 +8,20 @@ components:
       required: true
       schema:
         type: string
+    direction:
+      allowEmptyValue: true
+      description: >-
+        Direction to list search results. Also accepts 'order' for backwards
+        compatibility.
+      example: desc
+      in: query
+      name: direction
+      schema:
+        default: desc
+        enum:
+          - desc
+          - asc
+        type: string
     engine:
       allowEmptyValue: true
       description: >-
@@ -50,26 +64,24 @@ components:
       required: true
       schema:
         type: string
-    multiSchema:
-      name: multiSchema
-      owner:
-        allowEmptyValue: false
-        description: Owner to filter results by.
-        example: pulsar-edit
-        in: query
-        name: owner
-        required: false
-        schema:
-          type: string
-      ownerName:
-        allowEmptyValue: false
-        description: Owner of packages to retrieve.
-        example: pulsar-edit
-        in: path
-        name: ownerName
-        required: true
-        schema:
-          type: string
+    owner:
+      allowEmptyValue: false
+      description: Owner to filter results by.
+      example: pulsar-edit
+      in: query
+      name: owner
+      required: false
+      schema:
+        type: string
+    ownerName:
+      allowEmptyValue: false
+      description: Owner of packages to retrieve.
+      example: pulsar-edit
+      in: path
+      name: ownerName
+      required: true
+      schema:
+        type: string
     packageName:
       allowEmptyValue: false
       description: The name of the package to return details for. Must be URL escaped.
@@ -383,7 +395,7 @@ paths:
         - $ref: '#/components/parameters/page'
         - $ref: '#/components/parameters/sort'
         - $ref: '#/components/parameters/direction'
-        - $ref: '#/components/parameters/owner'
+        - $ref: '#/components/parameters/ownerName'
       responses:
         '200':
           content:
