@@ -17,7 +17,7 @@ const packageName = require("./packageName.js");
 const page = require("./page.js");
 const query = require("./query.js");
 const rename = require("./rename.js");
-const repo = require("./repo.js");
+const repository = require("./repository.js");
 const service = require("./service.js");
 const serviceType = require("./serviceType.js");
 const serviceVersion = require("./serviceVersion.js");
@@ -39,7 +39,7 @@ module.exports = {
     page: page.logic,
     query: query.logic,
     rename: rename.logic,
-    repo: repo.logic,
+    repository: repository.logic,
     service: service.logic,
     serviceType: serviceType.logic,
     serviceVersion: serviceVersion.logic,
@@ -60,7 +60,7 @@ module.exports = {
     page: page.schema,
     query: query.schema,
     rename: rename.schema,
-    repo: repo.schema,
+    repository: repository.schema,
     service: service.schema,
     serviceType: serviceType.schema,
     serviceVersion: serviceVersion.schema,
