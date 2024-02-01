@@ -30,8 +30,8 @@ module.exports = {
     direction: (context, req) => {
       return context.query.direction(req);
     },
-    owner: (context, req) => {
-      return context.query.owner(req);
+    ownerName: (context, req) => {
+      return context.query.ownerName(req);
     },
   },
 

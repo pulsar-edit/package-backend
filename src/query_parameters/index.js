@@ -12,6 +12,7 @@ const fileExtension = require("./fileExtension.js");
 const filter = require("./filter.js");
 const login = require("./login.js");
 const owner = require("./owner.js");
+const ownerName = require("./ownerName.js");
 const packageName = require("./packageName.js");
 const page = require("./page.js");
 const query = require("./query.js");
@@ -33,6 +34,7 @@ module.exports = {
     filter: filter.logic,
     login: login.logic,
     owner: owner.logic,
+    ownerName: ownerName.logic,
     packageName: packageName.logic,
     page: page.logic,
     query: query.logic,
@@ -53,6 +55,7 @@ module.exports = {
     filter: filter.schema,
     login: login.schema,
     owner: owner.schema,
+    ownerName: ownerName.schema,
     packageName: packageName.schema,
     page: page.schema,
     query: query.schema,

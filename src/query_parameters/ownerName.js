@@ -2,18 +2,18 @@ const ownerShared = require("./shared/owner.js");
 
 module.exports = {
   schema: {
-    name: "owner",
-    in: "query",
+    name: "ownerName",
+    in: "path",
     schema: {
       type: "string",
     },
     example: "pulsar-edit",
     allowEmptyValue: false,
-    required: false,
-    description: "Owner to filter results by.",
+    required: true,
+    description: "Owner of packages to retrieve.",
   },
   logic: (req) => {
-    let prov = req.query.owner ?? null;
+    let prov = req.params.ownerName ?? null;
 
     return ownerShared(prov);
   }
