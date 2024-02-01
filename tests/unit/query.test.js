@@ -109,7 +109,7 @@ const repositoryCases = [
 ];
 
 describe("Verify Repo Query Returns", () => {
-  test.each(repoCases)("Given %o Returns %p", (arg, result) => {
+  test.each(repositoryCases)("Given %o Returns %p", (arg, result) => {
     expect(query.repository(arg)).toBe(result);
   });
 });
