@@ -40,7 +40,7 @@ module.exports = {
    * @async
    * @memberof getPackagesPackageNameVersionsVersionName
    * @function logic
-   * @desc Used to retreive the details of a specific version of a package.
+   * @desc Used to retrieve the details of a specific version of a package.
    * @param {object} params - The available query parameters.
    * @param {object} context - The Endpoint Context.
    * @returns {sso}

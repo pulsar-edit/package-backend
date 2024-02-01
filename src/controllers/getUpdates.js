@@ -31,7 +31,7 @@ module.exports = {
    * @async
    * @memberof getUpdates
    * @function logic
-   * @desc Used to retreive new editor update information.
+   * @desc Used to retrieve new editor update information.
    * @todo This function has never been implemented within Pulsar.
    */
   async logic(params, context) {

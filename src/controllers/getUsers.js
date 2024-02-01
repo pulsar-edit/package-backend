@@ -7,7 +7,7 @@ module.exports = {
     summary:
       "Display details of the currently authenticated user. This endpoint is undocumented and is somewhat strange.",
     description:
-      "This endpoint only exists on the web version of the upstream API. Having no backend equivolent.",
+      "This endpoint only exists on the web version of the upstream API. Having no backend equivalent.",
     responses: {
       200: {
         description: "Details of the Authenticated User Account.",

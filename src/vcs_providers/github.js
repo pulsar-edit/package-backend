@@ -32,7 +32,7 @@ class GitHub extends Git {
    * @desc The main `ownership` function, as called by `vcs.ownership()` that will
    * relegate off to `this.doesUserHaveRepo()` to determine the access level the user
    * has over the repo, and will return accordingly. Mostly processing errors.
-   * @param {object} user - The User Object as retreived during verification.
+   * @param {object} user - The User Object as retrieved during verification.
    * @param {object} ownerRepo - The Owner/Repo Combo
    */
   async ownership(user, ownerRepo) {

@@ -30,7 +30,7 @@ module.exports = {
    * @async
    * @memberof getPackagesFeatured
    * @function logic
-   * @desc Retreived a list of the featured packages, as Package Object Shorts.
+   * @desc Retrieved a list of the featured packages, as Package Object Shorts.
    */
   async logic(params, context) {
     // TODO: Does not support engine query parameter as of now

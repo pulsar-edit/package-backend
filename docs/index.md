@@ -43,12 +43,12 @@ A quick note here, the following resources, while still incredibly helpful to un
   * [Logging](./reference/logging.md): How the built in logging module works.
   * [Numeric Error Codes](./reference/numeric_error_codes.md): **Deprecated** Definition and List of numeric error codes that may be returned.
   * [Packages](./reference/packages.md): Information on where the Pulsar Package Registry got it's packages and what to do if you don't see yours.
-  * [Queries](./reference/queries.md): **Deprecated** Details of some of the common SQL queries used to retreive information from the Pulsar Package Registry.
+  * [Queries](./reference/queries.md): **Deprecated** Details of some of the common SQL queries used to retrieve information from the Pulsar Package Registry.
   * [Returns](./reference/returns.md): Definition of the objects returned and handled.
   * [Server Status Object](./reference/server_status_object.md): Definition of the Server Status Object.
   * [Build](./build.md): Documentation on how to build the Pulsar Package Registry.
   * [Writing Integration Tests](./writingIntegrationTests.md): **Deprecated** Documentation about how to successfully write integration tests.
-  
+
 A number of documents within this repo are automatically generated. These documents can help to view the codebase as it is right now. These documents can be helpful to identify problem areas or to learn about the source code itself.
 
 The following list contains automatically generated content:

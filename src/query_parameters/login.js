@@ -15,7 +15,7 @@ module.exports = {
     required: true,
     allowEmptyValue: false,
     example: "confused-Techie",
-    description: "The User from the URL Path",
+    description: "The User from the URL Path.",
   },
   logic: (req) => {
     return req.params.login ?? "";

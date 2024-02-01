@@ -31,7 +31,7 @@ module.exports = {
       example: "pulsar-edit",
       allowEmptyValue: false,
       required: true,
-      description: "Owner of packages to retreive.",
+      description: "Owner of packages to retrieve.",
     },
   },
   logic: (req) => {

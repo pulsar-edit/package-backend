@@ -206,7 +206,7 @@ module.exports = {
     }
 
     // Finally we can return what was actually put into the databse.
-    // Retreive the data from database.getPackageByName() and
+    // Retrieve the data from database.getPackageByName() and
     // convert it inot a package object full format
     const newDbPack = await context.database.getPackageByName(
       newPack.content.name,

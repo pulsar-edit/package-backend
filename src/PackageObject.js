@@ -4,7 +4,7 @@ const parseGithubUrl = require("parse-github-url");
  * @module PackageObject
  * @desc This Module is used to aide in building Package Objects.
  * Allowing a singular location for the proper data structure of a package object.
- * And allowing an easy interface to add, modify, or retreive data about a
+ * And allowing an easy interface to add, modify, or retrieve data about a
  * package object.
  */
 

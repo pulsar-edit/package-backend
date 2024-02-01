@@ -86,7 +86,7 @@ async function ownership(userObj, packObj, dev_override = false) {
  * @async
  * @function newPackageData
  * @desc Replaces the previous git.createPackage().
- * Intended to retreive the full packages data. The data which will contain
+ * Intended to retrieve the full packages data. The data which will contain
  * all information needed to create a new package entry onto the DB.
  * @param {object} userObj - The Full User Object as returned by auth.verifyAuth()
  * @param {string} ownerRepo - The Owner Repo Combo for the package such as `pulsar-edit/pulsar`
@@ -214,7 +214,7 @@ async function newPackageData(userObj, ownerRepo, service) {
  * @async
  * @function newVersionData
  * @desc Replaces the previously used `git.metadataAppendTarballInfo()`
- * Intended to retreive the most basic of a package's data.
+ * Intended to retrieve the most basic of a package's data.
  * Bundles all the special handling of crafting such an object into this single
  * function to reduce usage elsewhere.
  * @param {object} userObj - The Full User Object as returned by `auth.verifyAuth()`
@@ -272,7 +272,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   }
 
   if (typeof pack.content.version === "string") {
-    // Retreive tag object related to our tagged version string
+    // Retrieve tag object related to our tagged version string
     const tags = await provider.tags(userObj, ownerRepo);
 
     if (!tags.ok) {
@@ -308,7 +308,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   if (!tag.tarball_url) {
     logger.generic(
       3,
-      `Cannot retreive metadata information for version ${ver} of ${ownerRepo}`
+      `Cannot retrieve metadata information for version ${ver} of ${ownerRepo}`
     );
     return {
       ok: false,

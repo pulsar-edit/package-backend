@@ -18,7 +18,7 @@ module.exports = {
     example: "consumed",
     allowEmptyValue: true,
     deescription:
-      "Choos whether to display 'consumer' or 'providers' of the specified service.",
+      "Choose whether to display 'consumer' or 'providers' of the specified service.",
   },
   logic: (req) => {
     // TODO determine if there's a way to indicate this is a required
