@@ -2,7 +2,7 @@ components:
   parameters:
     auth:
       allowEmptyValue: false
-      description: Authorization Headers
+      description: Authorization Headers.
       in: header
       name: auth
       required: true
@@ -20,7 +20,7 @@ components:
         type: string
     fileExtension:
       allowEmptyValue: true
-      description: File extension of which to only show compatible grammar package's of.
+      description: File extension for which to show only compatible grammar packages of.
       example: coffee
       in: query
       name: fileExtension
@@ -43,7 +43,7 @@ components:
         type: string
     login:
       allowEmptyValue: false
-      description: The User from the URL Path
+      description: The User from the URL Path.
       example: confused-Techie
       in: path
       name: login
@@ -63,7 +63,7 @@ components:
           type: string
       ownerName:
         allowEmptyValue: false
-        description: Owner of packages to retreive.
+        description: Owner of packages to retrieve.
         example: pulsar-edit
         in: path
         name: ownerName
@@ -72,7 +72,7 @@ components:
           type: string
     packageName:
       allowEmptyValue: false
-      description: The name of the package to reutrn details for. Must be URL escaped.
+      description: The name of the package to return details for. Must be URL escaped.
       example: autocomplete-powershell
       in: path
       name: packageName
@@ -118,7 +118,7 @@ components:
         type: string
     service:
       allowEmptyValue: true
-      description: The service of which to filter packages by
+      description: The service of which to filter packages by.
       example: autocomplete.watchEditor
       in: query
       name: service
@@ -127,7 +127,7 @@ components:
     serviceType:
       allowEmptyValue: true
       deescription: >-
-        Choos whether to display 'consumer' or 'providers' of the specified
+        Choose whether to display 'consumer' or 'providers' of the specified
         service.
       example: consumed
       in: query
@@ -139,7 +139,7 @@ components:
         type: string
     serviceVersion:
       allowEmptyValue: true
-      description: Filter by a specific version of the 'service'
+      description: Filter by a specific version of the 'service'.
       example: 0.0.1
       in: query
       name: serviceVersion
@@ -172,7 +172,7 @@ components:
         type: string
     versionName:
       allowEmptyValue: false
-      description: The version of the package to access
+      description: The version of the package to access.
       example: 1.0.0
       in: path
       name: versionName
@@ -312,7 +312,7 @@ components:
         - packages
       type: object
     userObjectPublic:
-      description: Publicaly returned information of users on Pulsar.
+      description: Publically returned information of users on Pulsar.
       properties:
         avatar:
           type: string
@@ -461,7 +461,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/packageObjectFull'
-          description: A 'Package Object Full' of the modified package
+          description: A 'Package Object Full' of the modified package.
       summary: Star a package.
   /api/packages/{packageName}/stargazers:
     get:
@@ -604,7 +604,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/packageObjectFull'
-          description: A 'Package Object Full' of the modified package
+          description: A 'Package Object Full' of the modified package.
       summary: Star a package.
   /api/themes/{packageName}/stargazers:
     get:
@@ -680,7 +680,7 @@ paths:
     get:
       description: >-
         This endpoint only exists on the web version of the upstream API. Having
-        no backend equivolent.
+        no backend equivalent.
       parameters:
         - $ref: '#/components/parameters/auth'
       responses:
