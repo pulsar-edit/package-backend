@@ -11,6 +11,7 @@ module.exports = {
   config: require("./config.js").getConfig(),
   utils: require("./utils.js"),
   auth: require("./auth.js"),
+  bundledPackages: require("./bundled_packages/_index.js"),
   sso: require("./models/sso.js"),
   ssoPaginate: require("./models/ssoPaginate.js"),
   ssoRedirect: require("./models/ssoRedirect.js"),
