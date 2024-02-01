@@ -44,4 +44,4 @@ If your package has other important keys to include, such as services it consume
 If Pulsar has gained a new bundled package ensure to add it to the following locations:
 
 * Add it's name to `BUNDLED_PACKAGES` in `_index.js`
-* Add it's JSON file to this directory.
+* Add its JSON file to this directory.
