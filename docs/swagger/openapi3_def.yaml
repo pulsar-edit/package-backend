@@ -102,7 +102,7 @@ components:
         default: 1
         minimum: 1
         type: number
-    q:
+    query:
       description: Search Query
       example: generic-lsp
       in: query
@@ -375,16 +375,22 @@ paths:
   /api/oauth:
     get:
       parameters:
-        - state:
-            allowEmptyValue: false
-            description: >-
-              An unguessable random string. It is used to protect against
-              cross-site request forgery attacks.
-            in: query
-            name: state
-            required: true
-            schema:
-              type: string
+        - allowEmptyValue: false
+          description: >-
+            An unguessable random string. It is used to protect against
+            cross-site request forgery attacks.
+          in: query
+          name: state
+          required: true
+          schema:
+            type: string
+        - allowEmptyValue: false
+          description: Temporary code from GitHub to authorize a request.
+          in: query
+          name: code
+          required: true
+          schema:
+            type: string
       responses:
         '302':
           description: A redirect to the Pulsar Package Website User page.
@@ -405,6 +411,25 @@ paths:
           description: A paginated response of packages.
       summary: List all packages published under a single owner.
   /api/packages:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/direction'
+        - $ref: '#/components/parameters/serviceType'
+        - $ref: '#/components/parameters/service'
+        - $ref: '#/components/parameters/serviceVersion'
+        - $ref: '#/components/parameters/fileExtension'
+        - $ref: '#/components/parameters/owner'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectShortArray'
+          description: An array of packages.
+      summary: List all packages
+  '/api/packages ':
     post:
       parameters:
         - $ref: '#/components/parameters/repository'
@@ -450,6 +475,15 @@ paths:
           description: Any array of packages.
       summary: Searches all packages.
   /api/packages/{packageName}:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+      responses:
+        '204':
+          description: An empty response, indicating success.
+      summary: Delete a package.
+  '/api/packages/{packageName} ':
     get:
       parameters:
         - $ref: '#/components/parameters/engine'
@@ -463,6 +497,15 @@ paths:
           description: A 'Package Object Full' of the requested package.
       summary: Show package details.
   /api/packages/{packageName}/star:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+      responses:
+        '204':
+          description: An empty response, indicating success.
+      summary: Unstar a package.
+  '/api/packages/{packageName}/star ':
     post:
       parameters:
         - $ref: '#/components/parameters/auth'
@@ -502,6 +545,18 @@ paths:
           description: The package details indicating success.
       summary: Creates a new package version.
   /api/packages/{packageName}/versions/{versionName}:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/versionName'
+      responses:
+        '204':
+          description: An empty response, indicating success.
+      summary: >-
+        Deletes a package version. Once a version is deleted, it cannot be used
+        again.
+  '/api/packages/{packageName}/versions/{versionName} ':
     get:
       parameters:
         - $ref: '#/components/parameters/packageName'
@@ -536,7 +591,14 @@ paths:
       summary: Previously undocumented endpoint. Allows for installation of a package.
   /api/pat:
     get:
-      parameters: []
+      parameters:
+        - allowEmptyValue: false
+          description: The PAT token to use for account signup.
+          in: query
+          name: token
+          required: true
+          schema:
+            type: string
       responses: {}
       summary: PAT Token Signup URL.
   /api/stars:
@@ -554,6 +616,20 @@ paths:
             objects.
       summary: List the authenticated users' starred packages.
   /api/themes:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/direction'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/packageObjectShortArray'
+          description: A paginated response of themes.
+      summary: List all packages that are themes.
+  '/api/themes ':
     post:
       parameters:
         - $ref: '#/components/parameters/repository'
@@ -593,6 +669,15 @@ paths:
           description: A paginated response of themes.
       summary: Get featured packages that are themes. Previously undocumented.
   /api/themes/{packageName}:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+      responses:
+        '204':
+          description: An empty response, indicating success.
+      summary: Delete a package.
+  '/api/themes/{packageName} ':
     get:
       parameters:
         - $ref: '#/components/parameters/engine'
@@ -606,6 +691,15 @@ paths:
           description: A 'Package Object Full' of the requested package.
       summary: Show package details.
   /api/themes/{packageName}/star:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+      responses:
+        '204':
+          description: An empty response, indicating success.
+      summary: Unstar a package.
+  '/api/themes/{packageName}/star ':
     post:
       parameters:
         - $ref: '#/components/parameters/auth'
@@ -645,6 +739,18 @@ paths:
           description: The package details indicating success.
       summary: Creates a new package version.
   /api/themes/{packageName}/versions/{versionName}:
+    delete:
+      parameters:
+        - $ref: '#/components/parameters/auth'
+        - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/versionName'
+      responses:
+        '204':
+          description: An empty response, indicating success.
+      summary: >-
+        Deletes a package version. Once a version is deleted, it cannot be used
+        again.
+  '/api/themes/{packageName}/versions/{versionName} ':
     get:
       parameters:
         - $ref: '#/components/parameters/packageName'
