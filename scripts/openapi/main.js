@@ -121,6 +121,21 @@ function createPathString(ePath) {
     }
   }
 
+  if (spec.paths[output]) {
+    // Since some endpoints use the same URl with different methods
+    // when we add them to an object like this the last one added will overwrite
+    // the others sharing the same path.
+    // So we will add whitespace to the end of the path here if we find that
+    // the path has already been added.
+
+    // We will add a whitespace here over and over to ensure we don't clobber
+    // any existing paths
+    while(spec.paths[output]) {
+      console.log(`Added non-clobbering whitespace to: '${output}'`);
+      output += " ";
+    }
+  }
+
   return output;
 }
 
@@ -159,9 +174,9 @@ function craftParametersFromObject(node) {
   }
 
   for (const param in node.manualParams) {
-    params.push({
-      [param]: node.manualParams[param]
-    });
+    params.push(
+      node.manualParams[param]
+    );
   }
 
   return params;
@@ -169,7 +184,7 @@ function craftParametersFromObject(node) {
 
 function constructAndAddParameters() {
   for (const param in queryParameters.schema) {
-    spec.components.parameters[queryParameters.schema[param].name] = queryParameters.schema[param];
+    spec.components.parameters[param] = queryParameters.schema[param];
   }
 }
 
