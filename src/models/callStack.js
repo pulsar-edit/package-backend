@@ -5,7 +5,7 @@ class CallStack {
   constructor() {
     this.calls = {};
 
-    initialize();
+    this.initialize();
   }
 
   initialize() {
@@ -14,7 +14,7 @@ class CallStack {
 
   addCall(id, content) {
     this.calls[id] = {
-      content: sanitize(content),
+      content: this.sanitize(content),
       time: performance.now()
     };
   }
