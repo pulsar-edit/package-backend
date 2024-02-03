@@ -3,6 +3,7 @@
 node_modules/
 # Ignore old JSON based artifact
 data/
+bundled-repos/
 # Ignore our secrets
 app.yaml
 pulsar-*.json

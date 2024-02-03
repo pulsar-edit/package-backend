@@ -2,6 +2,7 @@
 node_modules/
 # Ignore old JSON based artifact
 data/
+bundled-repos/
 
 >   gitignore
 # Ignore our secrets

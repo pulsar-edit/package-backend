@@ -22,7 +22,8 @@
     "tool:health": "node ./scripts/tools/health-check.js",
     "tool:license": "node ./scripts/tools/get-licenses.js",
     "tool:badge": "node ./scripts/tools/add-badge.js",
-    "tool:feature-detection": "node ./scripts/tools/feature-detection.js"
+    "tool:feature-detection": "node ./scripts/tools/feature-detection.js",
+    "tool:update-bundled": "node ./scripts/tools/update-bundled.js"
   },
   "author": "confused-Techie",
   "license": "MIT",

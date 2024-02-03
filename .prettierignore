@@ -3,6 +3,7 @@
 node_modules/
 # Ignore old JSON based artifact
 data/
+bundled-repos/
 *.md
 coverage/
 # Ignore Git tooling
