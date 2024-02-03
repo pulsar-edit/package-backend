@@ -14,7 +14,6 @@ function getFileEncoded(loc) {
 }
 
 describe("can publish packages", () => {
-
   beforeAll(async () => {
     // Create our test user
     let addUser = await database.insertNewUser(
@@ -35,11 +34,9 @@ describe("can publish packages", () => {
 
   beforeEach(() => {
     // Ensure the ownership tests passes for our test user
-    nock("https://api.github.com/")
-      .get("/user")
-      .reply(200, {
-        node_id: "full-publish-test-user-node-id"
-      });
+    nock("https://api.github.com/").get("/user").reply(200, {
+      node_id: "full-publish-test-user-node-id",
+    });
   });
 
   afterEach(() => {
@@ -48,7 +45,6 @@ describe("can publish packages", () => {
   });
 
   test("when everything is bog standard", async () => {
-
     // Ensure user has ownership of repo
     nock("https://api.github.com/")
       .get("/repos/confused-Techie/a-pulsar-package/collaborators?page=1")
@@ -58,25 +54,27 @@ describe("can publish packages", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
     nock("https://api.github.com")
       .get("/repos/confused-Techie/a-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/a-pulsar-package"
+        full_name: "confused-Techie/a-pulsar-package",
       });
 
     // Ensure we can get the readme
     nock("https://api.github.com")
       .get("/repos/confused-Techie/a-pulsar-package/readme")
       .reply(200, {
-        content: getFileEncoded("./tests/full/fixtures/a-pulsar-package/readme.md"),
-        encoding: "base64"
+        content: getFileEncoded(
+          "./tests/full/fixtures/a-pulsar-package/readme.md"
+        ),
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -88,8 +86,10 @@ describe("can publish packages", () => {
     nock("https://api.github.com")
       .get("/repos/confused-Techie/a-pulsar-package/contents/package.json")
       .reply(200, {
-        content: getFileEncoded("./tests/full/fixtures/a-pulsar-package/package.json"),
-        encoding: "base64"
+        content: getFileEncoded(
+          "./tests/full/fixtures/a-pulsar-package/package.json"
+        ),
+        encoding: "base64",
       });
 
     // Lets fail any feature detection requests for now
@@ -126,25 +126,27 @@ describe("can publish packages", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
     nock("https://api.github.com")
       .get("/repos/confused-Techie/b-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/b-pulsar-package"
+        full_name: "confused-Techie/b-pulsar-package",
       });
 
     // Ensure we can get the readme
     nock("https://api.github.com")
       .get("/repos/confused-Techie/b-pulsar-package/readme")
       .reply(200, {
-        content: getFileEncoded("./tests/full/fixtures/b-pulsar-package/readme.md"),
-        encoding: "base64"
+        content: getFileEncoded(
+          "./tests/full/fixtures/b-pulsar-package/readme.md"
+        ),
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -156,8 +158,10 @@ describe("can publish packages", () => {
     nock("https://api.github.com")
       .get("/repos/confused-Techie/b-pulsar-package/contents/package.json")
       .reply(200, {
-        content: getFileEncoded("./tests/full/fixtures/b-pulsar-package/package.json"),
-        encoding: "base64"
+        content: getFileEncoded(
+          "./tests/full/fixtures/b-pulsar-package/package.json"
+        ),
+        encoding: "base64",
       });
 
     // Lets fail any feature detection requests for now
@@ -194,25 +198,27 @@ describe("can publish packages", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
     nock("https://api.github.com")
       .get("/repos/confused-Techie/c-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/c-pulsar-package"
+        full_name: "confused-Techie/c-pulsar-package",
       });
 
     // Ensure we can get the readme
     nock("https://api.github.com")
       .get("/repos/confused-Techie/c-pulsar-package/readme")
       .reply(200, {
-        content: getFileEncoded("./tests/full/fixtures/c-pulsar-package/readme.md"),
-        encoding: "base64"
+        content: getFileEncoded(
+          "./tests/full/fixtures/c-pulsar-package/readme.md"
+        ),
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -224,8 +230,10 @@ describe("can publish packages", () => {
     nock("https://api.github.com")
       .get("/repos/confused-Techie/c-pulsar-package/contents/package.json")
       .reply(200, {
-        content: getFileEncoded("./tests/full/fixtures/c-pulsar-package/package.json"),
-        encoding: "base64"
+        content: getFileEncoded(
+          "./tests/full/fixtures/c-pulsar-package/package.json"
+        ),
+        encoding: "base64",
       });
 
     // Lets fail any feature detection requests for now
@@ -247,10 +255,10 @@ describe("can publish packages", () => {
       .set({ Authorization: "any-token-will-do" });
 
     let errMsg = "Server Error: From Bad Repo: Error: Unable to locate the tag";
-    errMsg += " for 'package.json' version '2.0.0'. Are you sure you published a matching tag?";
+    errMsg +=
+      " for 'package.json' version '2.0.0'. Are you sure you published a matching tag?";
 
     expect(res).toHaveHTTPCode(500);
     expect(res.body.message).toBe(errMsg);
-
   });
 });

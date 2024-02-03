@@ -1,22 +1,22 @@
-# Complexity report, 2/1/2024
+# Complexity report, 2/3/2024
 
-* Mean per-function logical LOC: 14.458333333333334
-* Mean per-function parameter count: 0.15916666666666668
-* Mean per-function cyclomatic complexity: 1.2483333333333335
-* Mean per-function Halstead effort: 3318.2315431289767
-* Mean per-module maintainability index: 68.928875276727
-* First-order density: 0.8333333333333334%
-* Change cost: 5.305555555555555%
+* Mean per-function logical LOC: 15.420634920634921
+* Mean per-function parameter count: 0.1515873015873016
+* Mean per-function cyclomatic complexity: 1.2365079365079366
+* Mean per-function Halstead effort: 3349.5579856273484
+* Mean per-module maintainability index: 67.82916231913356
+* First-order density: 0.7306626354245402%
+* Change cost: 4.862685815066768%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
 
-* Physical LOC: 35
-* Logical LOC: 16
+* Physical LOC: 46
+* Logical LOC: 21
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 6.25%
-* Maintainability index: 58.62281095645006
+* Cyclomatic complexity density: 4.761904761904762%
+* Maintainability index: 55.13122813240744
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/jsdoc.conf.js
@@ -38,16 +38,6 @@
     * Halstead difficulty: 2
     * Halstead volume: 19.651484454403228
     * Halstead effort: 39.302968908806456
-
-## /home/runner/work/package-backend/package-backend/src/PackageObject.js
-
-* Physical LOC: 485
-* Logical LOC: 4
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 25%
-* Maintainability index: 76.17088968963267
-* Dependency count: 3
 
 ## /home/runner/work/package-backend/package-backend/src/cache.js
 
@@ -609,16 +599,6 @@
 * Maintainability index: 51.33890916054792
 * Dependency count: 0
 
-## /home/runner/work/package-backend/package-backend/tests/unit/PackageObject.test.js
-
-* Physical LOC: 54
-* Logical LOC: 2
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 50%
-* Maintainability index: 86.03073855173344
-* Dependency count: 1
-
 ## /home/runner/work/package-backend/package-backend/tests/unit/ServerStatusObject.test.js
 
 * Physical LOC: 40
@@ -797,6 +777,56 @@
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 16.666666666666664%
 * Maintainability index: 71.67165455570546
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/a-pulsar-package/match.js
+
+* Physical LOC: 43
+* Logical LOC: 37
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 2.7027027027027026%
+* Maintainability index: 49.22552404452923
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/a-pulsar-package/tags.js
+
+* Physical LOC: 11
+* Logical LOC: 6
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 16.666666666666664%
+* Maintainability index: 71.71259723250154
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/b-pulsar-package/match.js
+
+* Physical LOC: 58
+* Logical LOC: 45
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 2.2222222222222223%
+* Maintainability index: 46.62452477310548
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/b-pulsar-package/tags.js
+
+* Physical LOC: 20
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 63.92267728456596
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/c-pulsar-package/tags.js
+
+* Physical LOC: 14
+* Logical LOC: 6
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 16.666666666666664%
+* Maintainability index: 71.71259723250154
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/scripts/deprecated/test/handlers/common_handler/express_fakes.js

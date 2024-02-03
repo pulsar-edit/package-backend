@@ -5,7 +5,8 @@ module.exports = {
   metadata: {
     dist: {
       sha: "09f",
-      tarball: "https://api.github.com/repos/confused-Techie/b-pulsar-package/tarball/refs/tags/v2.0.0"
+      tarball:
+        "https://api.github.com/repos/confused-Techie/b-pulsar-package/tarball/refs/tags/v2.0.0",
     },
     main: "./lib/main.js",
     name: "b-pulsar-package",
@@ -13,24 +14,28 @@ module.exports = {
     license: "MIT",
     version: "2.0.0",
     repository: "https://github.com/confused-Techie/b-pulsar-package",
-    description: "A package for stuff."
+    description: "A package for stuff.",
   },
   releases: { latest: "2.0.0" },
   versions: {
     "2.0.0": {
       dist: {
-        tarball: expect.stringContaining("/api/packages/b-pulsar-package/versions/2.0.0/tarball")
+        tarball: expect.stringContaining(
+          "/api/packages/b-pulsar-package/versions/2.0.0/tarball"
+        ),
       },
       main: "./lib/main.js",
       name: "b-pulsar-package",
       license: "MIT",
       version: "2.0.0",
       repository: "https://github.com/confused-Techie/b-pulsar-package",
-      description: "A package for stuff."
+      description: "A package for stuff.",
     },
     "1.0.0": {
       dist: {
-        tarball: expect.stringContaining("/api/packages/b-pulsar-package/versions/1.0.0/tarball")
+        tarball: expect.stringContaining(
+          "/api/packages/b-pulsar-package/versions/1.0.0/tarball"
+        ),
       },
       //main: "./lib/main.js",
       // Since building the package.json of v1.0.0 is an absent build, we
@@ -39,15 +44,15 @@ module.exports = {
       license: "MIT",
       version: "1.0.0",
       repository: "https://github.com/confused-Techie/b-pulsar-package",
-      description: "A package for stuff."
-    }
+      description: "A package for stuff.",
+    },
   },
   repository: {
     url: "https://github.com/confused-Techie/b-pulsar-package",
-    type: "git"
+    type: "git",
   },
   creation_method: "User Made Package",
   downloads: "0",
   stargazers_count: "0",
-  badges: [ { title: "Made for Pulsar!", type: "success" } ]
+  badges: [{ title: "Made for Pulsar!", type: "success" }],
 };

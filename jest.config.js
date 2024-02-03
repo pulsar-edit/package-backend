@@ -12,14 +12,13 @@ const config = {
     {
       displayName: "Full-Tests",
       globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
-      globalTeardown: "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
+      globalTeardown:
+        "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
       setupFilesAfterEnv: [
         "<rootDir>/tests/helpers/global.setup.jest.js",
-        "<rootDir>/tests/helpers/handlers.setup.jest.js"
+        "<rootDir>/tests/helpers/handlers.setup.jest.js",
       ],
-      testMatch: [
-        "<rootDir>/tests/full/**.test.js"
-      ]
+      testMatch: ["<rootDir>/tests/full/**.test.js"],
     },
     {
       displayName: "Integration-Tests",

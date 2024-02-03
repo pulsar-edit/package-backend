@@ -26,7 +26,7 @@ module.exports = {
   },
   async postReturnHTTP(req, res, context, obj) {
     // Return to user before wbehook call, so user doesn't wait on it
-    
+
     if (!obj.webhook || !obj.featureDetection) {
       // Seems the `logic` function didn't execute successfully. Lets exit
       return;

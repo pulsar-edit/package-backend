@@ -185,18 +185,16 @@ async function newPackageData(userObj, ownerRepo, service) {
         provider: packRepoObj,
         packageJson: pack.content,
         tags: tags.content,
-        readme: readme.content
+        readme: readme.content,
       });
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       // We know the errors generated from the constructor
       // are intended to provide insight into what went wrong.
       // So we will assign the content as the actual error
       return new ServerStatus()
         .notOk()
-        .setContent(
-          err.toString()
-        )
+        .setContent(err.toString())
         .setShort("Bad Repo")
         .build();
     }

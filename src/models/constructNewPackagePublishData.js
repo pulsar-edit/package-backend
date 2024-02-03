@@ -8,8 +8,7 @@
 const parseGithubURL = require("parse-github-url");
 const semver = require("semver");
 
-module.exports =
-function constructNewPackagePublishData(opts = {}) {
+module.exports = function constructNewPackagePublishData(opts = {}) {
   // `opts` Contains:
   // ownerRepo = OWNER/REPO (string)
   // provider = Provider object from VCS
@@ -30,7 +29,10 @@ function constructNewPackagePublishData(opts = {}) {
 
   if (typeof opts.packageJson.repository === "string") {
     opts.parsedRepo = parseGithubURL(opts.packageJson.repository);
-  } else if (typeof opts.packageJson.repository === "object" && typeof opts.packageJson.repository.url === "string") {
+  } else if (
+    typeof opts.packageJson.repository === "object" &&
+    typeof opts.packageJson.repository.url === "string"
+  ) {
     // Support repository objects in `package.json`
     opts.parsedRepo = parseGithubURL(opts.packageJson.repository.url);
   }
@@ -41,11 +43,11 @@ function constructNewPackagePublishData(opts = {}) {
 
   out.name = PACK_NAME;
   out.owner = findOwner(opts);
-  out.readme = (typeof opts.readme === "string" ? opts.readme : "" );
+  out.readme = typeof opts.readme === "string" ? opts.readme : "";
   out.repository = opts.provider;
   out.metadata = buildMeta(opts);
   out.releases = {
-    latest: LATEST_VER
+    latest: LATEST_VER,
   };
 
   // From here we want to build or version objects, except we don't have the
@@ -69,7 +71,7 @@ function constructNewPackagePublishData(opts = {}) {
   // Now we should be good to go
 
   return out;
-}
+};
 
 function throwIfFalse(value, id, func) {
   if (typeof value === "boolean" && !false) {
@@ -160,7 +162,7 @@ function buildMeta(opts) {
 
   out.dist = {
     sha: sha,
-    tarball: tarball
+    tarball: tarball,
   };
 
   // Then lets validate these required fields
@@ -194,7 +196,7 @@ function buildAbsentVer(ver, opts) {
   out.repository = opts.packageJson.repository; // TODO have more flexibility here
   out.dist = {
     sha: sha,
-    tarball: tarball
+    tarball: tarball,
   };
 
   if (typeof opts.packageJson.theme === "string") {
@@ -223,7 +225,9 @@ function findTagForVer(wantedTag, opts) {
   }
 
   throwIfFalse(tagFound, "", () => {
-    throw new Error(`Unable to locate the tag for 'package.json' version '${tag}'. Are you sure you published a matching tag?`);
+    throw new Error(
+      `Unable to locate the tag for 'package.json' version '${tag}'. Are you sure you published a matching tag?`
+    );
   });
   return tagFound;
 }
