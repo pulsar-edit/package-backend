@@ -8,9 +8,9 @@ module.exports = {
   // Used to check if a specific name belongs to a bundled package
   isNameBundled: (name) => {
     if (BUNDLED_PACKAGES[name]) {
-      return true;
+      return { ok: true, content: true };
     } else {
-      return false;
+      return { ok: true, content: false };
     }
   },
 
