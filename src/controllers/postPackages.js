@@ -34,6 +34,12 @@ module.exports = {
   },
   async postReturnHTTP(req, res, context, obj) {
     // Return to user before wbehook call, so user doesn't wait on it
+
+    if (!obj.webhook || !obj.featureDetection) {
+      // Seems the `logic` function didn't execute successfully. Lets exit
+      return;
+    }
+
     await context.webhook.alertPublishPackage(
       obj.webhook.pack,
       obj.webhook.user
@@ -149,6 +155,7 @@ module.exports = {
       return sso
         .notOk()
         .addContent(newPack)
+        .addMessage(newPack.content) // This is where we trust the output
         .addCalls("auth.verifyAuth", user)
         .addCalls("vcs.ownership", gitowner)
         .addCalls("vcs.newPackageData", newPack);

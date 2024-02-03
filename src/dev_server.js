@@ -43,7 +43,7 @@ async function test() {
 
   const app = require("./setupEndpoints.js");
   const logger = require("./logger.js");
-  const database = require("./database.js");
+  const database = require("./database/_export.js");
   // We can only require these items after we have set our env variables
 
   if (process.env.MOCK_DB !== "false") {

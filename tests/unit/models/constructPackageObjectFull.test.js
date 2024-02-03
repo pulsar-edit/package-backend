@@ -2,7 +2,6 @@ const pof = require("../../../src/models/constructPackageObjectFull.js");
 const schema = require("../../models/packageObjectFull.js").test;
 
 describe("Parses Data, as expected to be returned by the Database", () => {
-
   test("Correctly Parses normal data", async () => {
     const data = {
       pointer: "1234",
@@ -18,7 +17,7 @@ describe("Parses Data, as expected to be returned by the Database", () => {
         metadata: {
           name: "test-package",
           license: "MIT",
-          version: "1.0.0"
+          version: "1.0.0",
         },
         releases: { latest: "1.0.0" },
         versions: {
@@ -26,14 +25,14 @@ describe("Parses Data, as expected to be returned by the Database", () => {
             sha: "1234",
             name: "test-package",
             version: "1.0.0",
-            tarball_url: "https://nowhere.com"
-          }
+            tarball_url: "https://nowhere.com",
+          },
         },
         repository: {
           url: "https://github.com/pulsar-edit/test-package",
-          type: "git"
+          type: "git",
         },
-        creation_method: "Test Package"
+        creation_method: "Test Package",
       },
       owner: "pulsar-edit",
       stargazers_count: "1",
@@ -44,7 +43,7 @@ describe("Parses Data, as expected to be returned by the Database", () => {
             sha: "1234",
             name: "test-package",
             version: "1.0.0",
-            tarball_url: "https://nowhere.com"
+            tarball_url: "https://nowhere.com",
           },
           engine: { atom: "*" },
           semver: "1.0.0",
@@ -52,9 +51,9 @@ describe("Parses Data, as expected to be returned by the Database", () => {
           package: "1234",
           hasGrammar: false,
           hasSnippets: false,
-          supportedLanguages: null
-        }
-      ]
+          supportedLanguages: null,
+        },
+      ],
     };
 
     const parsed = await pof(data);

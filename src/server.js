@@ -7,7 +7,7 @@
 const app = require("./setupEndpoints.js");
 const { port } = require("./config.js").getConfig();
 const logger = require("./logger.js");
-const database = require("./database.js");
+const database = require("./database/_export.js");
 
 if (process.env.PULSAR_STATUS === "dev") {
   logger.generic(3, "Pulsar Server is in Development Mode!");

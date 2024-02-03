@@ -8,7 +8,7 @@
 
 const query = require("./query_parameters/index.js").logic;
 const utils = require("./utils.js");
-const PackageObject = require("./PackageObject.js");
+const constructNewPackagePublishData = require("./models/constructNewPackagePublishData.js");
 const GitHub = require("./vcs_providers/github.js");
 const ServerStatus = require("./ServerStatusObject.js");
 const semVerInitRegex = /^\s*v/i;
@@ -110,8 +110,6 @@ async function newPackageData(userObj, ownerRepo, service) {
         provider = new GitHub();
     }
 
-    let newPack = new PackageObject().setOwnerRepo(ownerRepo);
-
     let exists = await provider.exists(userObj, ownerRepo);
 
     if (!exists.ok) {
@@ -135,10 +133,6 @@ async function newPackageData(userObj, ownerRepo, service) {
         .build();
     }
 
-    // We need to ensure we add the semver prior to adding it's data
-    newPack.Version.addSemver(pack.content.version);
-    newPack.Version.addPackageJSON(pack.content.version, pack.content);
-
     const tags = await provider.tags(userObj, ownerRepo);
 
     if (!tags.ok) {
@@ -147,12 +141,6 @@ async function newPackageData(userObj, ownerRepo, service) {
         .setContent(`Failed to get gh tags for ${ownerRepo} - ${tags.short}`)
         .setShort("Server Error")
         .build();
-    }
-
-    for (const tag of tags.content) {
-      newPack.Version.addSemver(tag.name);
-      newPack.Version.addTarball(tag.name, tag.tarball_url);
-      newPack.Version.addSha(tag.name, tag.commit.sha);
     }
 
     // Now to get our Readme
@@ -190,16 +178,30 @@ async function newPackageData(userObj, ownerRepo, service) {
     // within the repo field, this would break support for transfering of ownership
     // or of changing the repo name. So we may have to live with that possibility.
 
-    newPack
-      .setReadme(readme.content)
-      .setName(pack.content.name.toLowerCase())
-      .setCreationMethod("User Made Package")
-      .setRepositoryType(packRepoObj.type)
-      .setRepositoryURL(packRepoObj.url);
+    let newPack;
+    try {
+      newPack = constructNewPackagePublishData({
+        ownerRepo: ownerRepo,
+        provider: packRepoObj,
+        packageJson: pack.content,
+        tags: tags.content,
+        readme: readme.content,
+      });
+    } catch (err) {
+      console.error(err);
+      // We know the errors generated from the constructor
+      // are intended to provide insight into what went wrong.
+      // So we will assign the content as the actual error
+      return new ServerStatus()
+        .notOk()
+        .setContent(err.toString())
+        .setShort("Bad Repo")
+        .build();
+    }
 
     // For this we just use the most recent tag published to the repo.
     // and now the object is complete, lets return the pack, as a Server Status Object.
-    return new ServerStatus().isOk().setContent(newPack.buildFull()).build();
+    return new ServerStatus().isOk().setContent(newPack).build();
   } catch (err) {
     // An error occured somewhere during package generation
     return new ServerStatus()

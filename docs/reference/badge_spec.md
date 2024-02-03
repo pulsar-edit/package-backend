@@ -1,7 +1,7 @@
 # Pulsar Package's Badges
 
 Badges communicate additional information to you about a package.
-Pulsar Maintainers communicate details about packages via badges when a community package maintainer can't or wont't, in the hope of making the usage of the [Pulsar Package Registry (PPR)](./glossary.md) as simple and easy as possible. Think of Pulsar Package Badges being similar to how NPM emits warnings when installing certain packages, or how users on GitHub can receive badges on their GitHub profile.
+Pulsar Maintainers communicate details about packages via badges when a community package maintainer can't or won't, in the hope of making the usage of the [Pulsar Package Registry (PPR)](./glossary.md) as simple and easy as possible. Think of Pulsar Package Badges being similar to how NPM emits warnings when installing certain packages, or how users on GitHub can receive badges on their GitHub profile.
 
 Below is the specification for a badge, the data it may contain, the valid values that may be placed in an enum, and what should be done with it.
 
@@ -15,6 +15,7 @@ The following schema is required of any `generic` badge type:
     "type": "<type_enum>",
     "title": "<string>",
     "text": "<string>",
+    "alt": "<string>",
     "link": "<string>"
   }
 ]
@@ -28,6 +29,7 @@ Any `badge` object may contain the following properties:
 * `title`: This is a **required** property. Specifying the title of the badge. Such as `Deprecated`. This value is a strict enum, with only the values specified below being allowed.
 * `text`: This is an **optional** property. Specifying further information about this badge. That may be hidden either based on a user setting or by context.
 * `link`: This is an **optional** property. Providing a link for the user to be directed to, that may contain further information about the badge.
+* `alt`: This is an **optional** property. Only having a use for when the badge type is 'Deprecated'. It's usage should be the name of an alternative package for users to install.
 * `type`: This is a **required** property. Instructing what type of badge this is. The type of badge should be used to determine any icons used alongside the badge, as well as any color or styling the badge will receive when displayed by the client. The valid `type`s currently available are as follows:
   - `warn`: This should be used to indicate something that the user **must** be aware of.
   - `info`: This should be used to point out information that is neutral in the user receiving.
@@ -41,8 +43,9 @@ The following are some valid examples of badges:
   {
     "type": "warn",
     "title": "Deprecated",
-    "text": "This package is out of date and should not be used.",
-    "link": "https://github.com/pulsar-edit/pulsar/issues/1"
+    "text": "Installation of fork recommended",
+    "link": "https://github.com/pulsar-edit/pulsar/issues/1",
+    "alt": "package-fork-name"
   },
   {
     "type": "info",
@@ -78,6 +81,8 @@ The `Made for Pulsar!` badge is meant to be a badge of achievement, showing that
 
 ### Broken
 
+> Known to be non-functional
+
 The `Broken` badge is used to indicate that the package available on the PPR does not work at all in its current form, on any supported platform. Either requiring manual changes to the source code, or otherwise being unrealistic to fix from the users perspective.
 
 This package likely emits warnings immediately, or may even cause the editor to crash as a whole. Installation of these packages is not recommended by the Pulsar team, and instead it is encouraged to work with the original maintainer to get these packages working, or otherwise the community is encouraged to maintain and manage a fork of said package.
@@ -85,6 +90,8 @@ This package likely emits warnings immediately, or may even cause the editor to 
 If a community member does decide to maintain a fork of a package with a `Broken` badge, it's recommended to make the Pulsar team or Pulsar Backend team (such as by opening an issue on this repo) aware of this, so any warnings and links on the original package can be changed to recommend installation of your functional fork.
 
 ### Archived
+
+> Source Code has been archived
 
 The `Archived` badge is used to indicate that this package has been archived on GitHub (Or other VCS host). This does not mean that the package doesn't work, or has any kind of issue, it only means that if there does become issues with this package then support is most likely not going to exist.
 
@@ -96,6 +103,12 @@ The `Archived` badge should only be used as a neutral badge, to not cause any ki
 
 ### Deprecated
 
+> Installation of fork recommended
+
 The `Deprecated` badge is used to indicate that this package, which is [`Broken`](#broken) has a working fork published to the PPR. It is recommended that users install the forked version of this package instead, to avoid the broken behavior of the original package.
 
 Pointing out this forked package does not constitute a recommendation from Pulsar, only drawing attention to the fact that it is possible to have a bug free experience with a more up to date version of the package.
+
+### Bundled
+
+The `Bundled` badge is used to indicate that this package comes with every Pulsar installation. There is no need to download this package manually, and instead should be updated by grabbing a newer version of Pulsar if one exists.

@@ -1,5 +1,5 @@
 const endpoint = require("../../src/controllers/getUsers.js");
-const database = require("../../src/database.js");
+const database = require("../../src/database/_export.js");
 const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPrivate.js");
 

@@ -258,7 +258,6 @@ module.exports = {
         .addCalls("db.getPackageByName", packExists)
         .addCalls("vcs.newVersionData", packMetadata)
         .addCalls("vcs.ownership", gitowner)
-        .addCalls("db.packageNameAvailability", isAvailable)
         .addCalls("db.insertNewPackageVersion", addVer)
         .addMessage("Failed to add the new package version to the database.");
     }

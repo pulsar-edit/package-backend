@@ -21,6 +21,7 @@ let sqlStorage;
   - title: <enum|required> The title of the badge (outdated, broken, archived)
   - text: <string|optional> The text content of the badge (no periods, fewest words possible)
   - link: <string|optional> A link for the badge (link to admin actions log)
+  - alt: <string|optional> The alternate name to add for deprecated packages.
 */
 let badgeConfig = {
   type: "",
@@ -69,6 +70,10 @@ async function main() {
   }
   if (badgeConfig.link && badgeConfig.link.length < 1) {
     console.error("Zero lengthed entry of Badge Config link!");
+    process.exit(100);
+  }
+  if (badgeConfig.alt && badgeConfig.alt.length < 1) {
+    console.error("Zero lengthed entry of Badge Config alt!");
     process.exit(100);
   }
 

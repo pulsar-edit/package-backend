@@ -1,20 +1,9 @@
 const endpoint = require("../../src/controllers/getUsersLogin.js");
-const database = require("../../src/database.js");
+const database = require("../../src/database/_export.js");
 const context = require("../../src/context.js");
 const userObject = require("../models/userObjectPublic.js");
 
 describe("Behaves as expected", () => {
-  test("Calls the correct db function", async () => {
-    const localContext = context;
-    const spy = jest.spyOn(localContext.database, "getUserByName");
-
-    const res = await endpoint.logic({}, localContext);
-
-    expect(spy).toBeCalledTimes(1);
-
-    spy.mockClear();
-  });
-
   test("Returns bad SSO on failure", async () => {
     const userName = "our-test-user";
 

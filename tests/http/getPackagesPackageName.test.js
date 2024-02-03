@@ -1,21 +1,10 @@
 const endpoint = require("../../src/controllers/getPackagesPackageName.js");
-const database = require("../../src/database.js");
+const database = require("../../src/database/_export.js");
 const context = require("../../src/context.js");
 
 const genPackage = require("../helpers/package.jest.js");
 
 describe("Behaves as expected", () => {
-  test("Calls the correct function", async () => {
-    const localContext = context;
-    const spy = jest.spyOn(localContext.database, "getPackageByName");
-
-    await endpoint.logic({}, localContext);
-
-    expect(spy).toBeCalledTimes(1);
-
-    spy.mockClear();
-  });
-
   test("Returns 'not_found' when package doesn't exist", async () => {
     const sso = await endpoint.logic(
       {

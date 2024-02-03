@@ -14,8 +14,7 @@
 const logger = require("../logger.js");
 const { server_url } = require("../config.js").getConfig();
 
-module.exports =
-async function constructPackageObjectFull(pack) {
+module.exports = async function constructPackageObjectFull(pack) {
   const parseVersions = (vers) => {
     let retVer = {};
 
@@ -60,4 +59,4 @@ async function constructPackageObjectFull(pack) {
   logger.generic(6, "Built Package Object Full without Error");
 
   return newPack;
-}
+};

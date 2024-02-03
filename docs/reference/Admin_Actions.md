@@ -4,6 +4,56 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2024 - January 30
+
+### linter-shellcheck
+
+The community package `linter-shellcheck` has been discovered to be broken. The source code contains an [error](https://github.com/AtomLinter/linter-shellcheck/issues/160). This package's source code has since been archived as of August 7, 2023. So it is now impossible for this package to ever receive an update to resolve its issue.
+
+But the package has been forked to the [`pulsar-cooperative`](https://github.com/pulsar-cooperative) organization. This forked package is now recommended to download.
+
+As this package is now permanently broken, and archived, it'll receive the [`Archived`](./badge-spec.md#archived), [`Broken`](./badge-spec.md#broken) and [`Deprecated`](./badge-spec.md#deprecated) badges to reflect its status, with installation of [`linter-shellcheck-pulsar`](https://web.pulsar-edit.dev/packages/linter-shellcheck-pulsar) instead recommended.
+
+### linter-remark
+
+The community package `linter-remark` has been discovered to be broken. The source code contains an [error](https://github.com/pulsar-edit/package-backend/issues/212). This package's source code has since been archived as of June 18, 2022. So it is now impossible for this package to ever receive an update to resolve its issue.
+
+As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect its status.
+
+### atom-ternjs
+
+The community package [`atom-ternjs`](https://web.pulsar-edit.dev/packages/atom-ternjs) has been reported to be broken.
+
+This package was the first to be ported the [`pulsar-cooperative`](https://github.com/pulsar-cooperative) organization, in the effort to help alleviate the ownership burden of broken community packages.
+
+This forked package is now recommended to download.
+
+So this package will receive the [`Deprecated`](./badge-spec.md#deprecated) badge, with installation of [`pulsar-ternjs`](https://web.pulsar-edit.dev/packages/pulsar-ternjs) instead recommended.
+
+### compare-files
+
+The community package `compare-files` has been discovered to be broken. The source code contains an [error](https://github.com/atom-compare-files/atom-compare-files/issues) that was originally reported before Pulsar had ever been created. This package's source code has since been archived as of January 21, 2019. So it is now impossible for this package to ever receive an update to resolve its issue.
+
+As this package is now permanently broken, and archived, it'll receive both the [`Archived`](./badge-spec.md#archived) and [`Broken`](./badge-spec.md#broken) badges to reflect its status.
+
+### deep-purple-syntax
+
+The community package `deep-purple-syntax` has been found to have been removed from GitHub, meaning the package is no longer downloadable.
+
+As this package is broken in such a way that it cannot be fixed, it will be removed from the backend while keeping the reserved name to avoid any Supply Chain Attacks targeting this package.
+
+### darcula-darker-syntax
+
+Much like our previous entry of `pulsar-gpp-compiler` the maintainer of `darcula-darker-syntax` while working on their package had accidentally deleted the entire package. At this point in time they did request to have the name unreserved so that they could republish their package under the same name.
+
+Keeping in line with the same requirements, to avoid any kind of Supply Chain Vulnerability being available to our users we had to ensure that there were **zero** ever downloads of this package. Since this package was publishing originally within 30 days, we were able to do this via the server logs. The following was determined absolutely:
+
+1. The user requesting this service had sufficient permission to the effected repository.
+2. No major, malicious changes had occurred in the codebase, which could signal a GitHub user's account had been compromised.
+3. That absolutely 0 downloads have ever occurred of this package.
+
+After confirming the above details without a shadow of a doubt, we were able to unreserve the package name to allow the author to publish their package under that name again.
+
 ## 2023 - September 4
 
 ### pulsar-gpp-compiler
