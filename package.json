@@ -8,9 +8,10 @@
   },
   "scripts": {
     "start": "node ./src/server.js",
-    "test": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests Unit-Tests --runInBand",
+    "test": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests Unit-Tests Full-Tests --runInBand",
     "test:unit": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Unit-Tests",
     "test:integration": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Integration-Tests --runInBand",
+    "test:full": "cross-env NODE_ENV=test PULSAR_STATUS=dev jest --selectProjects Full-Tests --runInBand",
     "start:dev": "cross-env PULSAR_STATUS=dev node ./src/dev_server.js",
     "lint": "prettier --check -u -w .",
     "complex": "cr --newmi --config .complexrc .",
@@ -49,6 +50,7 @@
     "js-yaml": "^4.1.0",
     "parse-github-url": "^1.0.2",
     "postgres": "^3.3.4",
+    "semver": "^7.5.4",
     "superagent": "^8.0.9"
   },
   "devDependencies": {
@@ -64,6 +66,7 @@
     "jest-joi": "^1.1.17",
     "joi": "^17.9.1",
     "jsdoc-to-markdown": "^8.0.0",
+    "nock": "^13.5.0",
     "prettier": "^2.8.7",
     "supertest": "^6.3.3"
   }
