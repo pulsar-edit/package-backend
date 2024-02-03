@@ -33,12 +33,16 @@ module.exports = {
     },
   },
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     const user = await context.auth.verifyAuth(params.auth, context.database);
+
+    callStack.addCall("auth.verifyAuth", user);
 
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).assignCalls(callStack);
     }
 
     const star = await context.database.updateIncrementStar(
@@ -46,14 +50,15 @@ module.exports = {
       params.packageName
     );
 
+    callStack.addCall("db.updateIncrementStar", star);
+
     if (!star.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(star)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.updateIncrementStar", star);
+        .assignCalls(callStack);
     }
 
     // Now with a success we want to return the package back in this query
@@ -62,15 +67,15 @@ module.exports = {
       true
     );
 
+    callStack.addCall("db.getPackageByName", pack);
+
     if (!pack.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(pack)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.updateIncrementStar", star)
-        .addCalls("db.getPackageByName", pack);
+        .assignCalls(callStack);
     }
 
     pack = await context.models.constructPackageObjectFull(pack.content);

@@ -15,6 +15,7 @@ module.exports = {
   ssoPaginate: require("./models/ssoPaginate.js"),
   ssoRedirect: require("./models/ssoRedirect.js"),
   ssoHTML: require("./models/ssoHTML.js"),
+  callStack: require("./models/callStack.js"),
   models: {
     constructPackageObjectFull: require("./models/constructPackageObjectFull.js"),
     constructPackageObjectShort: require("./models/constructPackageObjectShort.js"),

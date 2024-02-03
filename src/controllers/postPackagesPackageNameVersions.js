@@ -71,6 +71,7 @@ module.exports = {
   },
 
   async logic(params, context) {
+    const callStack = new context.callStack();
     // On renaming:
     // When a package is being renamed, we will expect that packageName will
     // match a previously published package.
@@ -80,6 +81,8 @@ module.exports = {
 
     const user = await context.auth.verifyAuth(params.auth, context.database);
 
+    callStack.addCall("auth.verifyAuth", user);
+
     if (!user.ok) {
       // TODO LOG
       const sso = new context.sso();
@@ -88,7 +91,7 @@ module.exports = {
         .notOk()
         .addShort("unauthorized")
         .addContent(user)
-        .addCalls("auth.verifyAuth", user)
+        .assignCalls(callStack)
         .addMessage(
           "User Authentication Failed when attempting to publish package version!"
         );
@@ -108,6 +111,8 @@ module.exports = {
       true
     );
 
+    callStack.addCall("db.getPackageByName", packExists);
+
     if (!packExists.ok) {
       // TODO LOG
       const sso = new context.sso();
@@ -116,8 +121,7 @@ module.exports = {
         .notOk()
         .addShort("not_found")
         .addContent(packExists)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packExists)
+        .assignCalls(callStack)
         .addMessage(
           "The server was unable to locate your package when publishing a new version."
         );
@@ -136,15 +140,15 @@ module.exports = {
       "git"
     );
 
+    callStack.addCall("vcs.newVersionData", packMetadata);
+
     if (!packMetadata.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(packMetadata)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packExists)
-        .addCalls("vcs.newVersionData", packMetadata);
+        .assignCalls(callStack);
     }
 
     const newName = packMetadata.content.name;
@@ -156,9 +160,7 @@ module.exports = {
       return sso
         .notOk()
         .addShort("bad_repo")
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packExists)
-        .addCalls("vcs.newVersionData", packMetadata)
+        .assignCalls(callStack)
         .addMessage(
           "Package name doesn't match local name, with rename false."
         );
@@ -175,6 +177,8 @@ module.exports = {
       packMetadata.content
     );
 
+    callStack.addCall("vcs.ownership", gitowner);
+
     if (!gitowner.ok) {
       const sso = new context.sso();
 
@@ -182,10 +186,7 @@ module.exports = {
         .notOk()
         .addShort("unauthorized")
         .addContent(gitowner)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packExists)
-        .addCalls("vcs.newVersionData", packMetadata)
-        .addCalls("vcs.ownership", gitowner)
+        .assignCalls(callStack)
         .addMessage("User failed git ownership check!");
     }
 
@@ -205,16 +206,15 @@ module.exports = {
           .notOk()
           .addShort("server_error")
           .addContent(isBanned)
-          .addCalls("auth.verifyAuth", user)
-          .addCalls("db.getPackageByName", packExists)
-          .addCalls("vcs.newVersionData", packMetadata)
-          .addCalls("vcs.ownership", gitowner)
+          .assignCalls(callStack)
           .addMessage("This package Name is Banned on the Pulsar Registry");
       }
 
       const isAvailable = await context.database.packageNameAvailability(
         newName
       );
+
+      callStack.addCall("db.packageNameAvailability", isAvailable);
 
       if (isAvailable.ok) {
         const sso = new context.sso();
@@ -223,11 +223,7 @@ module.exports = {
           .notOk()
           .addShort("server_error")
           .addContent(isAvailable)
-          .addCalls("auth.verifyAuth", user)
-          .addCalls("db.getPackageByName", packExists)
-          .addCalls("vcs.newVersionData", packMetadata)
-          .addCalls("vcs.ownership", gitowner)
-          .addCalls("db.packageNameAvailability", isAvailable)
+          .assignCalls(callStack)
           .addMessage(`The Package Name: ${newName} is not available.`);
       }
     }
@@ -238,6 +234,8 @@ module.exports = {
       rename ? currentName : null
     );
 
+    callStack.addCall("db.insertNewPackageVersion", addVer);
+
     if (!addVer.ok) {
       // TODO Use hardcoded message until we can verify messages from db are safe
       const sso = new context.sso();
@@ -246,11 +244,7 @@ module.exports = {
         .notOk()
         .addShort("server_error")
         .addContent(addVer)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packExists)
-        .addCalls("vcs.newVersionData", packMetadata)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("db.insertNewPackageVersion", addVer)
+        .assignCalls(callStack)
         .addMessage("Failed to add the new package version to the database.");
     }
 

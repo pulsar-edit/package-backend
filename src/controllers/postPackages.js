@@ -70,12 +70,18 @@ module.exports = {
   },
 
   async logic(params, context) {
+
+    const callStack = new context.callStack();
+
     const user = await context.auth.verifyAuth(params.auth, context.database);
+
+    callStack.addCall("auth.verifyAuth", user);
+
     // Check authentication
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).assignCalls(callStack);
     }
 
     // Check repository format validity.
@@ -123,14 +129,15 @@ module.exports = {
       params.repository
     );
 
+    callStack.addCall("vcs.ownership", gitowner);
+
     if (!gitowner.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(gitowner)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("vcs.ownership", gitowner);
+        .assignCalls(callStack);
     }
 
     // Now knowing they own the git repo, and it doesn't exist here, lets publish.
@@ -141,6 +148,8 @@ module.exports = {
       "git"
     );
 
+    callStack.addCall("vcs.newPackageData", newPack);
+
     if (!newPack.ok) {
       const sso = new context.sso();
 
@@ -148,9 +157,7 @@ module.exports = {
         .notOk()
         .addContent(newPack)
         .addMessage(newPack.content) // This is where we trust the output
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("vcs.newPackageData", newPack);
+        .assignCalls(callStack);
     }
 
     // Now that we have the name the package will actually take, we want
@@ -158,6 +165,8 @@ module.exports = {
     const nameAvailable = await context.database.packageNameAvailability(
       newPack.content.name
     );
+
+    callStack.addCall("db.packageNameAvailability", nameAvailable);
 
     if (!nameAvailable.ok) {
       // We need to ensure the error is not found or otherwise
@@ -168,10 +177,7 @@ module.exports = {
         return sso
           .notOk()
           .addContent(nameAvailable)
-          .addCalls("auth.verifyAuth", user)
-          .addCalls("vcs.ownership", gitowner)
-          .addCalls("vcs.newPackageData", newPack)
-          .addCalls("db.packageNameAvailability", nameAvailable);
+          .assignCalls(callStack);
       }
       // But if the short is in fact "not_found" we can report the package as
       // not being available at this name
@@ -180,10 +186,7 @@ module.exports = {
       return sso
         .notOk()
         .addShort("package_exists")
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("vcs.newPackageData", newPack)
-        .addCalls("db.packageNameAvailability", nameAvailable);
+        .assignCalls(callStack);
     }
 
     // Now with valid package data, we can insert them into the DB
@@ -191,17 +194,15 @@ module.exports = {
       newPack.content
     );
 
+    callStack.addCall("db.insertNewPackage", insertedNewPack);
+
     if (!insertedNewPack.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(insertedNewPack)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("vcs.newPackageData", newPack)
-        .addCalls("db.packageNameAvailability", nameAvailable)
-        .addCalls("db.insertNewPackage", insertedNewPack);
+        .assignCalls(callStack);
     }
 
     // Finally we can return what was actually put into the databse.
@@ -212,18 +213,15 @@ module.exports = {
       true
     );
 
+    callStack.addCall("db.getPackageByName", newDbPack);
+
     if (!newDbPack.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(newDbPack)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("vcs.newPackageData", newPack)
-        .addCalls("db.insertNewPackage", insertedNewPack)
-        .addCalls("db.packageNameAvailability", nameAvailable)
-        .addCalls("db.getPackageByName", newDbPack);
+        .assignCalls(callStack);
     }
 
     const packageObjectFull = await context.models.constructPackageObjectFull(

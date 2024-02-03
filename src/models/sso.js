@@ -75,6 +75,11 @@ module.exports = class SSO {
     return this;
   }
 
+  assignCalls(content) {
+    this.calls = content;
+    return this;
+  }
+
   addShort(enumValue) {
     if (
       this.short?.length <= 0 &&
