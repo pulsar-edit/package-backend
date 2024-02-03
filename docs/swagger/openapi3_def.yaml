@@ -365,6 +365,19 @@ paths:
       summary: >-
         Non-Essential endpoint to return status message, and link to Swagger
         Instance.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/login:
     get:
       parameters: []
@@ -372,6 +385,19 @@ paths:
         '302':
           description: A redirect to the GitHub OAuth Authorization login flow.
       summary: OAuth callback URL.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/oauth:
     get:
       parameters:
@@ -395,6 +421,19 @@ paths:
         '302':
           description: A redirect to the Pulsar Package Website User page.
       summary: OAuth Callback URL.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/owners/{ownerName}:
     get:
       parameters:
@@ -410,6 +449,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: A paginated response of packages.
       summary: List all packages published under a single owner.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/packages:
     get:
       parameters:
@@ -429,6 +481,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: An array of packages.
       summary: List all packages
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/packages ':
     post:
       parameters:
@@ -453,6 +518,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: An array of featured packages.
       summary: Returns all featured packages. Previously undocumented endpoint.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/packages/search:
     get:
       parameters:
@@ -474,6 +552,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: Any array of packages.
       summary: Searches all packages.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/packages/{packageName}:
     delete:
       parameters:
@@ -483,6 +574,19 @@ paths:
         '204':
           description: An empty response, indicating success.
       summary: Delete a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/packages/{packageName} ':
     get:
       parameters:
@@ -505,6 +609,19 @@ paths:
         '204':
           description: An empty response, indicating success.
       summary: Unstar a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/packages/{packageName}/star ':
     post:
       parameters:
@@ -530,7 +647,33 @@ paths:
                 $ref: '#/components/schemas/userObjectPublicArray'
           description: A list of users.
       summary: List the users that have starred a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/packages/{packageName}/versions:
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
     post:
       parameters:
         - $ref: '#/components/parameters/rename'
@@ -556,6 +699,19 @@ paths:
       summary: >-
         Deletes a package version. Once a version is deleted, it cannot be used
         again.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/packages/{packageName}/versions/{versionName} ':
     get:
       parameters:
@@ -570,6 +726,19 @@ paths:
           description: The 'package.json' plus more details of a single package version.
       summary: Get the details of a specific package version.
   /api/packages/{packageName}/versions/{versionName}/events/uninstall:
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
     post:
       deprecated: true
       parameters: []
@@ -589,6 +758,19 @@ paths:
         '302':
           description: Redirect to the GitHub tarball URL.
       summary: Previously undocumented endpoint. Allows for installation of a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/pat:
     get:
       parameters:
@@ -601,6 +783,19 @@ paths:
             type: string
       responses: {}
       summary: PAT Token Signup URL.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/stars:
     get:
       parameters:
@@ -615,6 +810,19 @@ paths:
             Return a value similar to `GET /api/packages`, an array of package
             objects.
       summary: List the authenticated users' starred packages.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/themes:
     get:
       parameters:
@@ -629,6 +837,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: A paginated response of themes.
       summary: List all packages that are themes.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/themes ':
     post:
       parameters:
@@ -653,6 +874,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: An array of featured themes.
       summary: Display featured packages that are themes.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/themes/search:
     get:
       parameters:
@@ -668,6 +902,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: A paginated response of themes.
       summary: Get featured packages that are themes. Previously undocumented.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/themes/{packageName}:
     delete:
       parameters:
@@ -677,6 +924,19 @@ paths:
         '204':
           description: An empty response, indicating success.
       summary: Delete a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/themes/{packageName} ':
     get:
       parameters:
@@ -699,6 +959,19 @@ paths:
         '204':
           description: An empty response, indicating success.
       summary: Unstar a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/themes/{packageName}/star ':
     post:
       parameters:
@@ -724,7 +997,33 @@ paths:
                 $ref: '#/components/schemas/userObjectPublicArray'
           description: A list of users.
       summary: List the users that have starred a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/themes/{packageName}/versions:
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
     post:
       parameters:
         - $ref: '#/components/parameters/rename'
@@ -750,6 +1049,19 @@ paths:
       summary: >-
         Deletes a package version. Once a version is deleted, it cannot be used
         again.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   '/api/themes/{packageName}/versions/{versionName} ':
     get:
       parameters:
@@ -764,6 +1076,19 @@ paths:
           description: The 'package.json' plus more details of a single package version.
       summary: Get the details of a specific package version.
   /api/themes/{packageName}/versions/{versionName}/events/uninstall:
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
     post:
       deprecated: true
       parameters: []
@@ -783,6 +1108,19 @@ paths:
         '302':
           description: Redirect to the GitHub tarball URL.
       summary: Previously undocumented endpoint. Allows for installation of a package.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/updates:
     get:
       description: >-
@@ -794,6 +1132,19 @@ paths:
           content: {}
           description: Atom update feed, following the format expected by Squirrel.
       summary: List Pulsar Updates
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/users:
     get:
       description: >-
@@ -811,6 +1162,35 @@ paths:
       summary: >-
         Display details of the currently authenticated user. This endpoint is
         undocumented and is somewhat strange.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Access-Control-Allow-Credentials:
+              description: >-
+                Indicates if the server allows cross-origin HTTP requests to
+                include credentials.
+              schema:
+                type: string
+            Access-Control-Allow-Headers:
+              description: Indicates headers allowed in response to preflight requests.
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              description: Indicates methods allowed in response to preflight requests.
+              schema:
+                type: string
+            Access-Control-Allow-Origin:
+              description: >-
+                Indicates if the response can be shared when requesting code
+                from the given origin.
+              schema:
+                type: string
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
   /api/users/{login}:
     get:
       parameters:
@@ -831,6 +1211,19 @@ paths:
       summary: >-
         Display the details of any user, as well as the packages they have
         published.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/users/{login}/stars:
     get:
       parameters:
@@ -843,6 +1236,19 @@ paths:
                 $ref: '#/components/schemas/packageObjectShortArray'
           description: Return value is similar to `GET /api/packages`.
       summary: List a user's starred packages.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
 servers:
   - description: Production Server
     url: https://api.pulsar-edit.dev
