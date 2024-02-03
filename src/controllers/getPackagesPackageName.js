@@ -45,7 +45,7 @@ module.exports = {
   async logic(params, context) {
 
     // Lets first check if this is a bundled package we should return
-    const isBundled = context.bundled.isBundled(params.packageName);
+    const isBundled = context.bundled.isNameBundled(params.packageName);
 
     if (isBundled.ok && isBundled.content) {
       // This is in fact a bundled package
