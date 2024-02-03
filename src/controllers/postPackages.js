@@ -26,7 +26,7 @@ module.exports = {
   },
   params: {
     repository: (context, req) => {
-      return context.query.repo(req);
+      return context.query.repository(req);
     },
     auth: (context, req) => {
       return context.query.auth(req);
