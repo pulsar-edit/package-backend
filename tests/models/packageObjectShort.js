@@ -59,7 +59,7 @@ module.exports = {
         "atom-psace-pen-views": "^2.2.0",
         "node-pty-prebuilt-multiarch": "^0.9.0",
       },
-      activationHooks: ["core:loaded-shell-encironmnet"],
+      activationHooks: ["core:loaded-shell-environmnet"],
       consumedServices: {
         "status-bar": {
           versions: {
@@ -106,7 +106,8 @@ module.exports = {
       .valid(
         "User Made Package",
         "Migrated from Atom.io",
-        "Test Package" // Should only be used during tests
+        "Test Package", // Should only be used during tests
+        "Bundled Package" // Only allowed on Bundled Packages
       )
       .required(),
     downloads: Joi.string()
@@ -124,7 +125,8 @@ module.exports = {
               "Made for Pulsar!",
               "Broken",
               "Archived",
-              "Deprecated"
+              "Deprecated",
+              "Bundled"
             )
             .required(),
           type: Joi.string().valid("warn", "info", "success").required(),

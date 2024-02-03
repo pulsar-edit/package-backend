@@ -54,8 +54,8 @@ const DEFAULT_PACK = {
     type: "git"
   },
   creation_method: "Bundled Package",
-  downloads: "",
-  stargazers_count: "",
+  downloads: "0",
+  stargazers_count: "0",
   badges: [
     {
       title: "Bundled",

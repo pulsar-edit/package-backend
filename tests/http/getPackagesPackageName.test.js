@@ -39,4 +39,21 @@ describe("Behaves as expected", () => {
     expect(sso).toMatchEndpointSuccessObject(endpoint);
     await database.removePackageByName("get-package-test", true);
   });
+
+  test("Returns a bundled package without it existing in the database", async () => {
+    const sso = await endpoint.logic(
+      {
+        engine: false,
+        packageName: "settings-view"
+      },
+      context
+    );
+
+    expect(sso.ok).toBe(true);
+    expect(sso.content.name).toBe("settings-view");
+    expect(sso.content.owner).toBe("pulsar-edit");
+    expect(sso.content.repository.url).toBe("https://github.com/pulsar-edit/pulsar");
+    expect(sso).toMatchEndpointSuccessObject(endpoint);
+  });
+
 });

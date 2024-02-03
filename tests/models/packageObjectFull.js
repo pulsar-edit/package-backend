@@ -116,7 +116,8 @@ module.exports = {
       .valid(
         "User Made Package",
         "Migrated from Atom.io",
-        "Test Package" // Should only be used during tests
+        "Test Package", // Should only be used during tests
+        "Bundled Package" // Only allowed on Bundled Packages
       )
       .required(),
     downloads: Joi.string()
@@ -134,7 +135,8 @@ module.exports = {
               "Made for Pulsar!",
               "Broken",
               "Archived",
-              "Deprecated"
+              "Deprecated",
+              "Bundled"
             )
             .required(),
           type: Joi.string().valid("warn", "info", "success").required(),
