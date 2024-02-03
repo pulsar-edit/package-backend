@@ -17,6 +17,7 @@ const yaml = require("js-yaml");
 const packageJSON = require("../../package.json");
 const endpoints = require("../../src/controllers/endpoints.js");
 const queryParameters = require("../../src/query_parameters/index.js");
+const HEADER_MAP = require("./header-map.js");
 const MODEL_DIR = "tests/models";
 const MODEL_DIR_FS = `./${MODEL_DIR}`;
 const MODEL_DIR_REQUIRE = `../../${MODEL_DIR}`;
@@ -79,14 +80,24 @@ function constructAndAddPaths() {
           ...( node.docs.deprecated && { deprecated: true } ),
           responses: craftResponsesFromObject(node),
           parameters: craftParametersFromObject(node)
-        } // TODO Add Options returns here, once I read up on the response schema enough to include it
+        }
+      };
+
+      // Now with the path added, lets add our options info
+      spec.paths[createPathString(ePath, { noClobber: false })].options = {
+        responses: {
+          204: {
+            description: "The options response for this endpoint.",
+            headers: craftHeadersFromObject(node.endpoint.options)
+          }
+        }
       };
 
     }
   }
 }
 
-function createPathString(ePath) {
+function createPathString(ePath, { noClobber = true } = {}) {
   // Here we take a path like `/api/packages/:packageName` => `/api/packages/{packageName}`
   let original = ePath;
   let output = "";
@@ -121,7 +132,7 @@ function createPathString(ePath) {
     }
   }
 
-  if (spec.paths[output]) {
+  if (spec.paths[output] && noClobber) {
     // Since some endpoints use the same URl with different methods
     // when we add them to an object like this the last one added will overwrite
     // the others sharing the same path.
@@ -182,6 +193,25 @@ function craftParametersFromObject(node) {
   return params;
 }
 
+function craftHeadersFromObject(obj) {
+  // Unlike most other craft functions, we are directly handed the `options` obj
+  // from the endpoint. Meaning we just have a list of objects that we want to
+  // return information for.
+
+  let headers = {};
+
+  for (const opt in obj) {
+    headers[opt] = {
+      description: getDataForHeader("desc", opt),
+      schema: {
+        type: getDataForHeader("schema", opt)
+      }
+    };
+  }
+
+  return headers;
+}
+
 function constructAndAddParameters() {
   for (const param in queryParameters.schema) {
     spec.components.parameters[param] = queryParameters.schema[param];
@@ -200,4 +230,21 @@ function constructAndAddSchemas() {
     const content = require(path.join(MODEL_DIR_REQUIRE, file));
     spec.components.schemas[file.replace(".js", "")] = content.schema;
   }
+}
+
+function getDataForHeader(type, header) {
+  // This function simply returns string values for the 'type' of info requested.
+
+  if (type !== "schema" && type !== "desc") {
+    console.log(`getDataForHeader() Called with invalid type: '${type}'`);
+    return "";
+  }
+
+  let returnInfo = HEADER_MAP[header]?.[type] ?? "";
+
+  if (returnInfo.length === 0) {
+    console.log(`Empty header supplied: Header: '${header}' ; Type: '${type}'`);
+  }
+
+  return returnInfo;
 }
