@@ -5,6 +5,11 @@
 module.exports = {
   docs: {
     summary: "OAuth callback URL.",
+    responses: {
+      302: {
+        description: "A redirect to the GitHub OAuth Authorization login flow."
+      }
+    }
   },
   endpoint: {
     method: "GET",

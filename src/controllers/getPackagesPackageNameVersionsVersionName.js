@@ -7,7 +7,7 @@ module.exports = {
     summary: "Get the details of a specific package version.",
     responses: {
       200: {
-        description: "The `package.json` among other details of the package.",
+        description: "The 'package.json' plus more details of a single package version.",
         content: {
           "application/json": "$packageObjectJSON",
         },
@@ -40,7 +40,7 @@ module.exports = {
    * @async
    * @memberof getPackagesPackageNameVersionsVersionName
    * @function logic
-   * @desc Used to retreive the details of a specific version of a package.
+   * @desc Used to retrieve the details of a specific version of a package.
    * @param {object} params - The available query parameters.
    * @param {object} context - The Endpoint Context.
    * @returns {sso}

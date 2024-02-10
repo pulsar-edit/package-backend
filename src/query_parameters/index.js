@@ -12,11 +12,12 @@ const fileExtension = require("./fileExtension.js");
 const filter = require("./filter.js");
 const login = require("./login.js");
 const owner = require("./owner.js");
+const ownerName = require("./ownerName.js");
 const packageName = require("./packageName.js");
 const page = require("./page.js");
 const query = require("./query.js");
 const rename = require("./rename.js");
-const repo = require("./repo.js");
+const repository = require("./repository.js");
 const service = require("./service.js");
 const serviceType = require("./serviceType.js");
 const serviceVersion = require("./serviceVersion.js");
@@ -33,11 +34,12 @@ module.exports = {
     filter: filter.logic,
     login: login.logic,
     owner: owner.logic,
+    ownerName: ownerName.logic,
     packageName: packageName.logic,
     page: page.logic,
     query: query.logic,
     rename: rename.logic,
-    repo: repo.logic,
+    repository: repository.logic,
     service: service.logic,
     serviceType: serviceType.logic,
     serviceVersion: serviceVersion.logic,
@@ -53,11 +55,12 @@ module.exports = {
     filter: filter.schema,
     login: login.schema,
     owner: owner.schema,
+    ownerName: ownerName.schema,
     packageName: packageName.schema,
     page: page.schema,
     query: query.schema,
     rename: rename.schema,
-    repo: repo.schema,
+    repository: repository.schema,
     service: service.schema,
     serviceType: serviceType.schema,
     serviceVersion: serviceVersion.schema,

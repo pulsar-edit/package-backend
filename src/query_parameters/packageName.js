@@ -16,7 +16,7 @@ module.exports = {
     allowEmptyValue: false,
     example: "autocomplete-powershell",
     description:
-      "The name of the package to reutrn details for. Must be URL escaped.",
+      "The name of the package to return details for. Must be URL escaped.",
   },
   logic: (req) => {
     return req.params.packageName.toLowerCase();

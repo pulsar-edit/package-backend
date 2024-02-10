@@ -7,6 +7,11 @@ const superagent = require("superagent");
 module.exports = {
   docs: {
     summary: "OAuth Callback URL.",
+    responses: {
+      302: {
+        description: "A redirect to the Pulsar Package Website User page."
+      }
+    }
   },
   endpoint: {
     method: "GET",
@@ -18,6 +23,28 @@ module.exports = {
       "X-Content-Type-Options": "nosniff",
     },
     endpointKind: "raw",
+  },
+  manualParams: {
+    state: {
+      name: "state",
+      in: "query",
+      schema: {
+        type: "string"
+      },
+      required: true,
+      allowEmptyValue: false,
+      description: "An unguessable random string. It is used to protect against cross-site request forgery attacks."
+    },
+    code: {
+      name: "code",
+      in: "query",
+      schema: {
+        type: "string"
+      },
+      required: true,
+      allowEmptyValue: false,
+      description: "Temporary code from GitHub to authorize a request."
+    }
   },
 
   async logic(req, res, context) {

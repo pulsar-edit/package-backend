@@ -7,7 +7,7 @@ module.exports = {
     summary: "Star a package.",
     responses: {
       200: {
-        description: "A 'Package Object Full' of the modified package",
+        description: "A 'Package Object Full' of the modified package.",
         content: {
           "application/json": "$packageObjectFull",
         },

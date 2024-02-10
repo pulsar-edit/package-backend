@@ -13,7 +13,7 @@ module.exports = {
     },
     required: true,
     allowEmptyValue: false,
-    description: "Authorization Headers",
+    description: "Authorization Headers.",
   },
   logic: (req) => {
     const token = req.get("Authorization");

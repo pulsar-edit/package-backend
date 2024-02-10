@@ -5,6 +5,14 @@
 module.exports = {
   docs: {
     summary: "List the users that have starred a package.",
+    responses: {
+      200: {
+        description: "A list of users.",
+        content: {
+          "application/json": "$userObjectPublicArray"
+        }
+      }
+    }
   },
   endpoint: {
     method: "GET",

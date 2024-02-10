@@ -6,6 +6,11 @@ module.exports = {
   docs: {
     summary:
       "Deletes a package version. Once a version is deleted, it cannot be used again.",
+    responses: {
+      204: {
+        description: "An empty response, indicating success."
+      }
+    }
   },
   endpoint: {
     method: "DELETE",

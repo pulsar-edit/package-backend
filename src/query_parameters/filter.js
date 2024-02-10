@@ -5,7 +5,7 @@ module.exports = {
     schema: {
       type: "string",
       enum: ["package", "theme"],
-      default: "pacakge",
+      default: "package",
     },
     required: false,
     allowEmptyValue: false,

@@ -8,33 +8,16 @@
  */
 module.exports = {
   schema: {
-    name: "multiSchema", // Special name to indicate that within this query
-    // parameter module, multiple schemas are supported, seperated by name
-    direction: {
-      name: "direction",
-      in: "query",
-      schema: {
-        type: "string",
-        enum: ["desc", "asc"],
-        default: "desc",
-      },
-      example: "desc",
-      allowEmptyValue: true,
-      description: "Direction to list search results.",
+    name: "direction",
+    in: "query",
+    schema: {
+      type: "string",
+      enum: ["desc", "asc"],
+      default: "desc",
     },
-    order: {
-      name: "order",
-      in: "query",
-      schema: {
-        type: "string",
-        enum: ["desc", "asc"],
-        default: "desc",
-      },
-      example: "desc",
-      allowEmptyValue: true,
-      description:
-        "Deprecated method to list search results. Use 'direction' instead.",
-    },
+    example: "desc",
+    allowEmptyValue: true,
+    description: "Direction to list search results. Also accepts 'order' for backwards compatibility.",
   },
   logic: (req) => {
     const def = "desc";

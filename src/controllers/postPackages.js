@@ -5,6 +5,14 @@
 module.exports = {
   docs: {
     summary: "Publishes a new Package.",
+    responses: {
+      201: {
+        description: "The package's details indicating success.",
+        content: {
+          "application/json": "$packageObjectFull"
+        }
+      }
+    }
   },
   endpoint: {
     method: "POST",
@@ -18,7 +26,7 @@ module.exports = {
   },
   params: {
     repository: (context, req) => {
-      return context.query.repo(req);
+      return context.query.repository(req);
     },
     auth: (context, req) => {
       return context.query.auth(req);
@@ -205,7 +213,7 @@ module.exports = {
     }
 
     // Finally we can return what was actually put into the databse.
-    // Retreive the data from database.getPackageByName() and
+    // Retrieve the data from database.getPackageByName() and
     // convert it inot a package object full format
     const newDbPack = await context.database.getPackageByName(
       newPack.content.name,

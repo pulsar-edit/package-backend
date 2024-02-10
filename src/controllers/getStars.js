@@ -5,15 +5,15 @@
 module.exports = {
   docs: {
     summary: "List the authenticated users' starred packages.",
-    responses: [
-      {
-        200: {
-          description:
-            "Return a value similar to `GET /api/packages`, an array of package objects.",
-          content: {},
+    responses: {
+      200: {
+        description:
+          "Return a value similar to `GET /api/packages`, an array of package objects.",
+        content: {
+          "application/json": "$packageObjectShortArray"
         },
       },
-    ],
+    },
   },
   endpoint: {
     method: "GET",

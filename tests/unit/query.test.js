@@ -102,15 +102,15 @@ describe("Verify Auth Query Returns", () => {
   });
 });
 
-const repoCases = [
+const repositoryCases = [
   [{ query: { repository: "owner/repo" } }, "owner/repo"],
   [{ query: {} }, ""],
   [{ query: { repository: "InvalidRepo" } }, ""],
 ];
 
 describe("Verify Repo Query Returns", () => {
-  test.each(repoCases)("Given %o Returns %p", (arg, result) => {
-    expect(query.repo(arg)).toBe(result);
+  test.each(repositoryCases)("Given %o Returns %p", (arg, result) => {
+    expect(query.repository(arg)).toBe(result);
   });
 });
 

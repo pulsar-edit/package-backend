@@ -1,6 +1,6 @@
 module.exports = {
   schema: {
-    description: "Publicaly returned information of users on Pulsar.",
+    description: "Publically returned information of users on Pulsar.",
     type: "object",
     required: ["username", "avatar", "data", "created_at", "packages"],
     properties: {

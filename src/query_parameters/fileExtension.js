@@ -17,7 +17,7 @@ module.exports = {
     example: "coffee",
     allowEmptyValue: true,
     description:
-      "File extension of which to only show compatible grammar package's of.",
+      "File extension for which to show only compatible grammar packages of.",
   },
   logic: (req) => {
     return utils.stringValidation(req.query.fileExtension);

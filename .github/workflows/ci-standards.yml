@@ -39,6 +39,9 @@ jobs:
     - name: Generate Complexity Reports
       run: npm run complex
 
+    - name: Generate OpenAPI Docs
+      run: npm run openapi-docs
+
     - name: Commit All Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
