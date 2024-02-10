@@ -24,12 +24,12 @@ module.exports = {
       name: "token",
       in: "query",
       schema: {
-        type: "string"
+        type: "string",
       },
       required: true,
       allowEmptyValue: false,
-      description: "The PAT token to use for account signup."
-    }
+      description: "The PAT token to use for account signup.",
+    },
   },
 
   async logic(req, res, context) {

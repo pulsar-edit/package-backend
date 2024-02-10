@@ -134,8 +134,6 @@ authenticated, and execute whatever action it is they wanted to.</p>
 <dt><a href="#login">login(req)</a> ⇒ <code>string</code></dt>
 <dd><p>Returns the User from the URL Path, otherwise &#39;&#39;</p>
 </dd>
-<dt><a href="#user">user(req)</a> ⇒ <code>string</code> | <code>boolean</code></dt>
-<dd></dd>
 <dt><a href="#packageName">packageName(req)</a> ⇒ <code>string</code></dt>
 <dd><p>This function will convert a user provided package name into a safe format.
 It ensures the name is converted to lower case. As is the requirement of all package names.</p>
@@ -682,7 +680,7 @@ to the repo or otherwise a failure.
 
 ### vcs~newPackageData(userObj, ownerRepo, service) ⇒ <code>object</code>
 Replaces the previous git.createPackage().
-Intended to retreive the full packages data. The data which will contain
+Intended to retrieve the full packages data. The data which will contain
 all information needed to create a new package entry onto the DB.
 
 **Kind**: inner method of [<code>vcs</code>](#module_vcs)  
@@ -703,7 +701,7 @@ Contains the full package data. This includes the Readme, the package.json, and 
 
 ### vcs~newVersionData(userObj, ownerRepo, service) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
 Replaces the previously used `git.metadataAppendTarballInfo()`
-Intended to retreive the most basic of a package's data.
+Intended to retrieve the most basic of a package's data.
 Bundles all the special handling of crafting such an object into this single
 function to reduce usage elsewhere.
 
@@ -954,17 +952,6 @@ Returns the User from the URL Path, otherwise ''
 | Param | Type | Description |
 | --- | --- | --- |
 | req | <code>object</code> | The `Request` object inherited from the Express endpoint. |
-
-<a name="user"></a>
-
-## user(req) ⇒ <code>string</code> \| <code>boolean</code>
-**Kind**: global function  
-**Returns**: <code>string</code> \| <code>boolean</code> - Returns false if the provided value is invalid or
-  nonexistent. Returns the user name otherwise.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| req | <code>object</code> | The `Request` object inherited from the Express   endpoint. |
 
 <a name="packageName"></a>
 

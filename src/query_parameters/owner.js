@@ -16,5 +16,5 @@ module.exports = {
     let prov = req.query.owner ?? null;
 
     return ownerShared(prov);
-  }
+  },
 };

@@ -9,10 +9,10 @@ module.exports = {
       201: {
         description: "The package details indicating success.",
         content: {
-          "application/json": "$packageObjectFull"
-        }
-      }
-    }
+          "application/json": "$packageObjectFull",
+        },
+      },
+    },
   },
   endpoint: {
     method: "POST",

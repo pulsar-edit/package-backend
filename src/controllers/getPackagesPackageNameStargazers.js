@@ -9,10 +9,10 @@ module.exports = {
       200: {
         description: "A list of users.",
         content: {
-          "application/json": "$userObjectPublicArray"
-        }
-      }
-    }
+          "application/json": "$userObjectPublicArray",
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",

@@ -4,8 +4,7 @@ const utils = require("../utils.js");
 
 // Owner accepts the owner as an argument for things like search,
 // as well as a path, for the endpoint `/api/owners/:ownerName`
-module.exports =
-function main(value) {
+module.exports = function main(value) {
   if (!utils.stringValidation(value)) {
     return false;
   }
@@ -14,4 +13,4 @@ function main(value) {
   }
 
   return value;
-}
+};

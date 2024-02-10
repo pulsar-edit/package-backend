@@ -17,7 +17,8 @@ module.exports = {
     },
     example: "desc",
     allowEmptyValue: true,
-    description: "Direction to list search results. Also accepts 'order' for backwards compatibility.",
+    description:
+      "Direction to list search results. Also accepts 'order' for backwards compatibility.",
   },
   logic: (req) => {
     const def = "desc";

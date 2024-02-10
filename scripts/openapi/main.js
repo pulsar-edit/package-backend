@@ -29,22 +29,23 @@ const spec = {
   info: {
     version: packageJSON.version,
     title: "Pulsar", // Could use the packageJSON.title
-    description: "Allows for the management, viewing, and downloading of packages and themes for use within the Pulsar editor.",
+    description:
+      "Allows for the management, viewing, and downloading of packages and themes for use within the Pulsar editor.",
     // ^^ Could use packageJSON.description
     license: {
       name: "MIT",
-      identifier: "MIT"
-    }
+      identifier: "MIT",
+    },
   },
   servers: [
     {
       url: "https://api.pulsar-edit.dev",
-      description: "Production Server"
+      description: "Production Server",
     },
     {
       url: "http://localhost:8080",
-      description: "Locally hosted development server"
-    }
+      description: "Locally hosted development server",
+    },
   ],
 };
 
@@ -64,7 +65,7 @@ constructAndAddSchemas();
 // Now to write out file
 const specFile = yaml.dump(spec, {
   noRefs: true,
-  sortKeys: true
+  sortKeys: true,
 });
 
 fs.writeFileSync(SPEC_LOC, specFile, { encoding: "utf8" });
@@ -72,15 +73,18 @@ fs.writeFileSync(SPEC_LOC, specFile, { encoding: "utf8" });
 function constructAndAddPaths() {
   for (const node of endpoints) {
     for (const ePath of node.endpoint.paths) {
-
       spec.paths[createPathString(ePath)] = {
         [node.endpoint.method.toLowerCase()]: {
-          ...( typeof node.docs.summary === "string" && { summary: node.docs.summary } ),
-          ...( typeof node.docs.description === "string" && { description: node.docs.description } ),
-          ...( node.docs.deprecated && { deprecated: true } ),
+          ...(typeof node.docs.summary === "string" && {
+            summary: node.docs.summary,
+          }),
+          ...(typeof node.docs.description === "string" && {
+            description: node.docs.description,
+          }),
+          ...(node.docs.deprecated && { deprecated: true }),
           responses: craftResponsesFromObject(node),
-          parameters: craftParametersFromObject(node)
-        }
+          parameters: craftParametersFromObject(node),
+        },
       };
 
       // Now with the path added, lets add our options info
@@ -88,11 +92,10 @@ function constructAndAddPaths() {
         responses: {
           204: {
             description: "The options response for this endpoint.",
-            headers: craftHeadersFromObject(node.endpoint.options)
-          }
-        }
+            headers: craftHeadersFromObject(node.endpoint.options),
+          },
+        },
       };
-
     }
   }
 }
@@ -141,7 +144,7 @@ function createPathString(ePath, { noClobber = true } = {}) {
 
     // We will add a whitespace here over and over to ensure we don't clobber
     // any existing paths
-    while(spec.paths[output]) {
+    while (spec.paths[output]) {
       console.log(`Added non-clobbering whitespace to: '${output}'`);
       output += " ";
     }
@@ -161,11 +164,19 @@ function craftResponsesFromObject(node) {
     // Except we need to handle any replacements of the content types
     if (responses[response].content) {
       for (const format in responses[response].content) {
-
-        if (typeof responses[response].content[format] === "string" && responses[response].content[format].startsWith("$")) {
+        if (
+          typeof responses[response].content[format] === "string" &&
+          responses[response].content[format].startsWith("$")
+        ) {
           // The string value of the format entry begins with "$" so we will want to replace
           // it's content with either a reference to the object schema, or directly with the schema
-          responses[response].content[format] = { schema: { "$ref": `#/components/schemas/${responses[response].content[format].replace("$", "")}`}};
+          responses[response].content[format] = {
+            schema: {
+              $ref: `#/components/schemas/${responses[response].content[
+                format
+              ].replace("$", "")}`,
+            },
+          };
         }
       }
     }
@@ -180,14 +191,12 @@ function craftParametersFromObject(node) {
 
   for (const param in node.params) {
     params.push({
-      "$ref": `#/components/parameters/${param}`
+      $ref: `#/components/parameters/${param}`,
     });
   }
 
   for (const param in node.manualParams) {
-    params.push(
-      node.manualParams[param]
-    );
+    params.push(node.manualParams[param]);
   }
 
   return params;
@@ -204,8 +213,8 @@ function craftHeadersFromObject(obj) {
     headers[opt] = {
       description: getDataForHeader("desc", opt),
       schema: {
-        type: getDataForHeader("schema", opt)
-      }
+        type: getDataForHeader("schema", opt),
+      },
     };
   }
 
