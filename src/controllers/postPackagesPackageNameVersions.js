@@ -153,10 +153,7 @@ module.exports = {
     if (!packMetadata.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(packMetadata)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(packMetadata).assignCalls(callStack);
     }
 
     const newName = packMetadata.content.name;

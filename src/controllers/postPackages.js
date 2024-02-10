@@ -78,7 +78,6 @@ module.exports = {
   },
 
   async logic(params, context) {
-
     const callStack = new context.callStack();
 
     const user = await context.auth.verifyAuth(params.auth, context.database);
@@ -142,10 +141,7 @@ module.exports = {
     if (!gitowner.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(gitowner)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(gitowner).assignCalls(callStack);
     }
 
     // Now knowing they own the git repo, and it doesn't exist here, lets publish.
@@ -182,19 +178,13 @@ module.exports = {
         // the server failed for some other bubbled reason
         const sso = new context.sso();
 
-        return sso
-          .notOk()
-          .addContent(nameAvailable)
-          .assignCalls(callStack);
+        return sso.notOk().addContent(nameAvailable).assignCalls(callStack);
       }
       // But if the short is in fact "not_found" we can report the package as
       // not being available at this name
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addShort("package_exists")
-        .assignCalls(callStack);
+      return sso.notOk().addShort("package_exists").assignCalls(callStack);
     }
 
     // Now with valid package data, we can insert them into the DB
@@ -207,10 +197,7 @@ module.exports = {
     if (!insertedNewPack.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(insertedNewPack)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(insertedNewPack).assignCalls(callStack);
     }
 
     // Finally we can return what was actually put into the databse.
@@ -226,10 +213,7 @@ module.exports = {
     if (!newDbPack.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(newDbPack)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(newDbPack).assignCalls(callStack);
     }
 
     const packageObjectFull = await context.models.constructPackageObjectFull(

@@ -1,12 +1,12 @@
 # Complexity report, 2/10/2024
 
-* Mean per-function logical LOC: 15.325757575757576
-* Mean per-function parameter count: 0.15984848484848485
-* Mean per-function cyclomatic complexity: 1.256060606060606
-* Mean per-function Halstead effort: 3265.460654733948
-* Mean per-module maintainability index: 67.56436449689599
-* First-order density: 0.711662075298439%
-* Change cost: 4.545454545454546%
+* Mean per-function logical LOC: 15.14179104477612
+* Mean per-function parameter count: 0.1574626865671642
+* Mean per-function cyclomatic complexity: 1.2522388059701492
+* Mean per-function Halstead effort: 3219.3977934951786
+* Mean per-module maintainability index: 67.82180870506276
+* First-order density: 0.7128536422365783%
+* Change cost: 4.5444419692581866%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
@@ -51,13 +51,13 @@
 
 ## /home/runner/work/package-backend/package-backend/src/context.js
 
-* Physical LOC: 20
-* Logical LOC: 18
+* Physical LOC: 21
+* Logical LOC: 19
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 5.555555555555555%
-* Maintainability index: 57.55605134290526
-* Dependency count: 16
+* Cyclomatic complexity density: 5.263157894736842%
+* Maintainability index: 56.91380338014516
+* Dependency count: 17
 
 ## /home/runner/work/package-backend/package-backend/docs/resources/jsdoc_typedef.js
 
@@ -258,6 +258,16 @@
     * Halstead difficulty: 2.25
     * Halstead volume: 75.28421251514429
     * Halstead effort: 169.38947815907466
+
+## /home/runner/work/package-backend/package-backend/src/models/callStack.js
+
+* Physical LOC: 42
+* Logical LOC: 2
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 50%
+* Maintainability index: 85.45537440682988
+* Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/src/models/ssoHTML.js
 

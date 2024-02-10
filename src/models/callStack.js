@@ -1,7 +1,6 @@
 const { performance } = require("node:perf_hooks");
 
-module.exports =
-class CallStack {
+module.exports = class CallStack {
   constructor() {
     this.calls = {};
 
@@ -15,7 +14,7 @@ class CallStack {
   addCall(id, content) {
     this.calls[id] = {
       content: this.sanitize(content),
-      time: performance.now()
+      time: performance.now(),
     };
   }
 
@@ -28,7 +27,7 @@ class CallStack {
     let outContent = {};
 
     for (const key in content) {
-      switch(key) {
+      switch (key) {
         case "token":
           outContent[key] = "*****";
           break;
@@ -40,4 +39,4 @@ class CallStack {
 
     return outContent;
   }
-}
+};

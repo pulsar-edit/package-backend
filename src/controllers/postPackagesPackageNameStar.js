@@ -55,10 +55,7 @@ module.exports = {
     if (!star.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(star)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(star).assignCalls(callStack);
     }
 
     // Now with a success we want to return the package back in this query
@@ -72,10 +69,7 @@ module.exports = {
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(pack)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(pack).assignCalls(callStack);
     }
 
     pack = await context.models.constructPackageObjectFull(pack.content);
