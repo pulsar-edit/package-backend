@@ -8,7 +8,7 @@ With that said this document will serve as the ongoing history of administrative
 
 ### auto-save-on-idle
 
-The community package [`auto-save-on-idle`](https://github.com/hakandemirbilek/atom-auto-save-on-idle) was discovered to have malformed data on the PPR database, rendering it's most recent version uninstallable.
+The community package [`auto-save-on-idle`](https://web.pulsar-edit.dev/packages/auto-save-on-idle) was discovered to have malformed data on the PPR database, rendering it's most recent version uninstallable. This was discovered via automatic error reporting on the backend.
 
 This package was one of the original package's from Atom that was migrated over to the new system, and it seems that their last publication in 2017 was published under the GitHub tag of `v1.2.2` meanwhile, the `package.json` still had the incorrect version of `1.2.1`.
 
