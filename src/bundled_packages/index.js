@@ -56,6 +56,7 @@ const DEFAULT_PACK = {
   creation_method: "Bundled Package",
   downloads: "0",
   stargazers_count: "0",
+  is_bundled: true,
   badges: [
     {
       title: "Bundled",

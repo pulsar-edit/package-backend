@@ -43,6 +43,11 @@ module.exports = async function constructPackageObjectFull(pack) {
   // so no need to find the latest semver, it's the first one (index 0).
   newPack.releases = { latest: pack?.versions[0]?.semver ?? "" };
 
+  // Add `is_bundled` key if present
+  if (pack.is_bundled) {
+    newPack.is_bundled = true;
+  }
+
   if (!Array.isArray(newPack.badges)) {
     // A package that has yet to receive any permenant badges
     newPack.badges = [];

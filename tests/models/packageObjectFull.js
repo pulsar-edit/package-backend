@@ -126,6 +126,7 @@ module.exports = {
     stargazers_count: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
+    is_bundled: Joi.boolean().optional(),
     badges: Joi.array()
       .items(
         Joi.object({
