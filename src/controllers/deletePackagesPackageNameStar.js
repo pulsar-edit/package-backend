@@ -30,12 +30,16 @@ module.exports = {
     },
   },
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     const user = await context.auth.verifyAuth(params.auth, context.database);
+
+    callStack.addCall("auth.verifyAuth", user);
 
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).assignCalls(callStack);
     }
 
     const unstar = await context.database.updateDecrementStar(
@@ -43,14 +47,15 @@ module.exports = {
       params.packageName
     );
 
+    callStack.addCall("db.updateDecrementStar", unstar);
+
     if (!unstar.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(unstar)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.updateDecrementStar", unstar);
+        .assignCalls(callStack);
     }
 
     const sso = new context.sso();

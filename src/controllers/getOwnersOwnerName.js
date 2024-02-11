@@ -36,7 +36,11 @@ module.exports = {
   },
 
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     const packages = await context.database.getSortedPackages(params);
+
+    callStack.addCall("db.getSortedPackages", packages);
 
     if (!packages.ok) {
       const sso = new context.sso();
@@ -44,7 +48,7 @@ module.exports = {
       return sso
         .notOk()
         .addContent(packages)
-        .addCalls("db.getSortedPackages", packages);
+        .assignCalls(callStack);
     }
 
     const packObjShort = await context.models.constructPackageObjectShort(

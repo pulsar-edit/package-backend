@@ -38,6 +38,7 @@ module.exports = {
   },
 
   async logic(params, context) {
+    const callStack = new context.callStack();
     // Moving this forward to do the least computationally expensive task first.
     // Check version validity
     if (params.versionName === false) {
@@ -52,10 +53,12 @@ module.exports = {
     // Verify the user has local and remote permissions
     const user = await context.auth.verifyAuth(params.auth, context.database);
 
+    callStack.addCall("auth.verifyAuth", user);
+
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user).addCalls("auth.verifyAuth", user);
+      return sso.notOk().addContent(user).assignCalls(callStack);
     }
 
     // Lets also first check to make sure the package exists
@@ -64,14 +67,15 @@ module.exports = {
       true
     );
 
+    callStack.addCall("db.getPackageByName", packageExists);
+
     if (!packageExists.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(packageExists)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packageExists);
+        .assignCalls(callStack);
     }
 
     const gitowner = await context.vcs.ownership(
@@ -79,15 +83,15 @@ module.exports = {
       packageExists.content
     );
 
+    callStack.addCall("vcs.ownership", gitowner);
+
     if (!gitowner.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(gitowner)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packageExists)
-        .addCalls("vcs.ownership", gitowner);
+        .assignCalls(callStack);
     }
 
     // Mark the specified version for deletion, if version is valid
@@ -96,16 +100,15 @@ module.exports = {
       params.versionName
     );
 
+    callStack.addCall("db.rremovePackageVersion", removeVersion);
+
     if (!removeVersion.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(removeVersion)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packageExists)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("db.removePackageVersion", removeVersion);
+        .assignCalls(callStack);
     }
 
     const sso = new context.sso();

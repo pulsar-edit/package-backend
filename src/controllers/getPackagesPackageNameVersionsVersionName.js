@@ -47,6 +47,7 @@ module.exports = {
    * @returns {sso}
    */
   async logic(params, context) {
+    const callStack = new context.callStack();
     // Check the truthiness of the returned query engine
     if (params.versionName === false) {
       const sso = new context.sso();
@@ -64,13 +65,15 @@ module.exports = {
       params.versionName
     );
 
+    callStack.addCall("db.getPackageVersionByNameAndVersion", pack);
+
     if (!pack.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(pack)
-        .addCalls("db.getPackageVersionByNameAndVersion", pack);
+        .assignCalls(callStack);
     }
 
     const packRes = await context.models.constructPackageObjectJSON(

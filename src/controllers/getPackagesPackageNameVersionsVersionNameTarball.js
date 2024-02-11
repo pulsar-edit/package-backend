@@ -46,6 +46,8 @@ module.exports = {
    * @returns {sso}
    */
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     // First ensure our version is valid
     if (params.versionName === false) {
       // since query.engine gives false if invalid, we can check the truthiness
@@ -63,18 +65,22 @@ module.exports = {
       params.versionName
     );
 
+    callStack.addCall("db.getPackageVersionByNameAndVersion", pack);
+
     if (!pack.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(pack)
-        .addCalls("db.getPackageVersionByNameAndVersion", pack);
+        .assignCalls(callStack);
     }
 
     const save = await context.database.updatePackageIncrementDownloadByName(
       params.packageName
     );
+
+    callStack.addCall("db.updatePackageIncrementDownloadByName", save);
 
     if (!save.ok) {
       context.logger.generic(3, "Failed to Update Downloads Count", {
@@ -101,12 +107,16 @@ module.exports = {
         3,
         `Malformed tarball URL for version ${params.versionName} of ${params.packageName}`
       );
+
+      callStack.addCall("URL.hostname", err);
+
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(err)
         .addShort("server_error")
+        .assignCalls(callStack)
         .addMessage(
           `The URL to download this package seems invalid: ${tarballURL}.`
         );
@@ -128,6 +138,7 @@ module.exports = {
       return sso
         .notOk()
         .addShort("server_error")
+        .assignCalls(callStack)
         .addMessage(`Invalid Domain for Download Redirect: ${hostname}`);
     }
 

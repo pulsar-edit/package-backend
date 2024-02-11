@@ -43,18 +43,24 @@ module.exports = {
    * @returns {sso}
    */
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     // The following can't be executed in user mode because we need the pointer
     const pack = await context.database.getPackageByName(params.packageName);
+
+    callStack.addCall("db.getPackageByName", pack);
 
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(pack).addCalls("db.getPackageByName", pack);
+      return sso.notOk().addContent(pack).assignCalls(callStack);
     }
 
     const stars = await context.database.getStarringUsersByPointer(
       pack.content
     );
+
+    callStack.addCall("db.getStarringUsersByPointer", stars);
 
     if (!stars.ok) {
       const sso = new context.sso();
@@ -62,11 +68,12 @@ module.exports = {
       return sso
         .notOk()
         .addContent(stars)
-        .addCalls("db.getPackageByName", pack)
-        .addCalls("db.getStarringUsersByPointer", stars);
+        .assignCalls(callStack);
     }
 
     const gazers = await context.database.getUserCollectionById(stars.content);
+
+    callStack.addCall("db.getUserCollectionById", gazers);
 
     if (!gazers.ok) {
       const sso = new context.sso();
@@ -74,9 +81,7 @@ module.exports = {
       return sso
         .notOk()
         .addContent(gazers)
-        .addCalls("db.getPackageByName", pack)
-        .addCalls("db.getStarringUsersByPointer", stars)
-        .addCalls("db.getUserCollectionById", gazers);
+        .assignCalls(callStack);
     }
 
     const sso = new context.sso();
