@@ -43,6 +43,25 @@ module.exports = {
    * @returns {sso}
    */
   async logic(params, context) {
+
+    // Lets first check if this is a bundled package we should return
+    const isBundled = context.bundled.isNameBundled(params.packageName);
+
+    if (isBundled.ok && isBundled.content) {
+      // This is in fact a bundled package
+      const bundledData = context.bundled.getBundledPackage(params.packageName);
+
+      if (!bundledData.ok) {
+        const sso = new context.sso();
+
+        return sso.notOk().addContent(bundledData).addCalls("bundled.isBundled", isBundled);
+      }
+
+      const sso = new context.sso();
+
+      return sso.isOk().addContent(bundledData.content);
+    }
+
     let pack = await context.database.getPackageByName(
       params.packageName,
       true

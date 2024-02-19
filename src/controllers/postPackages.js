@@ -187,6 +187,21 @@ module.exports = {
       return sso.notOk().addShort("package_exists").assignCalls(callStack);
     }
 
+    // Now to check if this package is a bundled package (since they don't exist on the db)
+    const isBundled = context.bundled.isNameBundled(newPack.content.name);
+
+    if (isBundled.ok && isBundled.content) {
+      const sso = new context.sso();
+
+      return sso
+        .notOk()
+        .addShort("package_exists")
+        .addCalls("auth.verifyAuth", user)
+        .addCalls("vcs.ownership", gitowner)
+        .addCalls("vcs.newPackageData", newPack)
+        .addCalls("bundled.isNameBundled", isBundled);
+    }
+
     // Now with valid package data, we can insert them into the DB
     const insertedNewPack = await context.database.insertNewPackage(
       newPack.content
