@@ -12,7 +12,7 @@ The community package [`auto-save-on-idle`](https://web.pulsar-edit.dev/packages
 
 This package was one of the original packages from Atom that was migrated over to the new system, and it seems that their last publication in 2017 was published under the GitHub tag of `v1.2.2` meanwhile, the `package.json` still had the incorrect version of `1.2.1`.
 
-What this means is that during migration we attempted to find the data for this package's tag `v1.2.1` which doesn't exist, which meant that no data was ever saved for how to install this package. Which in term made it uninstallable.
+What this means is that during migration we attempted to find the data for this package's tag `v1.2.1` which doesn't exist, which meant that no data was ever saved for how to install this package, which, in tern, made it uninstallable.
 
 Considering this package has `42,347` downloads under it's belt, it seems safe to assume that this disconnect, something no longer allowed on the PPR, was something allowed on the original Atom backend.
 
