@@ -14,7 +14,7 @@ This package was one of the original packages from Atom that was migrated over t
 
 What this means is that during migration we attempted to find the data for this package's tag `v1.2.1` which doesn't exist, which meant that no data was ever saved for how to install this package, which, in tern, made it uninstallable.
 
-Considering this package has `42,347` downloads under it's belt, it seems safe to assume that this disconnect, something no longer allowed on the PPR, was something allowed on the original Atom backend.
+Considering this package has `42,347` downloads under its belt, it seems safe to assume that this disconnect, something no longer allowed on the PPR, was something allowed on the original Atom backend.
 
 In prioritizing keeping package's working, this package has had it's version `1.2.1` data updated, to include installable location data to it's GitHub tag of `v1.2.2`, as well as updating it's SHA information for that tag.
 
