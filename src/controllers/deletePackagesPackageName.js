@@ -31,7 +31,11 @@ module.exports = {
   },
 
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     const user = await context.auth.verifyAuth(params.auth, context.database);
+
+    callStack.addCall("auth.verifyAuth", user);
 
     if (!user.ok) {
       const sso = new context.sso();
@@ -40,7 +44,7 @@ module.exports = {
         .notOk()
         .addContent(user)
         .addMessage("Please update your token if you haven't done so recently.")
-        .addCalls("auth.verifyAuth", user);
+        .assignCalls(callStack);
     }
 
     // Lets also first check to make sure the package exists
@@ -49,14 +53,15 @@ module.exports = {
       true
     );
 
+    callStack.addCall("db.getPackageByName", packageExists);
+
     if (!packageExists.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(packageExists)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packageExists);
+        .assignCalls(callStack);
     }
 
     // Get `owner/repo` string format from pacakge
@@ -66,19 +71,21 @@ module.exports = {
 
     const gitowner = await context.vcs.ownership(user.content, ownerRepo);
 
+    callStack.addCall("vcs.ownership", gitowner);
+
     if (!gitowner.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(gitowner)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packageExists)
-        .addCalls("vcs.ownership", gitowner);
+        .assignCalls(callStack);
     }
 
     // Now they are logged in locally, and have permissions over the GitHub repo
     const rm = await context.database.removePackageByName(params.packageName);
+
+    callStack.addCall("db.removePackageByName", rm);
 
     if (!rm.ok) {
       const sso = new context.sso();
@@ -86,10 +93,7 @@ module.exports = {
       return sso
         .notOk()
         .addContent(rm)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getPackageByName", packageExists)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("db.removePackageByName", rm);
+        .assignCalls(callStack);
     }
 
     const sso = new context.sso();

@@ -38,7 +38,11 @@ module.exports = {
    * @desc Returns an array of all packages the authenticated user has starred.
    */
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     let user = await context.auth.verifyAuth(params.auth, context.database);
+
+    callStack.addCall("auth.verifyAuth", user);
 
     if (!user.ok) {
       const sso = new context.sso();
@@ -47,12 +51,14 @@ module.exports = {
         .notOk()
         .addContent(user)
         .addMessage("Please update your token if you haven't done so recently.")
-        .addCalls("auth.verifyAuth", user);
+        .assignCalls(callStack);
     }
 
     let userStars = await context.database.getStarredPointersByUserID(
       user.content.id
     );
+
+    callStack.addCall("db.getStarredPointersByUserID", userStars);
 
     if (!userStars.ok) {
       const sso = new context.sso();
@@ -60,8 +66,7 @@ module.exports = {
       return sso
         .notOk()
         .addContent(userStars)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getStarredPointersByUserID", userStars);
+        .assignCalls(callStack);
     }
 
     if (userStars.content.length === 0) {
@@ -77,15 +82,15 @@ module.exports = {
       userStars.content
     );
 
+    callStack.addCall("db.getPackageCollectionByID", packCol);
+
     if (!packCol.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(packCol)
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("db.getStarredPointersByUserID", userStars)
-        .addCalls("db.getPackageCollectionByID", packCol);
+        .assignCalls(callStack);
     }
 
     let newCol = await context.models.constructPackageObjectShort(

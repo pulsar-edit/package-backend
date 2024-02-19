@@ -30,17 +30,23 @@ module.exports = {
     },
   },
   async logic(params, context) {
+    const callStack = new context.callStack();
+
     const user = await context.database.getUserByName(params.login);
+
+    callStack.addCall("db.getUserByName", user);
 
     if (!user.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(user).addCalls("db.getUserByName", user);
+      return sso.notOk().addContent(user).assignCalls(callStack);
     }
 
     let pointerCollection = await context.database.getStarredPointersByUserID(
       user.content.id
     );
+
+    callStack.addCall("db.getStarredPointersByUserID", pointerCollection);
 
     if (!pointerCollection.ok) {
       const sso = new context.sso();
@@ -48,8 +54,7 @@ module.exports = {
       return sso
         .notOk()
         .addContent(pointerCollection)
-        .addCalls("db.getUserByName", user)
-        .addCalls("db.getStarredPointersByUserID", pointerCollection);
+        .assignCalls(callStack);
     }
 
     // Since even if the pointerCollection is okay, it could be empty. Meaning the user
@@ -71,15 +76,15 @@ module.exports = {
       pointerCollection.content
     );
 
+    callStack.addCall("db.getPackageCollectionByID", packageCollection);
+
     if (!packageCollection.ok) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addContent(packageCollection)
-        .addCalls("db.getUserByName", user)
-        .addCalls("db.getStarredPointersByUserID", pointerCollection)
-        .addCalls("db.getPackageCollectionByID", packageCollection);
+        .assignCalls(callStack);
     }
 
     packageCollection = await utils.constructPackageObjectShort(
