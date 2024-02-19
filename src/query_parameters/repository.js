@@ -31,7 +31,7 @@ module.exports = {
       return "";
     }
 
-    const re = /^[^._ ][^ ]{0,213}&/;
+    const re = /^[^._ ][^ ]{0,213}$/;
     // Ensure both the name and owner:
     //  - less than or equal to 214 characters
     //  - cannot begin with a dot or an underscore
