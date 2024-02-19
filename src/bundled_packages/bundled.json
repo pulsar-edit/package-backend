@@ -293,9 +293,7 @@
           "title": "File Blacklist",
           "description": "Suggestions will not be provided for files matching this list, e.g. `*.md` for Markdown files. To blacklist more than one file extension, use comma as a separator, e.g. `*.md, *.txt` (both Markdown and text files).",
           "type": "array",
-          "default": [
-            ".*"
-          ],
+          "default": [".*"],
           "items": {
             "type": "string"
           },
@@ -370,10 +368,7 @@
           "description": "With 'Cursor' the suggestion list appears at the cursor's position. With 'Word' it appears at the beginning of the word that's being completed.",
           "type": "string",
           "default": "Word",
-          "enum": [
-            "Word",
-            "Cursor"
-          ],
+          "enum": ["Word", "Cursor"],
           "order": 15
         },
         "suppressActivationForEditorClasses": {
@@ -470,9 +465,7 @@
       "main": "./lib/autoflow",
       "description": "Format the current selection to have lines no longer than 80 characters.\n\nThis packages uses the config value of `editor.preferredLineLength` when set.",
       "activationCommands": {
-        "atom-text-editor": [
-          "autoflow:reflow-selection"
-        ]
+        "atom-text-editor": ["autoflow:reflow-selection"]
       },
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
@@ -537,11 +530,7 @@
       "theme": "syntax",
       "version": "1.6.0",
       "description": "Base16 dark theme developed for Atom, repurposed for Pulsar",
-      "keywords": [
-        "base16",
-        "dark",
-        "syntax"
-      ],
+      "keywords": ["base16", "dark", "syntax"],
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
       "engines": {
@@ -556,11 +545,7 @@
       "theme": "syntax",
       "version": "1.6.0",
       "description": "Base16 light theme developed for Atom, repurposed for Pulsar",
-      "keywords": [
-        "base16",
-        "light",
-        "syntax"
-      ],
+      "keywords": ["base16", "light", "syntax"],
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
       "engines": {
@@ -631,11 +616,7 @@
         "pairsWithExtraNewline": {
           "description": "Automatically add a newline between the pair when enter is pressed.",
           "type": "array",
-          "default": [
-            "()",
-            "[]",
-            "{}"
-          ],
+          "default": ["()", "[]", "{}"],
           "items": {
             "type": "string"
           }
@@ -671,9 +652,7 @@
       "main": "./lib/command-palette-package",
       "description": "Find and run available commands using `cmd-shift-p` (macOS) or `ctrl-shift-p` (Linux/Windows).",
       "activationCommands": {
-        "atom-workspace": [
-          "command-palette:toggle"
-        ]
+        "atom-workspace": ["command-palette:toggle"]
       },
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
@@ -895,11 +874,7 @@
         "projectSearchResultsPaneSplitDirection": {
           "type": "string",
           "default": "none",
-          "enum": [
-            "none",
-            "right",
-            "down"
-          ],
+          "enum": ["none", "right", "down"],
           "title": "Direction to open results pane",
           "description": "Direction to split the active pane when showing project search results. If 'none', the results will be shown in the active pane."
         },
@@ -1084,9 +1059,7 @@
       "description": "Jump to a specific editor line number with `ctrl-g`.",
       "license": "MIT",
       "activationCommands": {
-        "atom-text-editor": [
-          "go-to-line:toggle"
-        ]
+        "atom-text-editor": ["go-to-line:toggle"]
       },
       "repository": "https://github.com/pulsar-edit/pulsar",
       "engines": {
@@ -1213,9 +1186,7 @@
       "version": "0.60.20",
       "name": "language-c",
       "description": "Atom language support for C/C++",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "main": "lib/main",
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
@@ -1295,11 +1266,7 @@
       "private": true,
       "description": "C# language support for Atom",
       "repository": "https://github.com/pulsar-edit/pulsar",
-      "keywords": [
-        "C#",
-        "csharp",
-        ".Net"
-      ],
+      "keywords": ["C#", "csharp", ".Net"],
       "license": "MIT",
       "engines": {
         "atom": ">0.50.0"
@@ -1311,9 +1278,7 @@
     "metadata": {
       "name": "language-css",
       "description": "CSS support in Atom",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "version": "0.45.4",
       "engines": {
         "atom": "*",
@@ -1383,9 +1348,7 @@
       "name": "language-go",
       "description": "Go language support in Atom",
       "main": "lib/main",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "version": "0.47.3",
       "license": "MIT",
       "engines": {
@@ -1417,9 +1380,7 @@
       "main": "lib/main",
       "version": "0.53.1",
       "description": "HTML language support in Atom",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "engines": {
         "atom": "*",
         "node": ">=14"
@@ -1513,9 +1474,7 @@
       "main": "lib/main",
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "dependencies": {
         "tree-sitter-javascript": "0.19.0",
         "tree-sitter-jsdoc": "0.19.0",
@@ -1737,9 +1696,7 @@
         "node": ">=12"
       },
       "description": "Python language support in Atom",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
       "dependencies": {
@@ -1766,9 +1723,7 @@
       "name": "language-ruby",
       "version": "0.73.0",
       "description": "Ruby language support in Atom",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "engines": {
         "atom": "*",
         "node": ">=12"
@@ -1817,11 +1772,7 @@
       "name": "language-rust-bundled",
       "version": "0.1.1",
       "description": "Rust support for Pulsar",
-      "keywords": [
-        "language",
-        "grammar",
-        "rust"
-      ],
+      "keywords": ["language", "grammar", "rust"],
       "main": "lib/main.js",
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
@@ -1870,9 +1821,7 @@
       "version": "0.28.2",
       "main": "lib/main",
       "description": "ShellScript language support in Atom",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "engines": {
         "atom": "*",
         "node": ">=12"
@@ -1996,9 +1945,7 @@
       "name": "language-typescript",
       "version": "0.6.4",
       "description": "TypeScript language support in Atom",
-      "keywords": [
-        "tree-sitter"
-      ],
+      "keywords": ["tree-sitter"],
       "engines": {
         "atom": ">=1.19.1",
         "node": ">=12"
@@ -2150,11 +2097,7 @@
           "description": "Line ending to use for new files",
           "type": "string",
           "default": "OS Default",
-          "enum": [
-            "OS Default",
-            "LF",
-            "CRLF"
-          ]
+          "enum": ["OS Default", "LF", "CRLF"]
         }
       }
     }
@@ -2172,9 +2115,7 @@
         "atom": "*"
       },
       "activationCommands": {
-        "atom-workspace": [
-          "link:open"
-        ]
+        "atom-workspace": ["link:open"]
       },
       "dependencies": {
         "underscore-plus": "^1.7.0"
@@ -2330,11 +2271,7 @@
       "theme": "syntax",
       "version": "1.8.4",
       "description": "A dark syntax theme",
-      "keywords": [
-        "dark",
-        "blue",
-        "syntax"
-      ],
+      "keywords": ["dark", "blue", "syntax"],
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
       "engines": {
@@ -2349,11 +2286,7 @@
       "theme": "ui",
       "version": "1.12.5",
       "description": "Pulsar One dark UI theme",
-      "keywords": [
-        "dark",
-        "adaptive",
-        "ui"
-      ],
+      "keywords": ["dark", "adaptive", "ui"],
       "license": "MIT",
       "repository": "https://github.com/pulsar-edit/pulsar",
       "main": "lib/main",
@@ -2366,19 +2299,7 @@
           "description": "Change the font size for the UI.",
           "type": "integer",
           "default": 12,
-          "enum": [
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20
-          ],
+          "enum": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
           "order": 1
         },
         "tabSizing": {
@@ -2386,11 +2307,7 @@
           "description": "In Even mode all tabs will be the same size. Great for quickly closing many tabs. In Maximum mode the tabs will expand to take up the full width. In Minimum mode the tabs will only take as little space as needed and also show longer file names.",
           "type": "string",
           "default": "Even",
-          "enum": [
-            "Even",
-            "Maximum",
-            "Minimum"
-          ],
+          "enum": ["Even", "Maximum", "Minimum"],
           "order": 2
         },
         "tabCloseButton": {
@@ -2398,10 +2315,7 @@
           "description": "Choose the position of the close button shown in tabs.",
           "type": "string",
           "default": "Right",
-          "enum": [
-            "Left",
-            "Right"
-          ],
+          "enum": ["Left", "Right"],
           "order": 3
         },
         "hideDockButtons": {
@@ -2427,10 +2341,7 @@
       "theme": "syntax",
       "version": "1.8.4",
       "description": "One light syntax theme developed for Atom, repurposed for Pulsar",
-      "keywords": [
-        "light",
-        "syntax"
-      ],
+      "keywords": ["light", "syntax"],
       "repository": "https://github.com/pulsar-edit/pulsar",
       "license": "MIT",
       "engines": {
@@ -2445,11 +2356,7 @@
       "theme": "ui",
       "version": "1.12.5",
       "description": "One light UI theme developed for Atom, repurposed for Pulsar",
-      "keywords": [
-        "light",
-        "adaptive",
-        "ui"
-      ],
+      "keywords": ["light", "adaptive", "ui"],
       "license": "MIT",
       "repository": "https://github.com/pulsar-edit/pulsar",
       "main": "lib/main",
@@ -2462,19 +2369,7 @@
           "description": "Change the font size for the UI.",
           "type": "integer",
           "default": 12,
-          "enum": [
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20
-          ],
+          "enum": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
           "order": 1
         },
         "tabSizing": {
@@ -2482,11 +2377,7 @@
           "description": "In Even mode all tabs will be the same size. Great for quickly closing many tabs. In Maximum mode the tabs will expand to take up the full width. In Minimum mode the tabs will only take as little space as needed and also show longer file names.",
           "type": "string",
           "default": "Even",
-          "enum": [
-            "Even",
-            "Maximum",
-            "Minimum"
-          ],
+          "enum": ["Even", "Maximum", "Minimum"],
           "order": 2
         },
         "tabCloseButton": {
@@ -2494,10 +2385,7 @@
           "description": "Choose the position of the close button shown in tabs.",
           "type": "string",
           "default": "Right",
-          "enum": [
-            "Left",
-            "Right"
-          ],
+          "enum": ["Left", "Right"],
           "order": 3
         },
         "hideDockButtons": {
@@ -2587,10 +2475,7 @@
         "packageSyntax": {
           "default": "javascript",
           "type": "string",
-          "enum": [
-            "coffeescript",
-            "javascript"
-          ],
+          "enum": ["coffeescript", "javascript"],
           "description": "The syntax to generate packages with."
         }
       }
@@ -3140,15 +3025,8 @@
           "description": "Show the tab bar even when only one tab is open."
         },
         "tabScrolling": {
-          "type": [
-            "boolean",
-            "string"
-          ],
-          "enum": [
-            true,
-            false,
-            "platform"
-          ],
+          "type": ["boolean", "string"],
+          "enum": [true, false, "platform"],
           "default": "platform",
           "description": "Jump to next or previous tab by scrolling on the tab bar."
         },
@@ -3308,9 +3186,7 @@
         "atom": ">0.39.0"
       },
       "activationCommands": {
-        "atom-workspace": [
-          "update-package-dependencies:update"
-        ]
+        "atom-workspace": ["update-package-dependencies:update"]
       },
       "consumedServices": {
         "status-bar": {
@@ -3647,11 +3523,7 @@
         "viewChangesForCurrentFileDiffPaneSplitDirection": {
           "type": "string",
           "default": "none",
-          "enum": [
-            "none",
-            "right",
-            "down"
-          ],
+          "enum": ["none", "right", "down"],
           "title": "Direction to open diff pane",
           "description": "Direction to split the active pane when showing diff associated with open file. If 'none', the results will be shown in the active pane."
         },
@@ -3667,9 +3539,7 @@
         },
         "performanceMask": {
           "type": "array",
-          "default": [
-            ".*"
-          ],
+          "default": [".*"],
           "items": {
             "type": "string"
           },
@@ -3723,10 +3593,7 @@
         "remoteFetchProtocol": {
           "type": "string",
           "default": "https",
-          "enum": [
-            "https",
-            "ssh"
-          ],
+          "enum": ["https", "ssh"],
           "description": "Transport protocol to prefer when creating a new git remote"
         }
       },
@@ -3742,10 +3609,7 @@
         "ReviewsStub": "createReviewsStub"
       },
       "greenkeeper": {
-        "ignore": [
-          "electron-link",
-          "electron-mksnapshot"
-        ]
+        "ignore": ["electron-link", "electron-mksnapshot"]
       }
     }
   }

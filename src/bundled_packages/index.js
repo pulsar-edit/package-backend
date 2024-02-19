@@ -16,15 +16,18 @@ module.exports = {
 
   // Used to retreive details about a bundled package
   getBundledPackage: (name) => {
-
     let pack = BUNDLED_PACKAGES[name];
 
     if (!pack) {
-      return { ok: false, content: `Failed to get bundled package details: '${name}'.`, short: "server_error" };
+      return {
+        ok: false,
+        content: `Failed to get bundled package details: '${name}'.`,
+        short: "server_error",
+      };
     }
 
     return { ok: true, content: buildPackage(pack) };
-  }
+  },
 };
 
 const DEFAULT_PACK = {
@@ -32,26 +35,27 @@ const DEFAULT_PACK = {
   readme: "",
   owner: "pulsar-edit",
   metadata: {
-    dist: { // We don't support installation of these packages, but don't want to cause any errors
+    dist: {
+      // We don't support installation of these packages, but don't want to cause any errors
       sha: "",
-      tarball: ""
+      tarball: "",
     },
     name: "",
     engines: {
-      atom: "*"
+      atom: "*",
     },
     license: "MIT",
     version: "",
     repository: "https://github.com/pulsar-edit/pulsar",
-    description: ""
+    description: "",
   },
   releases: {
-    latest: ""
+    latest: "",
   },
   versions: {}, // We exclude version information as we don't actually support installation
   repository: {
     url: "https://github.com/pulsar-edit/pulsar",
-    type: "git"
+    type: "git",
   },
   creation_method: "Bundled Package",
   downloads: "0",
@@ -61,9 +65,9 @@ const DEFAULT_PACK = {
     {
       title: "Bundled",
       type: "info",
-      link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/badge_spec.md#bundled"
-    }
-  ]
+      link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/badge_spec.md#bundled",
+    },
+  ],
 };
 
 // Util function to combine the 'DEFAULT_PACK' with the data provided for this
