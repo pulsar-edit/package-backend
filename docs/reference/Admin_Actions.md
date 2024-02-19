@@ -4,6 +4,22 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2024 - February 10
+
+### auto-save-on-idle
+
+The community package [`auto-save-on-idle`](https://web.pulsar-edit.dev/packages/auto-save-on-idle) was discovered to have malformed data on the PPR database, rendering its most recent version uninstallable. This was discovered via automatic error reporting on the backend.
+
+This package was one of the original packages from Atom that was migrated over to the new system, and it seems that their last publication in 2017 was published under the GitHub tag of `v1.2.2` meanwhile, the `package.json` still had the incorrect version of `1.2.1`.
+
+What this means is that during migration we attempted to find the data for this package's tag `v1.2.1` which doesn't exist, which meant that no data was ever saved for how to install this package, which, in tern, made it uninstallable.
+
+Considering this package has `42,347` downloads under its belt, it seems safe to assume that this disconnect, something no longer allowed on the PPR, was something allowed on the original Atom backend.
+
+In prioritizing keeping packages working, this package has had its version `1.2.1` data updated to include installable location data to its GitHub tag of `v1.2.2`, as well as updating its SHA information for that tag.
+
+These changes ensure the package is installable for all users.
+
 ## 2024 - January 30
 
 ### linter-shellcheck
