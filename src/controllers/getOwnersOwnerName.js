@@ -45,10 +45,7 @@ module.exports = {
     if (!packages.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(packages)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(packages).assignCalls(callStack);
     }
 
     const packObjShort = await context.models.constructPackageObjectShort(

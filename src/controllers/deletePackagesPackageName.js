@@ -58,10 +58,7 @@ module.exports = {
     if (!packageExists.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(packageExists)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(packageExists).assignCalls(callStack);
     }
 
     // Get `owner/repo` string format from pacakge
@@ -76,10 +73,7 @@ module.exports = {
     if (!gitowner.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(gitowner)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(gitowner).assignCalls(callStack);
     }
 
     // Now they are logged in locally, and have permissions over the GitHub repo
@@ -90,10 +84,7 @@ module.exports = {
     if (!rm.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(rm)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(rm).assignCalls(callStack);
     }
 
     const sso = new context.sso();

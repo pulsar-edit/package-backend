@@ -65,10 +65,7 @@ module.exports = {
     if (!stars.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(stars)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(stars).assignCalls(callStack);
     }
 
     const gazers = await context.database.getUserCollectionById(stars.content);
@@ -78,10 +75,7 @@ module.exports = {
     if (!gazers.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(gazers)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(gazers).assignCalls(callStack);
     }
 
     const sso = new context.sso();

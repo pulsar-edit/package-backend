@@ -72,10 +72,7 @@ module.exports = {
     if (!packageExists.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(packageExists)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(packageExists).assignCalls(callStack);
     }
 
     const gitowner = await context.vcs.ownership(
@@ -88,10 +85,7 @@ module.exports = {
     if (!gitowner.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(gitowner)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(gitowner).assignCalls(callStack);
     }
 
     // Mark the specified version for deletion, if version is valid
@@ -105,10 +99,7 @@ module.exports = {
     if (!removeVersion.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(removeVersion)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(removeVersion).assignCalls(callStack);
     }
 
     const sso = new context.sso();

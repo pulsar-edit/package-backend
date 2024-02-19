@@ -52,10 +52,7 @@ module.exports = {
     if (!unstar.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(unstar)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(unstar).assignCalls(callStack);
     }
 
     const sso = new context.sso();

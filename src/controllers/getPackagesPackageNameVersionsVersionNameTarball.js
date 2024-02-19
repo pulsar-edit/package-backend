@@ -70,10 +70,7 @@ module.exports = {
     if (!pack.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(pack)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(pack).assignCalls(callStack);
     }
 
     const save = await context.database.updatePackageIncrementDownloadByName(

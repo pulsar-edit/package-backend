@@ -63,10 +63,7 @@ module.exports = {
     if (!userStars.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(userStars)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(userStars).assignCalls(callStack);
     }
 
     if (userStars.content.length === 0) {
@@ -87,10 +84,7 @@ module.exports = {
     if (!packCol.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(packCol)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(packCol).assignCalls(callStack);
     }
 
     let newCol = await context.models.constructPackageObjectShort(

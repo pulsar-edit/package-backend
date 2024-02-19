@@ -51,10 +51,7 @@ module.exports = {
     if (!pointerCollection.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(pointerCollection)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(pointerCollection).assignCalls(callStack);
     }
 
     // Since even if the pointerCollection is okay, it could be empty. Meaning the user
@@ -81,10 +78,7 @@ module.exports = {
     if (!packageCollection.ok) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addContent(packageCollection)
-        .assignCalls(callStack);
+      return sso.notOk().addContent(packageCollection).assignCalls(callStack);
     }
 
     packageCollection = await utils.constructPackageObjectShort(
