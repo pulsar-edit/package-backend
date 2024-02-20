@@ -71,11 +71,10 @@ module.exports = class CallStack {
         }
         break;
       case "array":
-        let tmpArr = [];
+        outContent = [];
         for (let i = 0; i < content.length; i++) {
-          tmpArr.push(this.sanitize(content[i]));
+          outContent.push(this.sanitize(content[i]));
         }
-        outContent = tmpArr;
         break;
       default:
         outContent = content;
