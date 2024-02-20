@@ -21,6 +21,16 @@ module.exports = class CallStack {
   // Attempts to remove any sensitive data that may be found within
   sanitize(content) {
 
+    const badKeys = [
+      "token",
+      "password",
+      "pass",
+      "auth",
+      "secret",
+      "passphrase",
+      "card"
+    ];
+    const githubTokenReg = /(?:gho_|ghp_|github_pat_|ghu_|ghs_|ghr_)/;
     const hideString = "*****";
     let outContent = {};
     let type = typeof content;
@@ -28,24 +38,22 @@ module.exports = class CallStack {
     // Since JavaScript `typeof` will assign an array as "object" as well as null
     // we will extend this typeof check to add those as different types, to ease
     // the complexity of the below switch statement
-    if (Array.isArray(content)) {
-      type = "array";
-    }
-    if (content === null) {
-      type = "null";
+    if (type === "object") {
+      if (Array.isArray(content)) {
+        type = "array";
+      } else if (content === null) {
+        type = "null";
+      }
     }
 
     switch(type) {
       case "object":
         for (const key in content) {
           // Match different possible keys that represent sensitive data
-          switch(key) {
-            case "token":
-              outContent[key] = hideString;
-              break;
-            default:
-              outContent[key] = this.sanitize(content[key]);
-              break;
+          if (badKeys.includes(key)) {
+            outContent[key] = hideString;
+          } else {
+            outContent[key] = this.sanitize(content[key]);
           }
         }
         break;
@@ -53,19 +61,9 @@ module.exports = class CallStack {
         // Match different strings of sensitive data
 
         // https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github#githubs-token-formats
-        if (content.startsWith("gho_")) {
+        if (githubTokenReg.test(content)) {
           outContent = hideString;
-        } else if (content.startsWith("ghp_")) {
-          outContent = hideString;
-        } else if (content.startsWith("github_pat_")) {
-          outContent = hideString;
-        } else if (content.startsWith("ghu_")) {
-          outContent = hideString;
-        } else if (content.startsWith("ghs_")) {
-          outContent = hideString;
-        } else if (content.startsWith("ghr_")) {
-          outContent = hideString;
-        } else {
+        } else { // More strings to test can be added here
           // String seems safe
           outContent = content;
         }
