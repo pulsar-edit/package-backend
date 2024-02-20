@@ -93,7 +93,7 @@ module.exports = {
     }
 
     // Check repository format validity.
-    if (params.repository === "" || typeof params.repository !== "string") {
+    if (params.repository === false) {
       // repository format is invalid
       const sso = new context.sso();
 

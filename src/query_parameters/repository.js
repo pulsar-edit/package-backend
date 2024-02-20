@@ -2,7 +2,7 @@
  * @function repo
  * @desc Parses the 'repository' query parameter, returning it if valid, otherwise returning ''.
  * @param {object} req - The `Request` object inherited from the Express endpoint.
- * @returns {string} Returning the valid 'repository' query parameter, or '' if invalid.
+ * @returns {string} Returning the valid 'repository' query parameter, or false if invalid.
  */
 const parseGithubURL = require("parse-github-url");
 
@@ -22,13 +22,13 @@ module.exports = {
     const prov = req.query.repository;
 
     if (prov === undefined) {
-      return "";
+      return false;
     }
 
     const parsed = parseGithubURL(prov);
 
     if (typeof parsed.owner !== "string" || typeof parsed.name !== "string") {
-      return "";
+      return false;
     }
 
     const re = /^[^._ ][^ ]{0,213}$/;
@@ -38,7 +38,7 @@ module.exports = {
     //  - cannot contain a space
 
     if (parsed.owner.match(re) === null || parsed.name.match(re) === null) {
-      return "";
+      return false;
     }
 
     return prov;
