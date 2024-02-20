@@ -36,7 +36,7 @@ describe("POST /api/packages Behaves as expected", () => {
 
     const sso = await endpoint.logic(
       {
-        repository: "",
+        repository: false,
         auth: "valid-token",
       },
       localContext
@@ -63,7 +63,7 @@ describe("POST /api/packages Behaves as expected", () => {
 
     const sso = await endpoint.logic(
       {
-        repository: "bad-format",
+        repository: false,
         auth: "valid-token",
       },
       localContext
