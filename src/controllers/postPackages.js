@@ -1,6 +1,7 @@
 /**
  * @module postPackages
  */
+const parseGithubURL = require("parse-github-url");
 
 module.exports = {
   docs: {
@@ -92,7 +93,7 @@ module.exports = {
     }
 
     // Check repository format validity.
-    if (params.repository === "" || typeof params.repository !== "string") {
+    if (params.repository === false) {
       // repository format is invalid
       const sso = new context.sso();
 
@@ -105,7 +106,8 @@ module.exports = {
     // Currently though the repository is in `owner/repo` format,
     // meanwhile needed functions expects just `repo`
 
-    const repo = params.repository.split("/")[1]?.toLowerCase();
+    const repo = parseGithubURL(params.repository)?.name.toLowerCase();
+    const ownerRepo = parseGithubURL(params.repository)?.repo;
 
     if (repo === undefined) {
       const sso = new context.sso();
@@ -133,7 +135,7 @@ module.exports = {
     // has permissions to this package
     const gitowner = await context.vcs.ownership(
       user.content,
-      params.repository
+      ownerRepo
     );
 
     callStack.addCall("vcs.ownership", gitowner);
@@ -148,7 +150,7 @@ module.exports = {
     // TODO: Stop hardcoding `git` as service
     const newPack = await context.vcs.newPackageData(
       user.content,
-      params.repository,
+      ownerRepo,
       "git"
     );
 
@@ -190,16 +192,15 @@ module.exports = {
     // Now to check if this package is a bundled package (since they don't exist on the db)
     const isBundled = context.bundled.isNameBundled(newPack.content.name);
 
+    callStack.addCall("bundled.isNameBundled", isBundled);
+
     if (isBundled.ok && isBundled.content) {
       const sso = new context.sso();
 
       return sso
         .notOk()
         .addShort("package_exists")
-        .addCalls("auth.verifyAuth", user)
-        .addCalls("vcs.ownership", gitowner)
-        .addCalls("vcs.newPackageData", newPack)
-        .addCalls("bundled.isNameBundled", isBundled);
+        .assignCalls(callStack);
     }
 
     // Now with valid package data, we can insert them into the DB
@@ -247,7 +248,7 @@ module.exports = {
     sso.featureDetection = {
       user: user.content,
       service: "git", // TODO stop hardcoding git
-      ownerRepo: params.repository,
+      ownerRepo: ownerRepo,
     };
 
     return sso.isOk().addContent(packageObjectFull);

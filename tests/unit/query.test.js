@@ -104,8 +104,9 @@ describe("Verify Auth Query Returns", () => {
 
 const repositoryCases = [
   [{ query: { repository: "owner/repo" } }, "owner/repo"],
-  [{ query: {} }, ""],
-  [{ query: { repository: "InvalidRepo" } }, ""],
+  [{ query: {} }, false],
+  [{ query: { repository: "InvalidRepo" } }, false],
+  [{ query: { repository: "git@github.com:ndr-brt/pulsar-p5js" } }, "git@github.com:ndr-brt/pulsar-p5js"],
 ];
 
 describe("Verify Repo Query Returns", () => {
