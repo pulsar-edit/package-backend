@@ -1011,7 +1011,7 @@ if invalid, otherwise returns true. Checking for mixed captilization.
 Parses the 'repository' query parameter, returning it if valid, otherwise returning ''.
 
 **Kind**: global function  
-**Returns**: <code>string</code> - Returning the valid 'repository' query parameter, or '' if invalid.  
+**Returns**: <code>string</code> - Returning the valid 'repository' query parameter, or false if invalid.  
 
 | Param | Type | Description |
 | --- | --- | --- |

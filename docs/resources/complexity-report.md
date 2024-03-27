@@ -1,10 +1,10 @@
-# Complexity report, 2/19/2024
+# Complexity report, 3/27/2024
 
-* Mean per-function logical LOC: 15.036764705882353
+* Mean per-function logical LOC: 15.080882352941176
 * Mean per-function parameter count: 0.1698529411764706
 * Mean per-function cyclomatic complexity: 1.2632352941176472
-* Mean per-function Halstead effort: 3195.428995748861
-* Mean per-module maintainability index: 67.8207342918712
+* Mean per-function Halstead effort: 3226.862745343813
+* Mean per-module maintainability index: 67.78765469174402
 * First-order density: 0.7136678200692042%
 * Change cost: 4.541522491349481%
 * Core size: 100%
@@ -401,13 +401,13 @@
 
 ## /home/runner/work/package-backend/package-backend/src/query_parameters/repository.js
 
-* Physical LOC: 30
-* Logical LOC: 11
+* Physical LOC: 40
+* Logical LOC: 12
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 9.090909090909092%
-* Maintainability index: 65.36316082704943
-* Dependency count: 0
+* Cyclomatic complexity density: 8.333333333333332%
+* Maintainability index: 63.34319351431579
+* Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/src/query_parameters/service.js
 
@@ -681,12 +681,12 @@
 
 ## /home/runner/work/package-backend/package-backend/tests/unit/query.test.js
 
-* Physical LOC: 192
-* Logical LOC: 108
+* Physical LOC: 196
+* Logical LOC: 110
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 0.9259259259259258%
-* Maintainability index: 33.49221524957683
+* Cyclomatic complexity density: 0.9090909090909091%
+* Maintainability index: 33.262769753661445
 * Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/tests/vcs/vcs.unit.test.js

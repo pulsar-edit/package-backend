@@ -133,10 +133,7 @@ module.exports = {
 
     // Now we know the package doesn't exist. And we want to check that the user
     // has permissions to this package
-    const gitowner = await context.vcs.ownership(
-      user.content,
-      ownerRepo
-    );
+    const gitowner = await context.vcs.ownership(user.content, ownerRepo);
 
     callStack.addCall("vcs.ownership", gitowner);
 
@@ -197,10 +194,7 @@ module.exports = {
     if (isBundled.ok && isBundled.content) {
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addShort("package_exists")
-        .assignCalls(callStack);
+      return sso.notOk().addShort("package_exists").assignCalls(callStack);
     }
 
     // Now with valid package data, we can insert them into the DB
