@@ -6,7 +6,7 @@ describe("Sanitizes content as expected", () => {
     const cs = new callStack();
 
     const before = {
-      value: "Safe data"
+      value: "Safe data",
     };
 
     const after = cs.sanitize(before);
@@ -18,7 +18,7 @@ describe("Sanitizes content as expected", () => {
     const cs = new callStack();
 
     const before = {
-      token: "super_secret"
+      token: "super_secret",
     };
 
     const after = cs.sanitize(before);
@@ -39,11 +39,15 @@ describe("Sanitizes content as expected", () => {
   test("Removes deeply nested unsafe string", () => {
     const cs = new callStack();
 
-    const before = { value: { value: { value: { value: "github_pat_value" }}}};
+    const before = {
+      value: { value: { value: { value: "github_pat_value" } } },
+    };
 
     const after = cs.sanitize(before);
 
-    expect(after).toEqual({ value: { value: { value: { value: hideValue }}}});
+    expect(after).toEqual({
+      value: { value: { value: { value: hideValue } } },
+    });
   });
 
   test("Removes unsafe value from array", () => {
@@ -73,10 +77,17 @@ describe("Sanitizes content as expected", () => {
       { v3: "gho_oauth_access_token" },
       { v4: "ghu_user_access_token_for_github_app" },
       { v5: "ghs_installation_access_token" },
-      { v6: "ghr_refresh_token_for_github_app" }
+      { v6: "ghr_refresh_token_for_github_app" },
     ];
     const after = cs.sanitize(before);
 
-    expect(after).toEqual([{v1: hideValue}, {v2: hideValue}, {v3: hideValue}, {v4: hideValue}, {v5: hideValue}, {v6: hideValue}]);
+    expect(after).toEqual([
+      { v1: hideValue },
+      { v2: hideValue },
+      { v3: hideValue },
+      { v4: hideValue },
+      { v5: hideValue },
+      { v6: hideValue },
+    ]);
   });
 });

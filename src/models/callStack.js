@@ -20,7 +20,6 @@ module.exports = class CallStack {
 
   // Attempts to remove any sensitive data that may be found within
   sanitize(content) {
-
     const badKeys = [
       "token",
       "password",
@@ -28,7 +27,7 @@ module.exports = class CallStack {
       "auth",
       "secret",
       "passphrase",
-      "card"
+      "card",
     ];
     const githubTokenReg = /(?:gho_|ghp_|github_pat_|ghu_|ghs_|ghr_)/;
     const hideString = "*****";
@@ -46,7 +45,7 @@ module.exports = class CallStack {
       }
     }
 
-    switch(type) {
+    switch (type) {
       case "object":
         for (const key in content) {
           // Match different possible keys that represent sensitive data
@@ -63,7 +62,8 @@ module.exports = class CallStack {
         // https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github#githubs-token-formats
         if (githubTokenReg.test(content)) {
           outContent = hideString;
-        } else { // More strings to test can be added here
+        } else {
+          // More strings to test can be added here
           // String seems safe
           outContent = content;
         }

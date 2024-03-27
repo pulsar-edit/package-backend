@@ -1,12 +1,12 @@
 # Complexity report, 3/27/2024
 
-* Mean per-function logical LOC: 15.080882352941176
-* Mean per-function parameter count: 0.1698529411764706
-* Mean per-function cyclomatic complexity: 1.2632352941176472
-* Mean per-function Halstead effort: 3226.862745343813
-* Mean per-module maintainability index: 67.78765469174402
-* First-order density: 0.7136678200692042%
-* Change cost: 4.541522491349481%
+* Mean per-function logical LOC: 14.905797101449275
+* Mean per-function parameter count: 0.1673913043478261
+* Mean per-function cyclomatic complexity: 1.2594202898550726
+* Mean per-function Halstead effort: 3181.0354243656466
+* Mean per-module maintainability index: 67.98276367366883
+* First-order density: 0.7141356857802983%
+* Change cost: 4.452846040747742%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
@@ -281,7 +281,7 @@
 
 ## /home/runner/work/package-backend/package-backend/src/models/callStack.js
 
-* Physical LOC: 42
+* Physical LOC: 83
 * Logical LOC: 2
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
@@ -807,6 +807,16 @@
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 50%
 * Maintainability index: 86.03073855173344
+* Dependency count: 1
+
+## /home/runner/work/package-backend/package-backend/tests/unit/models/callStack.test.js
+
+* Physical LOC: 93
+* Logical LOC: 3
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 33.33333333333333%
+* Maintainability index: 81.25017444455611
 * Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/tests/database/fixtures/git.createPackage_returns/valid_multi_version.js
