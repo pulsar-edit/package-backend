@@ -27,7 +27,8 @@ let badgeConfig = {
   type: "",
   title: "",
   text: "",
-  link: "",
+  link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/Admin_Actions.md#2024---march-27",
+  //alt: ""
 };
 
 let packageName = "";
