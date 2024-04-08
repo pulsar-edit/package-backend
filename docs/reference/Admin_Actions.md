@@ -4,6 +4,137 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2024 - March 27
+
+### AtomLinter Packages
+
+Due to a [report](https://github.com/pulsar-edit/package-backend/issues/244) the following community packages have been inspected:
+* [`linter-eslint`](https://web.pulsar-edit.dev/packages/linter-eslint)
+* [`linter-eslint-node`](https://web.pulsar-edit.dev/packages/linter-eslint-node)
+* [`linter-jshint`](https://web.pulsar-edit.dev/packages/linter-jshint)
+* [`linter-gcc`](https://web.pulsar-edit.dev/packages/linter-gcc)
+* [`linter-php`](https://web.pulsar-edit.dev/packages/linter-php)
+* [`linter-flake8`](https://web.pulsar-edit.dev/packages/linter-flake8)
+* [`linter-csslint`](https://web.pulsar-edit.dev/packages/linter-csslint)
+* [`linter-htmlhint`](https://web.pulsar-edit.dev/packages/linter-htmlhint)
+* [`linter-rubocop`](https://web.pulsar-edit.dev/packages/linter-rubocop)
+* [`linter-sass-lint`](https://web.pulsar-edit.dev/packages/linter-sass-lint)
+* [`linter-pycodestyle`](https://web.pulsar-edit.dev/packages/linter-pycodestyle)
+* [`linter-jscs`](https://web.pulsar-edit.dev/packages/linter-jscs)
+* [`linter-tslint`](https://web.pulsar-edit.dev/packages/linter-tslint)
+* [`linter-pylint`](https://web.pulsar-edit.dev/packages/linter-pylint)
+* [`minimap-linter`](https://web.pulsar-edit.dev/packages/minimap-linter)
+* [`linter-js-yaml`](https://web.pulsar-edit.dev/packages/linter-js-yaml)
+* [`linter-scss-lint`](https://web.pulsar-edit.dev/packages/linter-scss-lint)
+* [`linter-ruby`](https://web.pulsar-edit.dev/packages/linter-ruby)
+* [`linter-clang`](https://web.pulsar-edit.dev/packages/linter-clang)
+* [`linter-tidy`](https://web.pulsar-edit.dev/packages/linter-tidy)
+* [`linter-phpcs`](https://web.pulsar-edit.dev/packages/linter-phpcs)
+* [`linter-jsonlint`](https://web.pulsar-edit.dev/packages/linter-jsonlint)
+* [`linter-markdown`](https://web.pulsar-edit.dev/packages/linter-markdown)
+* [`linter-rust`](https://web.pulsar-edit.dev/packages/linter-rust)
+* [`linter-javac`](https://web.pulsar-edit.dev/packages/linter-javac)
+* [`linter-coffeelint`](https://web.pulsar-edit.dev/packages/linter-coffeelint)
+* [`linter-spell`](https://web.pulsar-edit.dev/packages/linter-spell)
+* [`linter-docker`](https://web.pulsar-edit.dev/packages/linter-docker)
+* [`linter-pylama`](https://web.pulsar-edit.dev/packages/linter-pylama)
+* [`linter-erb`](https://web.pulsar-edit.dev/packages/linter-erb)
+* [`linter-xmllint`](https://web.pulsar-edit.dev/packages/linter-xmllint)
+* [`linter-phpmd`](https://web.pulsar-edit.dev/packages/linter-phpmd)
+* [`linter-write-good`](https://web.pulsar-edit.dev/packages/linter-write-good)
+* [`linter-bootlint`](https://web.pulsar-edit.dev/packages/linter-bootlint)
+* [`linter-puppet-lint`](https://web.pulsar-edit.dev/packages/linter-puppet-lint)
+* [`linter-flow`](https://web.pulsar-edit.dev/packages/linter-flow)
+* [`linter-lua`](https://web.pulsar-edit.dev/packages/linter-lua)
+* [`linter-golinter`](https://web.pulsar-edit.dev/packages/linter-golinter)
+* [`linter-haml`](https://web.pulsar-edit.dev/packages/linter-haml)
+* [`linter-spell-html`](https://web.pulsar-edit.dev/packages/linter-spell-html)
+* [`linter-elixirc`](https://web.pulsar-edit.dev/packages/linter-elixirc)
+* [`linter-cpplint`](https://web.pulsar-edit.dev/packages/linter-cpplint)
+* [`linter-scalac`](https://web.pulsar-edit.dev/packages/linter-scalac)
+* [`linter-swagger`](https://web.pulsar-edit.dev/packages/linter-swagger)
+* [`linter-spell-latex`](https://web.pulsar-edit.dev/packages/linter-spell-latex)
+* [`linter-spell-javascript`](https://web.pulsar-edit.dev/packages/linter-spell-javascript)
+* [`linter-pyflakes`](https://web.pulsar-edit.dev/packages/linter-pyflakes)
+* [`linter-htmllint`](https://web.pulsar-edit.dev/packages/linter-htmllint)
+* [`linter-pydocstyle`](https://web.pulsar-edit.dev/packages/linter-pydocstyle)
+* [`linter-julia`](https://web.pulsar-edit.dev/packages/linter-julia)
+* [`linter-hlint`](https://web.pulsar-edit.dev/packages/linter-hlint)
+* [`linter-pug`](https://web.pulsar-edit.dev/packages/linter-pug)
+* [`linter-perl`](https://web.pulsar-edit.dev/packages/linter-perl)
+* [`linter-clojure`](https://web.pulsar-edit.dev/packages/linter-clojure)
+* [`linter-glsl`](https://web.pulsar-edit.dev/packages/linter-glsl)
+* [`linter-gfortran`](https://web.pulsar-edit.dev/packages/linter-gfortran)
+* [`linter-stylint`](https://web.pulsar-edit.dev/packages/linter-stylint)
+* [`linter-lintr`](https://web.pulsar-edit.dev/packages/linter-lintr)
+* [`linter-luacheck`](https://web.pulsar-edit.dev/packages/linter-luacheck)
+* [`linter-foodcritic`](https://web.pulsar-edit.dev/packages/linter-foodcritic)
+* [`linter-gjslint`](https://web.pulsar-edit.dev/packages/linter-gjslint)
+* [`linter-swiftc`](https://web.pulsar-edit.dev/packages/linter-swiftc)
+* [`linter-perlcritic`](https://web.pulsar-edit.dev/packages/linter-perlcritic)
+* [`linter-slim`](https://web.pulsar-edit.dev/packages/linter-slim)
+* [`linter-swiftlint`](https://web.pulsar-edit.dev/packages/linter-swiftlint)
+* [`linter-dartanalyzer`](https://web.pulsar-edit.dev/packages/linter-dartanalyzer)
+* [`linter-lsc`](https://web.pulsar-edit.dev/packages/linter-lsc)
+* [`linter-reek`](https://web.pulsar-edit.dev/packages/linter-reek)
+* [`linter-spell-ruby`](https://web.pulsar-edit.dev/packages/linter-spell-ruby)
+* [`linter-harbour`](https://web.pulsar-edit.dev/packages/linter-harbour)
+* [`linter-govet`](https://web.pulsar-edit.dev/packages/linter-govet)
+* [`linter-processing-java`](https://web.pulsar-edit.dev/packages/linter-processing-java)
+* [`linter-proselint`](https://web.pulsar-edit.dev/packages/linter-proselint)
+* [`linter-rst`](https://web.pulsar-edit.dev/packages/linter-rst)
+* [`linter-gotype`](https://web.pulsar-edit.dev/packages/linter-gotype)
+* [`linter-codeclimate`](https://web.pulsar-edit.dev/packages/linter-codeclimate)
+* [`linter-phplint`](https://web.pulsar-edit.dev/packages/linter-phplint)
+* [`atom-linter-phpstan`](https://web.pulsar-edit.dev/packages/atom-linter-phpstan)
+* [`linter-erlc`](https://web.pulsar-edit.dev/packages/linter-erlc)
+* [`linter-moonscript`](https://web.pulsar-edit.dev/packages/linter-moonscript)
+* [`linter-hadolint`](https://web.pulsar-edit.dev/packages/linter-hadolint)
+* [`linter-spell-project`](https://web.pulsar-edit.dev/packages/linter-spell-project)
+* [`linter-flint`](https://web.pulsar-edit.dev/packages/linter-flint)
+* [`linter-flexpmd`](https://web.pulsar-edit.dev/packages/linter-flexpmd)
+* [`linter-roodi`](https://web.pulsar-edit.dev/packages/linter-roodi)
+* [`linter-bailey`](https://web.pulsar-edit.dev/packages/linter-bailey)
+
+Since these packages are all archived on GitHub, they will receive the `Archived` badge to reflect this status.
+
+### atom-ide-dark-syntax
+
+The community package `atom-ide-dark-syntax` has been found to have been removed from GitHub, meaning the package is no longer downloadable.
+
+As this package is broken in such a way that it cannot be fixed, it will be removed from the backend while keeping the reserved name to avoid any Supply Chain Attacks targeting this package.
+
+### atom-ide-go
+
+During the below investigation of Facebook Nuclide Packages, the [`atom-ide-go`](https://web.pulsar-edit.dev/packages/atom-ide-go) package was discovered to be archived, as mentioned below. But on the readme of the package itself, it recommended installation of a different package, [`ide-gopls`](https://web.pulsar-edit.dev/packages/ide-gopls).
+
+As such, we will also add the `Deprecated` badge, instead suggesting installation of this other package.
+
+### Facebook Nuclide Packages
+
+The community packages:
+* [`atom-ide-debugger-node`](https://web.pulsar-edit.dev/packages/atom-ide-debugger-node)
+* [`atom-ide-debugger-python`](https://web.pulsar-edit.dev/packages/atom-ide-debugger-python)
+* [`atom-ide-debugger-native-gdb`](https://web.pulsar-edit.dev/packages/atom-ide-debugger-native-gdb)
+* [`atom-ide-debugger-react-native`](https://web.pulsar-edit.dev/packages/atom-ide-debugger-react-native)
+* [`atom-ide-debugger-ocaml`](https://web.pulsar-edit.dev/packages/atom-ide-debugger-ocaml)
+* [`atom-ide-ui`](https://web.pulsar-edit.dev/packages/atom-ide-ui)
+* [`atom-ide-go`](https://web.pulsar-edit.dev/packages/atom-ide-go)
+* [`go-plus`](https://web.pulsar-edit.dev/packages/go-plus)
+* [`atom-idea`](https://web.pulsar-edit.dev/packages/atom-idea)
+* [`hyperclick`](https://web.pulsar-edit.dev/packages/hyperclick)
+* [`nuclide-format-js`](https://web.pulsar-edit.dev/packages/nuclide-format-js)
+
+Via a [report](https://github.com/pulsar-edit/package-backend/issues/245) and further investigation was pointed out as having been archived.
+
+As such, the `Archived` badge will be added to this package.
+
+### autocomplete-javascript
+
+The community package [`autocomplete-javascript`](https://web.pulsar-edit.dev/packages/autocomplete-javascript) was [reported](https://github.com/pulsar-edit/package-backend/issues/248) to be broken. On further investigation it essentially seems to have been name squatted, offering no functionality to the user beyond the default package generator behavior.
+
+As such, and as it has not been updated in 7 years, this package will be marked as `Broken` to avoid confusion.
+
 ## 2024 - February 10
 
 ### auto-save-on-idle
