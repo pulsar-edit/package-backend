@@ -63,7 +63,7 @@ module.exports = function constructNewPackagePublishData(opts = {}) {
 
   for (let i = 0; i < opts.tags.length; i++) {
     let curVer = semver.clean(opts.tags[i].name);
-    if (curVer !== LATEST_VER) {
+    if (curVer && curVer !== LATEST_VER) {
       out.versions[curVer] = buildAbsentVer(curVer, opts);
     }
   }
