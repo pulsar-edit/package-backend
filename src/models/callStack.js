@@ -19,7 +19,7 @@ module.exports = class CallStack {
   }
 
   // Attempts to remove any sensitive data that may be found within
-  sanitize(content) {
+  sanitize(content, depth = 0) {
     const badKeys = [
       "token",
       "password",
@@ -52,7 +52,18 @@ module.exports = class CallStack {
           if (badKeys.includes(key)) {
             outContent[key] = hideString;
           } else {
-            outContent[key] = this.sanitize(content[key]);
+            if (depth > 15) {
+              // TODO Dirty hack to avoid hitting the callstack when parsing
+              // web request results that consist of many referenced duplicated objects
+              // that seemingly could descend forever.
+              // 15 is a arbitrarily chosen value of depth to not go past to
+              // avoid this error.
+              // pulsar-edit/package-backend#252
+              outContent[key] = content[key];
+              break;
+            }
+
+            outContent[key] = this.sanitize(content[key], depth++);
           }
         }
         break;
