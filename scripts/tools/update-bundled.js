@@ -16,11 +16,6 @@ const REPOS = [
     isPulsar: true,
   },
   {
-    name: "snippets",
-    url: "https://github.com/pulsar-edit/snippets",
-    isPulsar: false,
-  },
-  {
     name: "github",
     url: "https://github.com/pulsar-edit/github",
     isPulsar: false,
