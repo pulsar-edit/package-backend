@@ -37,6 +37,9 @@ module.exports = {
     packageName: (context, req) => {
       return context.query.packageName(req);
     },
+    tag: (context, req) => {
+      return context.query.tag(req);
+    }
   },
   async postReturnHTTP(req, res, context, obj) {
     // We use postReturnHTTP to ensure the user doesn't wait on these other actions
@@ -145,6 +148,7 @@ module.exports = {
     let packMetadata = await context.vcs.newVersionData(
       user.content,
       ownerRepo,
+      params.tag,
       "git"
     );
 
