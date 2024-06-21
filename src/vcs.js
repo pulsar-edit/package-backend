@@ -6,6 +6,7 @@
  * function.
  */
 
+const semver = require("semver");
 const query = require("./query_parameters/index.js").logic;
 const utils = require("./utils.js");
 const constructNewPackagePublishData = require("./models/constructNewPackagePublishData.js");
@@ -123,15 +124,10 @@ async function newPackageData(userObj, ownerRepo, service) {
         .build();
     }
 
-    let pack = await provider.packageJSON(userObj, ownerRepo);
-
-    if (!pack.ok) {
-      return new ServerStatus()
-        .notOk()
-        .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
-        .setShort("Bad Package")
-        .build();
-    }
+    // We will get tags first so that we can utilize specific tags when asking
+    // for further information about a package, rather than use the default branch
+    // information.
+    // See: https://github.com/pulsar-edit/package-backend/issues/205
 
     const tags = await provider.tags(userObj, ownerRepo);
 
@@ -143,8 +139,21 @@ async function newPackageData(userObj, ownerRepo, service) {
         .build();
     }
 
+    // Sort the tags into descending order
+    tags.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
+
+    let pack = await provider.packageJSON(userObj, ownerRepo, tags[0]?.name);
+
+    if (!pack.ok) {
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
+        .setShort("Bad Package")
+        .build();
+    }
+
     // Now to get our Readme
-    const readme = await provider.readme(userObj, ownerRepo);
+    const readme = await provider.readme(userObj, ownerRepo, tags[0]?.name);
 
     if (!readme.ok) {
       return new ServerStatus()

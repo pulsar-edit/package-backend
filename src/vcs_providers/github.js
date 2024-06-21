@@ -172,12 +172,19 @@ class GitHub extends Git {
    * the specified users credentials.
    * @param {object} userObj - The Raw User Object after verification.
    * @param {string} ownerRepo - The `owner/repo` combo of the repository to get.
+   * @param {string} [ver] - A version string indicating the version of data we wish to collect.
    * @returns {object} A Server Status Object where content is the Markdown text of a readme.
    */
-  async readme(userObj, ownerRepo) {
+  async readme(userObj, ownerRepo, ver) {
     try {
+      let reqString = `/repos/${ownerRepo}/readme`;
+
+      if (ver) {
+        reqString += `?ref=${ver}`;
+      }
+
       const readmeRaw = await this._webRequestAuth(
-        `/repos/${ownerRepo}/readme`,
+        reqString,
         userObj.token
       );
       // Using just `/readme` will let GitHub attempt to get the repos prefferred readme file,
@@ -289,13 +296,20 @@ class GitHub extends Git {
    * @desc Returns the JSON Parsed text of the `package.json` on a GitHub repo.
    * @param {object} userObj - The Full User Object as received after verification.
    * @param {string} ownerRepo - The String combo of `owner/repo` for the package
+   * @param {string} [ver] - A version string indicating the version of data we wish to collect.
    * @returns {object} A Server Status Object, which when successfully, whose `content`
    * Is the JSON parsed `package.json` of the repo specified.
    */
-  async packageJSON(userObj, ownerRepo) {
+  async packageJSON(userObj, ownerRepo, ver) {
     try {
+      let reqString = `/repos/${ownerRepo}/contents/package.json`;
+
+      if (ver) {
+        reqString += `?ref=${ver}`;
+      }
+
       const raw = await this._webRequestAuth(
-        `/repos/${ownerRepo}/contents/package.json`,
+        reqString,
         userObj.token
       );
 
