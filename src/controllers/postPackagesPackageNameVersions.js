@@ -7,10 +7,7 @@ module.exports = {
     summary: "Creates a new package version.",
     responses: {
       201: {
-        description: "The package details indicating success.",
-        content: {
-          "application/json": "$packageObjectFull",
-        },
+        description: "An object with a key 'message' indicating what version has been published.",
       },
     },
   },
@@ -43,6 +40,24 @@ module.exports = {
   },
   async postReturnHTTP(req, res, context, obj) {
     // We use postReturnHTTP to ensure the user doesn't wait on these other actions
+
+    // Lets bail early in case these values don't exist.
+    // Such as the original request failing
+
+    if (typeof obj?.webhook?.pack !== "string" || typeof obj?.webhook?.user !== "string") {
+      // This data isn't defined, and we cannot work with it
+      return;
+    }
+
+    if (
+      typeof obj?.featureDetection?.user !== "string" ||
+      typeof obj?.featureDetection?.ownerRepo !== "string" ||
+      typeof obj?.featureDetection?.service !== "string"
+    ) {
+      // This data isn't defined, and we cannot work with it
+      return;
+    }
+
     await context.webhook.alertPublishVersion(
       obj.webhook.pack,
       obj.webhook.user
@@ -157,7 +172,11 @@ module.exports = {
     if (!packMetadata.ok) {
       const sso = new context.sso();
 
-      return sso.notOk().addContent(packMetadata).assignCalls(callStack);
+      return sso
+        .notOk()
+        .addContent(packMetadata)
+        .addMessage(packMetadata.content) // Trust the output of VCS as an error message
+        .assignCalls(callStack);
     }
 
     const newName = packMetadata.content.name;
@@ -271,6 +290,6 @@ module.exports = {
       ownerRepo: ownerRepo,
     };
 
-    return sso.isOk().addContent(addVer.content);
+    return sso.isOk().addContent(addVer).addMessage(addVer.content);
   },
 };

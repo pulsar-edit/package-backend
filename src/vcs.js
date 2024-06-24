@@ -255,6 +255,19 @@ async function newVersionData(userObj, ownerRepo, tagRef, service) {
       provider = new GitHub();
   }
 
+  let exists = await provider.exists(userObj, ownerRepo);
+
+  if (!exists.ok) {
+    // Could be due to an error, or it doesn't exist at all.
+    // For now until we support custom error messages will do a catch all
+    // return.
+    return new ServerStatus()
+      .notOk()
+      .setContent(`Failed to get repo: ${ownerRepo} - ${exists.short}`)
+      .setShort("Bad Repo")
+      .build();
+  }
+
   let pack = await provider.packageJSON(userObj, ownerRepo, tagRef);
 
   if (!pack.ok) {
