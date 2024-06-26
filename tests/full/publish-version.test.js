@@ -102,9 +102,7 @@ describe("publish package versions", () => {
 
   });
 
-  afterAll(async () => {
-    await new Promise(process.nextTick);
-    
+  afterAll(async () => {    
     // Lets delete our test package versions
     await database.removePackageByName("d-pulsar-package", true);
 

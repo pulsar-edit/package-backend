@@ -538,8 +538,18 @@ class GitHub extends Git {
     // Now with our utility functions here defined, lets call them and build
     // our featureObject
     let tags = await this.tags(userObj, ownerRepo);
-    console.log("tags value");
-    console.log(tags);
+
+    if (!tags.ok) {
+      // We failed to get the tags data for featureDetection.
+      // This would be rather difficult to occur in real life, but this safety check
+      // becomes necessary in testing, as the mocked endpoints won't stay alive
+      // after the HTTP request returns.
+      return {
+        ok: false,
+        content: tags
+      };
+    }
+
     // Sort the tags into descending order
     tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
 

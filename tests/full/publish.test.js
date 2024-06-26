@@ -28,8 +28,6 @@ describe("publish packages", () => {
   });
 
   afterAll(() => {
-    await new Promise(process.nextTick);
-    
     nock.cleanAll();
     nock.enableNetConnect();
   });
