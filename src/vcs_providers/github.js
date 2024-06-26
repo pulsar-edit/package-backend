@@ -537,7 +537,7 @@ class GitHub extends Git {
 
     // Now with our utility functions here defined, lets call them and build
     // our featureObject
-    let tags = await tags(userObj, ownerRepo);
+    let tags = await this.tags(userObj, ownerRepo);
     // Sort the tags into descending order
     tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
 
