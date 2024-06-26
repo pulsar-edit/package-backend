@@ -5,6 +5,7 @@
 
 const Git = require("./git.js");
 const CSON = require("cson");
+const semver = require("semver");
 
 /**
  * @class GitHub
@@ -426,10 +427,16 @@ class GitHub extends Git {
    */
   async featureDetection(userObj, ownerRepo) {
     // First lets declare the functions we will rely on within this
-    const providesSnippets = async () => {
+    const providesSnippets = async (ref) => {
       try {
+        let reqString = `/repos/${ownerRepo}/contents/snippets`;
+
+        if (ref) {
+          reqString += `?ref=${ref}`;
+        }
+
         const raw = await this._webRequestAuth(
-          `/repos/${ownerRepo}/contents/snippets`,
+          reqString,
           userObj.token
         );
 
@@ -449,10 +456,16 @@ class GitHub extends Git {
       }
     };
 
-    const getGrammars = async () => {
+    const getGrammars = async (ref) => {
       try {
+        let reqString = `/repos/${ownerRepo}/contents/grammars`;
+
+        if (ref) {
+          reqString += `?ref=${ref}`;
+        }
+
         const raw = await this._webRequestAuth(
-          `/repos/${ownerRepo}/contents/grammars`,
+          ref,
           userObj.token
         );
 
@@ -470,8 +483,14 @@ class GitHub extends Git {
         let supportedLanguages = [];
 
         for (let i = 0; i < raw.content.body.length; i++) {
+          let innerReqString = `/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`;
+
+          if (ref) {
+            innerReqString += `?ref=${ref}`;
+          }
+
           const rawInner = this._webRequestAuth(
-            `/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`,
+            innerReqString,
             userObj.token
           );
 
@@ -518,8 +537,12 @@ class GitHub extends Git {
 
     // Now with our utility functions here defined, lets call them and build
     // our featureObject
-    let grammars = await getGrammars();
-    let snippets = await providesSnippets();
+    let tags = await tags(userObj, ownerRepo);
+    // Sort the tags into descending order
+    tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
+
+    const grammars = await getGrammars(tags.content[0]?.name);
+    const snippets = await providesSnippets(tags.content[0]?.name);
 
     let featureObject = {};
 
