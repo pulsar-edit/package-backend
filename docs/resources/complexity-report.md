@@ -1,12 +1,12 @@
-# Complexity report, 4/13/2024
+# Complexity report, 6/28/2024
 
-* Mean per-function logical LOC: 14.905797101449275
-* Mean per-function parameter count: 0.1673913043478261
-* Mean per-function cyclomatic complexity: 1.2594202898550726
-* Mean per-function Halstead effort: 3181.0354243656466
-* Mean per-module maintainability index: 67.98276367366883
-* First-order density: 0.7141356857802983%
-* Change cost: 4.452846040747742%
+* Mean per-function logical LOC: 15.104166666666666
+* Mean per-function parameter count: 0.16041666666666668
+* Mean per-function cyclomatic complexity: 1.2486111111111111
+* Mean per-function Halstead effort: 3138.7585527439614
+* Mean per-module maintainability index: 67.69225045749998
+* First-order density: 0.6558641975308641%
+* Change cost: 4.147376543209877%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
@@ -281,7 +281,7 @@
 
 ## /home/runner/work/package-backend/package-backend/src/models/callStack.js
 
-* Physical LOC: 83
+* Physical LOC: 94
 * Logical LOC: 2
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
@@ -907,6 +907,36 @@
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 16.666666666666664%
 * Maintainability index: 71.71259723250154
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/d-pulsar-package/initial-tags.js
+
+* Physical LOC: 11
+* Logical LOC: 6
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 16.666666666666664%
+* Maintainability index: 71.71259723250154
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/d-pulsar-package/match.js
+
+* Physical LOC: 50
+* Logical LOC: 42
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 2.380952380952381%
+* Maintainability index: 47.396064939782065
+* Dependency count: 0
+
+## /home/runner/work/package-backend/package-backend/tests/full/fixtures/d-pulsar-package/tags.js
+
+* Physical LOC: 20
+* Logical LOC: 11
+* Mean parameter count: 0
+* Cyclomatic complexity: 1
+* Cyclomatic complexity density: 9.090909090909092%
+* Maintainability index: 63.92267728456596
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/scripts/deprecated/test/handlers/common_handler/express_fakes.js

@@ -651,7 +651,7 @@ function.
 * [vcs](#module_vcs)
     * [~ownership(userObj, packObj, [opts])](#module_vcs..ownership) ⇒ <code>object</code>
     * [~newPackageData(userObj, ownerRepo, service)](#module_vcs..newPackageData) ⇒ <code>object</code>
-    * [~newVersionData(userObj, ownerRepo, service)](#module_vcs..newVersionData) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
+    * [~newVersionData(userObj, ownerRepo, tagRef, service)](#module_vcs..newVersionData) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
     * [~featureDetection(userObj, ownerRepo, service)](#module_vcs..featureDetection) ⇒ <code>object</code>
     * [~determineProvider(repo)](#module_vcs..determineProvider) ⇒ <code>object</code>
 
@@ -699,7 +699,7 @@ Contains the full package data. This includes the Readme, the package.json, and 
 
 <a name="module_vcs..newVersionData"></a>
 
-### vcs~newVersionData(userObj, ownerRepo, service) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
+### vcs~newVersionData(userObj, ownerRepo, tagRef, service) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
 Replaces the previously used `git.metadataAppendTarballInfo()`
 Intended to retrieve the most basic of a package's data.
 Bundles all the special handling of crafting such an object into this single
@@ -714,6 +714,7 @@ upload a new version.
 | --- | --- | --- |
 | userObj | <code>object</code> | The Full User Object as returned by `auth.verifyAuth()` |
 | ownerRepo | <code>string</code> | The Owner Repo Combo of the package affected. Such as `pulsar-edit/pulsar` |
+| tagRef | <code>string</code> | The version number or ref where data should be sought from the remote resource. |
 | service | <code>string</code> | The service to use as expected to be returned by `vcs.determineProvider()`. Currently should be hardcoded to "git" |
 
 <a name="module_vcs..featureDetection"></a>

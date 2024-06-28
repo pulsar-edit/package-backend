@@ -679,13 +679,12 @@ paths:
         - $ref: '#/components/parameters/rename'
         - $ref: '#/components/parameters/auth'
         - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/tag'
       responses:
         '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/packageObjectFull'
-          description: The package details indicating success.
+          description: >-
+            An object with a key 'message' indicating what version has been
+            published.
       summary: Creates a new package version.
   /api/packages/{packageName}/versions/{versionName}:
     delete:
@@ -1029,13 +1028,12 @@ paths:
         - $ref: '#/components/parameters/rename'
         - $ref: '#/components/parameters/auth'
         - $ref: '#/components/parameters/packageName'
+        - $ref: '#/components/parameters/tag'
       responses:
         '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/packageObjectFull'
-          description: The package details indicating success.
+          description: >-
+            An object with a key 'message' indicating what version has been
+            published.
       summary: Creates a new package version.
   /api/themes/{packageName}/versions/{versionName}:
     delete:

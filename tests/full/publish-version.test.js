@@ -28,81 +28,82 @@ describe("publish package versions", () => {
 
     // Add our test package
     // ====================
-     // Ensure the ownership tests passes for our test user
-     nock("https://api.github.com").get("/user").reply(200, {
-       node_id: "full-publish-version-test-user-node-id"
-     });
+    // Ensure the ownership tests passes for our test user
+    nock("https://api.github.com").get("/user").reply(200, {
+      node_id: "full-publish-version-test-user-node-id",
+    });
 
-     // Lets publish the initial version of our package to test additional versions with
+    // Lets publish the initial version of our package to test additional versions with
 
-     // Ensure user has ownership of our repo
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package/collaborators?page=1")
-       .reply(200, [
-         {
-           node_id: "full-publish-version-test-user-node-id",
-           permissions: {
-             admin: true,
-             maintain: true,
-             push: true
-           },
-           role_name: "Admin"
-         }
-       ]);
+    // Ensure user has ownership of our repo
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/d-pulsar-package/collaborators?page=1")
+      .reply(200, [
+        {
+          node_id: "full-publish-version-test-user-node-id",
+          permissions: {
+            admin: true,
+            maintain: true,
+            push: true,
+          },
+          role_name: "Admin",
+        },
+      ]);
 
-     // Ensure we can report that the package exists
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package")
-       .reply(200, {
-         full_name: "confused-Techie/d-pulsar-package"
-       });
+    // Ensure we can report that the package exists
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/d-pulsar-package")
+      .reply(200, {
+        full_name: "confused-Techie/d-pulsar-package",
+      });
 
-     // Ensure we can get the readme
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package/readme?ref=v1.0.0")
-       .reply(200, {
-         content: getFileEncoded(
-           "./tests/full/fixtures/d-pulsar-package/readme.md"
-         ),
-         encoding: "base64"
-       });
+    // Ensure we can get the readme
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/d-pulsar-package/readme?ref=v1.0.0")
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/d-pulsar-package/readme.md"
+        ),
+        encoding: "base64",
+      });
 
-     // Ensure we can get the tags
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package/tags")
-       .reply(200, require("./fixtures/d-pulsar-package/initial-tags.js"));
+    // Ensure we can get the tags
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/d-pulsar-package/tags")
+      .reply(200, require("./fixtures/d-pulsar-package/initial-tags.js"));
 
-     // Ensure we can get the 'package.json'
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v1.0.0")
-       .reply(200, {
-         content: getFileEncoded(
-           "./tests/full/fixtures/d-pulsar-package/initial-package.json"
-         ),
-         encoding: "base64"
-       });
+    // Ensure we can get the 'package.json'
+    nock("https://api.github.com")
+      .get(
+        "/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v1.0.0"
+      )
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/d-pulsar-package/initial-package.json"
+        ),
+        encoding: "base64",
+      });
 
-     // Lets fail on any feature detection
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package/contents/snippets")
-       .reply(404);
+    // Lets fail on any feature detection
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/d-pulsar-package/contents/snippets")
+      .reply(404);
 
-     nock("https://api.github.com")
-       .get("/repos/confused-Techie/d-pulsar-package/contents/grammars")
-       .reply(404);
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/d-pulsar-package/contents/grammars")
+      .reply(404);
 
-     const res = await supertest(app)
-       .post("/api/packages")
-       .query({ repository: "confused-Techie/d-pulsar-package" })
-       .set({ Authorization: "any-token-will-do" });
+    const res = await supertest(app)
+      .post("/api/packages")
+      .query({ repository: "confused-Techie/d-pulsar-package" })
+      .set({ Authorization: "any-token-will-do" });
 
-     expect(res).toHaveHTTPCode(201);
-     expect(res.body.name).toBe("d-pulsar-package");
-     // Notice we don't remove the package yet, until the end all of tests
-
+    expect(res).toHaveHTTPCode(201);
+    expect(res.body.name).toBe("d-pulsar-package");
+    // Notice we don't remove the package yet, until the end all of tests
   });
 
-  afterAll(async () => {    
+  afterAll(async () => {
     // Lets delete our test package versions
     await database.removePackageByName("d-pulsar-package", true);
 
@@ -113,7 +114,7 @@ describe("publish package versions", () => {
   beforeEach(() => {
     // Ensure the ownership tests passes for our test user
     nock("https://api.github.com").get("/user").reply(200, {
-      node_id: "full-publish-version-test-user-node-id"
+      node_id: "full-publish-version-test-user-node-id",
     });
   });
 
@@ -132,10 +133,10 @@ describe("publish package versions", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
@@ -150,7 +151,7 @@ describe("publish package versions", () => {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/readme.md"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -160,12 +161,14 @@ describe("publish package versions", () => {
 
     // Ensure we can get the 'package.json'
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0")
+      .get(
+        "/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0"
+      )
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/package.json"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Lets fail on any feature detection
@@ -198,17 +201,17 @@ describe("publish package versions", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
     nock("https://api.github.com")
       .get("/repos/confused-Techie/d-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/d-pulsar-package"
+        full_name: "confused-Techie/d-pulsar-package",
       });
 
     // Ensure we can get the readme
@@ -223,12 +226,14 @@ describe("publish package versions", () => {
 
     // Ensure we can get the 'package.json'
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0")
+      .get(
+        "/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0"
+      )
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/package.json"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Lets fail on any feature detection
@@ -261,17 +266,17 @@ describe("publish package versions", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
     nock("https://api.github.com")
       .get("/repos/confused-Techie/d-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/d-pulsar-package"
+        full_name: "confused-Techie/d-pulsar-package",
       });
 
     // Ensure we can get the readme
@@ -281,7 +286,7 @@ describe("publish package versions", () => {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/readme.md"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -291,12 +296,14 @@ describe("publish package versions", () => {
 
     // Ensure we can get the 'package.json'
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0")
+      .get(
+        "/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0"
+      )
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/package.json"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Lets fail on any feature detection
@@ -329,17 +336,17 @@ describe("publish package versions", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // Ensure we can report that the package exists
     nock("https://api.github.com")
       .get("/repos/confused-Techie/d-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/d-pulsar-package"
+        full_name: "confused-Techie/d-pulsar-package",
       });
 
     // Ensure we can get the readme
@@ -349,7 +356,7 @@ describe("publish package versions", () => {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/readme.md"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -359,12 +366,14 @@ describe("publish package versions", () => {
 
     // Ensure we can get the 'package.json'
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0")
+      .get(
+        "/repos/confused-Techie/d-pulsar-package/contents/package.json?ref=v2.0.0"
+      )
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/d-pulsar-package/package.json"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Lets fail on any feature detection
@@ -382,12 +391,15 @@ describe("publish package versions", () => {
       .set({ Authorization: "any-token-will-do" });
 
     expect(res).toHaveHTTPCode(201);
-    expect(res.body.content).toBe("Successfully added new version: d-pulsar-package@2.0.0");
+    expect(res.body.content).toBe(
+      "Successfully added new version: d-pulsar-package@2.0.0"
+    );
 
-    const resPack = await supertest(app)
-      .get("/api/packages/d-pulsar-package");
+    const resPack = await supertest(app).get("/api/packages/d-pulsar-package");
 
     expect(resPack).toHaveHTTPCode(200);
-    expect(resPack.body).toMatchObject(require("./fixtures/d-pulsar-package/match.js"));
+    expect(resPack.body).toMatchObject(
+      require("./fixtures/d-pulsar-package/match.js")
+    );
   });
 });

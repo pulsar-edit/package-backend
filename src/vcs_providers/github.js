@@ -184,10 +184,7 @@ class GitHub extends Git {
         reqString += `?ref=${ver}`;
       }
 
-      const readmeRaw = await this._webRequestAuth(
-        reqString,
-        userObj.token
-      );
+      const readmeRaw = await this._webRequestAuth(reqString, userObj.token);
       // Using just `/readme` will let GitHub attempt to get the repos prefferred readme file,
       // so we don't have to check mutliple times.
       // https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#get-a-repository-readme
@@ -309,10 +306,7 @@ class GitHub extends Git {
         reqString += `?ref=${ver}`;
       }
 
-      const raw = await this._webRequestAuth(
-        reqString,
-        userObj.token
-      );
+      const raw = await this._webRequestAuth(reqString, userObj.token);
 
       if (!raw.ok) {
         if (raw.short === "Failed Request") {
@@ -435,10 +429,7 @@ class GitHub extends Git {
           reqString += `?ref=${ref}`;
         }
 
-        const raw = await this._webRequestAuth(
-          reqString,
-          userObj.token
-        );
+        const raw = await this._webRequestAuth(reqString, userObj.token);
 
         if (!raw.ok) {
           if (raw.short === "Failed Request") {
@@ -464,10 +455,7 @@ class GitHub extends Git {
           reqString += `?ref=${ref}`;
         }
 
-        const raw = await this._webRequestAuth(
-          ref,
-          userObj.token
-        );
+        const raw = await this._webRequestAuth(ref, userObj.token);
 
         if (
           !raw.ok &&
@@ -489,10 +477,7 @@ class GitHub extends Git {
             innerReqString += `?ref=${ref}`;
           }
 
-          const rawInner = this._webRequestAuth(
-            innerReqString,
-            userObj.token
-          );
+          const rawInner = this._webRequestAuth(innerReqString, userObj.token);
 
           if (!rawInner.ok) {
             continue;
@@ -546,12 +531,14 @@ class GitHub extends Git {
       // after the HTTP request returns.
       return {
         ok: false,
-        content: tags
+        content: tags,
       };
     }
 
     // Sort the tags into descending order
-    tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
+    tags.content.sort((a, b) => {
+      return semver.rcompare(a.name, b.name);
+    });
 
     const grammars = await getGrammars(tags.content[0]?.name);
     const snippets = await providesSnippets(tags.content[0]?.name);

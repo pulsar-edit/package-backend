@@ -7,7 +7,8 @@ module.exports = {
     summary: "Creates a new package version.",
     responses: {
       201: {
-        description: "An object with a key 'message' indicating what version has been published.",
+        description:
+          "An object with a key 'message' indicating what version has been published.",
       },
     },
   },
@@ -36,7 +37,7 @@ module.exports = {
     },
     tag: (context, req) => {
       return context.query.tag(req);
-    }
+    },
   },
   async postReturnHTTP(req, res, context, obj) {
     // We use postReturnHTTP to ensure the user doesn't wait on these other actions
@@ -44,7 +45,10 @@ module.exports = {
     // Lets bail early in case these values don't exist.
     // Such as the original request failing
 
-    if (typeof obj?.webhook?.pack !== "string" || typeof obj?.webhook?.user !== "string") {
+    if (
+      typeof obj?.webhook?.pack !== "string" ||
+      typeof obj?.webhook?.user !== "string"
+    ) {
       // This data isn't defined, and we cannot work with it
       return;
     }

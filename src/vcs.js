@@ -140,9 +140,15 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // Sort the tags into descending order
-    tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
+    tags.content.sort((a, b) => {
+      return semver.rcompare(a.name, b.name);
+    });
 
-    let pack = await provider.packageJSON(userObj, ownerRepo, tags.content[0]?.name);
+    let pack = await provider.packageJSON(
+      userObj,
+      ownerRepo,
+      tags.content[0]?.name
+    );
 
     if (!pack.ok) {
       return new ServerStatus()
@@ -153,7 +159,11 @@ async function newPackageData(userObj, ownerRepo, service) {
     }
 
     // Now to get our Readme
-    const readme = await provider.readme(userObj, ownerRepo, tags.content[0]?.name);
+    const readme = await provider.readme(
+      userObj,
+      ownerRepo,
+      tags.content[0]?.name
+    );
 
     if (!readme.ok) {
       return new ServerStatus()

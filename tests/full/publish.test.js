@@ -84,7 +84,9 @@ describe("publish packages", () => {
 
     // Ensure we can get the `package.json`
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/a-pulsar-package/contents/package.json?ref=v1.0.0")
+      .get(
+        "/repos/confused-Techie/a-pulsar-package/contents/package.json?ref=v1.0.0"
+      )
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/a-pulsar-package/package.json"

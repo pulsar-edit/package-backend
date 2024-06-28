@@ -9,7 +9,7 @@ module.exports = {
     license: "MIT",
     version: "2.0.0",
     repository: "https://github.com/confused-Techie/d-pulsar-package",
-    description: "An old package for stuff"
+    description: "An old package for stuff",
   },
   releases: { latest: "2.0.0" },
   versions: {
@@ -24,7 +24,7 @@ module.exports = {
       license: "MIT",
       version: "2.0.0",
       repository: "https://github.com/confused-Techie/d-pulsar-package",
-      description: "An old package for stuff"
+      description: "An old package for stuff",
     },
     "1.0.0": {
       dist: {
@@ -37,12 +37,12 @@ module.exports = {
       license: "MIT",
       version: "1.0.0",
       repository: "https://github.com/confused-Techie/d-pulsar-package",
-      description: "A new package for stuff"
-    }
+      description: "A new package for stuff",
+    },
   },
   repository: {
     url: "https://github.com/confused-Techie/d-pulsar-package",
-    type: "git"
+    type: "git",
   },
   downloads: "0",
   stargazers_count: "0",
