@@ -59,6 +59,7 @@ module.exports = {
         ${clause.serviceClause(sql, opts)}
         ${clause.fileExtensionClause(sql, opts)}
         ${clause.ownerClause(sql, opts)}
+        ${clause.keywordsClause(sql, opts)}
 
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )

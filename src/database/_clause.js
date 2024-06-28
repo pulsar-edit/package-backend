@@ -73,6 +73,14 @@ function fileExtensionClause(sql, opts) {
   return sql`AND ${opts.fileExtension}=ANY(v.supported_languages)`;
 }
 
+function keywordsClause(sql, opts) {
+  if (typeof opts.tags !== "string") {
+    return getEmptyClause(sql);
+  }
+
+  return sql`AND (v.meta -> 'keywords')::jsonb ? ${opts.tags}`;
+}
+
 module.exports = {
   getEmptyClause,
   queryClause,
@@ -80,4 +88,5 @@ module.exports = {
   ownerClause,
   serviceClause,
   fileExtensionClause,
+  keywordsClause,
 };
