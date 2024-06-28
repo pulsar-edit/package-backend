@@ -194,3 +194,16 @@ describe("Verify owner Returns", () => {
     expect(query.owner(arg)).toBe(result);
   });
 });
+
+const tagsCases = [
+  [{ query: { tags: "es6" } }, "es6"],
+  [{ query: { tags: "" } }, false],
+  [{ query: { tags: 1 } }, false],
+  [{ query: {} }, false],
+];
+
+describe("Verify tags Returns", () => {
+  test.each(tagsCases)("Given %o Returns %p", (arg, result) => {
+    expect(query.tags(arg)).toBe(result);
+  });
+});
