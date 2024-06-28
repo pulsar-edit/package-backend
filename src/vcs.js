@@ -6,6 +6,7 @@
  * function.
  */
 
+const semver = require("semver");
 const query = require("./query_parameters/index.js").logic;
 const utils = require("./utils.js");
 const constructNewPackagePublishData = require("./models/constructNewPackagePublishData.js");
@@ -123,15 +124,10 @@ async function newPackageData(userObj, ownerRepo, service) {
         .build();
     }
 
-    let pack = await provider.packageJSON(userObj, ownerRepo);
-
-    if (!pack.ok) {
-      return new ServerStatus()
-        .notOk()
-        .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
-        .setShort("Bad Package")
-        .build();
-    }
+    // We will get tags first so that we can utilize specific tags when asking
+    // for further information about a package, rather than use the default branch
+    // information.
+    // See: https://github.com/pulsar-edit/package-backend/issues/205
 
     const tags = await provider.tags(userObj, ownerRepo);
 
@@ -143,8 +139,21 @@ async function newPackageData(userObj, ownerRepo, service) {
         .build();
     }
 
+    // Sort the tags into descending order
+    tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
+
+    let pack = await provider.packageJSON(userObj, ownerRepo, tags.content[0]?.name);
+
+    if (!pack.ok) {
+      return new ServerStatus()
+        .notOk()
+        .setContent(`Failed to get gh package for ${ownerRepo} - ${pack.short}`)
+        .setShort("Bad Package")
+        .build();
+    }
+
     // Now to get our Readme
-    const readme = await provider.readme(userObj, ownerRepo);
+    const readme = await provider.readme(userObj, ownerRepo, tags.content[0]?.name);
 
     if (!readme.ok) {
       return new ServerStatus()
@@ -222,13 +231,15 @@ async function newPackageData(userObj, ownerRepo, service) {
  * @param {object} userObj - The Full User Object as returned by `auth.verifyAuth()`
  * @param {string} ownerRepo - The Owner Repo Combo of the package affected.
  * Such as `pulsar-edit/pulsar`
+ * @param {string} tagRef - The version number or ref where data should be sought
+ * from the remote resource.
  * @param {string} service - The service to use as expected to be returned
  * by `vcs.determineProvider()`. Currently should be hardcoded to "git"
  * @returns {SSO_VCS_newVersionData} A Server Status Object, which when `ok: true`
  * returns all data that would be needed to update a package on the DB, and
  * upload a new version.
  */
-async function newVersionData(userObj, ownerRepo, service) {
+async function newVersionData(userObj, ownerRepo, tagRef, service) {
   // Originally when publishing a new version the responsibility to collect
   // all package data fell onto the package_handler itself
   // Including collecting readmes and tags, now this function should encapsulate
@@ -244,7 +255,20 @@ async function newVersionData(userObj, ownerRepo, service) {
       provider = new GitHub();
   }
 
-  let pack = await provider.packageJSON(userObj, ownerRepo);
+  let exists = await provider.exists(userObj, ownerRepo);
+
+  if (!exists.ok) {
+    // Could be due to an error, or it doesn't exist at all.
+    // For now until we support custom error messages will do a catch all
+    // return.
+    return new ServerStatus()
+      .notOk()
+      .setContent(`Failed to get repo: ${ownerRepo} - ${exists.short}`)
+      .setShort("Bad Repo")
+      .build();
+  }
+
+  let pack = await provider.packageJSON(userObj, ownerRepo, tagRef);
 
   if (!pack.ok) {
     return {
@@ -257,7 +281,7 @@ async function newVersionData(userObj, ownerRepo, service) {
   // Now we will also need to get the packages data to update on the DB
   // during verison pushes.
 
-  let readme = await provider.readme(userObj, ownerRepo);
+  let readme = await provider.readme(userObj, ownerRepo, tagRef);
 
   if (!readme.ok) {
     return {

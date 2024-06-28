@@ -5,6 +5,7 @@
 
 const Git = require("./git.js");
 const CSON = require("cson");
+const semver = require("semver");
 
 /**
  * @class GitHub
@@ -172,12 +173,19 @@ class GitHub extends Git {
    * the specified users credentials.
    * @param {object} userObj - The Raw User Object after verification.
    * @param {string} ownerRepo - The `owner/repo` combo of the repository to get.
+   * @param {string} [ver] - A version string indicating the version of data we wish to collect.
    * @returns {object} A Server Status Object where content is the Markdown text of a readme.
    */
-  async readme(userObj, ownerRepo) {
+  async readme(userObj, ownerRepo, ver) {
     try {
+      let reqString = `/repos/${ownerRepo}/readme`;
+
+      if (ver) {
+        reqString += `?ref=${ver}`;
+      }
+
       const readmeRaw = await this._webRequestAuth(
-        `/repos/${ownerRepo}/readme`,
+        reqString,
         userObj.token
       );
       // Using just `/readme` will let GitHub attempt to get the repos prefferred readme file,
@@ -289,13 +297,20 @@ class GitHub extends Git {
    * @desc Returns the JSON Parsed text of the `package.json` on a GitHub repo.
    * @param {object} userObj - The Full User Object as received after verification.
    * @param {string} ownerRepo - The String combo of `owner/repo` for the package
+   * @param {string} [ver] - A version string indicating the version of data we wish to collect.
    * @returns {object} A Server Status Object, which when successfully, whose `content`
    * Is the JSON parsed `package.json` of the repo specified.
    */
-  async packageJSON(userObj, ownerRepo) {
+  async packageJSON(userObj, ownerRepo, ver) {
     try {
+      let reqString = `/repos/${ownerRepo}/contents/package.json`;
+
+      if (ver) {
+        reqString += `?ref=${ver}`;
+      }
+
       const raw = await this._webRequestAuth(
-        `/repos/${ownerRepo}/contents/package.json`,
+        reqString,
         userObj.token
       );
 
@@ -412,10 +427,16 @@ class GitHub extends Git {
    */
   async featureDetection(userObj, ownerRepo) {
     // First lets declare the functions we will rely on within this
-    const providesSnippets = async () => {
+    const providesSnippets = async (ref) => {
       try {
+        let reqString = `/repos/${ownerRepo}/contents/snippets`;
+
+        if (ref) {
+          reqString += `?ref=${ref}`;
+        }
+
         const raw = await this._webRequestAuth(
-          `/repos/${ownerRepo}/contents/snippets`,
+          reqString,
           userObj.token
         );
 
@@ -435,10 +456,16 @@ class GitHub extends Git {
       }
     };
 
-    const getGrammars = async () => {
+    const getGrammars = async (ref) => {
       try {
+        let reqString = `/repos/${ownerRepo}/contents/grammars`;
+
+        if (ref) {
+          reqString += `?ref=${ref}`;
+        }
+
         const raw = await this._webRequestAuth(
-          `/repos/${ownerRepo}/contents/grammars`,
+          ref,
           userObj.token
         );
 
@@ -456,8 +483,14 @@ class GitHub extends Git {
         let supportedLanguages = [];
 
         for (let i = 0; i < raw.content.body.length; i++) {
+          let innerReqString = `/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`;
+
+          if (ref) {
+            innerReqString += `?ref=${ref}`;
+          }
+
           const rawInner = this._webRequestAuth(
-            `/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`,
+            innerReqString,
             userObj.token
           );
 
@@ -504,8 +537,24 @@ class GitHub extends Git {
 
     // Now with our utility functions here defined, lets call them and build
     // our featureObject
-    let grammars = await getGrammars();
-    let snippets = await providesSnippets();
+    let tags = await this.tags(userObj, ownerRepo);
+
+    if (!tags.ok) {
+      // We failed to get the tags data for featureDetection.
+      // This would be rather difficult to occur in real life, but this safety check
+      // becomes necessary in testing, as the mocked endpoints won't stay alive
+      // after the HTTP request returns.
+      return {
+        ok: false,
+        content: tags
+      };
+    }
+
+    // Sort the tags into descending order
+    tags.content.sort((a, b) => { return semver.rcompare(a.name, b.name)} );
+
+    const grammars = await getGrammars(tags.content[0]?.name);
+    const snippets = await providesSnippets(tags.content[0]?.name);
 
     let featureObject = {};
 

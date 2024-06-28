@@ -13,7 +13,7 @@ function getFileEncoded(loc) {
   return buf;
 }
 
-describe("can publish packages", () => {
+describe("publish packages", () => {
   beforeAll(async () => {
     // Create our test user
     let addUser = await database.insertNewUser(
@@ -69,7 +69,7 @@ describe("can publish packages", () => {
 
     // Ensure we can get the readme
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/a-pulsar-package/readme")
+      .get("/repos/confused-Techie/a-pulsar-package/readme?ref=v1.0.0")
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/a-pulsar-package/readme.md"
@@ -84,7 +84,7 @@ describe("can publish packages", () => {
 
     // Ensure we can get the `package.json`
     nock("https://api.github.com")
-      .get("/repos/confused-Techie/a-pulsar-package/contents/package.json")
+      .get("/repos/confused-Techie/a-pulsar-package/contents/package.json?ref=v1.0.0")
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/a-pulsar-package/package.json"
@@ -116,6 +116,177 @@ describe("can publish packages", () => {
     await database.removePackageByName("a-pulsar-package", true);
   });
 
+  test("when the request for the 'package.json' fails", async () => {
+    // Ensure the user has ownership of the repo
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/collaborators?page=1")
+      .reply(200, [
+        {
+          node_id: "full-publish-test-user-node-id",
+          permissions: {
+            admin: true,
+            maintain: true,
+            push: true,
+          },
+          role_name: "Admin",
+        },
+      ]);
+
+    // Ensure we can report that the package exists
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package")
+      .reply(200, {
+        full_name: "confused-Techie/b-pulsar-package",
+      });
+
+    // Ensure we can get the readme
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/readme")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/b-pulsar-package/readme.md"
+        ),
+        encoding: "base64",
+      });
+
+    // Ensure we can get the tags
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/tags")
+      .reply(200, require("./fixtures/b-pulsar-package/tags.js"));
+
+    // But we fail to deliver the `package.json`
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/contents/package.json")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
+      .reply(500);
+
+    const res = await supertest(app)
+      .post("/api/packages")
+      .query({ repository: "confused-Techie/b-pulsar-package" })
+      .set({ Authorization: "any-token-will-do" });
+
+    expect(res).toHaveHTTPCode(500);
+    expect(res.body.message).toBe(
+      "Server Error: From Bad Package: Failed to get gh package for confused-Techie/b-pulsar-package - Server Error"
+    );
+  });
+
+  test("when the request for the 'tags' fails", async () => {
+    // Ensure the user has ownership of the repo
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/collaborators?page=1")
+      .reply(200, [
+        {
+          node_id: "full-publish-test-user-node-id",
+          permissions: {
+            admin: true,
+            maintain: true,
+            push: true,
+          },
+          role_name: "Admin",
+        },
+      ]);
+
+    // Ensure we can report that the package exists
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package")
+      .reply(200, {
+        full_name: "confused-Techie/b-pulsar-package",
+      });
+
+    // Ensure we can get the readme
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/readme")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/b-pulsar-package/readme.md"
+        ),
+        encoding: "base64",
+      });
+
+    // But we fail on the tags request
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/tags")
+      .reply(500);
+
+    // Ensure we can get the `package.json`
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/contents/package.json")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/b-pulsar-package/package.json"
+        ),
+        encoding: "base64",
+      });
+    const res = await supertest(app)
+      .post("/api/packages")
+      .query({ repository: "confused-Techie/b-pulsar-package" })
+      .set({ Authorization: "any-token-will-do" });
+
+    expect(res).toHaveHTTPCode(500);
+    expect(res.body.message).toBe(
+      "Server Error: From Server Error: Failed to get gh tags for confused-Techie/b-pulsar-package - Server Error"
+    );
+  });
+
+  test("when the request for the 'readme' fails", async () => {
+    // Ensure the user has ownership of the repo
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/collaborators?page=1")
+      .reply(200, [
+        {
+          node_id: "full-publish-test-user-node-id",
+          permissions: {
+            admin: true,
+            maintain: true,
+            push: true,
+          },
+          role_name: "Admin",
+        },
+      ]);
+
+    // Ensure we can report that the package exists
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package")
+      .reply(200, {
+        full_name: "confused-Techie/b-pulsar-package",
+      });
+
+    // But then we fail on the 'readme' request
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/readme")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
+      .reply(500);
+
+    // Ensure we can get the tags
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/tags")
+      .reply(200, require("./fixtures/b-pulsar-package/tags.js"));
+
+    // Ensure we can get the `package.json`
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/b-pulsar-package/contents/package.json")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/b-pulsar-package/package.json"
+        ),
+        encoding: "base64",
+      });
+    const res = await supertest(app)
+      .post("/api/packages")
+      .query({ repository: "confused-Techie/b-pulsar-package" })
+      .set({ Authorization: "any-token-will-do" });
+
+    expect(res).toHaveHTTPCode(500);
+    expect(res.body.message).toBe(
+      "Server Error: From Bad Repo: Failed to get gh readme for confused-Techie/b-pulsar-package - Server Error"
+    );
+  });
+
   test("when multiple tags are available", async () => {
     // Ensure user has ownership of repo
     nock("https://api.github.com/")
@@ -142,6 +313,7 @@ describe("can publish packages", () => {
     // Ensure we can get the readme
     nock("https://api.github.com")
       .get("/repos/confused-Techie/b-pulsar-package/readme")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/b-pulsar-package/readme.md"
@@ -157,6 +329,7 @@ describe("can publish packages", () => {
     // Ensure we can get the `package.json`
     nock("https://api.github.com")
       .get("/repos/confused-Techie/b-pulsar-package/contents/package.json")
+      .query(true) // Match on any query tags, to support both `v1.0.0` and `v2.0.0`
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/b-pulsar-package/package.json"
@@ -214,6 +387,7 @@ describe("can publish packages", () => {
     // Ensure we can get the readme
     nock("https://api.github.com")
       .get("/repos/confused-Techie/c-pulsar-package/readme")
+      .query(true) // Match on any query tags
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/c-pulsar-package/readme.md"
@@ -229,6 +403,7 @@ describe("can publish packages", () => {
     // Ensure we can get the `package.json`
     nock("https://api.github.com")
       .get("/repos/confused-Techie/c-pulsar-package/contents/package.json")
+      .query(true) // Match on any query tags
       .reply(200, {
         content: getFileEncoded(
           "./tests/full/fixtures/c-pulsar-package/package.json"

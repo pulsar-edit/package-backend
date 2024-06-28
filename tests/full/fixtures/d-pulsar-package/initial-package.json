@@ -1,0 +1,11 @@
+{
+  "name": "d-pulsar-package",
+  "version": "1.0.0",
+  "description": "A new package for stuff",
+  "main": "./lib/main.js",
+  "engines": {
+    "atom": "*"
+  },
+  "repository": "https://github.com/confused-Techie/d-pulsar-package",
+  "license": "MIT"
+}
