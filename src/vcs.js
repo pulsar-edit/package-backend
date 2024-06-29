@@ -99,7 +99,7 @@ async function ownership(userObj, packObj, dev_override = false) {
  * Contains the full package data. This includes the Readme, the package.json, and all version data.
  * @todo Stop hardcoding the service that is passed here.
  */
-async function newPackageData(userObj, ownerRepo, service) {
+async function newPackageData(userObj, ownerRepo, service, possibleTag) {
   try {
     let provider = null;
     // Provider above, is the provider that should be assigned to allow interaction
@@ -129,25 +129,30 @@ async function newPackageData(userObj, ownerRepo, service) {
     // information.
     // See: https://github.com/pulsar-edit/package-backend/issues/205
 
-    const tags = await provider.tags(userObj, ownerRepo);
+    let tags;
+    if(possibleTag) {
+      tags = [{name: possibleTag}];
+    } else {
+      tags = await provider.tags(userObj, ownerRepo);
 
-    if (!tags.ok) {
-      return new ServerStatus()
-        .notOk()
-        .setContent(`Failed to get gh tags for ${ownerRepo} - ${tags.short}`)
-        .setShort("Server Error")
-        .build();
+      if (!tags.ok) {
+        return new ServerStatus()
+          .notOk()
+          .setContent(`Failed to get gh tags for ${ownerRepo} - ${tags.short}`)
+          .setShort("Server Error")
+          .build();
+      }
+
+      // Sort the tags into descending order
+      tags = tags.content.sort((a, b) => {
+        return semver.rcompare(a.name, b.name);
+      });
     }
-
-    // Sort the tags into descending order
-    tags.content.sort((a, b) => {
-      return semver.rcompare(a.name, b.name);
-    });
 
     let pack = await provider.packageJSON(
       userObj,
       ownerRepo,
-      tags.content[0]?.name
+      tags[0]?.name
     );
 
     if (!pack.ok) {
@@ -162,7 +167,7 @@ async function newPackageData(userObj, ownerRepo, service) {
     const readme = await provider.readme(
       userObj,
       ownerRepo,
-      tags.content[0]?.name
+      tags[0]?.name
     );
 
     if (!readme.ok) {
@@ -203,7 +208,7 @@ async function newPackageData(userObj, ownerRepo, service) {
         ownerRepo: ownerRepo,
         provider: packRepoObj,
         packageJson: pack.content,
-        tags: tags.content,
+        tags: tags,
         readme: readme.content,
       });
     } catch (err) {
