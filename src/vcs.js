@@ -129,9 +129,10 @@ async function newPackageData(userObj, ownerRepo, service, possibleTag) {
     // information.
     // See: https://github.com/pulsar-edit/package-backend/issues/205
 
-    let tags;
+    let tag;
     if(possibleTag) {
-      tags = [{name: possibleTag}];
+      tag = await provider.tag(userObj, ownerRepo, possibleTag);
+      tag = tag.content
     } else {
       tags = await provider.tags(userObj, ownerRepo);
 
@@ -144,15 +145,16 @@ async function newPackageData(userObj, ownerRepo, service, possibleTag) {
       }
 
       // Sort the tags into descending order
-      tags = tags.content.sort((a, b) => {
+      tags.content.sort((a, b) => {
         return semver.rcompare(a.name, b.name);
       });
+      tag = tags.content[0]
     }
 
     let pack = await provider.packageJSON(
       userObj,
       ownerRepo,
-      tags[0]?.name
+      tag.name
     );
 
     if (!pack.ok) {
@@ -167,7 +169,7 @@ async function newPackageData(userObj, ownerRepo, service, possibleTag) {
     const readme = await provider.readme(
       userObj,
       ownerRepo,
-      tags[0]?.name
+      tag.name
     );
 
     if (!readme.ok) {
@@ -208,7 +210,7 @@ async function newPackageData(userObj, ownerRepo, service, possibleTag) {
         ownerRepo: ownerRepo,
         provider: packRepoObj,
         packageJson: pack.content,
-        tags: tags,
+        tag: tag,
         readme: readme.content,
       });
     } catch (err) {
