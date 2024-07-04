@@ -13,7 +13,7 @@ module.exports = function constructNewPackagePublishData(opts = {}) {
   // ownerRepo = OWNER/REPO (string)
   // provider = Provider object from VCS
   // packageJson = The full `package.json` from the latest version
-  // tags = The GitHub API return of tag information
+  // tag = The GitHub API return of tag information
   // readme = The full text readme
 
   let out = {};
@@ -39,7 +39,7 @@ module.exports = function constructNewPackagePublishData(opts = {}) {
 
   // Now lets setup some constants that we will use over and over
   let PACK_NAME = findPackName(opts);
-  let LATEST_VER = findLatestVer(opts);
+  let PACKAGE_VER = findLatestVer(opts);
 
   out.name = PACK_NAME;
   out.owner = findOwner(opts);
@@ -47,7 +47,7 @@ module.exports = function constructNewPackagePublishData(opts = {}) {
   out.repository = opts.provider;
   out.metadata = buildMeta(opts);
   out.releases = {
-    latest: LATEST_VER,
+    latest: PACKAGE_VER,
   };
 
   // From here we want to build or version objects, except we don't have the
@@ -59,15 +59,8 @@ module.exports = function constructNewPackagePublishData(opts = {}) {
   out.versions = {};
   // So lets loop through all versions, we will use the same meta object for the
   // latest, while getting mandatory only fields for the rest
-  out.versions[LATEST_VER] = buildMeta(opts);
-
-  for (let i = 0; i < opts.tags.length; i++) {
-    let curVer = semver.clean(opts.tags[i].name);
-    if (curVer && curVer !== LATEST_VER) {
-      out.versions[curVer] = buildAbsentVer(curVer, opts);
-    }
-  }
-
+  out.versions[PACKAGE_VER] = buildMeta(opts);
+  buildAbsentVer(PACKAGE_VER, opts)
   // Now we should be good to go
 
   return out;
@@ -155,7 +148,7 @@ function buildMeta(opts) {
     out.engines = { atom: "*" };
   }
 
-  let tag = findTagForVer(ver, opts);
+  let tag = opts.tag;
 
   sha = tag.commit.sha ?? false;
   tarball = tag.tarball_url ?? false;
@@ -180,7 +173,7 @@ function buildAbsentVer(ver, opts) {
   // Here we will build an "absent" version object. Since we don't have the
   // `package.json` of this version, it's considered absent, and will only receive
   // the mandatory fields we can discover via the current version, and it's tag
-  let tag = findTagForVer(ver, opts);
+  let tag = opts.tag;
 
   let sha = false;
   let tarball = false;
@@ -212,22 +205,4 @@ function buildAbsentVer(ver, opts) {
   });
 
   return out;
-}
-
-function findTagForVer(wantedTag, opts) {
-  let tag = semver.clean(wantedTag);
-  let tagFound = false;
-
-  for (let i = 0; i < opts.tags.length; i++) {
-    if (semver.clean(opts.tags[i].name) === tag) {
-      tagFound = opts.tags[i];
-    }
-  }
-
-  throwIfFalse(tagFound, "", () => {
-    throw new Error(
-      `Unable to locate the tag for 'package.json' version '${tag}'. Are you sure you published a matching tag?`
-    );
-  });
-  return tagFound;
 }
