@@ -18,7 +18,7 @@ let sqlStorage;
  @see https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/badge-spec.md
  Valid Values:
   - type: <enum|required> The type of badge (info, warn, success)
-  - title: <enum|required> The title of the badge (outdated, broken, archived)
+  - title: <enum|required> The title of the badge (outdated, broken, archived). Uppercase.
   - text: <string|optional> The text content of the badge (no periods, fewest words possible)
   - link: <string|optional> A link for the badge (link to admin actions log)
   - alt: <string|optional> The alternate name to add for deprecated packages.
@@ -27,7 +27,7 @@ let badgeConfig = {
   type: "",
   title: "",
   text: "",
-  link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/Admin_Actions.md#2024---march-27",
+  link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/Admin_Actions.md#2024---july-22",
   //alt: ""
 };
 

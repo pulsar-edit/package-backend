@@ -4,6 +4,40 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2024 - July 22
+
+### react
+
+The community package [`react`](https://web.pulsar-edit.dev/packages/react) has been reported to have a bug preventing it successfully running. While the package is not archived the maintainer has noted in the README "This project is no longer mantained" so it's safe to assume the bug will not be fixed.
+
+This bug arose when breaking changes occurred in Pulsar's migration to `second-mate`, while the API that changed wasn't public or intended to be consumed by packages, it was used by `react` who no longer is compatible.
+
+As such `react` will receive the `Broken` badge.
+
+### asciidoctor Packages
+
+The community packages:
+* [`asciidoc-preview`](https://web.pulsar-edit.dev/packages/asciidoc-preview)
+* [`language-asciidoc`](https://web.pulsar-edit.dev/packages/language-asciidoc)
+* [`autocomplete-asciidoc`](https://web.pulsar-edit.dev/packages/autocomplete-asciidoc)
+* [`asciidoc-image-helper`](https://web.pulsar-edit.dev/packages/asciidoc-image-helper)
+* [`asciidoc-assistant`](https://web.pulsar-edit.dev/packages/asciidoc-assistant)
+
+Via a [report](https://github.com/pulsar-edit/package-backend/issues/262) and further investigation it's been discovered that many of the packages published by the user `asciidoctor` have been archived.
+
+As such, the `Archived` badge will be added to these packages.
+
+### platformio Packages
+
+The community packages:
+* [`platformio-ide`](https://web.pulsar-edit.dev/packages/platformio-ide)
+* [`platformio-ide-terminal`](https://web.pulsar-edit.dev/packages/platformio-ide-terminal)
+* [`platformio-ide-debugger`](https://web.pulsar-edit.dev/packages/platformio-ide-debugger)
+
+Via a [report](https://github.com/pulsar-edit/package-backend/issues/261) and further investigation it's been discovered that some of the packages published by the user `platformio` have been archived.
+
+As such, the `Archived` badge will be added to these packages.
+
 ## 2024 - March 27
 
 ### AtomLinter Packages
