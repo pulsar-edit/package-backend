@@ -133,16 +133,30 @@ describe("Package Lifecycle Tests", () => {
     const dupPublish = await database.insertNewPackage(pack.createPack);
     expect(dupPublish.ok).toBeFalsy();
 
+    // === Now let's try to delete the only version available.
+    // This should fail because the package needs to have at least
+    // one published (latest) version.
+    const removeOnlyVersion = await database.removePackageVersion(
+      pack.createPack.name,
+      pack.createPack.metadata.version
+    );
+    expect(removeOnlyVersion.ok).toBeFalsy();
+    expect(removeOnlyVersion.content).toEqual(
+      `${pack.createPack.name} package has less than 2 published versions: deletion not allowed.`
+    );
+
     // === Let's rename our package
-    const NEW_NAME = `${pack.createPack.name}-rename`;
-    const newName = await database.insertNewPackageName(
-      NEW_NAME,
+    const NEW_NAME = pack.createPackRenamed.name;
+    const newName = await database.insertNewPackageVersion(
+      pack.createPackRenamed,
       pack.createPack.name
     );
     expect(newName.ok).toBeTruthy();
-    expect(newName.content).toEqual(`Successfully inserted ${NEW_NAME}.`);
+    expect(newName.content).toEqual(
+      `Successfully added new version: ${NEW_NAME}@1.0.1`
+    );
 
-    // === Can we get the package by it's new name?
+    // === Can we get the package by its new name?
     const getByNewName = await database.getPackageByName(NEW_NAME);
     expect(getByNewName.ok).toBeTruthy();
     expect(getByNewName.content.name).toEqual(NEW_NAME);
@@ -152,7 +166,7 @@ describe("Package Lifecycle Tests", () => {
     ).toBeTruthy();
     // For the above expect().toBeGreaterThan() doesn't support dates.
 
-    // === Can we still get the package by it's old name?
+    // === Can we still get the package by its old name?
     const getByOldName = await database.getPackageByName(pack.createPack.name);
     expect(getByOldName.ok).toBeTruthy();
     expect(getByOldName.content.name).toEqual(NEW_NAME);
@@ -165,8 +179,8 @@ describe("Package Lifecycle Tests", () => {
     // This should fail because there's a unique constraint on names, not only
     // for the single package, but the entire table, i.e. two packages cannot
     // have the same name.
-    const renameToExistingName = await database.insertNewPackageName(
-      pack.createPack.name,
+    const renameToExistingName = await database.insertNewPackageVersion(
+      pack.createPack,
       NEW_NAME
     );
     expect(renameToExistingName.ok).toBeFalsy();
@@ -188,29 +202,17 @@ describe("Package Lifecycle Tests", () => {
       expect(typeof p.semver === "string").toBeTruthy();
     }
 
-    // === Now let's try to delete the only version available.
-    // This should fail because the package needs to have at least
-    // one published (latest) version.
-    const removeOnlyVersion = await database.removePackageVersion(
-      NEW_NAME,
-      pack.createPack.metadata.version
-    );
-    expect(removeOnlyVersion.ok).toBeFalsy();
-    expect(removeOnlyVersion.content).toEqual(
-      `${NEW_NAME} package has less than 2 published versions: deletion not allowed.`
-    );
-
     // === Now let's add a version
-    const v1_0_1 = pack.addVersion("1.0.1");
+    const v1_0_2 = pack.addVersion("1.0.2");
     const addNextVersion = await database.insertNewPackageVersion(
-      pack.packageDataForVersion(v1_0_1)
+      pack.packageDataForVersion(v1_0_2)
     );
     if (!addNextVersion.ok) {
       console.log(addNextVersion);
     }
     expect(addNextVersion.ok).toBeTruthy();
     expect(addNextVersion.content).toEqual(
-      `Successfully added new version: ${v1_0_1.name}@${v1_0_1.version}`
+      `Successfully added new version: ${v1_0_2.name}@${v1_0_2.version}`
     );
 
     // === Let's see if this new version is the latest
@@ -218,20 +220,23 @@ describe("Package Lifecycle Tests", () => {
     // index 0 is the latest, index 1 is the older.
     const getAfterVer = await database.getPackageByName(NEW_NAME);
     expect(getAfterVer.ok).toBeTruthy();
-    expect(getAfterVer.content.versions.length).toEqual(2);
-    expect(getAfterVer.content.versions[0].semver).toEqual(v1_0_1.version);
-    expect(getAfterVer.content.versions[0].license).toEqual(v1_0_1.license);
-    expect(getAfterVer.content.versions[0].meta.name).toEqual(v1_0_1.name);
+    expect(getAfterVer.content.versions.length).toEqual(3);
+    expect(getAfterVer.content.versions[0].semver).toEqual(v1_0_2.version);
+    expect(getAfterVer.content.versions[0].license).toEqual(v1_0_2.license);
+    expect(getAfterVer.content.versions[0].meta.name).toEqual(v1_0_2.name);
     expect(getAfterVer.content.versions[0].meta.version).toEqual(
-      v1_0_1.version
+      v1_0_2.version
     );
     expect(getAfterVer.content.versions[1].semver).toEqual(
+      pack.createPackRenamed.metadata.version
+    );
+    expect(getAfterVer.content.versions[2].semver).toEqual(
       pack.createPack.metadata.version
     );
 
     // === Can we publish a duplicate or a lower version?
     const dupVer = await database.insertNewPackageVersion(
-      pack.packageDataForVersion(v1_0_1)
+      pack.packageDataForVersion(v1_0_2)
     );
     expect(dupVer.ok).toBeFalsy();
     expect(dupVer.content).toEqual(
@@ -241,10 +246,10 @@ describe("Package Lifecycle Tests", () => {
     // === Can we get this specific version with the new name
     const getNewVerOnly = await database.getPackageVersionByNameAndVersion(
       NEW_NAME,
-      v1_0_1.version
+      v1_0_2.version
     );
     expect(getNewVerOnly.ok).toBeTruthy();
-    expect(getNewVerOnly.content.semver).toEqual(v1_0_1.version);
+    expect(getNewVerOnly.content.semver).toEqual(v1_0_2.version);
     expect(getNewVerOnly.content.meta.name).toEqual(pack.createPack.name);
 
     // === Can we get the first version published still?
@@ -305,32 +310,36 @@ describe("Package Lifecycle Tests", () => {
     // === Here we append an extension to test if the version is selected in the same way.
     const delLatestVer = await database.removePackageVersion(
       NEW_NAME,
-      v1_0_1.version
+      v1_0_2.version
     );
     expect(delLatestVer.ok).toBeTruthy();
     expect(delLatestVer.content).toEqual(
-      `Successfully removed ${v1_0_1.version} version of ${NEW_NAME} package.`
+      `Successfully removed ${v1_0_2.version} version of ${NEW_NAME} package.`
     );
 
     // === Is our old version the latest again?
     const newLatestVer = await database.getPackageByName(NEW_NAME);
     expect(newLatestVer.ok).toBeTruthy();
     expect(newLatestVer.content.name).toEqual(NEW_NAME);
-    expect(newLatestVer.content.versions.length).toEqual(1);
+    expect(newLatestVer.content.versions.length).toEqual(2);
     expect(newLatestVer.content.versions[0].semver).toEqual(
-      pack.createPack.metadata.version
+      pack.createPackRenamed.metadata.version
     );
 
     // === Can we reinsert a previous deleted version?
     // This is intentionally unsupported because we want a new package to be always
     // higher than the previous latest one in order to trigger an update to the user.
     const reAddNextVersion = await database.insertNewPackageVersion(
-      pack.packageDataForVersion(v1_0_1)
+      pack.packageDataForVersion(v1_0_2)
     );
-    const latestVer = await database.getPackageByName(NEW_NAME);
+    const latestVer = (await database.getPackageByName(NEW_NAME)).content
+      .version;
     expect(reAddNextVersion.ok).toBeFalsy();
     expect(reAddNextVersion.content).toEqual(
-      `Not allowed to publish a version already present for ${v1_0_1.name}`
+      `Not allowed to publish a version already present for ${v1_0_2.name}`
+    );
+    expect((await database.getPackageByName(NEW_NAME)).content.version).toEqual(
+      latestVer
     );
 
     // === Can we delete a version lower than the current latest?

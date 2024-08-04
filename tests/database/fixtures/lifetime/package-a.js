@@ -25,6 +25,39 @@ const createPack = {
   },
 };
 
+const createPackRenamed = {
+  name: "package-a-lifetime-renamed",
+  repository: {
+    type: "git",
+    url: "https://github.com/pulsar-edit/package-a-lifetime",
+  },
+  owner: "pulsar-edit",
+  creation_method: "Test Package",
+  readme: "This is a readme!",
+  metadata: {
+    name: "package-a-lifetime-renamed",
+    license: "MIT",
+    version: "1.0.1",
+  },
+  releases: {
+    latest: "1.0.1",
+  },
+  versions: {
+    "1.0.1": {
+      name: "package-a-lifetime-renamed",
+      version: "1.0.0",
+      tarball_url: "https://nowhere.com",
+      sha: "12345",
+    },
+    "1.0.0": {
+      name: "package-a-lifetime",
+      version: "1.0.0",
+      tarball_url: "https://nowhere.com",
+      sha: "12345",
+    },
+  },
+};
+
 const addVersion = (v) => {
   return {
     name: "package-a-lifetime",
@@ -49,6 +82,7 @@ const packageDataForVersion = (v) => {
 
 module.exports = {
   createPack,
+  createPackRenamed,
   addVersion,
   packageDataForVersion,
 };
