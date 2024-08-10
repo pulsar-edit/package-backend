@@ -248,7 +248,7 @@ module.exports = {
 
       callStack.addCall("db.packageNameAvailability", isAvailable);
 
-      if (isAvailable.ok) {
+      if (!isAvailable.ok) {
         const sso = new context.sso();
 
         return sso
