@@ -73,6 +73,20 @@ function fileExtensionClause(sql, opts) {
   return sql`AND ${opts.fileExtension}=ANY(v.supported_languages)`;
 }
 
+function keywordsClause(sql, opts) {
+  if (typeof opts.tags !== "string") {
+    return getEmptyClause(sql);
+  }
+
+  // TODO: This only supports exact matches. If we want partial matching support
+  // we obviously need to use the 'LIKE' operator. But due to right hand sided
+  // arguments I can't find how to make this work. With the below being the closest
+  // I've come:
+  // AND jsonb_typeof(v.meta -> 'keywords') = 'array' AND '"es6"' LIKE ANY (
+  // ARRAY(SELECT * FROM jsonb_array_elements(v.meta -> 'keywords'))::text[])
+  return sql`AND (v.meta -> 'keywords')::jsonb ? ${opts.tags}`;
+}
+
 module.exports = {
   getEmptyClause,
   queryClause,
@@ -80,4 +94,5 @@ module.exports = {
   ownerClause,
   serviceClause,
   fileExtensionClause,
+  keywordsClause,
 };
