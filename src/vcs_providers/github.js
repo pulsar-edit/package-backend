@@ -288,6 +288,56 @@ class GitHub extends Git {
     }
   }
 
+  async tag(userObj, ownerRepo, tagString) {
+    try {
+      const raw = await this._webRequestAuth(
+        `/repos/${ownerRepo}/commits/${tagString}`,
+        userObj.token
+      );
+
+      if (!raw.ok) {
+        if (raw.short === "Failed Request") {
+          switch (raw.content.status) {
+            case 401:
+              return {
+                ok: false,
+                short: "Bad Auth",
+                content: raw.content.status,
+              };
+            default:
+              return {
+                ok: false,
+                short: "Server Error",
+                content: raw.content.status,
+              };
+          }
+        }
+        return {
+          ok: false,
+          short: "Server Error",
+          content: raw.content.status,
+        };
+      }
+
+      // We have valid commit, let's "coerce" into a tag.
+      return {
+        ok: true,
+        content: {
+          name: tagString,
+          commit: { sha: raw.content.body.sha },
+          tarball_url: `${this.apiUrl}/repos/${ownerRepo}/tarball/${tagString}`
+        },
+      };
+    } catch (err) {
+      return {
+        ok: false,
+        short: "Server Error",
+        content: null,
+        error: err,
+      };
+    }
+  }
+
   /**
    * @async
    * @function packageJSON
