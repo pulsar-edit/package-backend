@@ -2,7 +2,7 @@
 # Name this file app.yaml, and it will be picked up by the server.
 # app.yaml is in the git ignore to prevent any secrets from leaking.
 
-runtime: nodejs18
+runtime: nodejs22
 service: default
 
 env_variables:
