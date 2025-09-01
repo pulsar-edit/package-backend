@@ -9,7 +9,7 @@ dispatch:
   # Package Browser Service handles root `web` subdomain requests with paths
   - url: "packages.pulsar-edit.dev/*"
     service: package-browser
-    
+
   - url: "web.pulsar-edit.dev/*"
     service: package-browser
 
