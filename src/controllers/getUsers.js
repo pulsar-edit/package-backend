@@ -27,7 +27,7 @@ module.exports = {
       "Access-Control-Allow-Methods": "GET",
       "Access-Control-Allow-Headers":
         "Content-Type, Authorization, Access-Control-Allow-Credentials",
-      "Access-Control-Allow-Origin": "https://web.pulsar-edit.dev",
+      "Access-Control-Allow-Origin": "https://packages.pulsar-edit.dev",
       "Access-Control-Allow-Credentials": true,
     },
   },
@@ -42,7 +42,7 @@ module.exports = {
       "Access-Control-Allow-Headers",
       "Content-Type, Authorization, Access-Control-Allow-Credentials"
     );
-    res.header("Access-Control-Allow-Origin", "https://web.pulsar-edit.dev");
+    res.header("Access-Control-Allow-Origin", "https://packages.pulsar-edit.dev");
     res.header("Access-Control-Allow-Credentials", true);
   },
   async postLogic(req, res, context) {

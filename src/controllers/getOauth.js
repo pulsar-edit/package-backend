@@ -116,7 +116,7 @@ module.exports = {
         // a new one and we should return their new one to them.
 
         // Now we redirect to the frontend site
-        res.redirect(`https://web.pulsar-edit.dev/users?token=${accessToken}`);
+        res.redirect(`https://packages.pulsar-edit.dev/users?token=${accessToken}`);
         context.logger.httpLog(req, res);
         return;
       }
@@ -141,7 +141,7 @@ module.exports = {
 
       // Now re redirect to the frontend site
       res.redirect(
-        `https://web.pulsar-edit.dev/users?token=${createdUser.content.token}`
+        `https://packages.pulsar-edit.dev/users?token=${createdUser.content.token}`
       );
       context.logger.httpLog(req, res);
       return;
