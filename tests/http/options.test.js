@@ -136,7 +136,7 @@ describe("Ensure Options Method Returns as Expected", () => {
       "Content-Type, Authorization, Access-Control-Allow-Credentials"
     );
     expect(res.headers["access-control-allow-origin"]).toEqual(
-      "https://web.pulsar-edit.dev"
+      "https://packages.pulsar-edit.dev"
     );
     expect(res.headers["access-control-allow-credentials"]).toEqual("true");
     rateLimitHeaderCheck(res);
