@@ -74,7 +74,9 @@ module.exports = {
         // If we plan to allow updating the user name or image, we would do so here
 
         // Now to redirect to the frontend site.
-        res.redirect(`https://packages.pulsar-edit.dev/users?token=${params.token}`);
+        res.redirect(
+          `https://packages.pulsar-edit.dev/users?token=${params.token}`
+        );
         context.logger.httpLog(req, res);
         return;
       }
