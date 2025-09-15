@@ -49,6 +49,9 @@ module.exports = {
     owner: (context, req) => {
       return context.query.owner(req);
     },
+    tags: (context, req) => {
+      return context.query.tags(req);
+    },
   },
 
   /**
