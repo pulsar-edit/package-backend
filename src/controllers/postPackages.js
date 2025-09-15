@@ -29,6 +29,9 @@ module.exports = {
     repository: (context, req) => {
       return context.query.repository(req);
     },
+    tag: (context, req) => {
+      return context.query.tag(req);
+    },
     auth: (context, req) => {
       return context.query.auth(req);
     },
@@ -148,7 +151,8 @@ module.exports = {
     const newPack = await context.vcs.newPackageData(
       user.content,
       ownerRepo,
-      "git"
+      "git",
+      params.tag
     );
 
     callStack.addCall("vcs.newPackageData", newPack);
