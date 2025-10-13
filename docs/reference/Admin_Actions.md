@@ -6,6 +6,17 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2025 - October 12
 
+### ide-typescript
+
+The somewhat community package [`ide-typescript`](https://packages.pulsar-edit.dev/packages/ide-typescript) has been [reported](https://github.com/pulsar-edit/package-backend/issues/258) as archived.
+On investigation, this package while original published by the Atom team is now archived along with all their other work. And the Pulsar team has not made efforts to continue supporting non-core packages from the Atom organization at this time.
+
+As such, this package will receive the `Archived` badge to indicate support may be non-existent but that the package may still be perfectly functional.
+
+But, [`pulsar-ide-typescript`](https://packages.pulsar-edit.dev/packages/pulsar-ide-typescript) has been suggested and seems to be a perfectly valid and safe alternative to the original `ide-typscript`.
+
+So along with the `Archived` badge `ide-typescript` will list `pulsar-ide-typescript` as an alternative package to install.
+
 ### linter-ui-plus
 
 The community package [`linter-ui-plus`](https://packages.pulsar-edit.dev/packages/linter-ui-plus) has been [reported](https://github.com/pulsar-edit/package-backend/issues/274) as being archived.
