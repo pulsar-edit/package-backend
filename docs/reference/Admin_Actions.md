@@ -6,6 +6,16 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2025 - October 12
 
+### minimap
+
+The community package [`minimap`](https://packages.pulsar-edit.dev/packages/minimap) has been reporting as having more up to date code on GitHub than on the Pulsar Package Registry, as the original author is making changes without pushing them to Pulsar.
+
+As such, the package will receive the `Outdated` badge, indicating they should be installed via GitHub with the following command:
+
+```shell
+pulsar -p install https://github.com/atom-minimap/minimap
+```
+
 ### blocky
 
 The community package `blocky` was [reported](https://github.com/pulsar-edit/package-backend/issues/278) as being broken.
@@ -14,7 +24,9 @@ On investigation it was determined this package has been removed from GitHub, me
 As this package is broken in such a way that it cannot be fixed, it will be removed from the Pulsar Package Registry while keeping the reserved name to avoid any Supply Chain Attacks targeting this package.
 
 As such, this package will be removed the Pulsar Package Registry.
+
 ### JunoLab Packages
+
 The community packages:
 * [`ink`](https://packages.pulsar-edit.dev/packages/ink)
 * [`uber-juno`](https://packages.pulsar-edit.dev/packages/uber-juno)
