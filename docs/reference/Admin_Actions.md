@@ -6,6 +6,12 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2025 - October 12
 
+### ide-python
+
+The community package [`ide-python`](https://packages.pulsar-edit.dev/packages/ide-python) has been reported as being broken on later Atom versions and all Pulsar versions. But the community has stepped in to create [`pulsar-ide-python`](https://packages.pulsar-edit.dev/packages/pulsar-ide-python) as a direct replacement to this package.
+
+As such `ide-python` will receive a `Broken` and `Deprecated` badge, recommending installation of `pulsar-ide-python`.
+
 ### ide-typescript
 
 The somewhat community package [`ide-typescript`](https://packages.pulsar-edit.dev/packages/ide-typescript) has been [reported](https://github.com/pulsar-edit/package-backend/issues/258) as archived.
