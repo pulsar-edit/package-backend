@@ -6,6 +6,18 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2025 - October 12
 
+### autocomplete-unity
+
+The community package [`autocomplete-unity`](https://packages.pulsar-edit.dev/packages/autocomplete-unity) has been reported as being Archived.
+
+As such `autocomplete-unity` will receive the `Archived` badge.
+
+### ide-csharp
+
+The community package [`ide-csharp`](https://packages.pulsar-edit.dev/packages/ide-csharp) has been reported as being Archived.
+
+As such `ide-csharp` will receive the `Archived` badge.
+
 ### ide-python
 
 The community package [`ide-python`](https://packages.pulsar-edit.dev/packages/ide-python) has been reported as being broken on later Atom versions and all Pulsar versions. But the community has stepped in to create [`pulsar-ide-python`](https://packages.pulsar-edit.dev/packages/pulsar-ide-python) as a direct replacement to this package.
