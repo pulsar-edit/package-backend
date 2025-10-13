@@ -6,6 +6,12 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2025 - October 12
 
+### linter-ui-plus
+
+The community package [`linter-ui-plus`](https://packages.pulsar-edit.dev/packages/linter-ui-plus) has been [reported](https://github.com/pulsar-edit/package-backend/issues/274) as being archived.
+
+As such this package will receive the `Archived` badge. As always this doesn't mean the package is broken or non-functional, what it does mean is that if you use it you should understand that you may receive no support for the original author in the behavior, functionality, or updating of the package.
+
 ### minimap
 
 The community package [`minimap`](https://packages.pulsar-edit.dev/packages/minimap) has been reporting as having more up to date code on GitHub than on the Pulsar Package Registry, as the original author is making changes without pushing them to Pulsar.
