@@ -4,6 +4,23 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2025 - October 12
+
+### JunoLab Packages
+The community packages:
+* [`ink`](https://packages.pulsar-edit.dev/packages/ink)
+* [`uber-juno`](https://packages.pulsar-edit.dev/packages/uber-juno)
+
+Have been reported as having more up to date code on GitHub than the Pulsar Package Registry as the original author
+is making changes without pushing them to Pulsar. As such the packages available on Pulsar are now outdated.
+
+As such, both packages will receive the `Outdated` badge, indicating they should be installed via GitHub with the following commands:
+
+```shell
+pulsar -p install https://github.com/JunoLab/atom-ink
+pulsar -p install https://github.com/JunoLab/uber-juno
+```
+
 ## 2024 - July 22
 
 ### react
