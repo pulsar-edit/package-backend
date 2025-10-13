@@ -39,7 +39,7 @@ So along with the `Archived` badge `ide-typescript` will list `pulsar-ide-typesc
 
 The community package [`linter-ui-plus`](https://packages.pulsar-edit.dev/packages/linter-ui-plus) has been [reported](https://github.com/pulsar-edit/package-backend/issues/274) as being archived.
 
-As such this package will receive the `Archived` badge. As always this doesn't mean the package is broken or non-functional, what it does mean is that if you use it you should understand that you may receive no support for the original author in the behavior, functionality, or updating of the package.
+As such this package will receive the `Archived` badge. As always this doesn't mean the package is broken or non-functional; it means that if you use it, you should understand that you may receive no support from the original author.
 
 ### minimap
 
