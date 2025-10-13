@@ -45,7 +45,7 @@ As such this package will receive the `Archived` badge. As always this doesn't m
 
 The community package [`minimap`](https://packages.pulsar-edit.dev/packages/minimap) has been reporting as having more up to date code on GitHub than on the Pulsar Package Registry, as the original author is making changes without pushing them to Pulsar.
 
-As such, the package will receive the `Outdated` badge, indicating they should be installed via GitHub with the following command:
+As such, the package will receive the `Outdated` badge, indicating it should be installed via GitHub with the following command:
 
 ```shell
 pulsar -p install https://github.com/atom-minimap/minimap
