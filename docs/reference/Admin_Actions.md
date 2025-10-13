@@ -22,7 +22,7 @@ As such `ide-csharp` will receive the `Archived` badge.
 
 The community package [`ide-python`](https://packages.pulsar-edit.dev/packages/ide-python) has been reported as being broken on later Atom versions and all Pulsar versions. But the community has stepped in to create [`pulsar-ide-python`](https://packages.pulsar-edit.dev/packages/pulsar-ide-python) as a direct replacement to this package.
 
-As such `ide-python` will receive a `Broken` and `Deprecated` badge, recommending installation of `pulsar-ide-python`.
+As such `ide-python` will receive a `Broken` and `Deprecated` badge; we'll recommend that the user install `pulsar-ide-python` instead.
 
 ### ide-typescript
 
