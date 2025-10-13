@@ -27,7 +27,7 @@ As such `ide-python` will receive a `Broken` and `Deprecated` badge; we'll recom
 ### ide-typescript
 
 The community package [`ide-typescript`](https://packages.pulsar-edit.dev/packages/ide-typescript) has been [reported](https://github.com/pulsar-edit/package-backend/issues/258) as archived.
-On investigation, this package while originally published by the Atom team is now archived along with all their other work. And the Pulsar team has not made efforts to continue supporting non-core packages from the Atom organization at this time.
+On investigation: while it was originally published by the Atom team, this package is now archived, along with all their other work. The Pulsar team has not yet made an effort to continue supporting non-core packages from the Atom organization.
 
 As such, this package will receive the `Archived` badge to indicate support may be non-existent but that the package may still be perfectly functional.
 
