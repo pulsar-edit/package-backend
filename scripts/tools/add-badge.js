@@ -23,7 +23,7 @@ let sqlStorage;
   - link: <string|optional> A link for the badge (link to admin actions log)
   - alt: <string|optional> The alternate name to add for deprecated packages.
 
- Recommended valuesper title:
+ Recommended values per title:
  - Deprecated: <warn> Installation of fork recommended
  - Broken: <warn> Known to be non-functional
  - Archived: <info> Source Code has been archived
