@@ -62,12 +62,13 @@ As such, this package will be removed the Pulsar Package Registry.
 
 ### JunoLab Packages
 
-The community packages:
+The community packages
+
 * [`ink`](https://packages.pulsar-edit.dev/packages/ink)
 * [`uber-juno`](https://packages.pulsar-edit.dev/packages/uber-juno)
 
-Have been reported as having more up to date code on GitHub than the Pulsar Package Registry as the original author
-is making changes without pushing them to Pulsar. As such the packages available on Pulsar are now outdated.
+have been reported as having more up to date code on GitHub than on the Pulsar Package Registry; the original author
+is making changes without pushing them to Pulsar. The packages available on Pulsar are now outdated.
 
 As such, both packages will receive the `Outdated` badge, indicating they should be installed via GitHub with the following commands:
 
