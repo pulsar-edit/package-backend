@@ -6,6 +6,14 @@ With that said this document will serve as the ongoing history of administrative
 
 ## 2025 - October 12
 
+### blocky
+
+The community package `blocky` was [reported](https://github.com/pulsar-edit/package-backend/issues/278) as being broken.
+On investigation it was determined this package has been removed from GitHub, meaning the package is no longer downloadable.
+
+As this package is broken in such a way that it cannot be fixed, it will be removed from the Pulsar Package Registry while keeping the reserved name to avoid any Supply Chain Attacks targeting this package.
+
+As such, this package will be removed the Pulsar Package Registry.
 ### JunoLab Packages
 The community packages:
 * [`ink`](https://packages.pulsar-edit.dev/packages/ink)
