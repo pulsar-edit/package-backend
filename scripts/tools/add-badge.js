@@ -22,12 +22,18 @@ let sqlStorage;
   - text: <string|optional> The text content of the badge (no periods, fewest words possible)
   - link: <string|optional> A link for the badge (link to admin actions log)
   - alt: <string|optional> The alternate name to add for deprecated packages.
+
+ Recommended values per title:
+ - Deprecated: <warn> Installation of fork recommended
+ - Broken: <warn> Known to be non-functional
+ - Archived: <info> Source Code has been archived
+ - Outdated: <warn> GitHub Installation Recommended
 */
 let badgeConfig = {
   type: "",
   title: "",
   text: "",
-  link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/Admin_Actions.md#2024---july-22",
+  link: "https://github.com/pulsar-edit/package-backend/blob/main/docs/reference/Admin_Actions.md#2025---october-12",
   //alt: ""
 };
 

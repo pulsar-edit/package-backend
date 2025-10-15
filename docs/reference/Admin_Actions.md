@@ -4,6 +4,79 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2025 - October 12
+
+### autocomplete-unity
+
+The community package [`autocomplete-unity`](https://packages.pulsar-edit.dev/packages/autocomplete-unity) has been reported as being Archived.
+
+As such `autocomplete-unity` will receive the `Archived` badge.
+
+### ide-csharp
+
+The community package [`ide-csharp`](https://packages.pulsar-edit.dev/packages/ide-csharp) has been reported as being Archived.
+
+As such `ide-csharp` will receive the `Archived` badge.
+
+### ide-python
+
+The community package [`ide-python`](https://packages.pulsar-edit.dev/packages/ide-python) has been reported as being broken on later Atom versions and all Pulsar versions. But the community has stepped in to create [`pulsar-ide-python`](https://packages.pulsar-edit.dev/packages/pulsar-ide-python) as a direct replacement to this package.
+
+As such `ide-python` will receive a `Broken` and `Deprecated` badge; we'll recommend that the user install `pulsar-ide-python` instead.
+
+### ide-typescript
+
+The community package [`ide-typescript`](https://packages.pulsar-edit.dev/packages/ide-typescript) has been [reported](https://github.com/pulsar-edit/package-backend/issues/258) as archived.
+On investigation: while it was originally published by the Atom team, this package is now archived, along with all their other work. The Pulsar team has not yet made an effort to continue supporting non-core packages from the Atom organization.
+
+As such, this package will receive the `Archived` badge to indicate support may be non-existent but that the package may still be perfectly functional.
+
+But, [`pulsar-ide-typescript`](https://packages.pulsar-edit.dev/packages/pulsar-ide-typescript) has been suggested and seems to be a perfectly valid and safe alternative to the original `ide-typscript`.
+
+So along with the `Archived` badge `ide-typescript` will list `pulsar-ide-typescript` as an alternative package to install.
+
+### linter-ui-plus
+
+The community package [`linter-ui-plus`](https://packages.pulsar-edit.dev/packages/linter-ui-plus) has been [reported](https://github.com/pulsar-edit/package-backend/issues/274) as being archived.
+
+As such this package will receive the `Archived` badge. As always this doesn't mean the package is broken or non-functional; it means that if you use it, you should understand that you may receive no support from the original author.
+
+### minimap
+
+The community package [`minimap`](https://packages.pulsar-edit.dev/packages/minimap) has been reporting as having more up to date code on GitHub than on the Pulsar Package Registry, as the original author is making changes without pushing them to Pulsar.
+
+As such, the package will receive the `Outdated` badge, indicating it should be installed via GitHub with the following command:
+
+```shell
+pulsar -p install https://github.com/atom-minimap/minimap
+```
+
+### blocky
+
+The community package `blocky` was [reported](https://github.com/pulsar-edit/package-backend/issues/278) as being broken.
+On investigation it was determined this package has been removed from GitHub, meaning the package is no longer downloadable.
+
+As this package is broken in such a way that it cannot be fixed, it will be removed from the Pulsar Package Registry while keeping the reserved name to avoid any supply chain attacks targeting this package.
+
+As such, this package will be removed the Pulsar Package Registry.
+
+### JunoLab Packages
+
+The community packages
+
+* [`ink`](https://packages.pulsar-edit.dev/packages/ink)
+* [`uber-juno`](https://packages.pulsar-edit.dev/packages/uber-juno)
+
+have been reported as having more up to date code on GitHub than on the Pulsar Package Registry; the original author
+is making changes without pushing them to Pulsar. The packages available on Pulsar are now outdated.
+
+As such, both packages will receive the `Outdated` badge, indicating they should be installed via GitHub with the following commands:
+
+```shell
+pulsar -p install https://github.com/JunoLab/atom-ink
+pulsar -p install https://github.com/JunoLab/uber-juno
+```
+
 ## 2024 - July 22
 
 ### react
