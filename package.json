@@ -53,7 +53,7 @@
     "parse-github-url": "^1.0.2",
     "postgres": "^3.3.4",
     "semver": "^7.5.4",
-    "superagent": "^8.0.9"
+    "superagent": "^10.0.0"
   },
   "devDependencies": {
     "@confused-techie/compactignore": "^2.0.3",
