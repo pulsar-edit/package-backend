@@ -111,7 +111,7 @@ const endpointHandler = async function (node, req, res) {
   // extra steps
   if (node.version === 2) {
     // Server-Timing Header check
-    if (Object.keys(sharedCtx.timecop.timetables).length > 0) {
+    if (Object.keys(sharedCtx.timecop.timetable).length > 0) {
       res.append("Server-Timing", sharedCtx.timecop.toHeader());
     }
   }
