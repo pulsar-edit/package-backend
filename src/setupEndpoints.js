@@ -39,6 +39,22 @@ const authLimit = rateLimit({
   },
 });
 
+// TODO: Once all controllers are migrated to v2, or all endpoint tests are HTTP
+// based, we can move this to `./context.js`, but until then unit tests rely on
+// the structure of Context, and instead of changing it, we can define the builder here
+const Timecop = require("./models/timecop.js");
+const buildContext = (req, res, params) => {
+  return {
+    req: req,
+    res: res,
+    params: params,
+    timecop: new Timecop(),
+    ...context,
+    callStack: new context.callStack(), // Put after spread operator on CTX so
+      // it overwrites the original callstack uninitialized class
+  };
+};
+
 // Set express defaults
 
 app.set("trust proxy", true);
@@ -56,6 +72,7 @@ const endpointHandler = async function (node, req, res) {
     await node.preLogic(req, res, context);
   }
 
+  const sharedCtx = buildContext(req, res, params);
   let obj;
 
   try {
@@ -64,7 +81,16 @@ const endpointHandler = async function (node, req, res) {
       // If it's a raw endpoint, they must handle all other steps manually
       return;
     } else {
-      obj = await node.logic(params, context);
+      switch(node.version) {
+        case 2:
+          obj = await node.logic(sharedCtx);
+          break;
+        case 1:
+        default:
+          // Previous default, implicit version 1 behavior
+          obj = await node.logic(params, context);
+          break;
+      }
     }
   } catch (err) {
     // The main logic request has failed. We will generate our own return obj,
@@ -79,6 +105,15 @@ const endpointHandler = async function (node, req, res) {
 
   if (typeof node.postLogic === "function") {
     await node.postLogic(req, res, context);
+  }
+
+  // Before handling our return check again for our node.version to check for
+  // extra steps
+  if (node.version === 2) {
+    // Server-Timing Header check
+    if (Object.keys(sharedCtx.timecop.timetable).length > 0) {
+      res.append("Server-Timing", sharedCtx.timecop.toHeader());
+    }
   }
 
   obj.addGoodStatus(node.endpoint.successStatus);

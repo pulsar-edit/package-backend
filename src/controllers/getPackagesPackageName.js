@@ -3,6 +3,7 @@
  */
 
 module.exports = {
+  version: 2,
   docs: {
     summary: "Show package details.",
     responses: {
@@ -42,16 +43,19 @@ module.exports = {
    * @param {object} context - The Endpoint Context.
    * @returns {sso}
    */
-  async logic(params, context) {
-    // Lets first check if this is a bundled package we should return
-    const isBundled = context.bundled.isNameBundled(params.packageName);
+  async logic(ctx) {
+    const { params } = ctx;
 
+    // Lets first check if this is a bundled package we should return
+    ctx.timecop.start("bundle");
+    const isBundled = ctx.bundled.isNameBundled(params.packageName);
+    ctx.timecop.end("bundle");
     if (isBundled.ok && isBundled.content) {
       // This is in fact a bundled package
-      const bundledData = context.bundled.getBundledPackage(params.packageName);
+      const bundledData = ctx.bundled.getBundledPackage(params.packageName);
 
       if (!bundledData.ok) {
-        const sso = new context.sso();
+        const sso = new ctx.sso();
 
         return sso
           .notOk()
@@ -59,32 +63,37 @@ module.exports = {
           .addCalls("bundled.isBundled", isBundled);
       }
 
-      const sso = new context.sso();
+      const sso = new ctx.sso();
 
       return sso.isOk().addContent(bundledData.content);
     }
 
-    let pack = await context.database.getPackageByName(
+    ctx.timecop.start("db");
+
+    let pack = await ctx.database.getPackageByName(
       params.packageName,
       true
     );
 
+    ctx.timecop.end("db");
     if (!pack.ok) {
-      const sso = new context.sso();
+      const sso = new ctx.sso();
 
       return sso.notOk().addContent(pack).addCalls("db.getPackageByName", pack);
     }
 
-    pack = await context.models.constructPackageObjectFull(pack.content);
+    ctx.timecop.start("construct");
+    pack = await ctx.models.constructPackageObjectFull(pack.content);
 
     if (params.engine !== false) {
       // query.engine returns false if no valid query param is found.
       // before using engineFilter we need to check the truthiness of it.
 
-      pack = await context.utils.engineFilter(pack, params.engine);
+      pack = await ctx.utils.engineFilter(pack, params.engine);
     }
+    ctx.timecop.end("construct");
 
-    const sso = new context.sso();
+    const sso = new ctx.sso();
 
     return sso.isOk().addContent(pack);
   },
