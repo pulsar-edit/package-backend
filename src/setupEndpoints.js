@@ -3,8 +3,7 @@ const rateLimit = require("express-rate-limit");
 const { MemoryStore } = require("express-rate-limit");
 
 const endpoints = require("./controllers/endpoints.js");
-const CONTEXT = require("./context.js");
-const context = CONTEXT.obj;
+const context = require("./context.js");
 
 const app = express();
 
@@ -40,6 +39,22 @@ const authLimit = rateLimit({
   },
 });
 
+// TODO: Once all controllers are migrated to v2, or all endpoint tests are HTTP
+// based, we can move this to `./context.js`, but until then unit tests rely on
+// the structure of Context, and instead of changing it, we can define the builder here
+const Timecop = require("./models/timecop.js");
+const buildContext = (req, res, params) => {
+  return {
+    req: req,
+    res: res,
+    params: params,
+    timecop: new Timecop(),
+    ...context,
+    callStack: new context.callStack(), // Put after spread operator on CTX so
+      // it overwrites the original callstack uninitialized class
+  };
+};
+
 // Set express defaults
 
 app.set("trust proxy", true);
@@ -57,7 +72,7 @@ const endpointHandler = async function (node, req, res) {
     await node.preLogic(req, res, context);
   }
 
-  const sharedCtx = CONTEXT.build(req, res, params);
+  const sharedCtx = buildContext(req, res, params);
   let obj;
 
   try {
