@@ -35,4 +35,10 @@ describe("Behaves as expected", () => {
     expect(res.body.owner).toBe("pulsar-edit");
     expect(res.body.repository.url).toBe("https://github.com/pulsar-edit/pulsar");
   });
+
+  test("Adheres to `Server-Timing` Specification", async () => {
+    const res = await supertest(app).get("/api/packages/i-dont-exist");
+    
+    expect(res.headers["server-timing"]).toBeTypeof("string");
+  });
 });
