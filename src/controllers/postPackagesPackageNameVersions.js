@@ -45,26 +45,20 @@ module.exports = {
 
     // Lets bail early in case these values don't exist.
     // Such as the original request failing
-    if (!obj.webhook) {
+    if (!obj.webhook || !obj.featureDetection) {
       // This data isn't defined, and we cannot work with it
-      console.log("Webhook data isn't properly defined!");
+      console.log("Webhook/Feature Detection data isn't properly defined!");
       return;
     }
 
-    if (
-      typeof obj?.featureDetection?.user !== "string" ||
-      typeof obj?.featureDetection?.ownerRepo !== "string" ||
-      typeof obj?.featureDetection?.service !== "string"
-    ) {
-      // This data isn't defined, and we cannot work with it
-      console.log("feature detection data isn't properly defined!");
-      return;
-    }
-
-    const webhookRet = await context.webhook.alertPublishVersion(
+    let webhookSend = await context.webhook.alertPublishVersion(
       obj.webhook.pack,
       obj.webhook.user
     );
+
+    if (!webhookSend.ok) {
+      context.logger.generic(3, webhookSend);
+    }
 
     console.log(`Webhook sent: ${JSON.stringify(webhookRet)}`);
 
