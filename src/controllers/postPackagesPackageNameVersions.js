@@ -45,11 +45,7 @@ module.exports = {
 
     // Lets bail early in case these values don't exist.
     // Such as the original request failing
-
-    if (
-      typeof obj?.webhook?.pack !== "string" ||
-      typeof obj?.webhook?.user !== "string"
-    ) {
+    if (!obj.webhook) {
       // This data isn't defined, and we cannot work with it
       console.log("Webhook data isn't properly defined!");
       return;
@@ -71,7 +67,7 @@ module.exports = {
     );
 
     console.log(`Webhook sent: ${JSON.stringify(webhookRet)}`);
-    
+
     // Now to call for feature detection
     let features = await context.vcs.featureDetection(
       obj.featureDetection.user,
