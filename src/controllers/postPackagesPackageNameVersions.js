@@ -40,6 +40,7 @@ module.exports = {
     },
   },
   async postReturnHTTP(req, res, context, obj) {
+    console.log("START: Noisy postPackagesPackageNameVersions.postReturnHTTP Logging");
     // We use postReturnHTTP to ensure the user doesn't wait on these other actions
 
     // Lets bail early in case these values don't exist.
@@ -50,6 +51,7 @@ module.exports = {
       typeof obj?.webhook?.user !== "string"
     ) {
       // This data isn't defined, and we cannot work with it
+      console.log("Webhook data isn't properly defined!");
       return;
     }
 
@@ -59,14 +61,17 @@ module.exports = {
       typeof obj?.featureDetection?.service !== "string"
     ) {
       // This data isn't defined, and we cannot work with it
+      console.log("feature detection data isn't properly defined!");
       return;
     }
 
-    await context.webhook.alertPublishVersion(
+    const webhookRet = await context.webhook.alertPublishVersion(
       obj.webhook.pack,
       obj.webhook.user
     );
 
+    console.log(`Webhook sent: ${JSON.stringify(webhookRet)}`);
+    
     // Now to call for feature detection
     let features = await context.vcs.featureDetection(
       obj.featureDetection.user,
