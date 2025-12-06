@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../../src/setupEndpoints.js");
 
-describe("Get /api/login", () => {
+describe("GET /api/login", () => {
   test("Returns proper Status Code", async () => {
     const res = await request(app).get("/api/login");
     expect(res).toHaveHTTPCode(302);
