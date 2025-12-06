@@ -34,6 +34,14 @@ describe("DELETE /api/packages/:packageName", () => {
   });
 
   test("Fails when a bad package name is provided", async () => {
+    // Add the dev user to the db
+    const addUser = await database.insertNewUser(
+      "deletePackagesPackageName-node-id",
+      "deletePackagesPackageName-node-id",
+      "https://roadtonowhere.com"
+    );
+    expect(addUser.ok).toBe(true);
+
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
       node_id: "deletePackagesPackageName-node-id"
@@ -45,6 +53,10 @@ describe("DELETE /api/packages/:packageName", () => {
 
     expect(res).toHaveHTTPCode(404);
     expect(res.body.message).toBe("Not Found");
+
+    // Cleanup
+    const removeUser = await database.removeUserByID(addUser.content.id);
+    expect(removeUser.ok).toBe(true);
   });
 
   test("Successfully deletes a package", async () => {
@@ -86,8 +98,9 @@ describe("DELETE /api/packages/:packageName", () => {
         .delete("/api/packages/dlt-pkg-by-name-test")
         .set({ Authorization: "any-token-will-do" });
 
-      expect(res).toHaveHTTPCode(201);
-      expect(res.body).toBe(null);
+      expect(res).toHaveHTTPCode(204);
+      expect(res.body).toBeTypeof("object");
+      expect(Object.keys(res.body).length).toBe(0);
 
       const doesPackageStillExist = await supertest(app)
         .get("/api/packages/dlt-pkg-by-name-test");
@@ -100,6 +113,10 @@ describe("DELETE /api/packages/:packageName", () => {
 
       expect(isPackageNameAvailable.ok).toBe(false);
       expect(isPackageNameAvailable.short).toBe("not_found");
-      expect(isPackageNameAvailable.content).toBe("dlt-pkg-by-name-test is not available to be used for a new package");
+      expect(isPackageNameAvailable.content).toBe("dlt-pkg-by-name-test is not available to be used for a new package.");
+
+      // Cleanup
+      const removeUser = await database.removeUserByID(addUser.content.id);
+      expect(removeUser.ok).toBe(true);
   });
 });
