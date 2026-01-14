@@ -103,6 +103,7 @@ const keys = [
   "packageNameAvailability",
   "removePackageByName",
   "removePackageVersion",
+  "removeUserByID",
   "updateDecrementStar",
   "updateIncrementStar",
   "updatePackageDecrementDownloadByName",
