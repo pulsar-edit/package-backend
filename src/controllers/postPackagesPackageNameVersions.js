@@ -44,28 +44,19 @@ module.exports = {
 
     // Lets bail early in case these values don't exist.
     // Such as the original request failing
-
-    if (
-      typeof obj?.webhook?.pack !== "string" ||
-      typeof obj?.webhook?.user !== "string"
-    ) {
+    if (!obj.webhook || !obj.featureDetection) {
       // This data isn't defined, and we cannot work with it
       return;
     }
 
-    if (
-      typeof obj?.featureDetection?.user !== "string" ||
-      typeof obj?.featureDetection?.ownerRepo !== "string" ||
-      typeof obj?.featureDetection?.service !== "string"
-    ) {
-      // This data isn't defined, and we cannot work with it
-      return;
-    }
-
-    await context.webhook.alertPublishVersion(
+    let webhookSend = await context.webhook.alertPublishVersion(
       obj.webhook.pack,
       obj.webhook.user
     );
+
+    if (!webhookSend.ok) {
+      context.logger.generic(3, webhookSend);
+    }
 
     // Now to call for feature detection
     let features = await context.vcs.featureDetection(
