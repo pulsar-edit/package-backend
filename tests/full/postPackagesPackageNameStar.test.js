@@ -92,7 +92,7 @@ describe("POST /api/packages/:packageName/star", () => {
     const removeStar = await supertest(app)
       .delete("/api/packages/post-pkg-star-by-name-test/star")
       .set({ Authorization: "valid-token" });
-    expect(removeStar).toHaveHTTPCode(200);
+    expect(removeStar).toHaveHTTPCode(204);
 
     const removeUser = await database.removeUserByID(addUser.content.id);
     expect(removeUser.ok).toBe(true);
