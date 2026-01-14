@@ -18,6 +18,7 @@ describe("GET /api/owners/:ownerName", () => {
     const addPkg = await database.insertNewPackage(
       genPackage("https://github.com/pulsar-cooperative/get-owner-test")
     );
+    expect(addPkg.ok).toBe(true);
 
     const res = await supertest(app)
       .get("/api/owners/pulsar-cooperative");

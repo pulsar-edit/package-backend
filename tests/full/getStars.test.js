@@ -72,7 +72,7 @@ describe("GET /api/stars", () => {
     );
     expect(addPkg.ok).toBe(true);
 
-    const starPkg = await supertest(app)
+    const starPkg = await request(app)
       .post("/api/packages/get-stars-test/star")
       .set({ Authorization: "any-token-will-do" });
     expect(starPkg).toHaveHTTPCode(200);
