@@ -5,8 +5,16 @@ const context = require("./context.js");
 
 module.exports = (req, res, endpoint) => {
 
+  // Build parameters
   let params = {};
-  // TODO use a JSON-Schema validator to extract params
+  for (const param in endpoint.params) {
+    if (typeof endpoint.params[param] === "function") {
+      params[param] = endpoint.params[param](context, req);
+    } else {
+      // TODO use a JSON-Schema validator to extract params
+    }
+  }
+  
   return {
     req: req,
     res: res,
@@ -16,7 +24,8 @@ module.exports = (req, res, endpoint) => {
     ...context,
     // Any items that need to overwrite original context keys should be put after
     // the spread operator
-    callStack: new context.callStack()
+    callStack: new context.callStack(),
+    query: require("./query_parameters/index.js")
   };
 };
 

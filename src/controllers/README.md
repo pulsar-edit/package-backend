@@ -71,6 +71,7 @@ module.exports = {
   params: {
     auth: {
       // A JSON Schema object of the parameters schema, that will be decoded automatically.
+      // Or if a function will retain backwards compatible behavior
       type: "string"
     }
   },

@@ -73,7 +73,7 @@ const endpointHandlerV2 = async function (node, req, res) {
   for (const header in node.headers) {
     if (node.headers[header].startsWith("%")) {
       // This is a replacement header value
-      res.append(header, ctx[node.headers[header].replace("%", "")]);
+      res.append(header, ctx[node.headers[header].replace("%", "")]());
     } else {
       res.append(header, node.headers[header]);
     }
