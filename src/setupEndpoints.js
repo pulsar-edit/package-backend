@@ -73,7 +73,26 @@ const endpointHandlerV2 = async function (node, req, res) {
   for (const header in node.headers) {
     if (node.headers[header].startsWith("%")) {
       // This is a replacement header value
-      res.append(header, ctx[node.headers[header].replace("%", "")]());
+      const headerFuncCall = node.headers[header].replace("%", "");
+
+      // Drill down keypath defined in the func call
+      let headerCallCtx = ctx;
+      const namespaces = headerFuncCall.split(".");
+      let func = namespaces.pop();
+      for (let i = 0; i < namespaces.length; i++) {
+        headerCallCtx = headerCallCtx[namespaces[i]];
+      }
+
+      let headerFuncResult;
+
+      if (typeof headerCallCtx[func] === "function") {
+        headerFuncResult = headerCallCtx[func]();
+      } else {
+        console.log(`Couldn't locate value for header: Key: ${header}; Value: ${node.headers[header]}`);
+        headerFuncResult = "";
+      }
+
+      res.append(header, headerFuncResult);
     } else {
       res.append(header, node.headers[header]);
     }
@@ -152,7 +171,7 @@ for (const node of endpoints) {
     paths = node.endpoint.paths;
   }
 
-  for (const path of node.endpoint.paths) {
+  for (const path of paths) {
     let limiter = genericLimit;
     // TODO should v2 endpoints determine ratelimit by strings like this?
     // Or by decoding a `RateLimit-Policy` header?
