@@ -23,17 +23,27 @@ describe("All endpoints are valid", () => {
     for (const node of endpoints) {
       const endpoint = node.endpoint;
 
-      expect(endpoint.method).toBeTypeof("string");
-      expect(endpoint.method).toBeIncludedBy(["GET", "POST", "DELETE"]);
-      expect(endpoint.paths).toBeArray();
-      expect(endpoint.rateLimit).toBeTypeof("string");
-      expect(endpoint.rateLimit).toBeIncludedBy(["generic", "auth"]);
-      expect(endpoint.successStatus).toBeTypeof("number");
-      expect(endpoint.options).toBeDefined();
+      if (node.version === 2) {
+        expect(endpoint.method).toBeTypeof("string");
+        expect(endpoint.method).toBeIncludedBy(["GET", "POST", "DELETE"]);
 
-      if (endpoint.endpointKind) {
-        expect(endpoint.endpointKind).toBeTypeof("string");
-        expect(endpoint.endpointKind).toBeIncludedBy(["raw", "default"]);
+        expect(Array.isArray(endpoint.path) || typeof endpoint.path === "string").toBe(true);
+
+        expect(node.headers).toBeDefined();
+      } else {
+        // Implicit V1
+        expect(endpoint.method).toBeTypeof("string");
+        expect(endpoint.method).toBeIncludedBy(["GET", "POST", "DELETE"]);
+        expect(endpoint.paths).toBeArray();
+        expect(endpoint.rateLimit).toBeTypeof("string");
+        expect(endpoint.rateLimit).toBeIncludedBy(["generic", "auth"]);
+        expect(endpoint.successStatus).toBeTypeof("number");
+        expect(endpoint.options).toBeDefined();
+
+        if (endpoint.endpointKind) {
+          expect(endpoint.endpointKind).toBeTypeof("string");
+          expect(endpoint.endpointKind).toBeIncludedBy(["raw", "default"]);
+        }
       }
     }
   });
