@@ -13,6 +13,17 @@ describe("GET /api/owners/:ownerName", () => {
     expect(res.body.length).toBe(0);
   });
 
+  test("Adds Server-Timing Header", async () => {
+    const res = await supertest(app)
+      .get("/api/owners/i-dont-exist");
+
+    expect(res).toHaveHTTPCode(200);
+    expect(res.body).toBeArray();
+    expect(res.body.length).toBe(0);
+    // Headers
+    expect(res.headers["server-timing"]).toMatch(/db;dur=[0-9.]+, construct;dur=[0-9.]+/);
+  });
+
   test("Returns a package owned by the owner", async () => {
     // add dev package
     const addPkg = await database.insertNewPackage(
