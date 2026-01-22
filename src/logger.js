@@ -4,7 +4,7 @@
  * logging methods if a log server is ever implemented.
  */
 
-const { LOG_LEVEL, LOG_FORMAT } = require("./config.js").getConfig();
+const { LOG_LEVEL, LOG_FORMAT, PROJECT_ID } = require("./config.js").getConfig();
 const util = require("util");
 
 /**
@@ -210,6 +210,95 @@ function craftHttp(meta) {
     ret += " Unspecified HTTP Values Declared";
   }
   return ret;
+}
+
+/**
+ * @class InstanceLogger
+ * @desc A logger whose instance is unique to every single HTTP request to the
+ * server. Allowing logs to be grouped and easily associated per request.
+*/
+class InstanceLogger {
+  constructor(req) {
+    this.projectId = PROJECT_ID;
+    this.trace;
+    this.req = req;
+
+    this.init();
+  }
+
+  init() {
+    const traceHeader = this.req.header("X-Cloud-Trace-Context");
+    if (traceHeader && this.projectId) {
+      const [trace] = traceHeader.split("/");
+      this.trace = trace;
+    } else {
+      // TODO: How do we log messages about setting up our logger?
+      console.error("Unable to collect a Trace ID for the request!");
+      this.trace = performance.now();
+    }
+  }
+
+  convertLvl2Severity(lvl) {
+    // Converts the numeric levels supported originally by `generic` into
+    // severity strings supported by GCP
+    let str = "";
+
+    switch(lvl) {
+      case 1:
+        // Originally: `FATAL`
+        str = "EMERGENCY";
+        break;
+      case 2:
+        // Originally: `ERROR`
+        str = "ERROR";
+        break;
+      case 3:
+        // Originally: `WARNING`
+        str = "WARNING";
+        break;
+      case 4:
+        // Originally: `INFO`
+        str = "INFO";
+        break;
+      case 5:
+        // Originally: `DEBUG`
+        str = "DEBUG"
+        break;
+      case 6:
+        // Originally: `TRACE`
+        str = "DEBUG";
+        break;
+      default:
+        // Originally: `UNSUPPORTED`
+        str = "DEFAULT";
+        break;
+    }
+
+    return str;
+  }
+
+  /*
+    The default base log method, attempting to mirror the interface of `generic`
+    While converting the provided data into GCP structured data.
+  */
+  log(lvl, val, meta = {}) {
+    const entry = {};
+    entry["logging.googleapis.com/trace"] = `projects/${this.projectId}/traces/${this.trace}`;
+    entry.severity = this.convertLvl2Severity(lvl);
+
+    if (typeof val === "string") {
+      entry.message = val;
+    } else {
+      entry.message = `${this.req.method} ${this.req.path}`;
+      entry["log-value"] = val;
+    }
+
+    if (Object.keys(meta).length > 0) {
+      entry["log-meta"] = meta;
+    }
+
+    console.log(JSON.stringify(entry));
+  }
 }
 
 module.exports = {
