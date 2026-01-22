@@ -1,4 +1,5 @@
 module.exports = {
+  version: 2,
   docs: {
     summary: "List all packages published under a single owner.",
     responses: {
@@ -10,15 +11,15 @@ module.exports = {
       },
     },
   },
+  headers: {
+    Allow: "GET",
+    "X-Content-Type-Options": "nosniff",
+    "Server-Timing": "%timecop.toHeader"
+  },
   endpoint: {
     method: "GET",
-    paths: ["/api/owners/:ownerName"],
-    rateLimit: "generic",
-    successStatus: 200,
-    options: {
-      Allow: "GET",
-      "X-Content-Type-Options": "nosniff",
-    },
+    path: "/api/owners/:ownerName",
+    rateLimit: "generic"
   },
   params: {
     page: (context, req) => {
@@ -35,20 +36,22 @@ module.exports = {
     },
   },
 
-  async logic(params, context) {
-    const callStack = new context.callStack();
+  async logic(ctx) {
 
-    const packages = await context.database.getSortedPackages(params);
+    ctx.timecop.start("db");
+    const packages = await ctx.database.getSortedPackages(ctx.params);
+    ctx.timecop.end("db");
 
-    callStack.addCall("db.getSortedPackages", packages);
+    ctx.callStack.addCall("db.getSortedPackages", packages);
 
     if (!packages.ok) {
-      const sso = new context.sso();
+      const sso = new ctx.sso();
 
-      return sso.notOk().addContent(packages).assignCalls(callStack);
+      return sso.notOk().addContent(packages).assignCalls(ctx.callStack);
     }
 
-    const packObjShort = await context.models.constructPackageObjectShort(
+    ctx.timecop.start("construct");
+    const packObjShort = await ctx.models.constructPackageObjectShort(
       packages.content
     );
 
@@ -56,16 +59,17 @@ module.exports = {
       ? packObjShort
       : [packObjShort];
 
-    const ssoP = new context.ssoPaginate();
+    const ssoP = new ctx.ssoPaginate();
 
     ssoP.resultCount = packages.pagination.count;
     ssoP.totalPages = packages.pagination.total;
     ssoP.limit = packages.pagination.limit;
     ssoP.buildLink(
-      `${context.config.server_url}/api/owners/${params.owner}`,
+      `${ctx.config.server_url}/api/owners/${ctx.params.owner}`,
       packages.pagination.page,
-      params
+      ctx.params
     );
+    ctx.timecop.end("construct");
 
     return ssoP.isOk().addContent(packArray);
   },
