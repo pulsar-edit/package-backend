@@ -88,6 +88,7 @@ function getConfig() {
     WEBHOOK_PUBLISH: findValue("WEBHOOK_PUBLISH"),
     WEBHOOK_VERSION: findValue("WEBHOOK_VERSION"),
     WEBHOOK_USERNAME: findValue("WEBHOOK_USERNAME"),
+    PROJECT_ID: "temp_project_id"
   };
 }
 

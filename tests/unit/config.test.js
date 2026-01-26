@@ -31,6 +31,7 @@ describe("Config Returns all Expected Values", () => {
         WEBHOOK_PUBLISH: Joi.string().allow("").required(),
         WEBHOOK_VERSION: Joi.string().allow("").required(),
         WEBHOOK_USERNAME: Joi.string().allow("").required(),
+        PROJECT_ID: Joi.string().allow("").required(),
       })
       .required();
 
