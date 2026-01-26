@@ -222,7 +222,7 @@ class InstanceLogger {
     this.projectId = PROJECT_ID;
     this.trace;
     this.req = req;
-
+    this.inGcp = false; // Tracks if we are logging in a GCP environment
     this.init();
   }
 
@@ -231,50 +231,27 @@ class InstanceLogger {
     if (traceHeader && this.projectId) {
       const [trace] = traceHeader.split("/");
       this.trace = trace;
+      this.inGcp = true;
     } else {
-      // TODO: How do we log messages about setting up our logger?
-      console.error("Unable to collect a Trace ID for the request!");
       this.trace = performance.now();
+      this.inGcp = false;
     }
   }
 
   convertLvl2Severity(lvl) {
     // Converts the numeric levels supported originally by `generic` into
     // severity strings supported by GCP
-    let str = "";
+    const obj_lookup = {
+      1: "EMERGENCY", // Originally `FATAL`
+      2: "ERROR", // Originally `ERROR`
+      3: "WARNING", // Originally `WARNING`
+      4: "INFO", // Originally `INFO`
+      5: "DEBUG", // Originally `DEBUG`
+      6: "DEBUG" // Originally `TRACE`
+    };
+    const DEFAULT_VALUE = "DEFAULT"; // Originally `UNSUPPORTED`
 
-    switch(lvl) {
-      case 1:
-        // Originally: `FATAL`
-        str = "EMERGENCY";
-        break;
-      case 2:
-        // Originally: `ERROR`
-        str = "ERROR";
-        break;
-      case 3:
-        // Originally: `WARNING`
-        str = "WARNING";
-        break;
-      case 4:
-        // Originally: `INFO`
-        str = "INFO";
-        break;
-      case 5:
-        // Originally: `DEBUG`
-        str = "DEBUG"
-        break;
-      case 6:
-        // Originally: `TRACE`
-        str = "DEBUG";
-        break;
-      default:
-        // Originally: `UNSUPPORTED`
-        str = "DEFAULT";
-        break;
-    }
-
-    return str;
+    return obj_lookup[lvl] ?? DEFAULT_VALUE;
   }
 
   /*
@@ -297,7 +274,11 @@ class InstanceLogger {
       entry["log-meta"] = meta;
     }
 
-    console.log(JSON.stringify(entry));
+    if (this.inGcp) {
+      console.log(JSON.stringify(entry));
+    } else {
+      console.log(entry);
+    }
   }
 }
 
@@ -305,4 +286,5 @@ module.exports = {
   httpLog,
   sanitizeLogs,
   generic,
+  InstanceLogger
 };
