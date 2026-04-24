@@ -24,6 +24,7 @@ const serviceVersion = require("./serviceVersion.js");
 const sort = require("./sort.js");
 const tag = require("./tag.js");
 const versionName = require("./versionName.js");
+const tags = require("./tags.js");
 
 module.exports = {
   logic: {
@@ -46,6 +47,7 @@ module.exports = {
     sort: sort.logic,
     tag: tag.logic,
     versionName: versionName.logic,
+    tags: tags.logic,
   },
   schema: {
     auth: auth.schema,
@@ -67,5 +69,6 @@ module.exports = {
     sort: sort.schema,
     tag: tag.schema,
     versionName: versionName.schema,
+    tags: tags.schema,
   },
 };
