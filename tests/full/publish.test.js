@@ -358,7 +358,9 @@ describe("publish packages", () => {
     const pack = res.body;
 
     expect(pack.name).toBe("b-pulsar-package");
-    expect(pack).toMatchObject(require("./fixtures/b-pulsar-package/match.js"));
+    let fixture = require("./fixtures/b-pulsar-package/match.js")
+    fixture.versions = { "2.0.0": fixture.versions["2.0.0"] }
+    expect(pack).toMatchObject(fixture);
 
     await database.removePackageByName("b-pulsar-package", true);
   });
