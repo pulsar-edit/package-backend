@@ -24,7 +24,7 @@ const REPOS = [
     name: "terminal",
     url: "https://github.com/pulsar-edit/terminal",
     isPulsar: false,
-  }
+  },
 ];
 
 (async () => {
