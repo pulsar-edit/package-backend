@@ -36,7 +36,7 @@ module.exports = function genPackage(repo, opts = {}) {
   let versionInfo = {
     name: pack.name,
     dist: {
-      tarball: "download-url",
+      tarball: opts.tarballUrl ?? "download-url",
       sha: "1234",
     },
   };
