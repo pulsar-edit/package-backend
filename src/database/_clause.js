@@ -55,14 +55,10 @@ function serviceClause(sql, opts) {
   ) {
     return getEmptyClause(sql);
   }
-  let versionClause;
-  if (typeof opts.serviceVersion !== "string") {
-    versionClause = sql`IS NOT NULL`;
-  } else {
-    versionClause = sql`-> 'versions' -> ${opts.serviceVersion} IS NOT NULL`;
-  }
+  // We no longer account for the serviceVersion clause here, as it's done in
+  // a semver aware way in JS
 
-  return sql`AND v.meta -> ${opts.serviceType} -> ${opts.service} ${versionClause}`;
+  return sql`AND v.meta -> ${opts.serviceType} -> ${opts.service}`;
 }
 
 function fileExtensionClause(sql, opts) {
