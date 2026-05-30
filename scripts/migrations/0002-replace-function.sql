@@ -1,19 +1,13 @@
-CREATE OR REPLACE FUNCTION now_on_updated_package()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF TG_TABLE_NAME = 'versions' THEN
-    -- Since this function is also triggerred on the version table changes
-    -- and the version table does not contain a downloads column, we exclude
-    -- the check when operating on the versions table.
-    RETURN NEW;
-  END IF;
-  IF (OLD.downloads = NEW.downloads) THEN
-    -- Only change the updated column when the update is not triggerred
-    -- by changing the download count.
-    NEW.updated = NOW();
-    RETURN NEW;
-  ELSE
-    RETURN NEW;
-  END IF;
-END;
-$$ language 'plpgsql';
+-- Replace the function that triggers modification of the updated column
+-- on packages, to only respond to changes made by package authors.
+CREATE OR REPLACE TRIGGER trigger_now_on_updated
+  BEFORE UPDATE
+  OF name, owner, data
+  ON packages
+  FOR EACH ROW
+EXECUTE PROCEDURE now_on_updated_package();
+
+-- Remove Version update trigger
+DROP TRIGGER IF EXISTS trigger_now_on_updated_versions ON versions;
+-- There is no package manager accessible way to update a deployed version.
+-- So we shouldn't need to account for this at this time.
