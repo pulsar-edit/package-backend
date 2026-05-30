@@ -5,6 +5,7 @@
 const logger = require("./logger.js");
 const storage = require("./storage.js");
 const crypto = require("crypto");
+const semver = require("semver");
 
 /**
  * @async
@@ -29,6 +30,63 @@ async function isPackageNameBanned(name) {
 
   logger.generic(6, "Success Status while retrieving Name Ban List.");
   return banList.content.find((b) => name === b) ? { ok: true } : { ok: false };
+}
+
+/**
+  * @function serviceVersionFilter
+*/
+function serviceVersionFilter(pack, serviceName, serviceVersion) {
+  const validVer = semver.valid(serviceVersion);
+
+  if (!validVer) {
+    // If we can't validate the semver, lets just return the package without
+    // filtering.
+    logger.generic(6, `Invalid service version provided '${serviceVersion}'`);
+    return pack;
+  }
+
+  const filterServices = (services = {}) => {
+    for (let name in services) {
+      if (name == serviceName) {
+        Object.keys(services[name].versions).forEach((ver) => {
+          // Iterate via static array of keys, so we can delete them as we go
+          let providedVer = semver.valid(ver);
+
+          if (!providedVer) {
+            // The version specified by the package isn't valid, we will assume
+            // it doesn't match.
+            delete services[name].versions[ver];
+          } else {
+            if (!semver.satisfies(serviceVersion, providedVer)) {
+              delete services[name].versions[ver];
+            }
+          }
+        });
+
+        // Once we have filtered all invalid versions out on a matching name
+        // check if any versions are left, if not, return null
+        // (Using `null` rather than a falsy or empty object value, lets us easily
+        // check the result outside of the filterServices function)
+        if (Object.keys(services[name].versions).length === 0) {
+          return null;
+        }
+      }
+    }
+
+    return services;
+  };
+
+  pack.metadata.providedServices = filterServices(pack.metadata.providedServices);
+  pack.metadata.consumedServices = filterServices(pack.metadata.consumedServices);
+
+  // Now if we failed to match any version somewhere along the way, the services
+  // declaration would be null, rather than a blank object.
+  if (pack.metadata.providedServices === null || pack.metadata.consumedServices === null) {
+    // If either are null, it means we matched on a service, and found now valid versions
+    return false;
+  } else {
+    return pack;
+  }
 }
 
 /**
