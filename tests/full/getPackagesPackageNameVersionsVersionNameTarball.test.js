@@ -40,6 +40,52 @@ describe("GET /api/packages/:packageName/version/:versionName/tarball", () => {
     expect(removePkg.ok).toBe(true);
   });
 
+  test("Doesn't return tarball link to non-GitHub domain", async () => {
+    // == Setup
+    const addPkg = await database.insertNewPackage(
+      genPackage("https://github.com/confused-Techie/dwnld-pkg-bad-test", {
+        tarballUrl: "https://evil.malware/virus"
+      })
+    );
+    expect(addPkg.ok).toBe(true);
+
+    // == Test
+    const res = await supertest(app)
+      .get("/api/packages/dwnld-pkg-bad-test/versions/1.0.0/tarball");
+
+    expect(res).toHaveHTTPCode(500);
+    expect(res.body.message).toBe(
+      "Application Error: Invalid Domain for Download Redirect: evil.malware"
+    );
+
+    // == Cleanup
+    const removePkg = await database.removePackageByName("dwnld-pkg-bad-test", true);
+    expect(removePkg.ok).toBe(true);
+  });
+
+  test("Doesn't return tarball link to invalid domain", async () => {
+    // == Setup
+    const addPkg = await database.insertNewPackage(
+      genPackage("https://github.com/confused-Techie/dwnld-pkg-malformed-test", {
+        tarballUrl: "malformed-domain-data"
+      })
+    );
+    expect(addPkg.ok).toBe(true);
+
+    // == Test
+    const res = await supertest(app)
+      .get("/api/packages/dwnld-pkg-malformed-test/versions/1.0.0/tarball");
+
+    expect(res).toHaveHTTPCode(500);
+    expect(res.body.message).toBe(
+      "Application Error: The URL to download this package seems invalid: malformed-domain-data."
+    );
+
+    // == Cleanup
+    const removePkg = await database.removePackageByName("dwnld-pkg-malformed-test", true);
+    expect(removePkg.ok).toBe(true);
+  });
+
   test("Updates the download count of a package", async () => {
     // == Setup
     const addPkg = await database.insertNewPackage(
