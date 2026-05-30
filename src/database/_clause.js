@@ -58,7 +58,7 @@ function serviceClause(sql, opts) {
   // We no longer account for the serviceVersion clause here, as it's done in
   // a semver aware way in JS
 
-  return sql`AND v.meta -> ${opts.serviceType} -> ${opts.service}`;
+  return sql`AND v.meta -> ${opts.serviceType} -> ${opts.service} IS NOT NULL`;
 }
 
 function fileExtensionClause(sql, opts) {
