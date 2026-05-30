@@ -118,7 +118,7 @@ module.exports = {
       // We filter the serviceVersion paramter in JS, rather than in the original db call
       let i = packArray.length;
       while(i--) {
-        let filteredPack = utils.serviceVersionFilter(packArray[i], params.service, params.serviceVersion);
+        let filteredPack = context.utils.serviceVersionFilter(packArray[i], params.service, params.serviceVersion);
 
         if (!filteredPack) {
           // We will get a falsy value back if the filtering failed
