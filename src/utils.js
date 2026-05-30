@@ -419,6 +419,7 @@ function generateRandomString(n) {
 
 module.exports = {
   isPackageNameBanned,
+  serviceVersionFilter,
   engineFilter,
   semverArray,
   semverGt,
