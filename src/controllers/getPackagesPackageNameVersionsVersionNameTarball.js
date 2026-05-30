@@ -127,8 +127,7 @@ module.exports = {
     ];
 
     if (
-      !allowedHostnames.includes(hostname) &&
-      process.env.PULSAR_STATUS !== "dev"
+      !allowedHostnames.includes(hostname)
     ) {
       const sso = new context.sso();
 
