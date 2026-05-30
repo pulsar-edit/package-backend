@@ -44,7 +44,7 @@
     }
   },
   "dependencies": {
-    "@google-cloud/storage": "^6.9.5",
+    "@google-cloud/storage": "^7.0.0",
     "crypto": "^1.0.1",
     "cson": "^7.20.0",
     "express": "^5.0.0",
