@@ -14,6 +14,7 @@ const getPackageByNameSimple = require("./getPackageByNameSimple.js").exec;
 module.exports = {
   safe: false,
   exec: async (sql, name, exterminate = false) => {
+    console.log(`Attempting to remove package: '${name}', EXTERMINATE: '${exterminate}'`);
     return await sql
       .begin(async (sqlTrans) => {
         // Retrieve the package pointer
@@ -61,10 +62,15 @@ module.exports = {
         }
 
         if (exterminate) {
-          await sqlTrans`
+          console.warn(`EXTERMINATING PACKAGE: '${name}'!`);
+          console.warn("Exterminating packages may only occur in dev environments; as it opens up supply chain vulnerabilities");
+          const exterminateCmd = await sqlTrans`
              DELETE FROM names
-             WHERE pointer = ${pointer}
-           `; // We can't return name here, since it's set to null on package deletion
+             WHERE name = ${name}
+             RETURNING name;
+           `;
+
+          console.warn(`Successfully exterminated package: '${exterminateCmd[0].name}'`);
         }
 
         return { ok: true, content: `Successfully Deleted Package: ${name}` };
