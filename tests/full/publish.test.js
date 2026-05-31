@@ -115,7 +115,8 @@ describe("publish packages", () => {
     expect(pack.name).toBe("a-pulsar-package");
     expect(pack).toMatchObject(require("./fixtures/a-pulsar-package/match.js"));
 
-    await database.removePackageByName("a-pulsar-package", true);
+    const removePkg = await database.removePackageByName("a-pulsar-package", true);
+    expect(removePkg.ok).toBe(true);
   });
 
   test("excludes bad non-latest tags from publication", async () => {
@@ -207,7 +208,8 @@ describe("publish packages", () => {
     expect(pack.versions["1.0.0"]).toBeTruthy();
     expect(pack.versions["vvInvalid-Semver"]).toBeFalsy();
 
-    await database.removePackageByName("a-pulsar-package", true);
+    const removePkg = await database.removePackageByName("a-pulsar-package", true);
+    expect(removePkg.ok).toBe(true);
   });
 
   test("when the request for the 'package.json' fails", async () => {
