@@ -55,7 +55,7 @@ async function init(params) {
         continue;
       }
 
-      let latestVer = pack.content?.metadata?.version;
+      let latestVer = pack.content?.data?.metadata?.version;
 
       if (typeof latestVer !== "string") {
         results.push(`Failed to determine latest version for ${referenceStr}`);
@@ -73,7 +73,7 @@ async function init(params) {
       let verCreation = verData.content?.created;
       let originalCreation = pack.content?.updated;
 
-      if (typeof verCreation !== "string") {
+      if (!(verCreation instanceof Date)) {
         results.push(`Failed to collect created date of ${referenceStr} for version: '${latestVer}'`);
         continue;
       }
