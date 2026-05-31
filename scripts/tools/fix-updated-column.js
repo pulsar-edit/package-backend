@@ -33,7 +33,10 @@ async function init(params) {
       console.log(`\r[${pointerIdx}/${totalPointers}] Packages Checked...`);
       pointerIdx++;
 
-      if (typeof pointer.name !== "string" || typeof pointer.pointer !== "string") {
+      if (
+        typeof pointer.name !== "string" ||
+        typeof pointer.pointer !== "string"
+      ) {
         let str = `The package '${referenceStr}' is missing a required value!`;
         console.log(str);
         results.push(str);
@@ -66,7 +69,9 @@ async function init(params) {
       let verData = await getVersionData(pointer.pointer, latestVer);
 
       if (!verData.ok) {
-        results.push(`Failed to collect package version data for ${referenceStr}`);
+        results.push(
+          `Failed to collect package version data for ${referenceStr}`
+        );
         continue;
       }
 
@@ -74,22 +79,32 @@ async function init(params) {
       let originalCreation = pack.content?.updated;
 
       if (!(verCreation instanceof Date)) {
-        results.push(`Failed to collect created date of ${referenceStr} for version: '${latestVer}'`);
+        results.push(
+          `Failed to collect created date of ${referenceStr} for version: '${latestVer}'`
+        );
         continue;
       }
 
-      let updatePack = await modifyPackUpdatedDate(pointer.pointer, verCreation);
+      let updatePack = await modifyPackUpdatedDate(
+        pointer.pointer,
+        verCreation
+      );
 
       if (!updatePack.ok) {
-        results.push(`Failed to update package 'updated' timestamp ${referenceStr}`);
+        results.push(
+          `Failed to update package 'updated' timestamp ${referenceStr}`
+        );
         continue;
       }
 
-      results.push(`Successfully updated ${referenceStr}; from '${originalCreation}' to '${verCreation}'`);
-
-    } catch(err) {
+      results.push(
+        `Successfully updated ${referenceStr}; from '${originalCreation}' to '${verCreation}'`
+      );
+    } catch (err) {
       console.error(err);
-      const str = `Critical error occured for '${pointer.pointer}': '${err.toString()}'`;
+      const str = `Critical error occured for '${
+        pointer.pointer
+      }': '${err.toString()}'`;
       console.error(str);
       console.error("Waiting 5 seconds for manual intervention!");
       await new Promise((r) => setTimeout(r, 5000));
@@ -100,7 +115,10 @@ async function init(params) {
     }
   }
 
-  fs.writeFileSync(`${__dirname}/fix-updated-column.results.json`, JSON.stringify(results, null, 2));
+  fs.writeFileSync(
+    `${__dirname}/fix-updated-column.results.json`,
+    JSON.stringify(results, null, 2)
+  );
   console.log(results);
   console.log("\n\nTask Completed!");
   await sqlEnd();
@@ -173,7 +191,10 @@ async function getVersionData(pointer, ver) {
   `;
 
   if (command.count === 0) {
-    return { ok: false, content: `Failed to get pacakge version data of ${pointer}` };
+    return {
+      ok: false,
+      content: `Failed to get pacakge version data of ${pointer}`,
+    };
   } else {
     return { ok: true, content: command[0] };
   }
@@ -189,7 +210,10 @@ async function modifyPackUpdatedDate(pointer, newDate) {
   `;
 
   if (command.count === 0) {
-    return { ok: false, content: `Failed to update package '${pointer}' with new date: '${newDate}'` };
+    return {
+      ok: false,
+      content: `Failed to update package '${pointer}' with new date: '${newDate}'`,
+    };
   } else {
     return { ok: true, content: command[0] };
   }

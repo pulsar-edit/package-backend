@@ -126,9 +126,7 @@ module.exports = {
       "raw.githubusercontent.com",
     ];
 
-    if (
-      !allowedHostnames.includes(hostname)
-    ) {
+    if (!allowedHostnames.includes(hostname)) {
       const sso = new context.sso();
 
       return sso
