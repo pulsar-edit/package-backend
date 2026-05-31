@@ -4,6 +4,29 @@ When you consider that most backend services are a black box of code and decisio
 
 With that said this document will serve as the ongoing history of administrative actions that must be taken against the backend.
 
+## 2026 - May 31
+
+In the PR [`pulsar-edit/package-backend#307`](https://github.com/pulsar-edit/package-backend/pull/307)
+we fixed a long standing oversight, which could cause a package's `updated` time to be inaccurate.
+Where it may reflect the last time a user had downloaded the package, rather than the last time
+the author of the package actually updated it.
+
+This PR resolves this issue, and in it's wake a migration script was run on the backend to correct
+this date across all packages.
+
+The results of this migration script are below:
+- 11,327 Pointers handled
+- 10,421 Successes
+- 550 Deleted packages skipped
+- 356 Failures
+  - 354 Failures to determine the latest version
+  - 2 Failures to collect package version data
+
+Of the reported failures those will all have to be handled by hand to resolve.
+Of the reported successes, all this changes is to more accurately reflect the last time the
+author made any changes in the package, helping to ensure users of Pulsar can be more
+confident in finding and installing more recently maintained packages.
+
 ## 2025 - October 20
 
 While running some scripts to determine what community packages may struggle with the upcoming PulsarNext upgrade, we were able to automatically identify many package's whose associated GitHub repository has been deleted.
