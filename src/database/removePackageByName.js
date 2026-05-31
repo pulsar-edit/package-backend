@@ -61,7 +61,7 @@ module.exports = {
           throw `Attempted to delete ${commandPack[0].name} rather than ${name}`;
         }
 
-        if (exterminate) {
+        if (exterminate && process.env.PULSAR_STATUS === "dev") {
           console.warn(`EXTERMINATING PACKAGE: '${name}'!`);
           console.warn("Exterminating packages may only occur in dev environments; as it opens up supply chain vulnerabilities");
           const exterminateCmd = await sqlTrans`
