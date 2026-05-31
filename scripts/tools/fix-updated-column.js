@@ -34,7 +34,7 @@ async function init(params) {
       pointerIdx++;
 
       if (typeof pointer.name !== "string" || typeof pointer.pointer !== "string") {
-        let str = `The package '${referenceStr}' is missing a required value!`
+        let str = `The package '${referenceStr}' is missing a required value!`;
         console.log(str);
         results.push(str);
         continue;
@@ -89,7 +89,7 @@ async function init(params) {
 
     } catch(err) {
       console.error(err);
-      const str = `Critical error occured for '${pointer.pointer}': '${err.toString()}'`
+      const str = `Critical error occured for '${pointer.pointer}': '${err.toString()}'`;
       console.error(str);
       console.error("Waiting 5 seconds for manual intervention!");
       await new Promise((r) => setTimeout(r, 5000));
