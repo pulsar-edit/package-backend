@@ -41,8 +41,9 @@ module.exports = {
           }
 
           dailyDwnCount = await sqlTrans`
-            INSERT INTO package_downloads_daily (pointer, download_date, downloads)
-            VALUES(${pack.content.pointer}, CURRENT_DATE, 1)
+            INSERT INTO package_downloads_daily
+            (pointer, download_date, downloads) VALUES
+            (${pack.content.pointer}, CURRENT_DATE, 1)
             ON CONFLICT (pointer, download_date)
             DO UPDATE SET download_count = package_downloads_daily.download_count + 1;
           `;
