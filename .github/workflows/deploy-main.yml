@@ -1,0 +1,98 @@
+# Main deployment GitHub Action.
+# Deploys the primary API to Google Cloud Platform: App Engine
+name: "Deploy: Main"
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: "Please confirm that the codebase has only changed within the `./src` dir."
+        required: true
+        type: string
+
+env:
+  NODE_VERSION: 24
+  GOOGLE_APPLICATION_CREDENTIALS_FILENAME: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_FILENAME }}"
+  GH_CLIENTID: "${{ secrets.GH_CLIENTID }}"
+  GH_CLIENTSECRET: "${{ secrets.GH_CLIENTSECRET }}"
+  DB_HOST: "${{ secrets.DB_HOST }}"
+  DB_USER: "${{ secrets.DB_USER }}"
+  DB_PASS: "${{ secrets.DB_PASS }}"
+  DB_DB: "${{ secrets.DB_DB }}"
+  DB_PORT: "${{ secrets.DB_PORT }}"
+  WEBHOOK_PUBLISH: "${{ secrets.WEBHOOK_PUBLISH }}"
+  WEBHOOK_VERSION: "${{ secrets.WEBHOOK_VERSION }}"
+  GOOGLE_APPLICATION_CREDENTIALS_FILE: "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_FILE }}"
+  DB_SSL_CERT_FILE: "${{ secrets.DB_SSL_CERT_FILE }}"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+    - name: Checkout the latest code
+      uses: actions/checkout@v6
+
+    - name: Mask required secrets
+      # Since we will be writing some secrets to disk, we will ensure we mask them
+      run: |
+        echo "::add-mask::$GOOGLE_APPLICATION_CREDENTIALS_FILE"
+        echo "::add-mask::$DB_SSL_CERT_FILE"
+
+    - name: Write secret files to disk
+      run: |
+        echo "$GOOGLE_APPLICATION_CREDENTIALS_FILE" > ./$GOOGLE_APPLICATION_CREDENTIALS_FILENAME
+        echo "$DB_SSL_CERT_FILE" > ./ca-certificate.crt
+
+    - name: "Google Authentication"
+      id: "auth"
+      uses: google-github-actions/auth@v3
+      with:
+        project_id: 'pulsar-357404'
+        workfload_identity_provider: 'thing'
+
+    - name: Setup NodeJS
+      uses: actions/setup-node@v6
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Deploy
+      id: deploy
+      uses: google-github-actions/deploy-appengine@v3
+      with:
+        env_vars: |-
+          PORT: 8080
+          SERVERURL: "https://api.pulsar-edit.dev"
+          PAGINATE: 30
+          CACHETIME: 600000
+          GCLOUD_STORAGE_BUCKET: "pulsar-assistance"
+          GOOGLE_APPLICATION_CREDENTIALS: "./${{ env.GOOGLE_APPLICATION_CREDENTIALS_FILENAME }}"
+          GH_CLIENTID: "${{ env.GH_CLIENTID }}"
+          GH_CLIENTSECRET: "${{ env.GH_CLIENTSECRET }}"
+          GH_USERAGENT: "Pulsar-Edit Bot"
+          GH_REDIRECTURI: "https://api.pulsar-edit.dev/api/oauth"
+          DB_HOST: "${{ env.DB_HOST }}"
+          DH_USER: "${{ env.DB_USER }}"
+          DB_PASS: "${{ env.DB_PASS }}"
+          DB_DB: "${{ env.DB_DB }}"
+          DB_PORT: "${{ env.DB_PORT }}"
+          DB_SSL_CERT: "ca-certificate.crt"
+          LOG_LEVEL: 6
+          LOG_FORMAT: "stdout"
+          GOOGLE_PROJECT_ID: "pulsar-357404"
+          GOOGLE_LOG_NAME: "pulsar-backend"
+          RATE_LIMIT_GENERIC: 600
+          RATE_LIMIT_AUTH: 300
+          WEBHOOK_PUBLISH: "${{ env.WEBHOOK_PUBLISH }}"
+          WEBHOOK_VERSION: "${{ env.WEBHOOK_VERSION }}"
+          WEBHOOK_USERNAME: "Pulsar Backend Bot"
+
+    - name: Test Deployment
+      run: 'curl "${{ steps.deploy.outputs.version_url }}"'
