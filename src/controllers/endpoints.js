@@ -26,6 +26,7 @@ module.exports = [
   require("./getPackagesPackageNameVersionsVersionNameTarball.js"),
   require("./getPackagesPackageNameVersionsVersionName.js"),
   require("./getPackagesPackageNameStargazers.js"),
+  require("./getPackagesPackageNameAvailability.js"),
   require("./getPackagesPackageName.js"),
   require("./postPackagesPackageNameVersionsVersionNameEventsUninstall.js"),
   require("./postPackagesPackageNameVersions.js"),
