@@ -1,40 +1,45 @@
 /**
  * @module getPackagesPackageNameAvailability
-*/
+ */
 
 module.exports = {
   docs: {
     summary: "Check if a package name is available.",
     responses: {
       204: {
-        description: "An empty response, indicating the package name is available for use."
+        description:
+          "An empty response, indicating the package name is available for use.",
       },
       409: {
-        description: "Indicates that the requested package name is taken, and is NOT available.",
+        description:
+          "Indicates that the requested package name is taken, and is NOT available.",
         content: {
           "application/json": {
             schema: {
-              type: "object"
-            }
-          }
-        }
-      }
-    }
+              type: "object",
+            },
+          },
+        },
+      },
+    },
   },
   endpoint: {
     method: "GET",
-    paths: ["/api/packages/:packageName/availability", "/api/themes/:packageName/availability"],
+    paths: [
+      "/api/packages/:packageName/availability",
+      "/api/themes/:packageName/availability",
+    ],
     rateLimit: "generic",
     successStatus: 204,
     options: {
       Allow: "GET",
-      "X-Content-Type-Options": "nosniff"
-    }
+      "X-Content-Type-Options": "nosniff",
+    },
   },
   params: {
     packageName: (context, req) => {
       return context.query.packageName(req);
-    }
+    },
   },
 
   /**
@@ -45,12 +50,14 @@ module.exports = {
    * @param {object} params - The available query parameters.
    * @param {object} context - The Endpoint Context
    * @returns {sso}
-  */
+   */
   async logic(params, context) {
     const callStack = new context.callStack();
 
     // Is the name banned?
-    const isBanned = await context.utils.isPackageNameBanned(params.packageName);
+    const isBanned = await context.utils.isPackageNameBanned(
+      params.packageName
+    );
 
     callStack.addCall("utils.isPackageNameBanned", isBanned);
 
@@ -58,10 +65,7 @@ module.exports = {
       // The package name is in fact banned
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addShort("package_exists")
-        .assignCalls(callStack);
+      return sso.notOk().addShort("package_exists").assignCalls(callStack);
     }
 
     // Is the name of a bundled package?
@@ -73,14 +77,13 @@ module.exports = {
       // This is in fact a bundled package
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addShort("package_exists")
-        .assignCalls(callStack);
+      return sso.notOk().addShort("package_exists").assignCalls(callStack);
     }
 
     // Is the name taken by another package?
-    const nameAvailable = await context.database.packageNameAvailability(params.packageName);
+    const nameAvailable = await context.database.packageNameAvailability(
+      params.packageName
+    );
 
     callStack.addCall("db.packageNameAvailability", nameAvailable);
 
@@ -95,15 +98,12 @@ module.exports = {
       // But if the short is "not_found" we can report the package as not being available
       const sso = new context.sso();
 
-      return sso
-        .notOk()
-        .addShort("package_exists")
-        .assignCalls(callStack);
+      return sso.notOk().addShort("package_exists").assignCalls(callStack);
     }
 
     // Otherwise the package name is available
     const sso = new context.sso();
 
     return sso.isOk().addContent(false);
-  }
+  },
 };

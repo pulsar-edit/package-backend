@@ -64,6 +64,8 @@ function.</p>
 <dd></dd>
 <dt><a href="#module_getPackagesPackageName">getPackagesPackageName</a></dt>
 <dd></dd>
+<dt><a href="#module_getPackagesPackageNameAvailability">getPackagesPackageNameAvailability</a></dt>
+<dd></dd>
 <dt><a href="#module_getPackagesPackageNameStargazers">getPackagesPackageNameStargazers</a></dt>
 <dd></dd>
 <dt><a href="#module_getPackagesPackageNameVersionsVersionName">getPackagesPackageNameVersionsVersionName</a></dt>
@@ -817,6 +819,9 @@ Used to preform the actual sending of the webhook.
 <a name="module_getPackagesPackageName"></a>
 
 ## getPackagesPackageName
+<a name="module_getPackagesPackageNameAvailability"></a>
+
+## getPackagesPackageNameAvailability
 <a name="module_getPackagesPackageNameStargazers"></a>
 
 ## getPackagesPackageNameStargazers

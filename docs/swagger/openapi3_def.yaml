@@ -600,6 +600,35 @@ paths:
                 $ref: '#/components/schemas/packageObjectFull'
           description: A 'Package Object Full' of the requested package.
       summary: Show package details.
+  /api/packages/{packageName}/availability:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+      responses:
+        '204':
+          description: An empty response, indicating the package name is available for use.
+        '409':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: >-
+            Indicates that the requested package name is taken, and is NOT
+            available.
+      summary: Check if a package name is available.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/packages/{packageName}/star:
     delete:
       parameters:
@@ -949,6 +978,35 @@ paths:
                 $ref: '#/components/schemas/packageObjectFull'
           description: A 'Package Object Full' of the requested package.
       summary: Show package details.
+  /api/themes/{packageName}/availability:
+    get:
+      parameters:
+        - $ref: '#/components/parameters/packageName'
+      responses:
+        '204':
+          description: An empty response, indicating the package name is available for use.
+        '409':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: >-
+            Indicates that the requested package name is taken, and is NOT
+            available.
+      summary: Check if a package name is available.
+    options:
+      responses:
+        '204':
+          description: The options response for this endpoint.
+          headers:
+            Allow:
+              description: The allowed HTTP methods on this endpoint.
+              schema:
+                type: string
+            X-Content-Type-Options:
+              description: Indicates the 'Content-Type' header should be followed.
+              schema:
+                type: string
   /api/themes/{packageName}/star:
     delete:
       parameters:
