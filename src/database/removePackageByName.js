@@ -39,11 +39,20 @@ module.exports = {
         }
 
         // Remove stars assigned to the package
+        // Don't expect results, as a package may have no stars
         await sqlTrans`
            DELETE FROM stars
            WHERE package = ${pointer}
            RETURNING userid;
          `;
+
+        // Remove download statistics for the package
+        // Don't expect results, as a package may have no downloads
+        await sqlTrans`
+          DELETE FROM package_downloads_daily
+          WHERE pointer = ${pointer}
+          RETURNING downloads;
+        `;
 
         const commandPack = await sqlTrans`
            DELETE FROM packages
