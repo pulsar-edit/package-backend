@@ -45,7 +45,7 @@ module.exports = {
             (pointer, download_date, downloads) VALUES
             (${pack.content.pointer}, CURRENT_DATE, 1)
             ON CONFLICT (pointer, download_date)
-            DO UPDATE SET download_count = package_downloads_daily.download_count + 1;
+            DO UPDATE SET downloads = package_downloads_daily.downloads + 1;
           `;
         } catch(e) {
           throw `A constraint has been violated while updating daily download count of '${name}'`;
