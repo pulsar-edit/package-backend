@@ -46,13 +46,13 @@ describe("GET /api/users", () => {
 
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
-      nod_id: "get-user-node-id"
+      node_id: "get-user-node-id"
     });
 
     // == Test
     const res = await supertest(app)
       .get("/api/users")
-      .set({ Authorziation: "any-token-will-do" });
+      .set({ Authorization: "any-token-will-do" });
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body.node_id).toBe("get-user-node-id");
