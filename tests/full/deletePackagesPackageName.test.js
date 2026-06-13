@@ -179,5 +179,8 @@ describe("DELETE /api/packages/:packageName", () => {
     // == Cleanup
     const removeUser = await database.removeUserByID(addUser.content.id);
     expect(removeUser.ok).toBe(true);
+
+    const removePkg = await database.removePackageByName("dlt-pkg-by-name-test", true);
+    expect(removePkg.ok).toBe(true);
   });
 });
