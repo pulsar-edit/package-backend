@@ -139,6 +139,9 @@ async function newPackageData(userObj, ownerRepo, service) {
         .build();
     }
 
+    // Iterate all tags and remove any semver invalid ones first
+    tags.content = tags.content.filter((item) => semver.valid(item.name));
+
     // Sort the tags into descending order
     tags.content.sort((a, b) => {
       return semver.rcompare(a.name, b.name);
