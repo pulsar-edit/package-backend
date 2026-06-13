@@ -11,6 +11,7 @@ describe("GET /api/users/:login", () => {
   });
 
   test("Returns user when it exists", async () => {
+    // == Setup
     const addUser = await database.insertNewUser(
       "get-users-login-node-id",
       "get-users-login-node-id",
@@ -18,12 +19,13 @@ describe("GET /api/users/:login", () => {
     );
     expect(addUser.ok).toBe(true);
 
+    // == Test
     const res = await supertest(app).get("/api/users/get-users-login-node-id");
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body.username).toBe("get-users-login-node-id");
 
-    // cleanup
+    // == Cleanup
     const removeUser = await database.removeUserByID(addUser.content.id);
     expect(removeUser.ok).toBe(true);
   });
