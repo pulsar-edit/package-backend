@@ -63,6 +63,63 @@ describe("DELETE /api/packages/:packageName", () => {
     expect(removeUser.ok).toBe(true);
   });
 
+  test("Fails when the user doesn't own the repo", async () => {
+    // == Setup
+    // Add dev package to db
+    const addPkg = await database.insertNewPackage(
+      genPackage("https://github.com/confused-Techie/dlt-pkg-by-name-test")
+    );
+    expect(addPkg.ok).toBe(true);
+
+    // Add the dev user to the db
+    const addUser = await database.insertNewUser(
+      "dlt-pkg-test-user-node-id",
+      "dlt-pkg-test-user-node-id",
+      "https://roadtonowhere.com"
+    );
+    expect(addUser.ok).toBe(true);
+
+    // Return good auth from github
+    nock("https://api.github.com/").get("/user").reply(200, {
+      node_id: "dlt-pkg-test-user-node-id"
+    });
+
+    // Ensure user has ownership of repo
+    nock("https://api.github.com/")
+      .get("/repos/confused-Techie/dlt-pkg-by-name-test/collaborators?page=1")
+      .reply(200, [
+        {
+          node_id: "NOT-dlt-pkg-test-user-node-id-NOPE",
+          permissions: {
+            admin: true,
+            maintain: true,
+            push: true
+          },
+          role_name: "Admin"
+        }
+      ]);
+
+    // == Test
+    const res = await supertest(app)
+      .delete("/api/packages/dlt-pkg-by-name-test")
+      .set({ Authorization: "any-token-will-do" });
+
+    expect(res).toHaveHTTPCode(500);
+    expect(res.body.message).toBe("Server Error: From Server Error"); // TODO HUMANIZE
+
+    const doesPackageStillExist = await supertest(app)
+      .get("/api/packages/dlt-pkg-by-name-test");
+
+    expect(doesPackageStillExist).toHaveHTTPCode(200);
+
+    // == Cleanup
+    const removeUser = await database.removeUserByID(addUser.content.id);
+    expect(removeUser.ok).toBe(true);
+
+    const removePkg = await database.removePackageByName("dlt-pkg-by-name-test", true);
+    expect(removePkg.ok).toBe(true);
+  });
+
   test("Successfully deletes a package", async () => {
     // == Setup
     // Add dev package to db
