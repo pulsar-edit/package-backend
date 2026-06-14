@@ -2,7 +2,6 @@ const supertest = require("supertest");
 const nock = require("nock");
 const app = require("../../src/setupEndpoints.js");
 const database = require("../../src/database/_export.js");
-const genPackage = require("../helpers/package.jest.js");
 
 describe("POST /api/packages/:packageName/versions", () => {
   beforeAll(() => {
