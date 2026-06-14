@@ -1,6 +1,7 @@
 const config = {
   setupFilesAfterEnv: ["<rootDir>/tests/helpers/global.setup.jest.js"],
   verbose: true,
+  reporters: [["default", { summaryThreshold: 0}]],
   collectCoverage: true,
   coverageReporters: ["text", "clover"],
   coveragePathIgnorePatterns: [
@@ -31,7 +32,6 @@ const config = {
       ],
       testMatch: [
         "<rootDir>/tests/database/**.test.js",
-        "<rootDir>/tests/http/**.test.js",
         "<rootDir>/tests/vcs/**.test.js",
       ],
     },

@@ -48,6 +48,13 @@ function ownerClause(sql, opts) {
   return sql`AND p.owner = ${opts.owner}`;
 }
 
+function ownerNameClause(sql, opts) {
+  if (typeof opts.ownerName !== "string") {
+    return getEmptyClause(sql);
+  }
+  return sql`AND p.owner = ${opts.ownerName}`;
+}
+
 function serviceClause(sql, opts) {
   if (
     typeof opts.service !== "string" ||
@@ -78,6 +85,7 @@ module.exports = {
   queryClause,
   filterClause,
   ownerClause,
+  ownerNameClause,
   serviceClause,
   fileExtensionClause,
 };

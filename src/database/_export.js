@@ -103,6 +103,7 @@ const keys = [
   "packageNameAvailability",
   "removePackageByName",
   "removePackageVersion",
+  "removeUserByID",
   "updateDecrementStar",
   "updateIncrementStar",
   "updatePackageDecrementDownloadByName",
@@ -114,6 +115,12 @@ for (const key of keys) {
   let tmp = require(`./${key}.js`);
   exportObj[key] = wrapper(tmp);
   exportObj[key].safe = tmp.safe;
+}
+
+if (process.env.PULSAR_STATUS === "dev") {
+  // If in a dev environment, append the SQL object onto the export, allowing
+  // tests to manually modify the DB via calls
+  exportObj.sql = getSqlStorage();
 }
 
 module.exports = exportObj;
