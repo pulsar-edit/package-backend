@@ -11,17 +11,6 @@ const config = {
   ],
   projects: [
     {
-      displayName: "Full-Tests",
-      globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
-      globalTeardown:
-        "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
-      setupFilesAfterEnv: [
-        "<rootDir>/tests/helpers/global.setup.jest.js",
-        "<rootDir>/tests/helpers/handlers.setup.jest.js",
-      ],
-      testMatch: ["<rootDir>/tests/full/**.test.js"],
-    },
-    {
       displayName: "Integration-Tests",
       globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
       globalTeardown:
@@ -31,6 +20,7 @@ const config = {
         "<rootDir>/tests/helpers/global.setup.jest.js",
       ],
       testMatch: [
+        "<rootDir>/tests/full/**.test.js",
         "<rootDir>/tests/database/**.test.js",
       ],
     },
