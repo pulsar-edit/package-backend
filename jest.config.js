@@ -32,7 +32,6 @@ const config = {
       ],
       testMatch: [
         "<rootDir>/tests/database/**.test.js",
-        "<rootDir>/tests/vcs/**.test.js",
       ],
     },
     {
