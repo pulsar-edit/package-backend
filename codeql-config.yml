@@ -1,8 +1,11 @@
 name: "CodeQL Config"
 
 queries:
+  - uses: default
   - uses: security-extended
   - uses: security-and-quality
+  - uses: codeql/javascript-queries
+  - uses: codeql/javascript
 
 paths-ignore:
   - ./test
