@@ -65,7 +65,7 @@ describe("VCS", () => {
       const res = vcs.determineProvider("https://codeberg.org/itbastian/makemkv-move-extras");
       expect(res.type).toBe("berg");
       expect(res.url).toBe("https://codeberg.org/itbastian/makemkv-move-extras");
-    })
+    });
   });
 
   describe("Responds as expected", () => {
