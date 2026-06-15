@@ -4,7 +4,7 @@ queries:
   - uses: default
   - uses: security-extended
   - uses: security-and-quality
-  - uses: codeql/javascript-queries
+  - uses: javascript-queries
 
 paths-ignore:
   - ./test
