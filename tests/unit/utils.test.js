@@ -135,6 +135,57 @@ describe("engineFilter returns version expected.", () => {
     const res = await utils.engineFilter(pack, engine);
     expect(res.metadata.version).toEqual("1.0.0");
   });
+
+  test("Handles Invalid engine filter", async () => {
+    const res = await utils.engineFilter(
+      {
+        versions: {
+          "1.0.0": {
+            version: "1.0.0",
+            engines: { atom: "*" }
+          }
+        }
+      },
+      "not-a-valid-semver"
+    );
+    expect(res.versions["1.0.0"]).toBeDefined();
+    expect(res.versions["1.0.0"].version).toEqual("1.0.0");
+    expect(res.metadata).not.toBeDefined();
+  });
+
+  test("Handles no engine declared on package", async () => {
+    const res = await utils.engineFilter(
+      {
+        versions: {
+          "1.0.0": {
+            version: "1.0.0",
+            engines: { notAtom: "*" }
+          }
+        }
+      },
+      "1.0.0"
+    );
+    expect(res.versions["1.0.0"]).toBeDefined();
+    expect(res.versions["1.0.0"].version).toEqual("1.0.0");
+    expect(res.metadata).not.toBeDefined();
+  });
+
+  test("Handles invalid range in package", async () => {
+    const res = await utils.engineFilter(
+      {
+        versions: {
+          "1.0.0": {
+            version: "1.0.0",
+            engines: { atom: "not-a-valid-range" }
+          }
+        }
+      },
+      "1.0.0"
+    );
+    expect(res.versions["1.0.0"]).toBeDefined();
+    expect(res.versions["1.0.0"].version).toEqual("1.0.0");
+    expect(res.metadata).not.toBeDefined();
+  });
 });
 
 describe("Tests for getOwnerRepoFromPackage", () => {
