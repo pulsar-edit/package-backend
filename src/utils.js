@@ -5,6 +5,7 @@
 const logger = require("./logger.js");
 const storage = require("./storage.js");
 const crypto = require("crypto");
+const parseGithubURL = require("parse-github-url");
 
 /**
  * @async
@@ -317,22 +318,7 @@ function getOwnerRepoFromUrlString(url) {
     return "";
   }
 
-  // Simplified version of the regex here: https://regex101.com/r/3OMBy2/3
-  // The following is the optimized version using the positive lookaheads, atomic groups and
-  // capturing groups to avoid backtracking: https://regex101.com/r/I5p3OT/2
-  const reg =
-    /(?=(https:\/\/(?:www\.)?github\.com\/|git@github\.com:))\1(?=((?:[\w\-\.]+)\/(?:[\w\-\.]+)))\2/;
-
-  const res = url.match(reg);
-
-  if (res === null || res?.length !== 3) {
-    logger.generic(3, `getOwnerRepoFromUrlString Unable to parse: ${url}`);
-    return "";
-  }
-
-  // Since backtracking is not allowed, the final ".git" is captured if present,
-  // so we remove it before return.
-  return res[2].replace(/\.git$/, "");
+  return parseGithubURL(url).repo ?? "";
 }
 
 /**
