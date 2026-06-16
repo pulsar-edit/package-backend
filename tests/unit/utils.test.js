@@ -53,7 +53,7 @@ describe("engineFilter returns version expected.", () => {
     const engine = "1.5.0";
 
     const res = await utils.engineFilter(pack, engine);
-    expect(res.metadata.version === "2.0.0");
+    expect(res.metadata.version).toEqual("2.0.0");
   });
 
   test("Returns Matching version when given an equal upper bound.", async () => {
@@ -77,7 +77,7 @@ describe("engineFilter returns version expected.", () => {
     const engine = "1.4.9";
 
     const res = await utils.engineFilter(pack, engine);
-    expect(res.metadata.version === "1.9.9");
+    expect(res.metadata.version).toEqual("1.9.9");
   });
 
   test("Returns First Matching version on lower bond equal.", async () => {
@@ -101,7 +101,7 @@ describe("engineFilter returns version expected.", () => {
     const engine = "1.2.3";
 
     const res = await utils.engineFilter(pack, engine);
-    expect(res.metadata.version === "2.0.0");
+    expect(res.metadata.version).toEqual("2.0.0");
   });
 
   test("Catches non String correctly", async () => {
@@ -116,6 +116,24 @@ describe("engineFilter returns version expected.", () => {
     const res = await utils.engineFilter(pack, engine);
     expect(res.versions["1.0.0"]).toBeDefined();
     expect(res.versions["1.0.0"].version).toEqual("1.0.0");
+  });
+
+  test("Supports wildcard engines (like built in packages use)", async () => {
+    const pack = {
+      versions: {
+        "1.0.0": {
+          version: "1.0.0",
+          engines: {
+            atom: "*"
+          }
+        }
+      }
+    };
+
+    const engine = "1.2.3";
+
+    const res = await utils.engineFilter(pack, engine);
+    expect(res.metadata.version).toEqual("1.0.0");
   });
 });
 
