@@ -114,6 +114,21 @@ module.exports = {
       packArray = [newPacks];
     }
 
+    if (params.serviceVersion !== false) {
+      // We filter the serviceVersion paramter in JS, rather than in the original db call
+      let i = packArray.length;
+      while(i--) {
+        let filteredPack = context.utils.serviceVersionFilter(packArray[i], params.service, params.serviceVersion);
+
+        if (!filteredPack) {
+          // We will get a falsy value back if the filtering failed
+          packArray.splice(i, 1);
+        }
+      }
+    }
+
+
+
     const ssoP = new context.ssoPaginate();
 
     ssoP.resultCount = packs.pagination.count;
@@ -124,6 +139,30 @@ module.exports = {
       packs.pagination.page,
       params
     );
+
+    // If we modified the pagination count via filtering on service versions, lets
+    // make sure to update it here
+    if (params.serviceVersion !== false) {
+      if (ssoP.resultCount !== packArray.length) {
+        ssoP.resultCount = packArray.length;
+        /**
+        WARNING: the fact that we are modifying the amount of packages
+        returned here does mean our offset of the total page count is now incorrect.
+        There's no easy way to fix this, unless we return all matching results from the
+        database on the first call, which is expensive.
+        The only saving grace here is, that technically the page count won't be wrong.
+        It's just that some pages may not have the total expected amount of packages on them.
+        Such as a page having under the default 30 max returns, meanwhile page 2
+        might have 30, etc.
+        Worse case, a page has zero results, but the second page has some.
+        We may need to test in practice to see if that's the case.
+        As it is now, I have a hard time imagining many services that would return
+        pages and pages of results, so this may not be the biggest deal.
+        Seemingly the most popular service `autocomplete.provider` does have 18 pages of results
+        currently, so in an instance like that this could get pretty rough.
+        */
+      }
+    }
 
     return ssoP.isOk().addContent(packArray);
   },
