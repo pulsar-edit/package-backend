@@ -1,7 +1,7 @@
 {
   "extends": [ "config:base", ":dependencyDashboardApproval"],
   "constraints": {
-    "node": "< 18"
+    "node": "< 24"
   },
   "labels": ["dependencies"],
   "separateMajorMinor": "false",
