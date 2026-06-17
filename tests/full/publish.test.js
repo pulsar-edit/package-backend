@@ -115,7 +115,10 @@ describe("publish packages", () => {
     expect(pack.name).toBe("a-pulsar-package");
     expect(pack).toMatchObject(require("./fixtures/a-pulsar-package/match.js"));
 
-    const removePkg = await database.removePackageByName("a-pulsar-package", true);
+    const removePkg = await database.removePackageByName(
+      "a-pulsar-package",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 
@@ -129,9 +132,9 @@ describe("publish packages", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
+          role_name: "Admin",
         },
       ]);
 
@@ -139,7 +142,7 @@ describe("publish packages", () => {
     nock("https://api.github.com")
       .get("/repos/confused-Techie/a-pulsar-package")
       .reply(200, {
-        full_name: "confused-Techie/a-pulsar-package"
+        full_name: "confused-Techie/a-pulsar-package",
       });
 
     // Ensure we can get the readme
@@ -149,7 +152,7 @@ describe("publish packages", () => {
         content: getFileEncoded(
           "./tests/full/fixtures/a-pulsar-package/readme.md"
         ),
-        encoding: "base64"
+        encoding: "base64",
       });
 
     // Ensure we can get the tags
@@ -158,20 +161,22 @@ describe("publish packages", () => {
       .reply(200, [
         {
           name: "v1.0.0",
-          tarball_url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/tarball/refs/tags/v1.0.0",
+          tarball_url:
+            "https://api.github.com/repos/confused-Techie/a-pulsar-package/tarball/refs/tags/v1.0.0",
           commit: {
             sha: "09f",
-            url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/commits/09f"
-          }
+            url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/commits/09f",
+          },
         },
         {
           name: "vvInvalid-Semver",
-          tarball_url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/tarball/refs/tags/vvInvalid-Semver",
+          tarball_url:
+            "https://api.github.com/repos/confused-Techie/a-pulsar-package/tarball/refs/tags/vvInvalid-Semver",
           commit: {
             sha: "09e",
-            url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/commits/09e"
-          }
-        }
+            url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/commits/09e",
+          },
+        },
       ]);
 
     // Ensure we can get the `package.json`
@@ -208,7 +213,10 @@ describe("publish packages", () => {
     expect(pack.versions["1.0.0"]).toBeTruthy();
     expect(pack.versions["vvInvalid-Semver"]).toBeFalsy();
 
-    const removePkg = await database.removePackageByName("a-pulsar-package", true);
+    const removePkg = await database.removePackageByName(
+      "a-pulsar-package",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 
