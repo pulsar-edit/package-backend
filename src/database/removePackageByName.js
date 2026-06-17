@@ -14,6 +14,7 @@ const getPackageByNameSimple = require("./getPackageByNameSimple.js").exec;
 module.exports = {
   safe: false,
   exec: async (sql, name, exterminate = false) => {
+    console.log(`Attempting to remove package: '${name}', EXTERMINATE: '${exterminate}'`);
     return await sql
       .begin(async (sqlTrans) => {
         // Retrieve the package pointer

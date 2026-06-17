@@ -115,7 +115,101 @@ describe("publish packages", () => {
     expect(pack.name).toBe("a-pulsar-package");
     expect(pack).toMatchObject(require("./fixtures/a-pulsar-package/match.js"));
 
-    await database.removePackageByName("a-pulsar-package", true);
+    const removePkg = await database.removePackageByName("a-pulsar-package", true);
+    expect(removePkg.ok).toBe(true);
+  });
+
+  test("excludes bad non-latest tags from publication", async () => {
+    // Ensure user has ownership of repo
+    nock("https://api.github.com/")
+      .get("/repos/confused-Techie/a-pulsar-package/collaborators?page=1")
+      .reply(200, [
+        {
+          node_id: "full-publish-test-user-node-id",
+          permissions: {
+            admin: true,
+            maintain: true,
+            push: true
+          },
+          role_name: "Admin"
+        },
+      ]);
+
+    // Ensure we can report that the package exists
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/a-pulsar-package")
+      .reply(200, {
+        full_name: "confused-Techie/a-pulsar-package"
+      });
+
+    // Ensure we can get the readme
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/a-pulsar-package/readme?ref=v1.0.0")
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/a-pulsar-package/readme.md"
+        ),
+        encoding: "base64"
+      });
+
+    // Ensure we can get the tags
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/a-pulsar-package/tags")
+      .reply(200, [
+        {
+          name: "v1.0.0",
+          tarball_url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/tarball/refs/tags/v1.0.0",
+          commit: {
+            sha: "09f",
+            url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/commits/09f"
+          }
+        },
+        {
+          name: "vvInvalid-Semver",
+          tarball_url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/tarball/refs/tags/vvInvalid-Semver",
+          commit: {
+            sha: "09e",
+            url: "https://api.github.com/repos/confused-Techie/a-pulsar-package/commits/09e"
+          }
+        }
+      ]);
+
+    // Ensure we can get the `package.json`
+    nock("https://api.github.com")
+      .get(
+        "/repos/confused-Techie/a-pulsar-package/contents/package.json?ref=v1.0.0"
+      )
+      .reply(200, {
+        content: getFileEncoded(
+          "./tests/full/fixtures/a-pulsar-package/package.json"
+        ),
+        encoding: "base64",
+      });
+
+    // Lets fail any feature detection requests for now
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/a-pulsar-package/contents/snippets")
+      .reply(404);
+
+    nock("https://api.github.com")
+      .get("/repos/confused-Techie/a-pulsar-package/contents/grammars")
+      .reply(404);
+
+    const res = await supertest(app)
+      .post("/api/packages")
+      .query({ repository: "confused-Techie/a-pulsar-package" })
+      .set({ Authorization: "any-token-will-do" });
+
+    expect(res).toHaveHTTPCode(201);
+
+    const pack = res.body;
+
+    expect(pack.name).toBe("a-pulsar-package");
+    expect(pack.versions["1.0.0"]).toBeTruthy();
+    expect(pack.versions["vvInvalid-Semver"]).toBeFalsy();
+
+    const removePkg = await database.removePackageByName("a-pulsar-package", true);
+    expect(removePkg.ok).toBe(true);
   });
 
   test("when the request for the 'package.json' fails", async () => {
