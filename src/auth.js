@@ -42,21 +42,29 @@ async function verifyAuth(token, db) {
         3,
         `auth.verifyAuth() API Call returned: ${userData.status}`
       );
+      // Logging the raw request makes the logs pretty hard to read through.
+      // Lets condense it here and reuse where needed in this module
+      const userDataLogObj = {
+        status: userData.status,
+        text: userData.text,
+        headers: userData.headers,
+      };
+
       switch (userData.status) {
         case 403:
         case 401:
           // When the user provides bad authentication, lets tell them it's bad auth.
           logger.generic(6, "auth.verifyAuth() API Call Returning Bad Auth");
-          return { ok: false, short: "unauthorized", content: userData };
+          return { ok: false, short: "unauthorized", content: userDataLogObj };
           break;
         default:
           logger.generic(
             3,
             "auth.verifyAuth() API Call Returned Uncaught Status",
-            { type: "object", obj: userData }
+            { type: "object", obj: userDataLogObj }
           );
 
-          return { ok: false, short: "server_error", content: userData };
+          return { ok: false, short: "server_error", content: userDataLogObj };
       }
     }
 

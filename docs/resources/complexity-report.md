@@ -1,22 +1,22 @@
-# Complexity report, 5/30/2026
+# Complexity report, 6/17/2026
 
-* Mean per-function logical LOC: 15.465277777777779
-* Mean per-function parameter count: 0.16041666666666668
-* Mean per-function cyclomatic complexity: 1.2486111111111111
-* Mean per-function Halstead effort: 3209.507061722319
-* Mean per-module maintainability index: 67.56453746276725
-* First-order density: 0.6558641975308641%
-* Change cost: 4.147376543209877%
+* Mean per-function logical LOC: 15.612676056338028
+* Mean per-function parameter count: 0.16267605633802817
+* Mean per-function cyclomatic complexity: 1.2521126760563381
+* Mean per-function Halstead effort: 3244.819396196542
+* Mean per-module maintainability index: 67.33164014196474
+* First-order density: 0.6744693513191827%
+* Change cost: 4.245189446538386%
 * Core size: 100%
 
 ## /home/runner/work/package-backend/package-backend/jest.config.js
 
-* Physical LOC: 46
-* Logical LOC: 21
+* Physical LOC: 35
+* Logical LOC: 18
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
-* Cyclomatic complexity density: 4.761904761904762%
-* Maintainability index: 55.13122813240744
+* Cyclomatic complexity density: 5.555555555555555%
+* Maintainability index: 57.15078209383711
 * Dependency count: 0
 
 ## /home/runner/work/package-backend/package-backend/jsdoc.conf.js
@@ -241,13 +241,13 @@
 
 ## /home/runner/work/package-backend/package-backend/src/controllers/endpoints.js
 
-* Physical LOC: 30
+* Physical LOC: 31
 * Logical LOC: 1
 * Mean parameter count: 0
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 100%
-* Maintainability index: 85.19382950159975
-* Dependency count: 27
+* Maintainability index: 85.10476685215905
+* Dependency count: 28
 
 ## /home/runner/work/package-backend/package-backend/src/database/_constants.js
 
@@ -687,16 +687,6 @@
 * Cyclomatic complexity: 1
 * Cyclomatic complexity density: 0.9090909090909091%
 * Maintainability index: 33.262769753661445
-* Dependency count: 1
-
-## /home/runner/work/package-backend/package-backend/tests/vcs/vcs.unit.test.js
-
-* Physical LOC: 66
-* Logical LOC: 2
-* Mean parameter count: 0
-* Cyclomatic complexity: 1
-* Cyclomatic complexity density: 50%
-* Maintainability index: 86.03073855173344
 * Dependency count: 1
 
 ## /home/runner/work/package-backend/package-backend/src/query_parameters/shared/owner.js

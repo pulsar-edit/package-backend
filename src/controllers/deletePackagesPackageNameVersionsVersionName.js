@@ -75,10 +75,12 @@ module.exports = {
       return sso.notOk().addContent(packageExists).assignCalls(callStack);
     }
 
-    const gitowner = await context.vcs.ownership(
-      user.content,
-      packageExists.content
+    // Get `owner/repo` string format from package
+    const ownerRepo = context.utils.getOwnerRepoFromPackage(
+      packageExists.content.data
     );
+
+    const gitowner = await context.vcs.ownership(user.content, ownerRepo);
 
     callStack.addCall("vcs.ownership", gitowner);
 
