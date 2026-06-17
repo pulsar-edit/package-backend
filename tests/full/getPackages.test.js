@@ -30,7 +30,7 @@ describe("GET /api/packages", () => {
                 versions: { "0.0.1": "provideRefactor" },
               },
             },
-          }
+          },
         })
       );
       expect(addPkg1.ok).toBe(true);
@@ -44,17 +44,23 @@ describe("GET /api/packages", () => {
                 versions: { "0.1.1": "provideanother" },
               },
             },
-          }
+          },
         })
       );
       expect(addPkg2.ok).toBe(true);
     });
 
     afterAll(async () => {
-      const removePkg1 = await database.removePackageByName("get-packages-test", true);
+      const removePkg1 = await database.removePackageByName(
+        "get-packages-test",
+        true
+      );
       expect(removePkg1.ok).toBe(true);
 
-      const removePkg2 = await database.removePackageByName("calculator-light-ui", true);
+      const removePkg2 = await database.removePackageByName(
+        "calculator-light-ui",
+        true
+      );
       expect(removePkg2.ok).toBe(true);
     });
 

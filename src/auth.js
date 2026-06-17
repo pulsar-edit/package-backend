@@ -47,7 +47,7 @@ async function verifyAuth(token, db) {
       const userDataLogObj = {
         status: userData.status,
         text: userData.text,
-        headers: userData.headers
+        headers: userData.headers,
       };
 
       switch (userData.status) {

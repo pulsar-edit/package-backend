@@ -34,8 +34,8 @@ describe("GET /api/themes/search", () => {
     const addPkg1 = await database.insertNewPackage(
       genPackage("https://github.com/confused-Techie/atom-material-syntax", {
         extraVersionData: {
-          theme: "ui"
-        }
+          theme: "ui",
+        },
       })
     );
     expect(addPkg1.ok).toBe(true);
@@ -48,7 +48,7 @@ describe("GET /api/themes/search", () => {
     // == Test
     const res = await supertest(app)
       .get("/api/themes/search")
-      .query({ q: "atom-material"});
+      .query({ q: "atom-material" });
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body).toBeArray();
@@ -56,10 +56,16 @@ describe("GET /api/themes/search", () => {
     expect(res.body[0].name).toBe("atom-material-syntax");
 
     // == Cleanup
-    const removePkg1 = await database.removePackageByName("atom-material-syntax", true);
+    const removePkg1 = await database.removePackageByName(
+      "atom-material-syntax",
+      true
+    );
     expect(removePkg1.ok).toBe(true);
 
-    const removePkg2 = await database.removePackageByName("atom-material-themeless", true);
+    const removePkg2 = await database.removePackageByName(
+      "atom-material-themeless",
+      true
+    );
     expect(removePkg2.ok).toBe(true);
   });
 });

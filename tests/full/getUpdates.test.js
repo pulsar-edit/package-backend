@@ -6,6 +6,8 @@ describe("GET /api/updates", () => {
     const res = await supertest(app).get("/api/updates");
 
     expect(res).toHaveHTTPCode(501);
-    expect(res.body.message).toBe("While under development this feature is not supported.");
+    expect(res.body.message).toBe(
+      "While under development this feature is not supported."
+    );
   });
 });

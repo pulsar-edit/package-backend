@@ -5,8 +5,7 @@ const genPackage = require("../helpers/package.jest.js");
 
 describe("GET /api/themes", () => {
   test("Returns empty array if no themes are present", async () => {
-    const res = await supertest(app)
-      .get("/api/themes");
+    const res = await supertest(app).get("/api/themes");
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body).toBeArray();
@@ -23,16 +22,15 @@ describe("GET /api/themes", () => {
         genPackage("https://github.com/confused-Techie/test-package", {
           versions: ["1.1.0", "1.0.0"],
           extraVersionData: {
-            theme: "syntax"
-          }
+            theme: "syntax",
+          },
         })
       );
       expect(addPkg.ok).toBe(true);
     });
 
     test("Response contains packages", async () => {
-      res = await supertest(app)
-        .get("/api/themes");
+      res = await supertest(app).get("/api/themes");
 
       expect(res).toHaveHTTPCode(200);
       expect(res.body).toBeArray();
@@ -53,7 +51,10 @@ describe("GET /api/themes", () => {
     });
 
     afterAll(async () => {
-      const removePkg = await database.removePackageByName("test-package", true);
+      const removePkg = await database.removePackageByName(
+        "test-package",
+        true
+      );
       expect(removePkg.ok).toBe(true);
     });
   });

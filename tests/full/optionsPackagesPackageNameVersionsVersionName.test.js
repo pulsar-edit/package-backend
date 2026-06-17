@@ -3,8 +3,9 @@ const app = require("../../src/setupEndpoints.js");
 
 describe("OPTIONS /api/packages/:packageName/versions/:versionName", () => {
   test("Returns correct headers", async () => {
-    const res = await supertest(app)
-      .options("/api/packages/language-css/versions/1.0.0");
+    const res = await supertest(app).options(
+      "/api/packages/language-css/versions/1.0.0"
+    );
 
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET, DELETE");

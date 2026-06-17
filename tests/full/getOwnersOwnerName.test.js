@@ -27,15 +27,17 @@ describe("GET /api/owners/:ownerName", () => {
     expect(addPkg.ok).toBe(true);
 
     // == Test
-    const res = await supertest(app)
-      .get("/api/owners/i-dont-exist");
+    const res = await supertest(app).get("/api/owners/i-dont-exist");
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body).toBeArray();
     expect(res.body.length).toBe(0);
 
     // == Cleanup
-    const removePkg = await database.removePackageByName("get-owner-test", true);
+    const removePkg = await database.removePackageByName(
+      "get-owner-test",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 
@@ -48,8 +50,7 @@ describe("GET /api/owners/:ownerName", () => {
     expect(addPkg.ok).toBe(true);
 
     // == Test
-    const res = await supertest(app)
-      .get("/api/owners/pulsar-cooperative");
+    const res = await supertest(app).get("/api/owners/pulsar-cooperative");
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body).toBeArray();
@@ -57,7 +58,10 @@ describe("GET /api/owners/:ownerName", () => {
     expect(res.body[0].name).toBe("get-owner-test");
 
     // == Cleanup
-    const removePkg = await database.removePackageByName("get-owner-test", true);
+    const removePkg = await database.removePackageByName(
+      "get-owner-test",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 });

@@ -1,17 +1,16 @@
 /**
-  * @async
-  * @function removeUserByID
-  * @desc Remove a user from the database providing their ID.
-  * @param {int} id - User ID
-  * @returns {object} A Server status Object.
-*/
+ * @async
+ * @function removeUserByID
+ * @desc Remove a user from the database providing their ID.
+ * @param {int} id - User ID
+ * @returns {object} A Server status Object.
+ */
 
 module.exports = {
   safe: true,
   exec: async (sql, id) => {
     return await sql
       .begin(async (sqlTrans) => {
-
         const command = await sqlTrans`
           DELETE FROM users
           WHERE id = ${id}
@@ -30,8 +29,8 @@ module.exports = {
               ok: false,
               content: "A generic error occurred while deleting the user.",
               short: "server_error",
-              error: err
-          };
+              error: err,
+            };
       });
   },
 };

@@ -80,10 +80,7 @@ module.exports = {
       packageExists.content.data
     );
 
-    const gitowner = await context.vcs.ownership(
-      user.content,
-      ownerRepo
-    );
+    const gitowner = await context.vcs.ownership(user.content, ownerRepo);
 
     callStack.addCall("vcs.ownership", gitowner);
 

@@ -22,7 +22,7 @@ describe("GET /api/users", () => {
     // == Setup
     // Return bad auth from github
     nock("https://api.github.com/").get("/user").reply(401, {
-      message: "Requires authentication"
+      message: "Requires authentication",
     });
 
     // == Test
@@ -46,7 +46,7 @@ describe("GET /api/users", () => {
 
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "get-user-node-id"
+      node_id: "get-user-node-id",
     });
 
     // == Test
@@ -66,8 +66,12 @@ describe("GET /api/users", () => {
     const res = await supertest(app).get("/api/users");
 
     expect(res.headers["access-control-allow-methods"]).toBe("GET");
-    expect(res.headers["access-control-allow-headers"]).toBe("Content-Type, Authorization, Access-Control-Allow-Credentials");
-    expect(res.headers["access-control-allow-origin"]).toBe("https://packages.pulsar-edit.dev");
+    expect(res.headers["access-control-allow-headers"]).toBe(
+      "Content-Type, Authorization, Access-Control-Allow-Credentials"
+    );
+    expect(res.headers["access-control-allow-origin"]).toBe(
+      "https://packages.pulsar-edit.dev"
+    );
     expect(res.headers["access-control-allow-credentials"]).toBe("true");
   });
 });

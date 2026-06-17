@@ -23,7 +23,7 @@ describe("DELETE /api/packages/:packageName", () => {
     // === Setup
     // Return bad auth from github
     nock("https://api.github.com/").get("/user").reply(401, {
-      message: "Requires authentication"
+      message: "Requires authentication",
     });
 
     // == Test
@@ -32,7 +32,9 @@ describe("DELETE /api/packages/:packageName", () => {
       .set({ Authorization: "any-token-will-do" });
 
     expect(res).toHaveHTTPCode(401);
-    expect(res.body.message).toBe("Unauthorized: Please update your token if you haven't done so recently.");
+    expect(res.body.message).toBe(
+      "Unauthorized: Please update your token if you haven't done so recently."
+    );
   });
 
   test("Fails when a bad package name is provided", async () => {
@@ -47,7 +49,7 @@ describe("DELETE /api/packages/:packageName", () => {
 
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "deletePackagesPackageName-node-id"
+      node_id: "deletePackagesPackageName-node-id",
     });
 
     // == Test
@@ -81,7 +83,7 @@ describe("DELETE /api/packages/:packageName", () => {
 
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "dlt-pkg-test-user-node-id"
+      node_id: "dlt-pkg-test-user-node-id",
     });
 
     // Ensure user has ownership of repo
@@ -93,10 +95,10 @@ describe("DELETE /api/packages/:packageName", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // == Test
@@ -107,8 +109,9 @@ describe("DELETE /api/packages/:packageName", () => {
     expect(res).toHaveHTTPCode(500);
     expect(res.body.message).toBe("Server Error: From Server Error"); // TODO HUMANIZE
 
-    const doesPackageStillExist = await supertest(app)
-      .get("/api/packages/dlt-pkg-by-name-test");
+    const doesPackageStillExist = await supertest(app).get(
+      "/api/packages/dlt-pkg-by-name-test"
+    );
 
     expect(doesPackageStillExist).toHaveHTTPCode(200);
 
@@ -116,7 +119,10 @@ describe("DELETE /api/packages/:packageName", () => {
     const removeUser = await database.removeUserByID(addUser.content.id);
     expect(removeUser.ok).toBe(true);
 
-    const removePkg = await database.removePackageByName("dlt-pkg-by-name-test", true);
+    const removePkg = await database.removePackageByName(
+      "dlt-pkg-by-name-test",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 
@@ -138,7 +144,7 @@ describe("DELETE /api/packages/:packageName", () => {
 
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "dlt-pkg-test-user-node-id"
+      node_id: "dlt-pkg-test-user-node-id",
     });
 
     // Ensure user has ownership of repo
@@ -150,10 +156,10 @@ describe("DELETE /api/packages/:packageName", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // == Test
@@ -165,16 +171,21 @@ describe("DELETE /api/packages/:packageName", () => {
     expect(res.body).toBeTypeof("object");
     expect(Object.keys(res.body).length).toBe(0);
 
-    const doesPackageStillExist = await supertest(app)
-      .get("/api/packages/dlt-pkg-by-name-test");
+    const doesPackageStillExist = await supertest(app).get(
+      "/api/packages/dlt-pkg-by-name-test"
+    );
 
     expect(doesPackageStillExist).toHaveHTTPCode(404);
 
-    const isPackageNameAvailable = await database.packageNameAvailability("dlt-pkg-by-name-test");
+    const isPackageNameAvailable = await database.packageNameAvailability(
+      "dlt-pkg-by-name-test"
+    );
 
     expect(isPackageNameAvailable.ok).toBe(false);
     expect(isPackageNameAvailable.short).toBe("not_found");
-    expect(isPackageNameAvailable.content).toBe("dlt-pkg-by-name-test is not available to be used for a new package.");
+    expect(isPackageNameAvailable.content).toBe(
+      "dlt-pkg-by-name-test is not available to be used for a new package."
+    );
 
     // == Cleanup
     const removeUser = await database.removeUserByID(addUser.content.id);

@@ -26,8 +26,8 @@ describe("GET /api/packages/search", () => {
           "https://github.com/getPackagesSearch/get-packages-search-theme-test",
           {
             extraVersionData: {
-              theme: "syntax"
-            }
+              theme: "syntax",
+            },
           }
         )
       );
@@ -40,19 +40,29 @@ describe("GET /api/packages/search", () => {
       );
       expect(addPkg2.ok).toBe(true);
 
-      const addFeatures = await database.applyFeatures({
-        hasSnippets: false,
-        hasGrammar: false,
-        supportedLanguages: ["js", "ts"]
-      }, "get-packages-search-test", "1.0.0");
+      const addFeatures = await database.applyFeatures(
+        {
+          hasSnippets: false,
+          hasGrammar: false,
+          supportedLanguages: ["js", "ts"],
+        },
+        "get-packages-search-test",
+        "1.0.0"
+      );
       expect(addFeatures.ok).toBe(true);
     });
 
     afterAll(async () => {
-      const removePkg1 = await database.removePackageByName("get-packages-search-theme-test", true);
+      const removePkg1 = await database.removePackageByName(
+        "get-packages-search-theme-test",
+        true
+      );
       expect(removePkg1.ok).toBe(true);
 
-      const removePkg2 = await database.removePackageByName("get-packages-search-test", true);
+      const removePkg2 = await database.removePackageByName(
+        "get-packages-search-test",
+        true
+      );
       expect(removePkg2.ok).toBe(true);
     });
 

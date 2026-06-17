@@ -16,7 +16,7 @@ describe("GET /api/themes/featured", () => {
     const addPkg = await database.insertNewPackage(
       // We know 'atom-material-ui' is currently featured
       genPackage("https://github.com/confused-Techie/atom-material-ui", {
-        extraVersionData: { theme: "ui" }
+        extraVersionData: { theme: "ui" },
       })
     );
     expect(addPkg.ok).toBe(true);
@@ -30,7 +30,10 @@ describe("GET /api/themes/featured", () => {
     expect(res.body[0].name).toBe("atom-material-ui");
 
     // == Cleanup
-    const removePkg = await database.removePackageByName("atom-material-ui", true);
+    const removePkg = await database.removePackageByName(
+      "atom-material-ui",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 });

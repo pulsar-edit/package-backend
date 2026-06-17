@@ -3,8 +3,7 @@ const app = require("../../src/setupEndpoints.js");
 
 describe("OPTIONS /api/packages", () => {
   test("Returns correct headers", async () => {
-    const res = await supertest(app)
-      .options("/api/packages");
+    const res = await supertest(app).options("/api/packages");
 
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("POST, GET");

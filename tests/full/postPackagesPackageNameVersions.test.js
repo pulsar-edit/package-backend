@@ -20,7 +20,7 @@ describe("POST /api/packages/:packageName/versions", () => {
   test("Fails with bad auth", async () => {
     // == Setup
     nock("https://api.github.com/").get("/user").reply(401, {
-      message: "Requires authentication"
+      message: "Requires authentication",
     });
 
     // == Test

@@ -3,8 +3,9 @@ const app = require("../../src/setupEndpoints.js");
 
 describe("OPTIONS /api/packages/:packageName/stargazers", () => {
   test("Returns correct headers", async () => {
-    const res = await supertest(app)
-      .options("/api/packages/langauge-css/stargazers");
+    const res = await supertest(app).options(
+      "/api/packages/langauge-css/stargazers"
+    );
 
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("GET");

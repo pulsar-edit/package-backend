@@ -23,7 +23,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     // == Setup
     // Return bad auth from GitHub
     nock("https://api.github.com").get("/user").reply(401, {
-      message: "Requires authentication"
+      message: "Requires authentication",
     });
 
     // == Test
@@ -47,7 +47,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
 
     // Return good auth from github
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "deletePackagesPackageNameVersionsVersionName-node-id"
+      node_id: "deletePackagesPackageNameVersionsVersionName-node-id",
     });
 
     // == Test
@@ -67,7 +67,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     // == Setup
     const addPkg = await database.insertNewPackage(
       genPackage("https://github.com/confused-Techie/dlt-pkg-ver-test", {
-        versions: ["1.0.1", "1.0.0", "0.0.1"]
+        versions: ["1.0.1", "1.0.0", "0.0.1"],
       })
     );
     expect(addPkg.ok).toBe(true);
@@ -80,7 +80,7 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     expect(addUser.ok).toBe(true);
 
     nock("https://api.github.com").get("/user").reply(200, {
-      node_id: "deletePackagesPackageNameVersionsVersionName-node-id"
+      node_id: "deletePackagesPackageNameVersionsVersionName-node-id",
     });
 
     // Ensure user has ownership of repo
@@ -92,10 +92,10 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
           permissions: {
             admin: true,
             maintain: true,
-            push: true
+            push: true,
           },
-          role_name: "Admin"
-        }
+          role_name: "Admin",
+        },
       ]);
 
     // == Test
@@ -107,8 +107,9 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     expect(res.body).toBeTypeof("object");
     expect(Object.keys(res.body).length).toBe(0);
 
-    const doesPackageStillExist = await supertest(app)
-      .get("/api/packages/dlt-pkg-ver-test");
+    const doesPackageStillExist = await supertest(app).get(
+      "/api/packages/dlt-pkg-ver-test"
+    );
 
     expect(doesPackageStillExist).toHaveHTTPCode(200);
     expect(doesPackageStillExist.body.releases.latest).toBe("1.0.1");
@@ -120,7 +121,10 @@ describe("DELETE /api/packages/:packageName/versions/:versionName", () => {
     const removeUser = await database.removeUserByID(addUser.content.id);
     expect(removeUser.ok).toBe(true);
 
-    const removePkg = await database.removePackageByName("dlt-pkg-ver-test", true);
+    const removePkg = await database.removePackageByName(
+      "dlt-pkg-ver-test",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 });

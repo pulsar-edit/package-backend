@@ -3,8 +3,9 @@ const app = require("../../src/setupEndpoints.js");
 
 describe("OPTIONS /api/packages/:packageName/versions", () => {
   test("Returns correct headers", async () => {
-    const res = await supertest(app)
-      .options("/api/packages/language-css/versions");
+    const res = await supertest(app).options(
+      "/api/packages/language-css/versions"
+    );
 
     expect(res).toHaveHTTPCode(204);
     expect(res.headers.allow).toEqual("POST");

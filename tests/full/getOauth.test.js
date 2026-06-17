@@ -26,7 +26,9 @@ describe("GET /api/oauth", () => {
       .query({ state: "this-state-key-does-not-exist" });
 
     expect(res).toHaveHTTPCode(500);
-    expect(res.body.message).toBe("Application Error: Invalid State Key provided.");
+    expect(res.body.message).toBe(
+      "Application Error: Invalid State Key provided."
+    );
   });
 
   test("Fails when Github access token retrevial fails", async () => {
@@ -34,18 +36,19 @@ describe("GET /api/oauth", () => {
     nock("https://github.com/")
       .post("/login/oauth/access_token")
       .query(true)
-      .reply(200, { // TODO: I can't find in docs what status codes this endpoint may return
+      .reply(200, {
+        // TODO: I can't find in docs what status codes this endpoint may return
         error: "unverified_user_email",
         error_description: "The user must have a verified primary email.",
-        error_uri: "/apps/managing-oauth-apps/troubleshooting-oauth-app-access-token-request-errors/#unverified_user_email"
+        error_uri:
+          "/apps/managing-oauth-apps/troubleshooting-oauth-app-access-token-request-errors/#unverified_user_email",
       });
 
     // == Test
     // First we need to create the state key, to do so we will follow the regular
     // login flow
 
-    const resState = await supertest(app)
-      .get("/api/login");
+    const resState = await supertest(app).get("/api/login");
 
     expect(resState).toHaveHTTPCode(302);
     expect(resState.headers["location"]).toBeDefined();
@@ -60,7 +63,9 @@ describe("GET /api/oauth", () => {
 
     expect(res).toHaveHTTPCode(500);
     //expect(res.body.message).toBe("Application Error: Authentication to GitHub failed.");
-    expect(res.body.message).toBe("Application Error: The server encountered an error processing the request.");
+    expect(res.body.message).toBe(
+      "Application Error: The server encountered an error processing the request."
+    );
     // TODO Why isn't this the first error?
   });
 
@@ -72,17 +77,15 @@ describe("GET /api/oauth", () => {
       .reply(200, {
         access_token: "gho_some_secure_token",
         scope: "proper scopes",
-        token_type: "bearer"
+        token_type: "bearer",
       });
 
-    nock("https://api.github.com")
-      .get("/user").query(true).reply(401, {
-        message: "Requires authentication"
-      });
+    nock("https://api.github.com").get("/user").query(true).reply(401, {
+      message: "Requires authentication",
+    });
 
     // == Test
-    const resState = await supertest(app)
-      .get("/api/login");
+    const resState = await supertest(app).get("/api/login");
 
     expect(resState).toHaveHTTPCode(302);
     expect(resState.headers["location"]).toBeDefined();
@@ -97,7 +100,9 @@ describe("GET /api/oauth", () => {
 
     expect(res).toHaveHTTPCode(500);
     //expect(res.body.message).toBe("Application Error: Received HTTP Status 401");
-    expect(res.body.message).toBe("Application Error: The server encountered an error processing the request.");
+    expect(res.body.message).toBe(
+      "Application Error: The server encountered an error processing the request."
+    );
     // TODO Why isn't this the first error?
   });
 
@@ -109,19 +114,17 @@ describe("GET /api/oauth", () => {
       .reply(200, {
         access_token: "gho_some_secure_token",
         scope: "proper scopes",
-        token_type: "bearer"
+        token_type: "bearer",
       });
 
-    nock("https://api.github.com")
-      .get("/user").query(true).reply(200, {
-        node_id: "getOauth-test-node-id",
-        login: "getOauth-test-user-id",
-        avatar_url: "https://github.com/images/error/octocat_happy.gif"
-      });
+    nock("https://api.github.com").get("/user").query(true).reply(200, {
+      node_id: "getOauth-test-node-id",
+      login: "getOauth-test-user-id",
+      avatar_url: "https://github.com/images/error/octocat_happy.gif",
+    });
 
     // == Test
-    const resState = await supertest(app)
-      .get("/api/login");
+    const resState = await supertest(app).get("/api/login");
 
     expect(resState).toHaveHTTPCode(302);
     expect(resState.headers["location"]).toBeDefined();

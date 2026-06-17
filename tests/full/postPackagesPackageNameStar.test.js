@@ -22,7 +22,7 @@ describe("POST /api/packages/:packageName/star", () => {
   test("Fails when bad auth is provided", async () => {
     // == Setup
     nock("https://api.github.com/").get("/user").reply(401, {
-      message: "Requires authentication"
+      message: "Requires authentication",
     });
 
     // == Test
@@ -44,7 +44,7 @@ describe("POST /api/packages/:packageName/star", () => {
     expect(addUser.ok).toBe(true);
 
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "postPackagesStar-node-id"
+      node_id: "postPackagesStar-node-id",
     });
 
     // == Test
@@ -75,13 +75,13 @@ describe("POST /api/packages/:packageName/star", () => {
     expect(addPkg.ok).toBe(true);
 
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "postPackagesStar-node-id"
+      node_id: "postPackagesStar-node-id",
     });
 
     // == Test
     const res = await supertest(app)
       .post("/api/packages/star-pkg-test/star")
-      .set({ Authorization: "any-token-will-do"});
+      .set({ Authorization: "any-token-will-do" });
 
     expect(res).toHaveHTTPCode(200);
     expect(res.body.name).toBe("star-pkg-test");

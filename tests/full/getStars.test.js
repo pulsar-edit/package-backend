@@ -22,7 +22,7 @@ describe("GET /api/stars", () => {
   test("Returns Unauthenticated Status Code for Invalid User", async () => {
     // == Setup
     nock("https://api.github.com/").get("/user").reply(401, {
-      message: "Requires authentication"
+      message: "Requires authentication",
     });
 
     // == Test
@@ -39,7 +39,7 @@ describe("GET /api/stars", () => {
   test("Valid user with no Stars return array", async () => {
     // == Setup
     nock("https://api.github.com/").get("/user").reply(200, {
-      node_id: "getStars-test-node-id"
+      node_id: "getStars-test-node-id",
     });
 
     const addUser = await database.insertNewUser(
@@ -67,7 +67,7 @@ describe("GET /api/stars", () => {
     // == Setup
     // We mock this return twice, 1 for starring the pack, and 2 for checking our stars
     nock("https://api.github.com/").get("/user").times(2).reply(200, {
-      node_id: "getStars-test-node-id"
+      node_id: "getStars-test-node-id",
     });
 
     const addUser = await database.insertNewUser(
@@ -98,13 +98,19 @@ describe("GET /api/stars", () => {
     expect(res.body[0].name).toBe("get-stars-test");
 
     // == Cleanup
-    const removeStar = await database.updateDecrementStar(addUser.content, "get-stars-test");
+    const removeStar = await database.updateDecrementStar(
+      addUser.content,
+      "get-stars-test"
+    );
     expect(removeStar.ok).toBe(true);
 
     const removeUser = await database.removeUserByID(addUser.content.id);
     expect(removeUser.ok).toBe(true);
 
-    const removePkg = await database.removePackageByName("get-stars-test", true);
+    const removePkg = await database.removePackageByName(
+      "get-stars-test",
+      true
+    );
     expect(removePkg.ok).toBe(true);
   });
 });

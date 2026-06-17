@@ -19,8 +19,7 @@ describe("GET /api/login", () => {
   });
 
   test("Returns proper redirect", async () => {
-    const res = await supertest(app)
-      .get("/api/login");
+    const res = await supertest(app).get("/api/login");
 
     expect(res).toHaveHTTPCode(302);
     expect(res.headers["location"]).toBeDefined();

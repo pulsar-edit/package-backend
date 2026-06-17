@@ -19,14 +19,16 @@ describe("VCS", () => {
     test("Supports object style repository declaration", () => {
       const res = vcs.determineProvider({
         type: "git",
-        url: "https://github.com/confused-Techie/atom-backend"
+        url: "https://github.com/confused-Techie/atom-backend",
       });
       expect(res.type).toBe("git");
       expect(res.url).toBe("https://github.com/confused-Techie/atom-backend");
     });
 
     test("Returns unknown if it doesn't support the host", () => {
-      const res = vcs.determineProvider("https://new-vcs.com/pulsar-edit/pulsar");
+      const res = vcs.determineProvider(
+        "https://new-vcs.com/pulsar-edit/pulsar"
+      );
       expect(res.type).toBe("unknown");
       expect(res.url).toBe("https://new-vcs.com/pulsar-edit/pulsar");
     });
@@ -38,33 +40,47 @@ describe("VCS", () => {
     });
 
     test("Supports Github", () => {
-      const res = vcs.determineProvider("https://github.com/confused-Techie/atom-backend");
+      const res = vcs.determineProvider(
+        "https://github.com/confused-Techie/atom-backend"
+      );
       expect(res.type).toBe("git");
       expect(res.url).toBe("https://github.com/confused-Techie/atom-backend");
     });
 
     test("Supports GitLab", () => {
-      const res = vcs.determineProvider("https://gitlab.com/clj-editors/atom-chlorine");
+      const res = vcs.determineProvider(
+        "https://gitlab.com/clj-editors/atom-chlorine"
+      );
       expect(res.type).toBe("lab");
       expect(res.url).toBe("https://gitlab.com/clj-editors/atom-chlorine");
     });
 
     test("Supports Sourceforge", () => {
-      const res = vcs.determineProvider("https://sourceforge.net/projects/jellyfin.mirror");
+      const res = vcs.determineProvider(
+        "https://sourceforge.net/projects/jellyfin.mirror"
+      );
       expect(res.type).toBe("sfr");
       expect(res.url).toBe("https://sourceforge.net/projects/jellyfin.mirror");
     });
 
     test("Supports Bitbucket", () => {
-      const res = vcs.determineProvider("https://bitbucket.org/docker_alpine/alpine-jellyfin/src/master/");
+      const res = vcs.determineProvider(
+        "https://bitbucket.org/docker_alpine/alpine-jellyfin/src/master/"
+      );
       expect(res.type).toBe("bit");
-      expect(res.url).toBe("https://bitbucket.org/docker_alpine/alpine-jellyfin/src/master/");
+      expect(res.url).toBe(
+        "https://bitbucket.org/docker_alpine/alpine-jellyfin/src/master/"
+      );
     });
 
     test("Supports Codeberg", () => {
-      const res = vcs.determineProvider("https://codeberg.org/itbastian/makemkv-move-extras");
+      const res = vcs.determineProvider(
+        "https://codeberg.org/itbastian/makemkv-move-extras"
+      );
       expect(res.type).toBe("berg");
-      expect(res.url).toBe("https://codeberg.org/itbastian/makemkv-move-extras");
+      expect(res.url).toBe(
+        "https://codeberg.org/itbastian/makemkv-move-extras"
+      );
     });
   });
 
@@ -88,7 +104,7 @@ describe("VCS", () => {
         nock("https://api.github.com/")
           .get("/repos/confused-Techie/pulsar-backend")
           .reply(404, {
-            message: "TODO Check later"
+            message: "TODO Check later",
           });
 
         const res = await vcs.newPackageData(
@@ -99,7 +115,9 @@ describe("VCS", () => {
 
         expect(res.ok).toBe(false);
         expect(res.short).toBe("Bad Repo");
-        expect(res.content).toBe("Failed to get repo: confused-Techie/pulsar-backend - Server Error");
+        expect(res.content).toBe(
+          "Failed to get repo: confused-Techie/pulsar-backend - Server Error"
+        );
         // TODO: The mocked specs previously had `- Bad Repo`, why when mocking network
         // requests does this become `- Server Error`?
       });
@@ -115,15 +133,21 @@ describe("VCS", () => {
               permissions: {
                 admin: true,
                 maintain: true,
-                push: true
+                push: true,
               },
-              role_name: "Admin"
-            }
+              role_name: "Admin",
+            },
           ]);
 
         const res = await vcs.ownership(
           { token: "123", node_id: "12345" },
-          { repository: { type: "git", url: "https://github.com/pulsar-edit/pulsar" }, data: {} }
+          {
+            repository: {
+              type: "git",
+              url: "https://github.com/pulsar-edit/pulsar",
+            },
+            data: {},
+          }
         );
 
         expect(res.ok).toBe(true);
@@ -131,7 +155,6 @@ describe("VCS", () => {
       });
     });
   });
-
 });
 
 describe("VCS: GitHub", () => {
@@ -151,11 +174,9 @@ describe("VCS: GitHub", () => {
 
   describe("doesUserHaveRepo", () => {
     test("Denies ownership when given bad auth", async () => {
-      nock("https://api.github.com/")
-        .get("/user")
-        .reply(401, {
-          message: "Requires authentication"
-        });
+      nock("https://api.github.com/").get("/user").reply(401, {
+        message: "Requires authentication",
+      });
 
       const provider = new GitHub();
       const res = await provider.doesUserHaveRepo(
@@ -170,11 +191,9 @@ describe("VCS: GitHub", () => {
     });
 
     test("Confirms ownership of remote repo", async () => {
-      nock("https://api.github.com/")
-        .get("/user")
-        .reply(200, {
-          node_id: "456"
-        });
+      nock("https://api.github.com/").get("/user").reply(200, {
+        node_id: "456",
+      });
 
       nock("https://api.github.com/")
         .get("/repos/pulsar-edit/pulsar/collaborators?page=1")
@@ -184,10 +203,10 @@ describe("VCS: GitHub", () => {
             permissions: {
               admin: true,
               maintain: true,
-              push: true
+              push: true,
             },
-            role_name: "Admin"
-          }
+            role_name: "Admin",
+          },
         ]);
 
       const provider = new GitHub();
@@ -201,11 +220,9 @@ describe("VCS: GitHub", () => {
     });
 
     test("Returns No Access when the user has no permissions", async () => {
-      nock("https://api.github.com/")
-        .get("/user")
-        .reply(200, {
-          node_id: "456"
-        });
+      nock("https://api.github.com/").get("/user").reply(200, {
+        node_id: "456",
+      });
 
       nock("https://api.github.com/")
         .get("/repos/pulsar-edit/pulsar/collaborators?page=1")
@@ -213,10 +230,10 @@ describe("VCS: GitHub", () => {
           {
             node_id: "789",
             permissions: {
-              admin: true
+              admin: true,
             },
-            role_name: "Admin"
-          }
+            role_name: "Admin",
+          },
         ]);
 
       const provider = new GitHub();
@@ -232,11 +249,9 @@ describe("VCS: GitHub", () => {
     });
 
     test("Returns No Access when the user only has pull permissions", async () => {
-      nock("https://api.github.com/")
-        .get("/user")
-        .reply(200, {
-          node_id: "456"
-        });
+      nock("https://api.github.com/").get("/user").reply(200, {
+        node_id: "456",
+      });
 
       nock("https://api.github.com/")
         .get("/repos/pulsar-edit/pulsar/collaborators?page=1")
@@ -248,10 +263,10 @@ describe("VCS: GitHub", () => {
               maintain: false,
               push: false,
               triage: false,
-              pull: true
+              pull: true,
             },
-            role_name: "pull"
-          }
+            role_name: "pull",
+          },
         ]);
 
       const provider = new GitHub();
@@ -270,14 +285,11 @@ describe("VCS: GitHub", () => {
       nock("https://api.github.com/")
         .get("/repos/pulsar-edit/pulsar/readme")
         .reply(401, {
-          message: "Requires authentication"
+          message: "Requires authentication",
         });
 
       const provider = new GitHub();
-      const res = await provider.readme(
-        { token: "123" },
-        "pulsar-edit/pulsar"
-      );
+      const res = await provider.readme({ token: "123" }, "pulsar-edit/pulsar");
 
       expect(res.ok).toBe(false);
       expect(res.short).toBe("Bad Auth");
@@ -287,14 +299,11 @@ describe("VCS: GitHub", () => {
       nock("https://api.github.com/")
         .get("/repos/pulsar-edit/pulsar/readme")
         .reply(415, {
-          message: "I'm a Teapot"
+          message: "I'm a Teapot",
         });
 
       const provider = new GitHub();
-      const res = await provider.readme(
-        { token: "123" },
-        "pulsar-edit/pulsar"
-      );
+      const res = await provider.readme({ token: "123" }, "pulsar-edit/pulsar");
 
       expect(res.ok).toBe(false);
       expect(res.short).toBe("Server Error");
