@@ -4,5 +4,6 @@
     "node": "< 18"
   },
   "labels": ["dependencies"],
-  "separateMajorMinor": "false"
+  "separateMajorMinor": "false",
+  "minimumReleaseAge": "14 days"
 }
