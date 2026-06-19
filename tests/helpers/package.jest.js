@@ -27,7 +27,7 @@ module.exports = function genPackage(repo, opts = {}) {
   pack.owner = parsedGH.owner;
 
   // Static Info
-  pack.creation_method = "Test Package";
+  pack.creation_method = opts.creation_method ?? "Test Package";
   pack.readme = "This is a readme!";
   pack.versions = {};
   pack.releases = {};

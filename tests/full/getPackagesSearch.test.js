@@ -28,6 +28,7 @@ describe("GET /api/packages/search", () => {
             extraVersionData: {
               theme: "syntax",
             },
+            creation_method: "User Made Package" // Pulsar package
           }
         )
       );
@@ -35,7 +36,10 @@ describe("GET /api/packages/search", () => {
 
       const addPkg2 = await database.insertNewPackage(
         genPackage(
-          "https://github.com/getPackagesSearch/get-packages-search-test"
+          "https://github.com/getPackagesSearch/get-packages-search-test",
+          {
+            creation_method: "Migrated from Atom.io" // Atom package
+          }
         )
       );
       expect(addPkg2.ok).toBe(true);
@@ -111,6 +115,41 @@ describe("GET /api/packages/search", () => {
       expect(res).toHaveHTTPCode(200);
       expect(res.body).toBeArray();
       expect(res.body.length).toBe(0);
+    });
+
+    test("By 'creationMethod' field: Include Pulsar packages", async () => {
+      const res = await supertest(app)
+        .get("/api/packages/search")
+        .query({ q: "get" })
+        .query({ creationMethod: "pulsar" });
+
+      expect(res).toHaveHTTPCode(200);
+      expect(res.body).toBeArray();
+      expect(res.body.length).toBe(1);
+      expect(res.body[0].name).toBe("get-packages-search-theme-test");
+    });
+
+    test("By 'creationMethod' field: Include Atom packages", async () => {
+      const res = await supertest(app)
+        .get("/api/packages/search")
+        .query({ q: "get" })
+        .query({ creationMethod: "atom" });
+
+      expect(res).toHaveHTTPCode(200);
+      expect(res.body).toBeArray();
+      expect(res.body.length).toBe(1);
+      expect(res.body[0].name).toBe("get-packages-search-test");
+    });
+
+    test("By 'creationMethod' field: Include all packages", async () => {
+      const res = await supertest(app)
+        .get("/api/packages/search")
+        .query({ q: "get" })
+        .query({ creationMethod: "any" });
+
+      expect(res).toHaveHTTPCode(200);
+      expect(res.body).toBeArray();
+      expect(res.body.length).toBe(2);
     });
   });
 });
