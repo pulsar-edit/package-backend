@@ -6,6 +6,7 @@
  */
 
 const auth = require("./auth.js");
+const creationMethod = require("./creationMethod.js");
 const direction = require("./direction.js");
 const engine = require("./engine.js");
 const fileExtension = require("./fileExtension.js");
@@ -28,6 +29,7 @@ const versionName = require("./versionName.js");
 module.exports = {
   logic: {
     auth: auth.logic,
+    creationMethod: creationMethod.logic,
     direction: direction.logic,
     engine: engine.logic,
     fileExtension: fileExtension.logic,
@@ -49,6 +51,7 @@ module.exports = {
   },
   schema: {
     auth: auth.schema,
+    creationMethod: creationMethod.schema,
     direction: direction.schema,
     engine: engine.schema,
     fileExtension: fileExtension.schema,
