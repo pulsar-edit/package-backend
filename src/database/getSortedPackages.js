@@ -60,6 +60,7 @@ module.exports = {
         ${clause.fileExtensionClause(sql, opts)}
         ${clause.ownerClause(sql, opts)}
         ${clause.ownerNameClause(sql, opts)}
+        ${clause.creationMethodClause(sql, opts)}
 
         ORDER BY p.name, v.semver_v1 DESC, v.semver_v2 DESC, v.semver_v3 DESC, v.created DESC
       )

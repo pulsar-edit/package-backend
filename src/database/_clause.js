@@ -80,6 +80,24 @@ function fileExtensionClause(sql, opts) {
   return sql`AND ${opts.fileExtension}=ANY(v.supported_languages)`;
 }
 
+function creationMethodClause(sql, opts) {
+  console.log("BREAKPOINT");
+  console.log(`creationMethodClause: ${opts.creationMethod}`);
+  if (typeof opts.creationMethod !== "string") {
+    return getEmptyClause(sql);
+  }
+
+  switch(opts.creationMethod) {
+    case "pulsar":
+      return sql`AND p.creation_method = 'User Made Package'`;
+    case "atom":
+      return sql`AND p.creation_method = 'Migrated from Atom.io'`;
+    case "any":
+    default:
+      return getEmptyClause(sql);
+  }
+}
+
 module.exports = {
   getEmptyClause,
   queryClause,
@@ -88,4 +106,5 @@ module.exports = {
   ownerNameClause,
   serviceClause,
   fileExtensionClause,
+  creationMethodClause,
 };
