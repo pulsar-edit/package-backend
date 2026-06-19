@@ -81,8 +81,6 @@ function fileExtensionClause(sql, opts) {
 }
 
 function creationMethodClause(sql, opts) {
-  console.log("BREAKPOINT");
-  console.log(`creationMethodClause: ${opts.creationMethod}`);
   if (typeof opts.creationMethod !== "string") {
     return getEmptyClause(sql);
   }
