@@ -5,7 +5,7 @@ This document introduces the `package-backend` documentation layout and resource
 Additionally some documents may be helpful for a wide range of reasons, which are listed below:
 
   * [Admin Actions](./reference/Admin_Actions.md): This document details all manual interventions into the Pulsar Package Registry, in terms of modifying package's data.
-  * [API Definition](./reference/API_Definition.md): This document is the automatically generated specification of the Pulsar Package Registries API endpoints.
+  * [API Definition](./swagger/openapi3_def.yaml): This document is the automatically generated specification of the Pulsar Package Registries API endpoints.
 
 ## For Users
 
@@ -15,7 +15,7 @@ The following are some links that may be helpful:
 
   * You've discovered a security vulnerability: [Security Policy](https://github.com/pulsar-edit/package-backend/security/policy)
   * You need help managing a Pulsar account: [Managing your Pulsar account](./reference/manage_pulsar_account.md)
-  * You can't find a package from Atom: []()
+  * You can't find a package from Atom: [Pulsar's Packages](./reference/packages.md)
 
 ## For Developers
 
@@ -39,20 +39,15 @@ A quick note here, the following resources, while still incredibly helpful to un
 
   * [Authentication](./reference/auth.md): How the Pulsar Package Registry handles authentication.
   * [Bubbled Errors](./reference/bubbled_errors.md): How and what errors bubble through the codebase.
-  * [Database](./reference/database.md): Details of hwo the backend SQL Database is configured.
   * [Logging](./reference/logging.md): How the built in logging module works.
-  * [Numeric Error Codes](./reference/numeric_error_codes.md): **Deprecated** Definition and List of numeric error codes that may be returned.
   * [Packages](./reference/packages.md): Information on where the Pulsar Package Registry got it's packages and what to do if you don't see yours.
-  * [Queries](./reference/queries.md): **Deprecated** Details of some of the common SQL queries used to retrieve information from the Pulsar Package Registry.
-  * [Returns](./reference/returns.md): Definition of the objects returned and handled.
   * [Server Status Object](./reference/server_status_object.md): Definition of the Server Status Object.
   * [Build](./build.md): Documentation on how to build the Pulsar Package Registry.
-  * [Writing Integration Tests](./writingIntegrationTests.md): **Deprecated** Documentation about how to successfully write integration tests.
 
 A number of documents within this repo are automatically generated. These documents can help to view the codebase as it is right now. These documents can be helpful to identify problem areas or to learn about the source code itself.
 
 The following list contains automatically generated content:
 
-  * [API Definition](./reference/API_Definition.md): This provides the spec of the Package Backends Public API. An API Spec is also available on the [web](https://api.pulsar-edit.dev/swagger-ui/).
+  * [API Definition](./swagger/openapi3_def.yaml): This provides the spec of the Package Backends Public API. An API Spec is also available on the [web](https://api.pulsar-edit.dev/swagger-ui/).
   * [Source Code Docs](./reference/Source_Documentation.md): Documentation generated via JSDocs.
   * [Complexity Reports](./resources/complexity-report.md): Complexity Reports can be helpful in identifying complex areas of code, which are more likely to contain errors. (Note: The tool that generates the complexity report does not yet support ES6 syntax, so may be missing some functions.)

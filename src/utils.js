@@ -4,7 +4,7 @@
  */
 const logger = require("./logger.js");
 const storage = require("./storage.js");
-const crypto = require("crypto");
+const crypto = require("node:crypto");
 const parseGithubURL = require("parse-github-url");
 
 /**
