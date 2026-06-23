@@ -3,7 +3,7 @@ const config = {
   verbose: true,
   reporters: [["default", { summaryThreshold: 0 }]],
   collectCoverage: true,
-  coverageReporters: ["text", "clover"],
+  coverageReporters: ["text", "lcov"],
   coveragePathIgnorePatterns: [
     "<rootDir>/tests/",
     "<rootDir>/test/",
