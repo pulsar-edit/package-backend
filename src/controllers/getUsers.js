@@ -48,7 +48,7 @@ module.exports = {
     );
     res.header("Access-Control-Allow-Credentials", true);
   },
-  async postLogic(req, res, context) {
+  async postLogic(req, res, _context) {
     res.set({ "Access-Control-Allow-Credentials": true });
   },
 
