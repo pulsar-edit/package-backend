@@ -17,7 +17,7 @@ const { DB_HOST, DB_USER, DB_PASS, DB_DB, DB_PORT, DB_SSL_CERT } =
 
 let sqlStorage;
 
-async function init(params) {
+async function init(_params) {
   sqlStorage ??= setupSQL();
 
   const allPointers = await getPointers();
