@@ -471,7 +471,7 @@ class GitHub extends Git {
         let supportedLanguages = [];
 
         for (let i = 0; i < raw.content.body.length; i++) {
-          let innerReqString = `/repos/${ownerRepo}/contents/grammars/${res.body[i].name}`;
+          let innerReqString = `/repos/${ownerRepo}/contents/grammars/${raw.content.body[i].name}`;
 
           if (ref) {
             innerReqString += `?ref=${ref}`;
