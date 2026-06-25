@@ -1,8 +1,9 @@
 {
-  "extends": [ "config:base", ":dependencyDashboardApproval"],
+  "extends": ["config:recommended", ":dependencyDashboardApproval"],
   "constraints": {
-    "node": "< 18"
+    "node": "< 24"
   },
   "labels": ["dependencies"],
-  "separateMajorMinor": "false"
+  "separateMajorMinor": false,
+  "minimumReleaseAge": "14 days"
 }
