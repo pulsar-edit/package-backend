@@ -455,7 +455,7 @@ class GitHub extends Git {
           reqString += `?ref=${ref}`;
         }
 
-        const raw = await this._webRequestAuth(ref, userObj.token);
+        const raw = await this._webRequestAuth(reqString, userObj.token);
 
         if (
           !raw.ok &&
