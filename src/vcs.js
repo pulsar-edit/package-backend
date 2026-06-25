@@ -340,7 +340,7 @@ async function newVersionData(userObj, ownerRepo, tagRef, service) {
   if (!tag.tarball_url) {
     logger.generic(
       3,
-      `Cannot retrieve metadata information for version ${ver} of ${ownerRepo}`
+      `Cannot retrieve metadata information for version ${tag} of ${ownerRepo}`
     );
     return {
       ok: false,
