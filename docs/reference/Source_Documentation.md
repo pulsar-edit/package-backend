@@ -502,12 +502,8 @@ A helper for any functions that are agnostic in handlers.
 * [utils](#module_utils)
     * [~isPackageNameBanned(name)](#module_utils..isPackageNameBanned) ⇒ <code>object</code>
     * [~engineFilter()](#module_utils..engineFilter) ⇒ <code>object</code>
-    * [~semverArray(semver)](#module_utils..semverArray) ⇒ <code>array</code> \| <code>null</code>
-    * [~semverGt(a1, a2)](#module_utils..semverGt) ⇒ <code>boolean</code>
-    * [~semverLt(a1, a2)](#module_utils..semverLt) ⇒ <code>boolean</code>
     * [~getOwnerRepoFromPackage(pack)](#module_utils..getOwnerRepoFromPackage) ⇒ <code>string</code>
     * [~getOwnerRepoFromUrlString(url)](#module_utils..getOwnerRepoFromUrlString) ⇒ <code>string</code>
-    * [~semverEq(a1, a2)](#module_utils..semverEq) ⇒ <code>boolean</code>
     * [~generateRandomString(n)](#module_utils..generateRandomString) ⇒ <code>string</code>
 
 <a name="module_utils..isPackageNameBanned"></a>
@@ -528,65 +524,12 @@ false otherwise.
 <a name="module_utils..engineFilter"></a>
 
 ### utils~engineFilter() ⇒ <code>object</code>
-A complex function that provides filtering by Atom engine version.
+A function that provides filtering by Atom engine version.
 This should take a package with its versions and retrieve whatever matches
 that engine version as provided.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
 **Returns**: <code>object</code> - The filtered object.  
-<a name="module_utils..semverArray"></a>
-
-### utils~semverArray(semver) ⇒ <code>array</code> \| <code>null</code>
-Takes a semver string and returns it as an Array of strings.
-This can also be used to check for semver valitidy. If it's not a semver, null is returned.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>array</code> \| <code>null</code> - The formatted semver in array of three strings, or null if no match.  
-
-| Param | Type |
-| --- | --- |
-| semver | <code>string</code> | 
-
-**Example** *(Valid Semver Passed)*  
-```js
-// returns ["1", "2", "3" ]
-semverArray("1.2.3");
-```
-**Example** *(Invalid Semver Passed)*  
-```js
-// returns null
-semverArray("1.Hello.World");
-```
-<a name="module_utils..semverGt"></a>
-
-### utils~semverGt(a1, a2) ⇒ <code>boolean</code>
-Compares two sermver and return true if the first is greater than the second.
-Expects to get the semver formatted as array of strings.
-Should be always executed after running semverArray.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a1 | <code>array</code> | First semver as array of strings. |
-| a2 | <code>array</code> | Second semver as array of string. |
-
-<a name="module_utils..semverLt"></a>
-
-### utils~semverLt(a1, a2) ⇒ <code>boolean</code>
-Compares two sermver and return true if the first is less than the second.
-Expects to get the semver formatted as array of strings.
-Should be always executed after running semverArray.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a1 | <code>array</code> | First semver as array of strings. |
-| a2 | <code>array</code> | Second semver as array of strings. |
-
 <a name="module_utils..getOwnerRepoFromPackage"></a>
 
 ### utils~getOwnerRepoFromPackage(pack) ⇒ <code>string</code>
@@ -612,21 +555,6 @@ string for the repo. Intended to be used from a packages entry `data.repository.
 | Param | Type | Description |
 | --- | --- | --- |
 | url | <code>string</code> | The URL for the Repo. |
-
-<a name="module_utils..semverEq"></a>
-
-### utils~semverEq(a1, a2) ⇒ <code>boolean</code>
-Compares two sermver and return true if the first is equal to the second.
-Expects to get the semver formatted as array of strings.
-Should be always executed after running semverArray.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a1 | <code>array</code> | First semver as array. |
-| a2 | <code>array</code> | Second semver as array. |
 
 <a name="module_utils..generateRandomString"></a>
 

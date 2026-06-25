@@ -124,10 +124,10 @@ describe("engineFilter returns version expected.", () => {
         "1.0.0": {
           version: "1.0.0",
           engines: {
-            atom: "*"
-          }
-        }
-      }
+            atom: "*",
+          },
+        },
+      },
     };
 
     const engine = "1.2.3";
@@ -142,9 +142,9 @@ describe("engineFilter returns version expected.", () => {
         versions: {
           "1.0.0": {
             version: "1.0.0",
-            engines: { atom: "*" }
-          }
-        }
+            engines: { atom: "*" },
+          },
+        },
       },
       "not-a-valid-semver"
     );
@@ -159,9 +159,9 @@ describe("engineFilter returns version expected.", () => {
         versions: {
           "1.0.0": {
             version: "1.0.0",
-            engines: { notAtom: "*" }
-          }
-        }
+            engines: { notAtom: "*" },
+          },
+        },
       },
       "1.0.0"
     );
@@ -176,9 +176,9 @@ describe("engineFilter returns version expected.", () => {
         versions: {
           "1.0.0": {
             version: "1.0.0",
-            engines: { atom: "not-a-valid-range" }
-          }
-        }
+            engines: { atom: "not-a-valid-range" },
+          },
+        },
       },
       "1.0.0"
     );
