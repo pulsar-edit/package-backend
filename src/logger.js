@@ -197,7 +197,7 @@ function craftHttp(meta) {
 
   if (meta.req && meta.res) {
     let date = new Date();
-    let duration = Date.now() - (req.start ?? Date.now());
+    let duration = Date.now() - (meta.req.start ?? Date.now());
 
     ret += `HTTP:: ${meta.req.ip ?? "NO_IP"} [${
       date.toISOString ?? "NO_DATE"
