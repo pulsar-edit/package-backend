@@ -1,5 +1,18 @@
 const { performance } = require("node:perf_hooks");
+const HttpError = require("http-errors");
 const Timecop = require("./timecop.js");
+
+function allowExit(name, ctx) {
+  // Determines if the current operation allows this name to terminate the request
+  if (ctx.state.operation.logic.config.allowExit.includes(name)) {
+    return true;
+  } else if (ctx.state.operation.logic.config.denyExit.includes(name)) {
+    return false;
+  } else {
+    // Default to true
+    return true;
+  }
+}
 
 module.exports = {
   ops: {
@@ -25,6 +38,8 @@ module.exports = {
             ctx.state.params[param.name] = ctx.request.params[param.name];
             break;
           case "header":
+            ctx.state.params[param.name] = ctx.request.get(param.name);
+            break;
           default:
             break;
         }
@@ -62,7 +77,7 @@ module.exports = {
     xResponseTime: async (ctx, next) => {
       const start = performance.now();
       await next();
-      const ms = peformance.now() - start;
+      const ms = performance.now() - start;
       ctx.set("X-Response-Time", `${Number(ms).toFixed(2)}ms`);
     },
     serverTiming: async (ctx, next) => {
@@ -77,7 +92,26 @@ module.exports = {
   },
   auth: {
     verify: async (ctx, next) => {
+      await ctx.state.timecop.time("auth", async () => {
+        ctx.state.funcs.auth = ctx.state.funcs.auth || {}; // Conditionally create parent result
+        try {
+          const user = await ctx.pulsar.auth.verifyAuth(ctx.state.params.Authorization, ctx.pulsar.db);
 
+          if (!user.ok) {
+            throw new ctx.pulsar.err.InternalApplicationError("Failed to authenticate the user", { cause: user });
+          }
+
+          ctx.state.funcs.auth.verify = user;
+
+        } catch(err) {
+          if (allowExit("auth.verify", ctx)) {
+            throw HttpError(401, err.toString());
+          } else {
+            ctx.state.funcs.auth.verify = err;
+          }
+        }
+      });
+      await next();
     },
   },
 };

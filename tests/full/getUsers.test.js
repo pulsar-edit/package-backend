@@ -1,17 +1,19 @@
 const supertest = require("supertest");
 const nock = require("nock");
-const app = require("../../src/setupEndpoints.js");
+let app = require("../../src/app.js");
 const database = require("../../src/database/_export.js");
 
 describe("GET /api/users", () => {
   beforeAll(() => {
     nock.disableNetConnect();
     nock.enableNetConnect("127.0.0.1");
+    app = app.listen(8080);
   });
 
   afterAll(() => {
     nock.cleanAll();
     nock.enableNetConnect();
+    app.close();
   });
 
   afterEach(() => {

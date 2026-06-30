@@ -1,7 +1,15 @@
 const supertest = require("supertest");
-const app = require("../../src/setupEndpoints.js");
+let app = require("../../src/app.js");
 
 describe("OPTIONS /api/users", () => {
+  beforeAll(() => {
+    app = app.listen(8080);
+  });
+
+  afterAll(() => {
+    app.close();
+  });
+  
   test("Returns correct headers", async () => {
     const res = await supertest(app).options("/api/users");
 

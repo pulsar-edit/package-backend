@@ -28,7 +28,7 @@ class Timecop {
   async time(service, cb) {
     this.start(service);
     await cb();
-    this.stop(service);
+    this.end(service);
   }
 
   // Provides Header compatible string

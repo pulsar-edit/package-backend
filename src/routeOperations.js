@@ -1,3 +1,4 @@
+const { getValueAtKeyPath } = require("key-path-helpers");
 const shared = require("./controllers/shared.js");
 const middleware = require("./middleware.js");
 
@@ -28,7 +29,7 @@ function computeOnRoute(pathsObj) {
         ) {
           pathsObj[pathStr][method].responses[responseObj].headers = {
             ...shared.headers,
-            ...pathsObj[pathStr][method].responses[responseObj].headers["$DEFAULT"];
+            ...pathsObj[pathStr][method].responses[responseObj].headers["$DEFAULT"],
           };
 
           delete pathsObj[pathStr][method].responses[responseObj].headers["$DEFAULT"];
@@ -82,7 +83,7 @@ function buildRoute(pathsObj, router) {
       if (defaultMiddlewareIdx) {
         pathsObj[pathStr][method].logic.middleware.splice(defaultMiddlewareIdx, 1, ...shared.middleware);
       }
-
+      
       for (const func of pathsObj[pathStr][method].logic.middleware) {
         switch(func) {
           case "ops.insertOperation":
@@ -91,11 +92,10 @@ function buildRoute(pathsObj, router) {
             mids.push(middleware.ops.insertOperation(pathsObj[pathStr][method]));
             break;
           default:
-            mids.push(middleware[func]);
+            mids.push(getValueAtKeyPath(middleware, func));
             break;
         }
       }
-
       router[method](pathStr, ...mids, pathsObj[pathStr][method].logic.func);
     }
   }
