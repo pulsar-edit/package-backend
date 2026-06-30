@@ -81,7 +81,7 @@ module.exports = {
       return sso.notOk().addContent(packageCollection).assignCalls(callStack);
     }
 
-    packageCollection = await utils.constructPackageObjectShort(
+    packageCollection = await context.utils.constructPackageObjectShort(
       packageCollection.content
     );
 

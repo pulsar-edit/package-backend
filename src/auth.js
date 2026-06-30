@@ -56,7 +56,6 @@ async function verifyAuth(token, db) {
           // When the user provides bad authentication, lets tell them it's bad auth.
           logger.generic(6, "auth.verifyAuth() API Call Returning Bad Auth");
           return { ok: false, short: "unauthorized", content: userDataLogObj };
-          break;
         default:
           logger.generic(
             3,

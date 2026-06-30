@@ -1,6 +1,6 @@
 # Pulsar Backend / Atom Backend
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2a0877b7d4254cc098fb0da600056643)](https://www.codacy.com/gh/pulsar-edit/package-backend/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=pulsar-edit/package-backend&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2a0877b7d4254cc098fb0da600056643)](https://app.codacy.com/gh/pulsar-edit/package-backend/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Project Board](https://img.shields.io/badge/Roadmap-GitHub%20Project%20Board-success)](https://github.com/orgs/pulsar-edit/projects/2/views/1)
 
 [![CI - Standards](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml/badge.svg)](https://github.com/pulsar-edit/package-backend/actions/workflows/ci-standards.yml)
