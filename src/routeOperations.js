@@ -11,7 +11,7 @@ function computeOnRoute(pathsObj) {
   // === Compute
   for (const pathStr in pathsObj) {
     for (const method in pathsObj[pathStr]) {
-      computeValues.allowedMethods.push(method);
+      computeValues.allowedMethods.push(method.toUpperCase());
     }
   }
 
@@ -80,10 +80,10 @@ function buildRoute(pathsObj, router) {
 
       // Handle `$DEFAULT` middleware
       const defaultMiddlewareIdx = pathsObj[pathStr][method].logic.middleware.indexOf("$DEFAULT");
-      if (defaultMiddlewareIdx) {
+      if (typeof defaultMiddlewareIdx === "number") {
         pathsObj[pathStr][method].logic.middleware.splice(defaultMiddlewareIdx, 1, ...shared.middleware);
       }
-      
+
       for (const func of pathsObj[pathStr][method].logic.middleware) {
         switch(func) {
           case "ops.insertOperation":

@@ -9,12 +9,13 @@ describe("OPTIONS /api/users", () => {
   afterAll(() => {
     app.close();
   });
-  
+
   test("Returns correct headers", async () => {
     const res = await supertest(app).options("/api/users");
 
     expect(res).toHaveHTTPCode(204);
-    expect(res.headers.allow).toEqual("GET");
+    expect(res.headers.allow).toContain("GET");
+    expect(res.headers.allow).toContain("OPTIONS");
     expect(res.headers["access-control-allow-methods"]).toEqual("GET");
     expect(res.headers["access-control-allow-headers"]).toEqual(
       "Content-Type, Authorization, Access-Control-Allow-Credentials"

@@ -17,11 +17,9 @@ module.exports = {
       },
       parameters: [],
       logic: {
+        config: { responseStatusHeaders: 204 },
         middleware: ["$DEFAULT"],
-        func: async (ctx, next) => {
-          ctx.body = null;
-          ctx.status = 204;
-        }
+        func: async (ctx, next) => { ctx.status = 204; }
       }
     },
     get: {
