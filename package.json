@@ -52,10 +52,14 @@
     "js-yaml": "^4.1.0",
     "key-path-helpers": "github:pulsar-edit/key-path-helpers",
     "koa": "^3.2.1",
+    "koa-ratelimit": "^6.0.0",
     "parse-github-url": "^1.0.2",
     "postgres": "^3.3.4",
     "semver": "^7.5.4",
     "superagent": "^10.0.0"
+  },
+  "peerDependencies": {
+    "http-errors": "2.x"
   },
   "devDependencies": {
     "@confused-techie/compactignore": "^2.0.3",

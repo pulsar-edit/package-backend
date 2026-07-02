@@ -8,6 +8,7 @@ module.exports = {
           description: "The permitted communication options.",
           headers: {
             Allow: "$COMPUTE",
+            "RateLimit-Policy": "$COMPUTE.auth",
             "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Credentials",
             "Access-Control-Allow-Origin": "https://packages.pulsar-edit.dev",
@@ -36,6 +37,7 @@ module.exports = {
             "$DEFAULT": "$COMPUTE",
             "X-Response-Time": "$COMPUTE",
             "Server-Timing": "$COMPUTE",
+            "RateLimit-Policy": "$COMPUTE.auth",
             "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Credentials",
             "Access-Control-Allow-Origin": "https://packages.pulsar-edit.dev",
@@ -76,13 +78,15 @@ module.exports = {
           // TODO We need to find a way to add the users published packages here
           // When we do we will want to match the schema in ./docs/returns.md#userobjectfull
           // Until now we will return the public details of their account.
+          const userContent = ctx.state.funcs.auth.verify.content;
+
           const user = {
-            username: ctx.state.funcs.auth.verify.content.username,
-            avatar: ctx.state.funcs.auth.verify.content.avatar,
-            created_at: ctx.state.funcs.auth.verify.content.created_at,
-            data: ctx.state.funcs.auth.verify.content.data,
-            node_id: ctx.state.funcs.auth.verify.content.node_id,
-            token: ctx.state.funcs.auth.verify.content.token,
+            username: userContent.username,
+            avatar: userContent.avatar,
+            created_at: userContent.created_at,
+            data: userContent.data,
+            node_id: userContent.node_id,
+            token: userContent.token,
             // ^^ Since this is for the authed user we can return
             packages: [], // Included as it should be used in future updates
           };

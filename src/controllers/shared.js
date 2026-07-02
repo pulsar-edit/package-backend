@@ -12,6 +12,6 @@ module.exports = {
     "X-Content-Type-Operations": "nosniff"
   },
   middleware: [
-    "ops.insertOperation", "headers.apply", "ops.applyParameters", "ops.applyFuncs"
+    "ops.insertOperation", "headers.apply", "ops.applyParameters", "ops.applyFuncs", "headers.rateLimitLegacy"
   ]
 };

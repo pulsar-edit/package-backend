@@ -1,6 +1,12 @@
 const { performance } = require("node:perf_hooks");
 const HttpError = require("http-errors");
+const ratelimit = require("koa-ratelimit");
 const Timecop = require("./timecop.js");
+
+const RATE_LIMIT_DBS = {
+  default: new Map(),
+  auth: new Map()
+};
 
 function allowExit(name, ctx) {
   // Determines if the current operation allows this name to terminate the request
@@ -52,6 +58,36 @@ module.exports = {
       await next();
     },
   },
+  rateLimit: {
+    default: ratelimit({
+      driver: "memory",
+      db: RATE_LIMIT_DBS.default,
+      duration: 600000,
+      errorMessage: 'Sometimes You Just Have to Slow Down.',
+      id: (ctx) => ctx.ip,
+      headers: {
+        remaining: "Rate-Limit-Remaining",
+        reset: "Rate-Limit-Reset",
+        total: "Rate-Limit-Total"
+      },
+      max: 100,
+      disableHeader: false
+    }),
+    auth: ratelimit({
+      driver: "memory",
+      db: RATE_LIMIT_DBS.auth,
+      duration: 600000,
+      errorMessage: 'Sometimes You Just Have to Slow Down.',
+      id: (ctx) => ctx.ip,
+      headers: {
+        remaining: "RateLimit-Remaining",
+        reset: "RateLimit-Reset",
+        total: "RateLimit-Limit"
+      },
+      max: 100,
+      disableHeader: false
+    })
+  },
   headers: {
     apply: async (ctx, next) => {
       let headerStore = ctx.state.operation.responses[
@@ -89,6 +125,18 @@ module.exports = {
         ctx.set("Server-Timing", str);
       }
     },
+    rateLimitLegacy: async (ctx, next) => {
+      await next();
+      if (ctx.has("RateLimit-Remaining")) {
+        ctx.set("X-RateLimit-Remaining", ctx.response.get("RateLimit-Remaining"));
+      }
+      if (ctx.has("RateLimit-Reset")) {
+        ctx.set("X-RateLimit-Reset", ctx.response.get("RateLimit-Reset"));
+      }
+      if (ctx.has("RateLimit-Limit")) {
+        ctx.set("X-RateLimit-Limit", ctx.response.get("RateLimit-Limit"));
+      }
+    }
   },
   auth: {
     verify: async (ctx, next) => {

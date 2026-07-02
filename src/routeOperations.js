@@ -67,6 +67,20 @@ function computeOnRoute(pathsObj) {
           delete responseObj.headers["Server-Timing"];
           pathsObj[pathStr][method].logic.middleware.unshift("headers.serverTiming");
         }
+        // --- `RateLimit-Policy` Header `$COMPUTE.auth` support
+        if (
+          responseObj?.headers?.["RateLimit-Policy"] === "$COMPUTE.auth"
+        ) {
+          responseObj.headers["RateLimit-Policy"] = "";
+          pathsObj[pathStr][method].logic.middleware.unshift("rateLimit.auth");
+        }
+        // --- `RateLimit-Policy` Header `$COMPUTE.default` support
+        if (
+          responseObj?.headers?.["RateLimit-Policy"] === "$COMPUTE.default"
+        ) {
+          responseObj.headers["RateLimit-Policy"] = "";
+          pathsObj[pathStr][method].logic.middleware.unshift("rateLimit.default");
+        }
       }
     }
   }
