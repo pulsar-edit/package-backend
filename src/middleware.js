@@ -142,7 +142,7 @@ module.exports = {
      */
     apply: async (ctx, next) => {
       let headerStore = ctx.state.operation.responses[
-        ctx.state.operation.logic.config.responseStatusHeaders ?? "default"
+        ctx.state.operation.logic.config.preferResponse ?? "default"
       ].headers;
 
       for (const header in headerStore) {

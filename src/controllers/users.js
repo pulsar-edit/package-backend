@@ -19,7 +19,7 @@ module.exports = {
       },
       parameters: [],
       logic: {
-        config: { responseStatusHeaders: 204 },
+        config: { preferResponse: 204 },
         middleware: ["$DEFAULT"],
         func: async (ctx, next) => { ctx.status = 204; }
       }
@@ -62,7 +62,7 @@ module.exports = {
         config: {
           allowExit: [ "auth.verify" ],
           // ^^ We allow bad auth to exit if it fails, so we don't have to check
-          responseStatusHeaders: 200
+          preferResponse: 200
         },
         middleware: [
           "$DEFAULT", "auth.verify"
