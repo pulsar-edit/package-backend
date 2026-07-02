@@ -9,6 +9,7 @@ module.exports = {
           headers: {
             Allow: "$COMPUTE",
             "RateLimit-Policy": "$COMPUTE.auth",
+            "X-Content-Type-Options": "nosniff",
             "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type, Authorization, Access-Control-Allow-Credentials",
             "Access-Control-Allow-Origin": "https://packages.pulsar-edit.dev",

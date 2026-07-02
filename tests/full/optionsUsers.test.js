@@ -24,7 +24,7 @@ describe("OPTIONS /api/users", () => {
       "https://packages.pulsar-edit.dev"
     );
     expect(res.headers["access-control-allow-credentials"]).toEqual("true");
-    //expect(res.headers["x-content-type-options"]).toEqual("nosniff"); TODO
+    expect(res.headers["x-content-type-options"]).toEqual("nosniff");
     expect(res.headers["x-ratelimit-limit"]).toBeDefined();
     expect(res.headers["x-ratelimit-remaining"]).toBeDefined();
     expect(res.headers["x-ratelimit-reset"]).toBeDefined();
