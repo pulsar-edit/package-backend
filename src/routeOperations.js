@@ -71,6 +71,7 @@ function computeOnRoute(pathsObj) {
         if (
           responseObj?.headers?.["RateLimit-Policy"] === "$COMPUTE.auth"
         ) {
+          // TODO calculate RateLimit-Policy String
           responseObj.headers["RateLimit-Policy"] = "";
           pathsObj[pathStr][method].logic.middleware.unshift("rateLimit.auth");
         }
@@ -78,6 +79,7 @@ function computeOnRoute(pathsObj) {
         if (
           responseObj?.headers?.["RateLimit-Policy"] === "$COMPUTE.default"
         ) {
+          // TODO calculate RateLimit-Policy string
           responseObj.headers["RateLimit-Policy"] = "";
           pathsObj[pathStr][method].logic.middleware.unshift("rateLimit.default");
         }
