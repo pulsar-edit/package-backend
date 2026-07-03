@@ -96,7 +96,13 @@ module.exports = {
       await next();
     },
   },
+  /** @namespace */
   rateLimit: {
+    /**
+     * @memberof rateLimit
+     * @function default
+     * @desc Defines the 'default' rate limit middleware, provided via koa-ratelimit.
+     */
     default: ratelimit({
       driver: "memory",
       db: RATE_LIMIT_DBS.default,
@@ -111,6 +117,11 @@ module.exports = {
       max: 100,
       disableHeader: false
     }),
+    /**
+     * @memberof rateLimit
+     * @function auth
+     * @desc Defines the 'auth' rate limit middleware, provided via koa-ratelimit.
+     */
     auth: ratelimit({
       driver: "memory",
       db: RATE_LIMIT_DBS.auth,
