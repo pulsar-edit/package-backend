@@ -21,6 +21,10 @@ app.use(async (ctx, next) => {
     ctx.status = err.status || err.statusCode || 500;
     ctx.body = { message: err.message ?? err.toString() };
     ctx.app.emit("error", err, ctx);
+    console.error(`Error Occurred: ${err.toString()}`);
+    console.error(err); // Log all error details
+    console.error(ctx.state); // Log the exact state at the time of error
+    // TODO add problem details specification here
   }
 });
 

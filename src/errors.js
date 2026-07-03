@@ -10,6 +10,19 @@ class InternalApplicationError extends Error {
   }
 }
 
+class Unauthorized extends Error {
+  constructor(msg = "Unauthorized", opts) {
+    super(msg);
+    this.name = "Unauthorized";
+    this.status = 401;
+
+    if (opts.cause) {
+      this.cause = opts.cause;
+    }
+  }
+}
+
 module.exports = {
   InternalApplicationError,
+  Unauthorized,
 };
