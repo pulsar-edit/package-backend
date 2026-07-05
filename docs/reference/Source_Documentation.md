@@ -579,7 +579,7 @@ function.
 
 
 * [vcs](#module_vcs)
-    * [~ownership(userObj, packObj, [opts])](#module_vcs..ownership) ⇒ <code>object</code>
+    * [~ownership(userObj, packObj)](#module_vcs..ownership) ⇒ <code>object</code>
     * [~newPackageData(userObj, ownerRepo, service)](#module_vcs..newPackageData) ⇒ <code>object</code>
     * [~newVersionData(userObj, ownerRepo, tagRef, service)](#module_vcs..newVersionData) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
     * [~featureDetection(userObj, ownerRepo, service)](#module_vcs..featureDetection) ⇒ <code>object</code>
@@ -587,7 +587,7 @@ function.
 
 <a name="module_vcs..ownership"></a>
 
-### vcs~ownership(userObj, packObj, [opts]) ⇒ <code>object</code>
+### vcs~ownership(userObj, packObj) ⇒ <code>object</code>
 Allows the ability to check if a user has permissions to write to a repo.
 <b>MUST</b> be provided the full `user` and `package` objects here to account
 for possible situations. This allows any new handling that's needed to be defined
@@ -604,7 +604,6 @@ to the repo or otherwise a failure.
 | --- | --- | --- |
 | userObj | <code>object</code> | The Full User Object, as returned by the backend, and appended to with authorization data. |
 | packObj | <code>object</code> \| <code>string</code> | The full Package objects data from the backend. Although, can also contain a string, this string would directly be an Owner/Repo combo, but it is recommended to use the Package Object when possible. The string variant is intended to be used when first publishing a package, and there is no package object to use. |
-| [opts] | <code>object</code> | An optional configuration object, that allows the definition of non-standard options to change the fucntionality of this function. `opts` can accept the following parameters:  - dev_override: {boolean} - Wether to enable or disable the dev_override. Disabled    by default, this dangerous boolean is inteded to be used during tests that    overrides the default safe static returns, and lets the function run as intended    in development mode. |
 
 <a name="module_vcs..newPackageData"></a>
 

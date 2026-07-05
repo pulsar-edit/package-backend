@@ -25,9 +25,9 @@ module.exports = {
     "no-unused-vars": [
       "error",
       {
-        argsIgnorePattern: "^_"
-      }
-    ]
+        argsIgnorePattern: "^_",
+      },
+    ],
   },
   plugins: [],
   globals: {
