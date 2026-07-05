@@ -274,4 +274,17 @@ module.exports = {
       await next();
     },
   },
+  /** @namespace */
+  models: {
+    packageObjectShort: async (ctx, next) => {
+      await next();
+      await ctx.state.timecop.time("build", async () => {
+        if (ctx.state.output && !ctx.body) {
+          ctx.body = ctx.pulsar.models.constructPackageObjectShort(
+            ctx.state.output
+          );
+        }
+      });
+    },
+  },
 };

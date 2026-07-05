@@ -11,6 +11,11 @@ app.context.pulsar = {};
 app.context.pulsar.auth = require("./auth.js");
 app.context.pulsar.err = require("./errors.js");
 app.context.pulsar.db = require("./database/_export.js");
+app.context.pulsar.models = {
+  constructPackageObjectShort: require("./models/constructPackageObjectShort.js"),
+  constructPackageObjectFull: require("./models/constructPackageObjectFull.js"),
+  constructPackageObjectJSON: require("./models/constructPackageObjectJSON.js")
+};
 
 // === Setup Error Handler
 app.use(async (ctx, next) => {
