@@ -85,6 +85,7 @@ expect.extend({
   // `expect().toHaveHTTPCode()`
   toHaveHTTPCode(req, want) {
     // Type coercion here because the statusCode in the request object could be set as a string.
+    // eslint-disable-next-line eqeqeq
     if (req.statusCode == want) {
       return {
         pass: true,

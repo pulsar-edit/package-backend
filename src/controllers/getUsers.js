@@ -36,7 +36,7 @@ module.exports = {
       return context.query.auth(req);
     },
   },
-  async preLogic(req, res, context) {
+  async preLogic(req, res, _context) {
     res.header("Access-Control-Allow-Methods", "GET");
     res.header(
       "Access-Control-Allow-Headers",
@@ -48,7 +48,7 @@ module.exports = {
     );
     res.header("Access-Control-Allow-Credentials", true);
   },
-  async postLogic(req, res, context) {
+  async postLogic(req, res, _context) {
     res.set({ "Access-Control-Allow-Credentials": true });
   },
 

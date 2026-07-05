@@ -31,17 +31,10 @@ const semVerInitRegex = /^\s*v/i;
  * an Owner/Repo combo, but it is recommended to use the Package Object when
  * possible. The string variant is intended to be used when first publishing
  * a package, and there is no package object to use.
- * @param {object} [opts] - An optional configuration object, that allows the
- * definition of non-standard options to change the fucntionality of this function.
- * `opts` can accept the following parameters:
- *  - dev_override: {boolean} - Wether to enable or disable the dev_override. Disabled
- *    by default, this dangerous boolean is inteded to be used during tests that
- *    overrides the default safe static returns, and lets the function run as intended
- *    in development mode.
  * @returns {object} - A Server Status object containing the role of the user according
  * to the repo or otherwise a failure.
  */
-async function ownership(userObj, packObj, dev_override = false) {
+async function ownership(userObj, packObj) {
   // Since the package is already on the DB when attempting to determine ownership
   // (Or is at least formatted correctly, as if it was) We can directly access the
   // repository object provided by determineProvider
@@ -347,7 +340,7 @@ async function newVersionData(userObj, ownerRepo, tagRef, service) {
   if (!tag.tarball_url) {
     logger.generic(
       3,
-      `Cannot retrieve metadata information for version ${ver} of ${ownerRepo}`
+      `Cannot retrieve metadata information for version ${tag} of ${ownerRepo}`
     );
     return {
       ok: false,

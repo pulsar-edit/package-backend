@@ -21,7 +21,7 @@ describe("Publish Webhook", () => {
   });
 
   test("Success as Expected", async () => {
-    let hookSend = await webhook.alertPublishPackage(
+    let _hookSend = await webhook.alertPublishPackage(
       {
         name: "Dev Package",
       },
