@@ -138,7 +138,7 @@ for (const node of endpoints) {
   }
 }
 
-app.use(async (err, req, res, next) => {
+app.use(async (err, req, res, _next) => {
   // Having this as the last route, will handle all other unkown routes.
   // Ensure we leave this at the very last position to handle properly.
   // We can also check for any unhandled errors passed down the endpoint chain

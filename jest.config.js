@@ -1,25 +1,15 @@
 const config = {
   setupFilesAfterEnv: ["<rootDir>/tests/helpers/global.setup.jest.js"],
   verbose: true,
+  reporters: [["default", { summaryThreshold: 0 }]],
   collectCoverage: true,
-  coverageReporters: ["text", "clover"],
+  coverageReporters: ["text", "lcov"],
   coveragePathIgnorePatterns: [
     "<rootDir>/tests/",
     "<rootDir>/test/",
     "<rootDir>/node_modules/",
   ],
   projects: [
-    {
-      displayName: "Full-Tests",
-      globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
-      globalTeardown:
-        "<rootDir>/node_modules/@databases/pg-test/jest/globalTeardown",
-      setupFilesAfterEnv: [
-        "<rootDir>/tests/helpers/global.setup.jest.js",
-        "<rootDir>/tests/helpers/handlers.setup.jest.js",
-      ],
-      testMatch: ["<rootDir>/tests/full/**.test.js"],
-    },
     {
       displayName: "Integration-Tests",
       globalSetup: "<rootDir>/node_modules/@databases/pg-test/jest/globalSetup",
@@ -30,9 +20,8 @@ const config = {
         "<rootDir>/tests/helpers/global.setup.jest.js",
       ],
       testMatch: [
+        "<rootDir>/tests/full/**.test.js",
         "<rootDir>/tests/database/**.test.js",
-        "<rootDir>/tests/http/**.test.js",
-        "<rootDir>/tests/vcs/**.test.js",
       ],
     },
     {

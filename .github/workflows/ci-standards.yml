@@ -7,6 +7,35 @@ on:
   push:
     branches: [ "main" ]
 
+env:
+  # Setup all Environment Variables as tests check they exist.
+  PORT: 8080
+  SERVERURL: "https://test.github.com"
+  PAGINATE: 30
+  CACHETIME: 600000
+  GCLOUD_STORAGE_BUCKET: ""
+  GOOGLE_APPLICATION_CREDENTIALS: "nofile"
+  GH_CLIENTID: ""
+  GH_CLIENTSECRET: ""
+  GH_USERAGENT: "Pulsar-Edit Tester Bot"
+  GH_REDIRECTURI: "http://localhost:8080/api/oauth"
+  DB_HOST: ""
+  DB_USER: ""
+  DB_PASS: ""
+  DB_DB: ""
+  DB_PORT: 43
+  DB_SSL_CERT: ""
+  LOG_LEVEL: 6
+  LOG_FORMAT: "stdout"
+  # This helps some modules know they are in a test environment
+  NODE_ENV: "test"
+  PULSAR_STATUS: "dev"
+  RATE_LIMIT_GENERIC: 0
+  RATE_LIMIT_AUTH: 0
+  WEBHOOK_PUBLISH: ""
+  WEBHOOK_VERSION: ""
+  WEBHOOK_USERNAME: ""
+
 jobs:
   standards:
     runs-on: ubuntu-latest
@@ -15,14 +44,14 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24.x]
 
     steps:
     - name: Checkout the latest code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Setup NodeJS - ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
@@ -42,7 +71,16 @@ jobs:
     - name: Generate OpenAPI Docs
       run: npm run openapi-docs
 
+    - name: Run Tests to generate code coverage
+      run: npm run test
+
     - name: Commit All Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: GH Action Standards
+    # Upload coverage after commit, to ensure it represents HEAD commit
+    - name: Codacy Coverage Upload
+      uses: codacy/codacy-coverage-reporter-action@v1.3.0
+      with:
+        project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        coverage-reports: ./coverage/lcov.info

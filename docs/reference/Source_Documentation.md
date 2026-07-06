@@ -64,6 +64,8 @@ function.</p>
 <dd></dd>
 <dt><a href="#module_getPackagesPackageName">getPackagesPackageName</a></dt>
 <dd></dd>
+<dt><a href="#module_getPackagesPackageNameAvailability">getPackagesPackageNameAvailability</a></dt>
+<dd></dd>
 <dt><a href="#module_getPackagesPackageNameStargazers">getPackagesPackageNameStargazers</a></dt>
 <dd></dd>
 <dt><a href="#module_getPackagesPackageNameVersionsVersionName">getPackagesPackageNameVersionsVersionName</a></dt>
@@ -500,12 +502,8 @@ A helper for any functions that are agnostic in handlers.
 * [utils](#module_utils)
     * [~isPackageNameBanned(name)](#module_utils..isPackageNameBanned) ⇒ <code>object</code>
     * [~engineFilter()](#module_utils..engineFilter) ⇒ <code>object</code>
-    * [~semverArray(semver)](#module_utils..semverArray) ⇒ <code>array</code> \| <code>null</code>
-    * [~semverGt(a1, a2)](#module_utils..semverGt) ⇒ <code>boolean</code>
-    * [~semverLt(a1, a2)](#module_utils..semverLt) ⇒ <code>boolean</code>
     * [~getOwnerRepoFromPackage(pack)](#module_utils..getOwnerRepoFromPackage) ⇒ <code>string</code>
     * [~getOwnerRepoFromUrlString(url)](#module_utils..getOwnerRepoFromUrlString) ⇒ <code>string</code>
-    * [~semverEq(a1, a2)](#module_utils..semverEq) ⇒ <code>boolean</code>
     * [~generateRandomString(n)](#module_utils..generateRandomString) ⇒ <code>string</code>
 
 <a name="module_utils..isPackageNameBanned"></a>
@@ -526,65 +524,12 @@ false otherwise.
 <a name="module_utils..engineFilter"></a>
 
 ### utils~engineFilter() ⇒ <code>object</code>
-A complex function that provides filtering by Atom engine version.
+A function that provides filtering by Atom engine version.
 This should take a package with its versions and retrieve whatever matches
 that engine version as provided.
 
 **Kind**: inner method of [<code>utils</code>](#module_utils)  
 **Returns**: <code>object</code> - The filtered object.  
-<a name="module_utils..semverArray"></a>
-
-### utils~semverArray(semver) ⇒ <code>array</code> \| <code>null</code>
-Takes a semver string and returns it as an Array of strings.
-This can also be used to check for semver valitidy. If it's not a semver, null is returned.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>array</code> \| <code>null</code> - The formatted semver in array of three strings, or null if no match.  
-
-| Param | Type |
-| --- | --- |
-| semver | <code>string</code> | 
-
-**Example** *(Valid Semver Passed)*  
-```js
-// returns ["1", "2", "3" ]
-semverArray("1.2.3");
-```
-**Example** *(Invalid Semver Passed)*  
-```js
-// returns null
-semverArray("1.Hello.World");
-```
-<a name="module_utils..semverGt"></a>
-
-### utils~semverGt(a1, a2) ⇒ <code>boolean</code>
-Compares two sermver and return true if the first is greater than the second.
-Expects to get the semver formatted as array of strings.
-Should be always executed after running semverArray.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a1 | <code>array</code> | First semver as array of strings. |
-| a2 | <code>array</code> | Second semver as array of string. |
-
-<a name="module_utils..semverLt"></a>
-
-### utils~semverLt(a1, a2) ⇒ <code>boolean</code>
-Compares two sermver and return true if the first is less than the second.
-Expects to get the semver formatted as array of strings.
-Should be always executed after running semverArray.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a1 | <code>array</code> | First semver as array of strings. |
-| a2 | <code>array</code> | Second semver as array of strings. |
-
 <a name="module_utils..getOwnerRepoFromPackage"></a>
 
 ### utils~getOwnerRepoFromPackage(pack) ⇒ <code>string</code>
@@ -611,21 +556,6 @@ string for the repo. Intended to be used from a packages entry `data.repository.
 | --- | --- | --- |
 | url | <code>string</code> | The URL for the Repo. |
 
-<a name="module_utils..semverEq"></a>
-
-### utils~semverEq(a1, a2) ⇒ <code>boolean</code>
-Compares two sermver and return true if the first is equal to the second.
-Expects to get the semver formatted as array of strings.
-Should be always executed after running semverArray.
-
-**Kind**: inner method of [<code>utils</code>](#module_utils)  
-**Returns**: <code>boolean</code> - The result of the comparison.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| a1 | <code>array</code> | First semver as array. |
-| a2 | <code>array</code> | Second semver as array. |
-
 <a name="module_utils..generateRandomString"></a>
 
 ### utils~generateRandomString(n) ⇒ <code>string</code>
@@ -649,7 +579,7 @@ function.
 
 
 * [vcs](#module_vcs)
-    * [~ownership(userObj, packObj, [opts])](#module_vcs..ownership) ⇒ <code>object</code>
+    * [~ownership(userObj, packObj)](#module_vcs..ownership) ⇒ <code>object</code>
     * [~newPackageData(userObj, ownerRepo, service)](#module_vcs..newPackageData) ⇒ <code>object</code>
     * [~newVersionData(userObj, ownerRepo, tagRef, service)](#module_vcs..newVersionData) ⇒ [<code>SSO\_VCS\_newVersionData</code>](#SSO_VCS_newVersionData)
     * [~featureDetection(userObj, ownerRepo, service)](#module_vcs..featureDetection) ⇒ <code>object</code>
@@ -657,7 +587,7 @@ function.
 
 <a name="module_vcs..ownership"></a>
 
-### vcs~ownership(userObj, packObj, [opts]) ⇒ <code>object</code>
+### vcs~ownership(userObj, packObj) ⇒ <code>object</code>
 Allows the ability to check if a user has permissions to write to a repo.
 <b>MUST</b> be provided the full `user` and `package` objects here to account
 for possible situations. This allows any new handling that's needed to be defined
@@ -674,7 +604,6 @@ to the repo or otherwise a failure.
 | --- | --- | --- |
 | userObj | <code>object</code> | The Full User Object, as returned by the backend, and appended to with authorization data. |
 | packObj | <code>object</code> \| <code>string</code> | The full Package objects data from the backend. Although, can also contain a string, this string would directly be an Owner/Repo combo, but it is recommended to use the Package Object when possible. The string variant is intended to be used when first publishing a package, and there is no package object to use. |
-| [opts] | <code>object</code> | An optional configuration object, that allows the definition of non-standard options to change the fucntionality of this function. `opts` can accept the following parameters:  - dev_override: {boolean} - Wether to enable or disable the dev_override. Disabled    by default, this dangerous boolean is inteded to be used during tests that    overrides the default safe static returns, and lets the function run as intended    in development mode. |
 
 <a name="module_vcs..newPackageData"></a>
 
@@ -817,6 +746,9 @@ Used to preform the actual sending of the webhook.
 <a name="module_getPackagesPackageName"></a>
 
 ## getPackagesPackageName
+<a name="module_getPackagesPackageNameAvailability"></a>
+
+## getPackagesPackageNameAvailability
 <a name="module_getPackagesPackageNameStargazers"></a>
 
 ## getPackagesPackageNameStargazers

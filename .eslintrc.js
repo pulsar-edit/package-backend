@@ -22,6 +22,12 @@ module.exports = {
     eqeqeq: ["error", "smart"],
     "max-depth": ["error", 4],
     camelcase: "off",
+    "no-unused-vars": [
+      "error",
+      {
+        argsIgnorePattern: "^_",
+      },
+    ],
   },
   plugins: [],
   globals: {

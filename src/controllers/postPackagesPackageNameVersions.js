@@ -83,7 +83,7 @@ module.exports = {
     );
 
     if (!featureApply.ok) {
-      logger.generic(3, featureApply);
+      context.logger.generic(3, featureApply);
       return;
     }
 
