@@ -112,7 +112,15 @@ function buildRoute(pathsObj, router) {
             break;
         }
       }
-      router[method](pathStr, ...mids, pathsObj[pathStr][method].logic.func);
+      try {
+        router[method](pathStr, ...mids, pathsObj[pathStr][method].logic.func);
+      } catch(err) {
+        console.error("Failed when building routes!");
+        console.error(mids);
+        console.error(pathStr);
+        console.error(pathsObj[pathStr]);
+        throw err;
+      }
     }
   }
 }
