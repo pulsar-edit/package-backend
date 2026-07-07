@@ -280,7 +280,17 @@ module.exports = {
       await next();
       await ctx.state.timecop.time("build", async () => {
         if (ctx.state.output && !ctx.body) {
-          ctx.body = ctx.pulsar.models.constructPackageObjectShort(
+          ctx.body = await ctx.pulsar.models.constructPackageObjectShort(
+            ctx.state.output
+          );
+        }
+      });
+    },
+    packageObjectFull: async (ctx, next) => {
+      await next();
+      await ctx.state.timecop.time("build", async () => {
+        if (ctx.state.output && !ctx.body) {
+          ctx.body = await ctx.pulsar.models.constructPackageObjectFull(
             ctx.state.output
           );
         }

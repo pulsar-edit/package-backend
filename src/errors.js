@@ -22,7 +22,20 @@ class Unauthorized extends Error {
   }
 }
 
+class NotFound extends Error {
+  constructor(msg = "Not Found", opts) {
+    super(msg);
+    this.name = "NotFound";
+    this.status = 404;
+
+    if (opts.cause) {
+      this.cause = opts.cause;
+    }
+  }
+}
+
 module.exports = {
   InternalApplicationError,
   Unauthorized,
+  NotFound,
 };
