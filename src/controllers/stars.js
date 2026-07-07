@@ -63,7 +63,7 @@ module.exports = {
           );
 
           if (!userStars.ok) {
-            throw new ctx.pulsar.err.InternalApplicationError("Failed to get user stars.", { cause: userStars });
+            throw new ctx.pulsar.err.InternalServerError("Failed to get user stars.", { cause: userStars });
           };
           ctx.state.timecop.end("db.getStarredPointersByUserID");
 
@@ -77,7 +77,7 @@ module.exports = {
           const packCol = await ctx.pulsar.db.getPackageCollectionByID(userStars.content);
 
           if (!packCol.ok) {
-            throw new ctx.pulsar.err.InternalApplicationError("Failed to get starred packages.", { cause: packCol });
+            throw new ctx.pulsar.err.InternalServerError("Failed to get starred packages.", { cause: packCol });
           }
           ctx.state.timecop.end("db.getPackageCollectionByID");
 

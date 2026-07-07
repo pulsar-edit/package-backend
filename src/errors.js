@@ -1,8 +1,9 @@
 
-class InternalApplicationError extends Error {
+class InternalServerError extends Error {
   constructor(msg, opts) {
     super(msg);
-    this.name = "InternalApplicationError";
+    this.name = "InternalServerError";
+    this.status = 500;
 
     if (opts.cause) {
       this.cause = opts.cause;
@@ -35,7 +36,7 @@ class NotFound extends Error {
 }
 
 module.exports = {
-  InternalApplicationError,
+  InternalServerError,
   Unauthorized,
   NotFound,
 };

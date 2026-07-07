@@ -79,7 +79,7 @@ module.exports = {
             if (star.short === "not_found") {
               throw new ctx.pulsar.err.NotFound("Not Found", { cause: star });
             } else {
-              throw new ctx.pulsar.err.InternalApplicationError("Failed to update stars", { cause: star });
+              throw new ctx.pulsar.err.InternalServerError("Failed to update stars", { cause: star });
             }
           }
           ctx.state.timecop.end("db.updateIncrementStar");
@@ -90,7 +90,7 @@ module.exports = {
           );
 
           if (!pack.ok) {
-            throw new ctx.pulsar.err.InternalApplicationError("Failed to get package", { cause: pack });
+            throw new ctx.pulsar.err.InternalServerError("Failed to get package", { cause: pack });
           }
           ctx.state.timecop.end("db.getPackageByName");
 
@@ -142,7 +142,7 @@ module.exports = {
           preferResponse: 204
         },
         middleware: [ "$DEFAULT", "auth.verify" ],
-        logic: async (ctx, next) => {
+        func: async (ctx, next) => {
           ctx.state.timecop.start("logic");
           const unstar = await ctx.pulsar.db.updateDecrementStar(
             ctx.state.funcs.auth.verify.content,
@@ -150,7 +150,7 @@ module.exports = {
           );
 
           if (!unstar.ok) {
-            throw new ctx.pulsar.err.InternalApplicationError("Failed to decrement package stars", { cause: unstar });
+            throw new ctx.pulsar.err.InternalServerError("Failed to decrement package stars", { cause: unstar });
           }
 
           ctx.state.timecop.end("logic");

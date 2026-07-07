@@ -257,7 +257,7 @@ module.exports = {
             if (user.short === "unauthorized") {
               throw new ctx.pulsar.err.Unauthorized(undefined, { cause: user });
             } else {
-              throw new ctx.pulsar.err.InternalApplicationError("Failed to authenticate the user", { cause: user });
+              throw new ctx.pulsar.err.InternalServerError("Failed to authenticate the user", { cause: user });
             }
           }
 
