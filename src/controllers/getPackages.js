@@ -49,6 +49,9 @@ module.exports = {
     owner: (context, req) => {
       return context.query.owner(req);
     },
+    creationMethod: (context, req) => {
+      return context.query.creationMethod(req);
+    },
   },
 
   /**
