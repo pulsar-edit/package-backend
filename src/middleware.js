@@ -275,6 +275,70 @@ module.exports = {
     },
   },
   /** @namespace */
+  db: {
+    getPackageByName: async (ctx, next) => {
+      await ctx.state.timecop.time("db.getPackageByName", async () => {
+        ctx.state.funcs.db = ctx.state.funcs.db || {}; // Conditionally create parent result
+        try {
+          const pack = await ctx.pulsar.db.getPackageByName(
+            ctx.state.params.packageName,
+            true
+          );
+
+          if (!pack.ok) {
+            if (pack.short === "not_found") {
+              throw new ctx.pulsar.err.NotFound("Not Found", { cause: pack });
+            } else {
+              throw new ctx.pulsar.err.InternalServerError("Failed to get package", { cause: pack });
+            }
+          }
+
+          ctx.state.funcs.db.getPackageByName = pack;
+        } catch(err) {
+          if (allowExit("db.getPackageByName", ctx)) {
+            throw HttpError(err);
+          } else {
+            ctx.state.funcs.db.getPackageByName = err;
+          }
+        }
+      });
+      await next();
+    }
+  },
+  /** @namespace */
+  vcs: {
+    ownership: async (ctx, next) => {
+      await ctx.state.timecop.time("vcs.ownership", async () => {
+        ctx.state.funcs.vcs = ctx.state.funcs.vcs || {}; // Conditionally create parent result
+        try {
+          // Get `owner/repo` string format from package
+          const ownerRepo = ctx.utils.getOwnerRepoFromPackage(
+            ctx.state.funcs.db.getPackageByName.content.data
+          );
+          // TODO; Probably want to make 'where' we pull the package data from configurable
+
+          const gitowner = await ctx.vcs.ownership(
+            ctx.state.funcs.auth.verify.content,
+            ownerRepo
+          );
+
+          if (!gitowner.ok) {
+            throw new ctx.pulsar.err.InternalServerError("Failed to verify ownership", { cause: gitowner });
+          }
+
+          ctx.state.funcs.vcs.ownership = gitowner;
+        } catch(err) {
+          if (allowExit("vcs.ownership", ctx)) {
+            throw HttpError(err);
+          } else {
+            ctx.state.funcs.vcs.ownership = err;
+          }
+        }
+      });
+      await next();
+    }
+  },
+  /** @namespace */
   models: {
     packageObjectShort: async (ctx, next) => {
       await next();

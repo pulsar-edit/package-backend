@@ -16,6 +16,9 @@ app.context.pulsar.models = {
   constructPackageObjectFull: require("./models/constructPackageObjectFull.js"),
   constructPackageObjectJSON: require("./models/constructPackageObjectJSON.js")
 };
+app.context.pulsar.utils = require("./utils.js");
+app.context.pulsar.bundled = require("./bundled/index.js");
+app.content.pulsar.vcs = require("./vcs.js");
 
 // === Setup Error Handler
 app.use(async (ctx, next) => {
