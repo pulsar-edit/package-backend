@@ -18,7 +18,7 @@ app.context.pulsar.models = {
 };
 app.context.pulsar.utils = require("./utils.js");
 app.context.pulsar.bundled = require("./bundled_packages/index.js");
-app.content.pulsar.vcs = require("./vcs.js");
+app.context.pulsar.vcs = require("./vcs.js");
 
 // === Setup Error Handler
 app.use(async (ctx, next) => {
