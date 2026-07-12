@@ -1,0 +1,11 @@
+
+module.exports = [
+  require("./pat.js"),
+  require("./stars.js"),
+  require("./users.js"),
+  require("./updates.js"),
+  require("./packagesPackageName.js"),
+  require("./packagesPackageNameStar.js"),
+  require("./packagesPackageNameVersionsVersionName.js"),
+  require("./packagesPackageNameVersionsVersionNameEventsUninstall.js"),
+];

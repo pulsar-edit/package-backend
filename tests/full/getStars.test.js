@@ -1,6 +1,6 @@
 const supertest = require("supertest");
 const nock = require("nock");
-const app = require("../../src/setupEndpoints.js");
+let app = require("../../src/app.js");
 const database = require("../../src/database/_export.js");
 const genPackage = require("../helpers/package.jest.js");
 
@@ -8,11 +8,13 @@ describe("GET /api/stars", () => {
   beforeAll(() => {
     nock.disableNetConnect();
     nock.enableNetConnect();
+    app = app.listen(8080);
   });
 
   afterAll(() => {
     nock.cleanAll();
     nock.enableNetConnect();
+    app.close();
   });
 
   afterEach(() => {
