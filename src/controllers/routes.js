@@ -6,5 +6,6 @@ module.exports = [
   require("./updates.js"),
   require("./packagesPackageName.js"),
   require("./packagesPackageNameStar.js"),
+  require("./packagesPackageNameVersionsVersionName.js"),
   require("./packagesPackageNameVersionsVersionNameEventsUninstall.js"),
 ];
