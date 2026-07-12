@@ -1,5 +1,6 @@
 
 module.exports = [
+  require("./pat.js"),
   require("./stars.js"),
   require("./users.js"),
   require("./updates.js"),
