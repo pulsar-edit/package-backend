@@ -48,7 +48,7 @@
     "cson": "^7.20.0",
     "express": "^5.0.0",
     "express-rate-limit": "^6.7.0",
-    "js-yaml": "^4.1.0",
+    "js-yaml": "^5.0.0",
     "parse-github-url": "^1.0.2",
     "postgres": "^3.3.4",
     "semver": "^7.5.4",
